@@ -1,0 +1,206 @@
+<?php
+
+/* @var $user \common\modules\profile\controllers\AccountController */
+
+/* @var $profile\common\modules\profile\controllers\AccountController */
+
+/* @var $modelAvatar\common\modules\profile\models\AvatarForm */
+
+use common\models\User;
+use dosamigos\fileupload\FileUpload;
+use hail812\adminlte3\assets\PluginAsset;
+use yii\bootstrap4\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\MaskedInput;
+
+
+PluginAsset::register($this)->add(['sweetalert2']);
+?>
+	<p class="text-muted">Редактировать данные аккаунта</p>
+
+<?php
+$form = ActiveForm::begin(
+    [
+        'layout' => 'horizontal',
+    ]
+); ?>
+
+
+<?= $form->field($user, 'username')->textInput(['maxlength' => true]) ?>
+
+<?= $form->field($profile, 'notes')->textarea(['rows' => 4]) ?>
+<?= $form->field($profile, 'education')->textarea(['rows' => 4]) ?>
+<?= $form->field($profile, 'skill')->textarea(['rows' => 4]) ?>
+
+
+<?= $form->field($user, 'phone')->widget(
+    MaskedInput::class,
+    [
+        'mask'          => '+38(071) 999-99-99',
+        'options'       => [
+            'class'       => 'form-control',
+            'id'          => 'phone',
+            'placeholder' => ('Телефон')
+        ],
+        'clientOptions' => [
+            'greedy'          => false,
+            'clearIncomplete' => true
+        ]
+    ]
+) ?>
+
+<?= $form->field($user, 'address')->textInput(['maxlength' => true]) ?>
+
+<?php
+if ($user->getPicture() !== User::DEFAULT_IMAGE) : ?>
+	<div class="form-group row">
+		<div class="col-sm-2 col-form-label"></div>
+		<div class="col-sm-10">
+			<div class="wrap-button" id="delete-block">
+				<img class="img-square" id="profile-picture-form" src="<?php
+                echo $user->getPicture(); ?>" alt="">
+				<span class=" slide-button">
+					<i class="fas fa-trash"></i>
+					<a id="delete-link" href="<?php
+                    echo Url::to(['/profile/account/delete-picture']); ?>">
+						<span class="slide-button-info">Удалить</span>
+					</a>
+				</span>
+			</div>
+		</div>
+	</div>
+<?php
+endif; ?>
+
+
+	<div class="form-group row">
+        <?= Html::label('Аватар', 'avatar', ['class' => 'col-sm-2 col-form-label']) ?>
+		<div class="col-sm-10">
+            <?= FileUpload::widget(
+                [
+                    'model'        => $modelAvatar,
+                    'attribute'    => 'avatar',
+                    'url'          => ['/profile/account/upload-avatar'],
+                    // your url, this is just for demo purposes,
+                    'options'      => ['accept' => 'image/*'],
+                    'clientEvents' => [
+                        'fileuploaddone' => 'function(e, data) {
+                              					if (data.result.success) {
+													$("#profile-picture, #profile-picture-form, .elevation-2").attr("src", data.result.pictureUri);
+													$(function() {
+															var Toast = Swal.mixin({
+															  toast: true,
+															  position: "top-end",
+															  showConfirmButton: false,
+															  timer: 5000,
+															});
+															  Toast.fire({
+																icon: "success",
+																title: "Аватар загружен."
+															  });
+													  })
+												} else {
+													   $(function() {
+															var Toast = Swal.mixin({
+															  toast: true,
+															  position: "top-end",
+															  showConfirmButton: false,
+															  timer: 5000
+															});
+															  Toast.fire({
+																icon: "error",
+																title: data.result.errors.avatar
+															  })
+													  })
+												}
+                            				}',
+                    ],
+                ]
+            ); ?>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="offset-sm-2 col-sm-10">
+            <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+		</div>
+	</div>
+
+<?php
+ActiveForm::end(); ?>
+
+
+
+<?php
+if (Yii::$app->id == 'app-backend') {
+    $js = <<< JS
+$('#delete-link').on('click',function (e){
+    e.preventDefault();
+    $.ajax({
+     	type: "POST",
+    	url: "/admin/profile/account/delete-picture/",
+    	success: function(msg){ 
+     	    
+     	    var Toast = Swal.mixin({
+						  toast: true,
+						  position: "top-end",
+						  showConfirmButton: false,
+						  timer: 5000,
+						  didOpen:()=>{
+						      $('#delete-block').hide();
+						      $("#profile-picture, #profile-picture-form, .elevation-2").attr("src", msg.pictureUri);
+						  }
+						});
+						  Toast.fire({
+							icon: "error",
+							title: "Аватар удален."
+						  });
+						  
+    	},
+    	error: function (error){
+     	    alert(error);
+    	}
+    })
+})
+
+JS;
+} else {
+    $js = <<< JS
+
+$('#delete-link').on('click',function (e){
+    e.preventDefault();
+   
+    $.ajax({
+     	type: "POST",
+    	url: "/profile/account/delete-picture/",
+    	success: function(msg){ 
+     	    
+     	    var Toast = Swal.mixin({
+						  toast: true,
+						  position: "top-end",
+						  showConfirmButton: false,
+						  timer: 3000,
+						  didOpen:(toast)=>{
+						      $('#delete-block').hide();
+						      $("#profile-picture, #profile-picture-form").attr("src", msg.pictureUri);
+						  }
+						});
+						  Toast.fire({
+							icon: "error",
+							title: "Аватар удален."
+						  });
+						  
+ 		
+    	},
+    	
+    	error: function (error){
+     	    alert(error);
+    	}
+    })
+});
+
+JS;
+}
+
+$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
+?>
