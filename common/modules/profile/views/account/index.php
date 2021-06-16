@@ -18,6 +18,7 @@ use yii\grid\GridView;
 /* @var $profile \common\modules\profile\controllers\AccountController */
 /* @var $modelAvatar\common\modules\profile\models\AvatarForm */
 /* @var $modelPhoto \common\modules\profile\controllers\AccountController */
+/* @var $model\common\modules\profile\controllers\AccountController */
 
 
 //FontAwesomeAsset::register($this);
@@ -153,6 +154,12 @@ $this->params['breadcrumbs'][] = $this->title;
 							</li>
                         <?php
                         endif; ?>
+						<li class="nav-item">
+							<a class="nav-link"
+							   href="#design"
+							   data-toggle="tab">Дизайн
+							</a>
+						</li>
 					</ul>
 				</div><!-- /.card-header -->
 				<div class="card-body">
@@ -245,7 +252,15 @@ $this->params['breadcrumbs'][] = $this->title;
 							</div>
                         <?php
                         endif; ?>
-
+						<!-- /.tab-pane -->
+						<div class="tab-pane" id="design">
+                            <?= $this->render(
+                                '_gallery-tab',
+                                [
+                                    'model' => $model,
+                                ]
+                            ) ?>
+						</div>
 						<!-- /.tab-pane -->
 					</div>
 

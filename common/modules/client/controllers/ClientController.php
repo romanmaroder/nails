@@ -84,12 +84,12 @@ class ClientController extends Controller
     /**
      * Displays a single User model.
      *
-     * @param  integer  $id
+     * @param  int  $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView(int $id)
     {
         return $this->render(
             'view',
@@ -103,7 +103,7 @@ class ClientController extends Controller
      * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      *
-     * @return mixed
+     * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
@@ -136,7 +136,7 @@ class ClientController extends Controller
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
      *
-     * @param  integer  $id
+     * @param  int  $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -162,7 +162,7 @@ class ClientController extends Controller
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      *
-     * @param  integer  $id
+     * @param  int  $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -179,7 +179,7 @@ class ClientController extends Controller
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      *
-     * @param  integer  $id
+     * @param  int  $id
      *
      * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found

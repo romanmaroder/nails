@@ -8,6 +8,7 @@ use common\models\User;
 use common\modules\profile\models\AddPhotoForm;
 use common\models\Photo;
 use Yii;
+use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -71,6 +72,7 @@ class AccountController extends Controller
 
         $modelPhoto = new AddPhotoForm($user);
 
+        $photo = new Photo();
 
         if (!isset($user, $profile)) {
             throw new NotFoundHttpException("Пользователь не найден.");
@@ -114,6 +116,13 @@ class AccountController extends Controller
                 return $this->goHome();
             }
         }
+
+        $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
+
+        // Ids юзеров с ролью 'master'
+
+        $model = $photo->getPhotoList($userId, $masterIds);
+
         return $this->render(
             'index',
             [
@@ -123,6 +132,7 @@ class AccountController extends Controller
                 'user'            => $user,
                 'profile'         => $profile,
                 'modelAvatar'     => $modelAvatar,
+                'model'           => $model,
                 'modelPhoto'      => $modelPhoto
             ]
         );
@@ -167,8 +177,7 @@ class AccountController extends Controller
 
         $currentUser = Yii::$app->user->identity;
 
-
-        if ($currentUser->deletePicture()) {
+        if ($currentUser->deletePicture() ) {
             return [
                 'success'    => true,
                 'message'    => 'Delete',

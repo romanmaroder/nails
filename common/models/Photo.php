@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -118,4 +119,5 @@ class Photo extends ActiveRecord
     {
         return Photo::find()->where(['portfolio' => 1])->all();
     }
+
 }
