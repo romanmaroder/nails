@@ -132,13 +132,13 @@ ActiveForm::end(); ?>
 
 
 <?php
-if (Yii::$app->id == 'app-backend') {
     $js = <<< JS
 $('#delete-link').on('click',function (e){
     e.preventDefault();
+    var path = $(this).attr('href');
     $.ajax({
      	type: "POST",
-    	url: "/admin/profile/account/delete-picture/",
+    	url: path,
     	success: function(msg){ 
      	    
      	    var Toast = Swal.mixin({
@@ -164,43 +164,6 @@ $('#delete-link').on('click',function (e){
 })
 
 JS;
-} else {
-    $js = <<< JS
-
-$('#delete-link').on('click',function (e){
-    e.preventDefault();
-   
-    $.ajax({
-     	type: "POST",
-    	url: "/profile/account/delete-picture/",
-    	success: function(msg){ 
-     	    
-     	    var Toast = Swal.mixin({
-						  toast: true,
-						  position: "top-end",
-						  showConfirmButton: false,
-						  timer: 3000,
-						  didOpen:(toast)=>{
-						      $('#delete-block').hide();
-						      $("#profile-picture, #profile-picture-form").attr("src", msg.pictureUri);
-						  }
-						});
-						  Toast.fire({
-							icon: "error",
-							title: "Аватар удален."
-						  });
-						  
- 		
-    	},
-    	
-    	error: function (error){
-     	    alert(error);
-    	}
-    })
-});
-
-JS;
-}
 
 $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
 ?>

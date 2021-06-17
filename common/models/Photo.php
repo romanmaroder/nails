@@ -120,4 +120,23 @@ class Photo extends ActiveRecord
         return Photo::find()->where(['portfolio' => 1])->all();
     }
 
+
+    /**
+     * Delete picture from user record and file system
+     *
+     * @return bool
+     */
+
+    public function deletePicture(): bool
+
+    {
+        if ($this->image && Yii::$app->storage->deleteFile($this->image)) {
+            $this->image = null;
+
+            return $this->save(false, ['image']);
+        }
+
+        return false;
+    }
+
 }

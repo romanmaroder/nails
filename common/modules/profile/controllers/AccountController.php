@@ -191,6 +191,40 @@ class AccountController extends Controller
         }
     }
 
+
+
+    /**
+     * Delete user avatar
+     *
+     * @return array|\yii\web\Response
+     */
+    public function actionDeletePhoto($id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['/admin/login']);
+        }
+
+        $currenPhoto = Photo::findOne($id);
+
+        if ($currenPhoto->deletePicture() ) {
+            $currenPhoto->delete();
+            return [
+                'success'    => true,
+                'message'    => 'Delete',
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Error occured',
+            ];
+        }
+    }
+
+
+
+
 //    public function actionDeletePicture()
 //    {
 //        if (Yii::$app->user->isGuest) {
