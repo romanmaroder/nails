@@ -118,7 +118,7 @@ $('body').on('click','#delete-photo',function (e){
 						});
 						  Toast.fire({
 							icon: "error",
-							title: "Фото удалено."
+							title: msg.message
 						  });
 						  
     	},

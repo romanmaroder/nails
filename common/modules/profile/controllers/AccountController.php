@@ -95,7 +95,6 @@ class AccountController extends Controller
                 [
                     'query' => Event::findMasterEvents($userId),
                     'sort'  => false,
-
                 ]
             );
         } else {
@@ -156,6 +155,7 @@ class AccountController extends Controller
             return [
                 'success'    => true,
                 'pictureUri' => Yii::$app->storage->getFile($user->avatar),
+                'message'=>'Аватар загружен'
             ];
         }
         return ['success' => false, 'errors' => $model->getErrors()];
@@ -182,7 +182,7 @@ class AccountController extends Controller
         if ($currentUser->deletePicture() ) {
             return [
                 'success'    => true,
-                'message'    => 'Delete',
+                'message'    => 'Аватар удален',
                 'pictureUri' => User::DEFAULT_IMAGE,
             ];
         } else {
@@ -214,7 +214,7 @@ class AccountController extends Controller
             $currenPhoto->delete();
             return [
                 'success'    => true,
-                'message'    => 'Delete',
+                'message'    => 'Фото удалено',
             ];
         } else {
             return [

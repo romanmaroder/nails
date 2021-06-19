@@ -97,7 +97,7 @@ endif; ?>
 															});
 															  Toast.fire({
 																icon: "success",
-																title: "Аватар загружен."
+																title: data.result.message
 															  });
 													  })
 												} else {
@@ -153,7 +153,7 @@ $('#delete-link').on('click',function (e){
 						});
 						  Toast.fire({
 							icon: "error",
-							title: "Аватар удален."
+							title: msg.message
 						  });
 						  
     	},
