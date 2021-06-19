@@ -50,10 +50,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= yii2fullcalendar::widget(
         [
-            'id'          => 'calendar',
+            'id' => 'calendar',
 
             'events'      => [
-                'events'    => $events,
+                'events' => $events,
 //                'googleCalendarId' => 'katya04111985@gmail.com',
             ],
             'defaultView' => 'basicDay',
@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
             'clientOptions' => [
-
+                'eventOverlap '   => 'red',
                 'todayBtn'        => true,
                 'themeSystem'     => 'bootstrap4',
                 'navLinks'        => true,
@@ -124,9 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }"
                 ),
                 'dayRender'       => new JsExpression(
-                    "function (date,cell) {
-                     
-				}"
+                    "function (date,cell) {} "
                 ),
                 'eventRender'     => new JsExpression(
                     "function (event, element, view){
@@ -158,12 +156,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 	}"
                 ),
                 /*'viewRender'      => new \yii\web\JsExpression(
-                    "function (view, element){
-                		if( $('#calendar').fullCalendar('getView') === 'month') {
-                				alert('month');
-                		}
-                }"
-                ),*/
+           "function (view, element){
+               if( $('#calendar').fullCalendar('getView') === 'month') {
+                       alert('month');
+               }
+       }"
+       ),*/
                 'viewRender'      => new JsExpression(
                     "function (view,event, element){
 						var view = $('#calendar').fullCalendar('getView');

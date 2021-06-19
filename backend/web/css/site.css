@@ -59,7 +59,7 @@ a.asc:after, a.desc:after {
     position: relative;
     top: 1px;
     display: inline-block;
-    font-family: 'Glyphicons Halflings';
+    font-family: 'Glyphicons Halflings', serif;
     font-style: normal;
     font-weight: normal;
     line-height: 1;
@@ -260,4 +260,8 @@ a.desc:after {
 
 .slide-button:hover .slide-button-info {
     width: 105px;
+}
+.fc-today {
+    background: #fdcb6e !important;
+
 }

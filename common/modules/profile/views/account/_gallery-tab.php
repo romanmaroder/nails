@@ -38,7 +38,8 @@ die();*/
                          echo $item['image']; ?>"
 						 src="<?php
                          echo Yii::$app->storage->getFile($item['image']); ?>">
-					<div class="ribbon-wrapper ribbon-sm">
+					<?php if (!empty($item['user']['username'])) :?>
+					    <div class="ribbon-wrapper ribbon-sm">
 
 						<div class="ribbon bg-success text-sm">
                             <?php
@@ -46,8 +47,11 @@ die();*/
 						</div>
 
 					</div>
+					<?php endif ;?>
+
 				</div>
 				<div class="d-flex justify-content-between">
+					<?php if (Yii::$app->user->can('perm_view-calendar')) :?>
 						<span class=" photo-delete">
 							<?php
                             echo Html::a(
@@ -57,7 +61,8 @@ die();*/
                             ); ?>
 
 						</span>
-					<time class="time text-muted">
+					<?php endif ;?>
+					<time class="time text-muted ml-auto">
 						<small class="d-block text-right px-2">
                             <?php
                             echo date('d/m/Y', $item['created_at']); ?>

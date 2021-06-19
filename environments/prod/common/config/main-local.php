@@ -24,7 +24,26 @@ return [
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
-            'useFileTransport' => true,
+            //'useFileTransport' => true,
+
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            'useFileTransport' => false,
+            'transport'        => [
+                'class'         => 'Swift_SmtpTransport',
+                'host'          => 'smtp.yandex.ru',
+                'username'      => 'roma12041985@yandex.ru',
+                'password'      => 'Roman_maroder',
+                'port'          => '587', // 465
+                'encryption'    => 'tls', // tls
+                'streamOptions' => [
+                    'ssl' => [
+                        'verify_peer'      => false,
+                        'verify_peer_name' => false
+                    ]
+                ]
+            ],
         ],
         'cache'       => [
             'class' => 'yii\caching\FileCache',

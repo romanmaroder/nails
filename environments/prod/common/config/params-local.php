@@ -1,5 +1,9 @@
 <?php
 return [
+    'adminEmail'   => 'roma12041985@yandex.ru',
+    'supportEmail' => 'roma12041985@yandex.ru',
+    'senderEmail'  => 'noreply@example.com',
+    'senderName'   => 'Example.com mailer',
     'maxFileSize'=>1024 * 1024 * 2.5, // Размер загружаемого файла 2mb
     'storagePath'=>'@frontend/web/uploads/',
     'storageUri'=>'/uploads/', //http://nails.com/uploads/c1/d3/78df89d65d.jpg

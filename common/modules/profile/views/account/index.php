@@ -58,9 +58,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             echo User::getRole()->description ?>
 						</p>
                         <?php
-                        if (Yii::$app->user->can('manager') && Yii::$app->id !=='app-backend') : ?>
+                        if (Yii::$app->user->can('manager') && Yii::$app->id !== 'app-backend') : ?>
 							<p class="text-muted text-center">
-								<?php echo Html::a('<i class="fas fa-user-cog"></i> Админка',['/admin/profile/account/'],['class'=>'btn btn-primary btn-sm']);?>
+                                <?php
+                                echo Html::a(
+                                    '<i class="fas fa-user-cog"></i> Админка',
+                                    ['/admin/profile/account/'],
+                                    ['class' => 'btn btn-primary btn-sm']
+                                ); ?>
 							</p>
                         <?php
                         endif; ?>
@@ -166,64 +171,69 @@ $this->params['breadcrumbs'][] = $this->title;
 					<div class="tab-content">
 						<div class="active tab-pane" id="events">
 
-							<!-- /.card-header -->
-                            <?= GridView::widget(
-                                [
-                                    'dataProvider' => $dataProvider,
-                                    'summary'      => "",
-                                    'filterModel'  => null,
 
-                                    'tableOptions' => [
-                                        'class' => 'table table-bordered table-hover',
-                                        'id'    => 'example2',
-                                    ],
-                                    'options'      => [
-                                        'class' => '',
-                                    ],
-                                    'columns'      => [
-                                        ['class' => 'yii\grid\SerialColumn'],
-                                        [
-                                            'attribute' => 'client_id',
-                                            'format'    => 'raw',
-                                            'visible'   => Yii::$app->user->can('perm_view-calendar'),
-                                            'value'     => function ($client) {
-                                                return Html::a(
-                                                    $client->client->username,
-                                                    ['/client/client/view', 'id' => $client->client->id]
-                                                );
-                                            }
+							<!-- /.card-header -->
+                            <?php
+                            if ($dataProvider->getCount() === 0) {
+                                echo 'У вас нет записей';
+                            } else {
+                                echo GridView::widget(
+                                    [
+                                        'dataProvider' => $dataProvider,
+                                        'summary'      => "",
+                                        'filterModel'  => null,
+
+                                        'tableOptions' => [
+                                            'class' => 'table table-bordered table-hover',
+                                            'id'    => 'example2',
                                         ],
-                                        [
-                                            'attribute' => 'master_id',
-                                            'format'    => 'raw',
-                                            'visible'   => Yii::$app->user->can('user'),
-                                            'value'     => function ($master) {
-                                                return $master->master->username;
-                                            }
+                                        'options'      => [
+                                            'class' => 'table-responsive',
                                         ],
-                                        [
-                                            'attribute'      => 'description',
-                                            'contentOptions' => ['style' => 'white-space: nowrap;'],
+                                        'columns'      => [
+                                            ['class' => 'yii\grid\SerialColumn'],
+                                            [
+                                                'attribute' => 'client_id',
+                                                'format'    => 'raw',
+                                                'visible'   => Yii::$app->user->can('perm_view-calendar'),
+                                                'value'     => function ($client) {
+                                                    return Html::a(
+                                                        $client->client->username,
+                                                        ['/client/client/view', 'id' => $client->client->id]
+                                                    );
+                                                }
+                                            ],
+                                            [
+                                                'attribute' => 'master_id',
+                                                'format'    => 'raw',
+                                                'visible'   => Yii::$app->user->can('user'),
+                                                'value'     => function ($master) {
+                                                    return $master->master->username;
+                                                }
+                                            ],
+                                            [
+                                                'attribute'      => 'description',
+                                                'contentOptions' => ['style' => 'white-space: nowrap;'],
+                                            ],
+                                            [
+                                                'attribute'      => 'event_time_start',
+                                                'contentOptions' => ['style' => 'white-space: nowrap;'],
+                                                'label'          => 'Дата',
+                                                'format'         => ['date', 'php:d-m-Y'],
+                                            ],
+                                            [
+                                                'attribute' => 'event_time_start',
+                                                'label'     => 'Время',
+                                                'format'    => ['date', 'php:H:i'],
+                                            ],
+                                            //'notice',
+                                            [
+                                                'class'    => 'yii\grid\ActionColumn',
+                                                'template' => '{view}'
+                                            ],
                                         ],
-                                        [
-                                            'attribute'      => 'event_time_start',
-                                            'contentOptions' => ['style' => 'white-space: nowrap;'],
-                                            'label'          => 'Дата',
-                                            'format'         => ['date', 'php:d-m-Y'],
-                                        ],
-                                        [
-                                            'attribute' => 'event_time_start',
-                                            'label'     => 'Время',
-                                            'format'    => ['date', 'php:H:i'],
-                                        ],
-                                        //'notice',
-                                        [
-                                            'class'    => 'yii\grid\ActionColumn',
-                                            'template' => '{view}'
-                                        ],
-                                    ],
-                                ]
-                            ); ?>
+                                    ]
+                                ); }?>
 							<!-- /.card-body -->
 						</div>
 						<!-- /.tab-pane -->

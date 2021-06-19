@@ -25,12 +25,12 @@ class SignupForm extends Model
         return [
             ['username', 'trim'],
             ['username', 'required'],
-            [
-                'username',
+            /* [
+               'username',
                 'unique',
                 'targetClass' => '\common\models\User',
                 'message'     => 'This username has already been taken.'
-            ],
+            ],*/
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             [
@@ -48,7 +48,7 @@ class SignupForm extends Model
                 'email',
                 'unique',
                 'targetClass' => '\common\models\User',
-                'message'     => 'This email address has already been taken.'
+                'message'     => 'Этот адрес электронной почты уже занят.'
             ],
 
             ['password', 'required'],
@@ -83,8 +83,8 @@ class SignupForm extends Model
             return null;
         }
 
-        $user           = new User();
-        $profile        = new Profile();
+        $user    = new User();
+        $profile = new Profile();
 
         $user->username = $this->username;
         $user->email    = $this->email;
@@ -95,8 +95,8 @@ class SignupForm extends Model
         //Добавляем роль по умолчанию для каждого зарегестрированного
         if ($user->save()) {
             $profile->user_id = $user->id;
-            $auth = Yii::$app->authManager;
-            $role = $auth->getRole('user');
+            $auth             = Yii::$app->authManager;
+            $role             = $auth->getRole('user');
             $auth->assign($role, $user->id);
             $profile->save();
 
@@ -120,9 +120,9 @@ class SignupForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $user]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name.' robot'])
+            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
             ->setTo($this->email)
-            ->setSubject('Account registration at '.Yii::$app->name)
+            ->setSubject('Регистрация аккаунта на '.Yii::$app->name)
             ->send();
     }
 }

@@ -22,7 +22,7 @@ use yii\helpers\Html;
         User::getClientList(),
         [
             'prompt' => [
-                'text'    => 'Выберите мастера',
+                'text'    => 'Выберите клиента',
                 'options' => [
                     'value' => 'none',
                     'class' => 'prompt',

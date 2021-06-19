@@ -63,7 +63,7 @@ class AddPhotoForm extends Model
         ];
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'picture'      => 'Фото',
@@ -111,9 +111,9 @@ class AddPhotoForm extends Model
     }
 
     /**
-     * @return bool
+     * @return
      */
-    public function save(): bool
+    public function save()
     {
         if ($this->validate()) {
             $photo              = new Photo();
@@ -124,7 +124,8 @@ class AddPhotoForm extends Model
             $photo->portfolio   = $this->portfolio;
             return $photo->save(false);
         }
-        return false;
+
+        return $this->getErrors();
     }
 
     /**

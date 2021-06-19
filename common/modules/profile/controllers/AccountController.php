@@ -8,7 +8,6 @@ use common\models\User;
 use common\modules\profile\models\AddPhotoForm;
 use common\models\Photo;
 use Yii;
-use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -112,8 +111,11 @@ class AccountController extends Controller
             $modelPhoto->picture = UploadedFile::getInstance($modelPhoto, 'picture');
 
             if ($modelPhoto->save()) {
+
                 Yii::$app->session->setFlash('success', 'Изображение добавлено!');
                 return $this->goHome();
+            }else{
+                $modelPhoto->getErrors();
             }
         }
 
