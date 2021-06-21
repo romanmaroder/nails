@@ -93,6 +93,7 @@ class AddPhotoForm extends Model
         if ($this->picture->error) {
             return;
         }
+
         $width  = Yii::$app->params['photoPicture']['maxWidth'];
         $height = Yii::$app->params['photoPicture']['maxHeight'];
 

@@ -2,7 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\Certificate;
 use common\models\Photo;
+use common\models\Profile;
+use common\models\User;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -25,11 +28,11 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only'  => ['logout', 'signup'],
                 'rules' => [
                     [
@@ -45,7 +48,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs'  => [
-                'class'   => VerbFilter::className(),
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -56,7 +59,7 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error'   => [
@@ -147,7 +150,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays about page.
+     * Displays portfolio page.
      *
      * @return mixed
      */
@@ -157,6 +160,58 @@ class SiteController extends Controller
         $portfolio = $photo->getPortfolio();
 
         return $this->render('portfolio', ['portfolio' => $portfolio]);
+    }
+
+    /**
+     * Displays about page.
+     *
+     * @return mixed
+     */
+    public function actionAbout()
+    {
+        $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
+
+        $master = User::find()->with('certificate')->where(['id' => $masterIds])->all();
+
+        $path = Photo::getBaclgroundCard();
+
+        return $this->render('about', ['master' => $master, 'path' => $path]);
+    }
+
+
+    /**
+     * Wizard Information Page
+     *
+     * @param $id  - master id
+     *
+     * @return string
+     */
+    public function actionView($id): string
+    {
+        $photo = new Photo();
+        $portfolio= $photo->getPortfolio($id);
+        $images=[];
+        foreach ($portfolio as $img) {
+            $images[] =  '<img class="w-100 " src="'.Yii::$app->storage->getFile($img['image']).'"/>';
+        }
+
+        $certificates = Certificate::find()->where(['user_id'=>$id])->asArray()->all();
+
+        $certificat=[];
+        foreach ($certificates as $item) {
+            $certificat[] =  '<img class="w-100 " src="'.Yii::$app->storage->getFile($item['certificate']).'"/>';
+        }
+
+        $master    = Profile::find()->with('user')->where(['user_id' => $id])->one();
+
+        return $this->render(
+            'view',
+            [
+                'master'    => $master,
+                'images' => $images,
+                'certificat'=>$certificat
+            ]
+        );
     }
 
     /**
@@ -264,7 +319,10 @@ class SiteController extends Controller
             }
         }
 
-        Yii::$app->session->setFlash('error', 'К сожалению, мы не можем подтвердить вашу учетную запись с помощью предоставленного токена.');
+        Yii::$app->session->setFlash(
+            'error',
+            'К сожалению, мы не можем подтвердить вашу учетную запись с помощью предоставленного токена.'
+        );
         return $this->goHome();
     }
 

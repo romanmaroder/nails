@@ -432,6 +432,20 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
+     * @param $id
+     * Count master certificate from table[[Certificate]]
+     * @return bool|int|string|null
+     */
+    public function getCountCertificate($id){
+        return Certificate::find()->where(['user_id'=>$id])->count();
+    }
+
+
+    public function getCountWorkMaster($id) {
+        return Photo::find()->where(['user_id'=>$id])->count();
+    }
+
+    /**
      * Get profile picture
      *
      * @return string
@@ -469,6 +483,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function getUserPhoto(): ActiveQuery
     {
         return $this->hasOne(Photo::class, ['client_id' => 'id']);
+    }
+
+    /**
+     * Relationship with [[Certificate]] table
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCertificate(): ActiveQuery
+    {
+        return $this->hasMany(Certificate::class, ['user_id'=>'id']);
     }
 }
 

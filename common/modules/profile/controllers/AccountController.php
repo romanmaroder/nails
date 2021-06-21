@@ -2,9 +2,11 @@
 
 namespace common\modules\profile\controllers;
 
+use common\models\Certificate;
 use common\models\Event;
 use common\models\Profile;
 use common\models\User;
+use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
 use common\models\Photo;
 use Yii;
@@ -73,6 +75,10 @@ class AccountController extends Controller
 
         $photo = new Photo();
 
+        $modelCertificate = new AddCertificate($user);
+
+        $certificate = new Certificate();
+
         if (!isset($user, $profile)) {
             throw new NotFoundHttpException("Пользователь не найден.");
         }
@@ -110,11 +116,22 @@ class AccountController extends Controller
             $modelPhoto->picture = UploadedFile::getInstance($modelPhoto, 'picture');
 
             if ($modelPhoto->save()) {
-
                 Yii::$app->session->setFlash('success', 'Изображение добавлено!');
                 return $this->goHome();
-            }else{
+            } else {
                 $modelPhoto->getErrors();
+            }
+        }
+
+
+        if ($modelCertificate->load(Yii::$app->request->post())) {
+            $modelCertificate->image = UploadedFile::getInstance($modelCertificate, 'image');
+
+            if ($modelCertificate->save()) {
+                Yii::$app->session->setFlash('success', 'Сертификат добавлен!');
+                return $this->refresh();
+            } else {
+                $modelCertificate->getErrors();
             }
         }
 
@@ -122,7 +139,9 @@ class AccountController extends Controller
 
         // Ids юзеров с ролью 'master'
 
-        $model = $photo->getPhotoList($userId, $masterIds);
+        $model           = $photo->getPhotoList($userId, $masterIds);
+
+        $certificateList = $certificate->getCertificates($userId);
 
         return $this->render(
             'index',
@@ -134,6 +153,8 @@ class AccountController extends Controller
                 'profile'         => $profile,
                 'modelAvatar'     => $modelAvatar,
                 'model'           => $model,
+                'modelCertificate'     => $modelCertificate,
+                'certificateList' => $certificateList,
                 'modelPhoto'      => $modelPhoto
             ]
         );
@@ -155,12 +176,11 @@ class AccountController extends Controller
             return [
                 'success'    => true,
                 'pictureUri' => Yii::$app->storage->getFile($user->avatar),
-                'message'=>'Аватар загружен'
+                'message'    => 'Аватар загружен'
             ];
         }
         return ['success' => false, 'errors' => $model->getErrors()];
     }
-
 
     /**
      * Delete user avatar
@@ -179,7 +199,7 @@ class AccountController extends Controller
 
         $currentUser = Yii::$app->user->identity;
 
-        if ($currentUser->deletePicture() ) {
+        if ($currentUser->deletePicture()) {
             return [
                 'success'    => true,
                 'message'    => 'Аватар удален',
@@ -193,14 +213,12 @@ class AccountController extends Controller
         }
     }
 
-
-
     /**
      * Delete user avatar
      *
      * @return array|\yii\web\Response
      */
-    public function actionDeletePhoto($id)
+    public function actionDeletePhoto($id, $class)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -208,13 +226,14 @@ class AccountController extends Controller
             return $this->redirect(['/admin/login']);
         }
 
-        $currenPhoto = Photo::findOne($id);
+        $currenPhoto = $class::findOne($id);
 
-        if ($currenPhoto->deletePicture() ) {
+
+        if ($currenPhoto->deletePicture()) {
             $currenPhoto->delete();
             return [
-                'success'    => true,
-                'message'    => 'Фото удалено',
+                'success' => true,
+                'message' => 'Удалено',
             ];
         } else {
             return [
@@ -223,41 +242,6 @@ class AccountController extends Controller
             ];
         }
     }
-
-
-
-
-//    public function actionDeletePicture()
-//    {
-//        if (Yii::$app->user->isGuest) {
-//            return $this->redirect(['/admin/login']);
-//        }
-//
-//        /* @var $currentUser User */
-//
-//        $currentUser = Yii::$app->user->identity;
-//
-//
-//        if ($currentUser->deletePicture()) {
-//            Yii::$app->session->setFlash('success', 'Picture deleted');
-//        } else {
-//            Yii::$app->session->setFlash('danger', 'Error occured');
-//        }
-//
-//
-//        return $this->redirect(['/profile/account/']);
-//    }
-
-    /*public function actionUpdate()
-    {
-
-
-        return $this->render('_form-profile', [
-            'user' => $user,
-            'profile' => $profile,
-        ]);
-    }*/
-
 
     /**
      * Displays a single Event model.

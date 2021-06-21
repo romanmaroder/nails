@@ -1,10 +1,10 @@
 <?php
 /* @var $this yii\web\View */
 
-/* @var $model \common\modules\profile\controllers\AccountController */
-/* @var $models \common\models\Photo */
+/* @var $certificateList \common\modules\profile\controllers\AccountController */
+/* @var $models \common\models\Certificate */
 
-use common\models\Photo;
+use common\models\Certificate;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 
@@ -12,47 +12,40 @@ PluginAsset::register($this)->add(
     ['ekko-lightbox']
 );
 
-$models = new Photo();
+$models = new Certificate();
 $class = get_class($models);
-
-/*echo '<pre>';
-var_dump($model);
-die();*/
 ?>
 
+<?php /*echo '<pre>';
+var_dump($certificateList);
+die();
+*/?>
 
 <div class=" p-0 row">
+	<?php if ($certificateList) :?>
+
     <?php
-    foreach ($model as $item) : ?>
-		<div class="filtr-item col-sm-2 "
-			 id="<?php
+    foreach ($certificateList as $item) : ?>
+        <div class="filtr-item col-sm-2 "
+             id="<?php
              echo $item['id']; ?>">
-			<a href="<?php
-            	echo Yii::$app->storage->getFile($item['image'], 'php:d/m/Y'); ?>"
-			   data-toggle="lightbox"
-			   data-gallery="mixedgallery"
-			   data-footer="<?php
-               echo Yii::$app->formatter->asDatetime($item['created_at'], 'php:d/m/Y');
-               ?>">
-				<!--												TODO Дата - разобраться-->
-				<div class="position-relative">
-					<img class="img-fluid mb-2"
-						 alt="<?php
-                         echo $item['image']; ?>"
-						 src="<?php
-                         echo Yii::$app->storage->getFile($item['image']); ?>">
-					<?php if (!empty($item['user']['username'])) :?>
-					    <div class="ribbon-wrapper ribbon-sm">
-							<div class="ribbon bg-success text-sm">
-								<?php
-								echo $item['user']['username']; ?>
-							</div>
-						</div>
-					<?php endif ;?>
-				</div>
-				<div class="d-flex justify-content-between">
-					<?php if (Yii::$app->user->can('perm_view-calendar')) :?>
-						<span class=" photo-delete">
+            <a href="<?php
+            echo Yii::$app->storage->getFile($item['certificate'], 'php:d/m/Y'); ?>"
+               data-toggle="lightbox"
+               data-gallery="mixedgallery" >
+                <!--												TODO Дата - разобраться-->
+                <div class="position-relative">
+                    <img class="img-fluid mb-2"
+                         alt="<?php
+                         echo $item['certificate']; ?>"
+                         src="<?php
+                         echo Yii::$app->storage->getFile($item['certificate']); ?>">
+                    <?php if (!empty($item['user']['username'])) :?>
+                    <?php endif ;?>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <?php if (Yii::$app->user->can('perm_view-calendar')) :?>
+                        <span class=" photo-delete">
 							<?php
                             echo Html::a(
                                 '<i class="fas fa-trash"></i>',
@@ -60,18 +53,15 @@ die();*/
                                 ['id' => 'delete-photo']
                             ); ?>
 						</span>
-					<?php endif ;?>
-					<time class="time text-muted ml-auto">
-						<small class="d-block text-right px-2">
-                            <?php
-                            echo date('d/m/Y', $item['created_at']); ?>
-						</small>
-					</time>
-				</div>
-			</a>
-		</div>
+                    <?php endif ;?>
+                </div>
+            </a>
+        </div>
     <?php
     endforeach; ?>
+	<?php else: ?>
+	<div class="col-12">Вы еще не добавили сертификаты</div>
+    <?php endif ;?>
 </div>
 
 
@@ -127,3 +117,4 @@ JS;
 
 $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
 ?>
+

@@ -34,7 +34,7 @@ class Profile extends ActiveRecord
     {
         return [
             [['education', 'notes', 'skill'], 'string'],
-            [['user_id', 'photo_id', 'certificates_id'], 'integer'],
+            [['user_id', 'certificate_id'], 'integer'],
         ];
     }
 
@@ -49,8 +49,7 @@ class Profile extends ActiveRecord
             'education'       => 'Образование',
             'notes'           => 'Обо мне',
             'skill'           => 'Навыки',
-            'photo_id'        => 'Фото',
-            'certificates_id' => 'Сертификаты',
+            'certificate_id' => 'Сертификаты',
         ];
     }
 

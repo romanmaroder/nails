@@ -21,6 +21,8 @@ use yii\db\ActiveRecord;
 class Photo extends ActiveRecord
 {
 
+    private const DEFAULT_BG = "img/bg/";
+
     public function behaviors(): array
     {
         return [
@@ -115,11 +117,14 @@ class Photo extends ActiveRecord
      *
      * @return array
      */
-    public function getPortfolio(): array
+    public function getPortfolio($id = null): array
     {
-        return Photo::find()->where(['portfolio' => 1])->all();
+        $query = Photo::find()->where(['portfolio' => 1]);
+        if ($id) {
+            $query->andWhere(['user_id'=>$id])->asArray();
+        }
+        return $query->all();
     }
-
 
     /**
      * Delete picture from user record and file system
@@ -139,4 +144,25 @@ class Photo extends ActiveRecord
         return false;
     }
 
+
+    /**
+     * Getting a background picture for a card
+     * @return string
+     */
+    public static function getBaclgroundCard (): string
+    {
+
+        $images = scandir(self::DEFAULT_BG);
+        $arr=[];
+        foreach ($images as $image) {
+            if ($image == '.' || $image == '..') {
+                continue;
+            }
+            $arr[] = $image;
+        }
+
+        $img  = rand(0, sizeof($arr) - 1);
+       return  $path ="/".self::DEFAULT_BG.$arr[$img];
+
+    }
 }

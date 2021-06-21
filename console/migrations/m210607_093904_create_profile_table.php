@@ -20,8 +20,7 @@ class m210607_093904_create_profile_table extends Migration
                 'education'=>$this->text(),
                 'notes'=>$this->text(),
                 'skill'=>$this->text(),
-                'photo_id'=>$this->smallInteger(),
-                'certificates_id'=>$this->smallInteger(),
+                'certificate_id'=>$this->smallInteger(),
         ]);
         $this->createIndex(
             'fk-profile-user_id',
@@ -37,6 +36,8 @@ class m210607_093904_create_profile_table extends Migration
             'id',
             'CASCADE'
         );
+
+
         $admin                = new Profile();
         $admin->user_id = 1;
         $admin->save();

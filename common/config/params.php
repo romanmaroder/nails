@@ -18,8 +18,12 @@ return [
         'maxHeight' => 300
     ],
     'photoPicture'  => [
-        'maxWidth'  => 400,
-        'maxHeight' => 400
+        'maxWidth'  => 450,
+        'maxHeight' => 450
+    ],
+    'certificatePicture'  => [
+        'maxWidth'  => 450,
+        'maxHeight' => 450
     ],
 
     'hail812/yii2-adminlte3' => [

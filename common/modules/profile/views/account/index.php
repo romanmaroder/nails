@@ -19,6 +19,8 @@ use yii\grid\GridView;
 /* @var $modelAvatar\common\modules\profile\models\AvatarForm */
 /* @var $modelPhoto \common\modules\profile\controllers\AccountController */
 /* @var $model\common\modules\profile\controllers\AccountController */
+/* @var $modelCertificate\common\modules\profile\controllers\AccountController */
+/* @var $certificateList\common\modules\profile\controllers\AccountController */
 
 
 //FontAwesomeAsset::register($this);
@@ -132,8 +134,6 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
 		<!-- /.col -->
 		<div class="col-md-9">
-
-
 			<div class="card card-outline card-primary">
 				<div class="card-header p-2">
 					<ul class="nav nav-pills">
@@ -159,12 +159,32 @@ $this->params['breadcrumbs'][] = $this->title;
 							</li>
                         <?php
                         endif; ?>
+                        <?php
+						 if (Yii::$app->user->can('perm_view-calendar')) : ?>
+							<li class="nav-item">
+								<a class="nav-link"
+								   href="#certificate"
+								   data-toggle="tab">Добавить сертификат
+								</a>
+							</li>
+                        <?php
+                        endif; ?>
 						<li class="nav-item">
 							<a class="nav-link"
 							   href="#design"
 							   data-toggle="tab">Дизайн
 							</a>
 						</li>
+                        <?php
+                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
+							<li class="nav-item">
+								<a class="nav-link"
+								   href="#certificateList"
+								   data-toggle="tab">Сертификаты
+								</a>
+							</li>
+                        <?php
+                        endif; ?>
 					</ul>
 				</div><!-- /.card-header -->
 				<div class="card-body">
@@ -233,7 +253,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ],
                                         ],
                                     ]
-                                ); }?>
+                                );
+                            } ?>
 							<!-- /.card-body -->
 						</div>
 						<!-- /.tab-pane -->
@@ -253,9 +274,24 @@ $this->params['breadcrumbs'][] = $this->title;
 							<div class="tab-pane" id="upload">
 
                                 <?= $this->render(
-                                    '_add-photo-form',
+                                    '_create-photo-form',
                                     [
                                         'modelPhoto' => $modelPhoto,
+                                    ]
+                                ) ?>
+								<!-- /.card-body -->
+							</div>
+                        <?php
+                        endif; ?>
+						<!-- /.tab-pane -->
+                        <?php
+                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
+							<div class="tab-pane" id="certificate">
+
+                                <?= $this->render(
+                                    '_create-certificate',
+                                    [
+                                        'modelCertificate' => $modelCertificate,
                                     ]
                                 ) ?>
 								<!-- /.card-body -->
@@ -272,8 +308,22 @@ $this->params['breadcrumbs'][] = $this->title;
                             ) ?>
 						</div>
 						<!-- /.tab-pane -->
-					</div>
+                        <?php
+                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
+							<div class="tab-pane" id="certificateList">
 
+                                <?= $this->render(
+                                    '_view-certificate',
+                                    [
+                                        'certificateList' => $certificateList,
+                                    ]
+                                ) ?>
+								<!-- /.card-body -->
+							</div>
+                        <?php
+                        endif; ?>
+						<!-- /.tab-pane -->
+					</div>
 				</div>
 				<!-- /.tab-content -->
 			</div><!-- /.card-body -->

@@ -58,6 +58,7 @@ $this->beginBody() ?>
         $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
     } else {
         $menuItems[] = ['label' => 'Портфолио', 'url' => ['/site/portfolio']];
+        $menuItems[] = ['label' => 'О нас', 'url' => ['/site/about']];
         $menuItems[] = [
             'label' => '<i class="fa fa-user" aria-hidden="true"></i> '.Yii::$app->user->identity->username,
             'url'   => ['/profile/account'],
