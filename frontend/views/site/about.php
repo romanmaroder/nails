@@ -50,6 +50,14 @@ use yii\helpers\Html;
 								</div>
 								<!-- /.description-block -->
 							</div>
+						<?php else: ?>
+							<div class="col-sm-4 ">
+								<div class="description-block ">
+									<h5 class="description-header">0</h5>
+									<span class="description-text">СЕРТИФИКАТЫ</span>
+								</div>
+								<!-- /.description-block -->
+							</div>
                         <?php
                         endif; ?>
 						<!-- /.col -->
@@ -64,16 +72,16 @@ use yii\helpers\Html;
 								</div>
 								<!-- /.description-block -->
 							</div>
+						<?php else: ?>
+							<div class="col-sm-4 ">
+								<div class="description-block">
+									<h5 class="description-header">0</h5>
+									<span class="description-text">РАБОТ</span>
+								</div>
+								<!-- /.description-block -->
+							</div>
                         <?php
                         endif; ?>
-						<!-- /.col -->
-						<div class="col-sm-4">
-							<div class="description-block">
-								<h5 class="description-header">35</h5>
-								<span class="description-text">PRODUCTS</span>
-							</div>
-							<!-- /.description-block -->
-						</div>
 						<!-- /.col -->
 					</div>
 					<!-- /.row -->

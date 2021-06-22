@@ -21,7 +21,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 		<div class="card-body pb-0">
 			<div class="row">
 				<div class="col-12 col-sm-6 d-flex align-items-stretch flex-column">
-					<div class="card bg-light d-flex flex-fill">
+					<div class="card bg-dark d-flex flex-fill">
 						<div class="card-header text-muted border-bottom-0">
 							<?php echo  $model->getStatusUser($model->status);?>
 						</div>
@@ -32,9 +32,9 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 									<?php echo $model->getRoles('description') ?
 										'<p class="font-weight-light">('.implode(', ',$model->getRoles('description')
 										).')</p>':''?>
-									<p class="text-muted text-sm"><b>Обо мне: </b> <?php echo $model->description ;?>
+									<p class=" text-sm"><b>Обо мне: </b> <?php echo $model->description ;?>
 									</p>
-									<ul class="ml-4 mb-0 fa-ul text-muted">
+									<ul class="ml-4 mb-0 fa-ul ">
 										<li class="small mb-3">
 											<span class="fa-li"><i class="fas fa-lg fa-building"></i></span>
                                             <?php echo $model->address ? $model->address : 'бомж';?>

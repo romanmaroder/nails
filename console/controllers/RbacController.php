@@ -21,6 +21,9 @@ class RbacController extends \yii\console\Controller
         $permViewCalendar->description = 'Разрешение для просмотра календаря';         //добавили описание
         $auth->add($permViewCalendar);                                                 //создали запись в базе данных
 
+        $permCreatePost = $auth->createPermission('perm_create-post');
+        $permCreatePost->description='Создавать посты';
+        $auth->add($permCreatePost);
 
         // добавляем роль "user"
         $user              = $auth->createRole('user');
@@ -32,6 +35,10 @@ class RbacController extends \yii\console\Controller
         $master->description = 'Мастер';
         $auth->add($master);
 
+        //добавляем роль "author"
+        $author = $auth->createRole('author');
+        $author->description='Автор';
+        $auth->add($author);
 
         // добавляем роль "manager"
         $manager              = $auth->createRole('manager');
@@ -39,11 +46,13 @@ class RbacController extends \yii\console\Controller
         $auth->add($manager);
         $auth->addChild($manager, $user);
         $auth->addChild($manager, $master);
+        $auth->addChild($manager, $author);
 
         //-------------------Привяжем разрешение к роли
         //Роль - это родительский элемент. Разрешение дочерний элемент роли
         $auth->addChild($master, $permViewCalendar);
         $auth->addChild($manager, $permCreateEvent);
+        $auth->addChild($manager, $permCreatePost);
 
 
         // добавляем роль "admin"

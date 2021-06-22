@@ -11,12 +11,11 @@ use yii\helpers\FileHelper;
 /**
  * Class Storage
  *
- *
  * @property-read string $storagePath
  */
 class Storage extends Component implements StorageInterface
 {
-    private $fileName;
+    private ?string $fileName;
 
     /**
      * Save given UploadedFile instance to disk
@@ -24,6 +23,7 @@ class Storage extends Component implements StorageInterface
      * @param  \yii\web\UploadedFile  $file
      *
      * @return string|null
+     * @throws \yii\base\Exception
      */
     public function saveUploadedFile(UploadedFile $file): ?string
     {
@@ -32,6 +32,7 @@ class Storage extends Component implements StorageInterface
         if ($path && $file->saveAs($path)) {
             return $this->fileName;
         }
+        return false;
     }
 
     /**
@@ -54,6 +55,7 @@ class Storage extends Component implements StorageInterface
         if (FileHelper::createDirectory(dirname($path))) {
             return $path;
         }
+        return false;
     }
 
     /**
@@ -94,7 +96,7 @@ class Storage extends Component implements StorageInterface
     /**
      * @param  string  $filename
      *
-     * @return boolean
+     * @return bool
      */
 
     public function deleteFile(string $filename): bool

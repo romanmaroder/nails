@@ -14,6 +14,9 @@ return [
         'client'  => [
             'class' => 'common\modules\client\Module',
         ],
+        'blog' => [
+            'class' => 'common\modules\blog\Blog',
+        ],
     ],
     'components' => [
         'cache'       => [

@@ -10,6 +10,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * ClientController implements the CRUD actions for User model.
@@ -57,9 +58,9 @@ class ClientController extends Controller
      * Lists all User models.
      * Все записи кроме 1 (Администратора)
      *
-     * @return mixed
+     * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
 
         if (Yii::$app->user->can('admin')) {
@@ -86,10 +87,10 @@ class ClientController extends Controller
      *
      * @param  int  $id
      *
-     * @return mixed
+     * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView(int $id)
+    public function actionView(int $id): string
     {
         return $this->render(
             'view',
@@ -104,6 +105,7 @@ class ClientController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      *
      * @return string|\yii\web\Response
+     * @throws \yii\base\Exception
      */
     public function actionCreate()
     {
@@ -138,10 +140,10 @@ class ClientController extends Controller
      *
      * @param  int  $id
      *
-     * @return mixed
+     * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
 
@@ -164,13 +166,14 @@ class ClientController extends Controller
      *
      * @param  int  $id
      *
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @return \yii\web\Response
+     * @throws \yii\web\NotFoundHttpException
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id): Response
     {
         Yii::$app->authManager->revokeAll($id);
-        $this->findModel($id)->delete();
+
+            $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -184,7 +187,7 @@ class ClientController extends Controller
      * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel(int $id): User
     {
         if (($model = User::findOne($id)) !== null) {
             return $model;

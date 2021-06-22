@@ -16,20 +16,12 @@ use yii\web\IdentityInterface;
  *
  * @property int $id
  * @property string $username
- * @property string $password_hash
- * @property string $password_reset_token
- * @property string $verification_token
  * @property string $email
- * @property string $auth_key
  * @property int $status
  * @property string $color
- * @property int $created_at
- * @property int $updated_at
- * @property-read string $authKey
- * @property-read string $picture
  * @property-read \yii\db\ActiveQuery $userPhoto
  * @property-read string[] $rolesDropdown
- * @property string $password write-only password
+ * @property-read \yii\db\ActiveQuery $certificate
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -41,6 +33,7 @@ class User extends ActiveRecord implements IdentityInterface
     public const ROLE_ADMIN = 'admin';
     public const ROLE_MANAGER = 'manager';
     public const ROLE_MASTER = 'master';
+    public const ROLE_AUTHOR = 'author';
 
     public const DEFAULT_IMAGE = '/img/avatar.jpg';
 
@@ -111,6 +104,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Revoke old roles and assign new if any
+     *
+     * @throws \Exception
      */
     public function saveRoles()
     {
@@ -169,6 +164,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * {@inheritdoc}
+     * @throws \yii\base\NotSupportedException
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -182,7 +178,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return static|null
      */
-    public static function findByUsername($username)
+    public static function findByUsername(string $username): ?User
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
@@ -194,7 +190,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return static|null
      */
-    public static function findByPasswordResetToken($token)
+    public static function findByPasswordResetToken(string $token): ?User
     {
         if (!static::isPasswordResetTokenValid($token)) {
             return null;
@@ -215,7 +211,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return static|null
      */
-    public static function findByVerificationToken($token)
+    public static function findByVerificationToken(string $token): ?User
     {
         return static::findOne(
             [
@@ -232,7 +228,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token)
+    public static function isPasswordResetTokenValid(string $token): bool
     {
         if (empty($token)) {
             return false;
@@ -254,7 +250,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey()
+    public function getAuthKey(): ?string
     {
         return $this->auth_key;
     }
@@ -262,7 +258,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): ?bool
     {
         return $this->getAuthKey() === $authKey;
     }
@@ -274,7 +270,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return bool if password provided is valid for current user
      */
-    public function validatePassword($password)
+    public function validatePassword(string $password): bool
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
@@ -293,6 +289,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates "remember me" authentication key
+     *
+     * @throws \yii\base\Exception
      */
     public function generateAuthKey()
     {
@@ -311,6 +309,8 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates new token for email verification
+     *
+     * @throws \yii\base\Exception
      */
     public function generateEmailVerificationToken()
     {
@@ -336,11 +336,13 @@ class User extends ActiveRecord implements IdentityInterface
                 self::ROLE_ADMIN   => 'Админ',
                 self::ROLE_MANAGER => 'Менеджер',
                 self::ROLE_MASTER  => 'Мастер',
+                self::ROLE_AUTHOR  => 'Автор',
             ];
         }
         return [
             self::ROLE_MANAGER => 'Менеджер',
             self::ROLE_MASTER  => 'Мастер',
+            self::ROLE_AUTHOR  => 'Автор',
         ];
     }
 

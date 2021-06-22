@@ -20,6 +20,7 @@ use yii\web\Response;
 use yii\web\UploadedFile;
 
 
+
 /**
  * AccountController implements the CRUD actions for Event model.
  */
@@ -59,7 +60,8 @@ class AccountController extends Controller
     /**
      * Lists all Event models.
      *
-     * @return mixed
+     * @return string|\yii\web\Response
+     * @throws \yii\web\NotFoundHttpException
      */
     public function actionIndex()
     {
@@ -218,7 +220,7 @@ class AccountController extends Controller
      *
      * @return array|\yii\web\Response
      */
-    public function actionDeletePhoto($id, $class)
+    public function actionDeletePhoto(int $id, $class)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -248,10 +250,10 @@ class AccountController extends Controller
      *
      * @param  int  $id
      *
-     * @return mixed
+     * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView(int $id): string
     {
         return $this->render(
             'view',
@@ -264,11 +266,11 @@ class AccountController extends Controller
     /**
      * Getting a list of user photos
      *
-     * @param $id
+     * @param  int  $id
      *
      * @return string
      */
-    public function actionGallery($id): string
+    public function actionGallery(int $id): string
     {
         $photo = new Photo();
 
@@ -297,7 +299,7 @@ class AccountController extends Controller
      * @return Event the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id): Event
+    protected function findModel(int $id): Event
     {
         if (($model = Event::findOne($id)) !== null) {
             return $model;
