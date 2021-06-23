@@ -8,8 +8,9 @@ use common\models\Profile;
 use common\models\User;
 use Intervention\Image\ImageManager;
 use Yii;
+use yii\base\Model;
 
-class AddCertificate extends \yii\base\Model
+class AddCertificate extends Model
 {
     public $image;
     private $user;

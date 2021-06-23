@@ -23,7 +23,8 @@ use common\models\User;
 		<!-- Sidebar user panel (optional) -->
 		<div class="user-panel mt-3 pb-3 mb-3 d-flex">
 			<div class="image">
-				<img src="<?php   echo
+				<img src="<?php
+                echo
 				$user->getPicture();
 				?>"
 					 class="img-circle
@@ -126,6 +127,58 @@ use common\models\User;
                             ]
                         ],
                         ['label' => 'Мастера', 'icon' => 'fas fa-user-tag', 'url' => ['/employees/master/index'],'iconClassAdded' => 'text-info'],
+                        [
+                            'label' => 'Блог',
+                            'icon'  => 'far fa-newspaper',
+                            /*'badge' => '<span class="right badge badge-info">'.User::getUserTotalCount().'</span>',*/
+                            'iconClassAdded' => 'text-info',
+                            'items' => [
+                                [
+                                    'label' => 'Категории',
+                                    'icon'  => 'fas fa-stream',
+                                    'items' => [
+                                        [
+                                            'label' => 'Список',
+                                            'icon'  => 'fas fa-list-ol',
+                                            'url' => ['/category/index'],
+                                        ],
+                                        [
+                                            'label' => 'Добавить',
+                                            'icon'  => 'far fa-plus-square',
+                                            'url'   => ['/category/create'],
+                                        ],
+									]
+                                ],
+                                [
+                                    'label' => 'Статьи',
+                                    'icon'  => 'far fa-newspaper',
+                                    'items' => [
+                                        [
+                                            'label' => 'Список',
+                                            'icon'  => 'fas fa-list-ol',
+                                            'url' => ['/blog/post/index'],
+                                        ],
+                                        [
+                                            'label' => 'Добавить статью',
+                                            'icon'  => 'far fa-plus-square',
+                                            'url'   => ['/blog/post/create'],
+                                        ],
+                                    ]
+                                ],
+
+                                /*[
+                                    'label'     => 'Level2',
+                                    'iconStyle' => 'far',
+                                    'items'     => [
+                                        ['label' => 'Level3', 'iconStyle' => 'far', 'icon' => 'dot-circle'],
+                                        ['label' => 'Level3', 'iconStyle' => 'far', 'icon' => 'dot-circle'],
+                                        ['label' => 'Level3', 'iconStyle' => 'far', 'icon' => 'dot-circle']
+                                    ]
+                                ],
+                                ['label' => 'Level2', 'iconStyle' => 'far']*/
+                            ]
+                        ],
+
                         /*['label' => 'LABELS', 'header' => true],
                         ['label' => 'Important', 'iconStyle' => 'far', 'iconClassAdded' => 'text-danger'],
                         ['label' => 'Warning', 'iconClass' => 'nav-icon far fa-circle text-warning'],

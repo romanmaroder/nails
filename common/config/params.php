@@ -71,8 +71,26 @@ return [
             ],
             'filterizr'                     => [
                 'js' => 'filterizr/jquery.filterizr.min.js'
-            ]
-
+            ],
+            'summernote'=>[
+                'css'=>'summernote/summernote-bs4.min.css',
+                'js'=>[
+                    'summernote/summernote-bs4.min.js',
+                    'summernote/lang/summernote-ru-Ru.js'
+                ]
+            ],
+            'codemirror'=>[
+                'css'=>[
+                    'codemirror/codemirror.css',
+                    'codemirror/theme/monokai.css',
+                ],
+                'js'=>[
+                    'codemirror/codemirror.js',
+                    'codemirror/mode/css/css.js',
+                    'codemirror/mode/xml/xml.js',
+                    'codemirror/mode/htmlmixed/htmlmixed.js'
+                ]
+            ],
         ]
     ],
 
