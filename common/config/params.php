@@ -9,6 +9,8 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength'        => 8,
 
+    'maxLimitNews'=>5, //лимит новостей на странице
+
     'maxFileSize' => 1024 * 1024 * 2.5, // Размер загружаемого файла 2mb
     'storagePath' => '@frontend/web/uploads/',
     'storageUri'  => '/uploads/', //http://nails.com/uploads/c1/d3/78df89d65d.jpg

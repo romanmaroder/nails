@@ -91,6 +91,5 @@ use yii\helpers\Html;
 		</div>
     <?php
     endforeach; ?>
-
 	<!-- /.col -->
 </div>

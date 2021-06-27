@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\Certificate;
 use common\models\Photo;
+use common\models\Post;
 use common\models\Profile;
 use common\models\User;
 use frontend\models\ResendVerificationEmailForm;
@@ -79,7 +80,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $posts = new Post();
+        $postsList=  $posts->getAllPostList();
+        return $this->render('index',['postsList'=>$postsList]);
     }
 
     /**

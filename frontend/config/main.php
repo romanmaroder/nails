@@ -45,7 +45,8 @@ return [
             'showScriptName'  => false,
             'rules'           => [
                 ''      => 'site/index',
-                'event' => 'event/index'
+                'event' => 'event/index',
+               'post/<id:\d+>' => '/blog/post/post',
             ],
         ],
     ],
