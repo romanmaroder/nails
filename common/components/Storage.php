@@ -71,11 +71,11 @@ class Storage extends Component implements StorageInterface
     /**
      * @param  \yii\web\UploadedFile  $file
      *
-     * @return string|null
+     * @return string
      */
-    protected function getFileName(UploadedFile $file): ?string
+    protected function getFileName(UploadedFile $file): string
     {
-        // $file->tempname - /tmp/dsfasda
+        // $file->tempName - /tmp/dsfasda
         $hash = sha1_file($file->tempName);
         // 0ccds36ewf2dfd1s32f13er2fewf
         $name = substr_replace($hash, '/', 2, 0);

@@ -27,6 +27,10 @@ return [
         'maxWidth'  => 450,
         'maxHeight' => 450
     ],
+    'postPicture' => [
+        'maxWidth'  => 1024,
+        'maxHeight' => 768
+    ],
 
     'hail812/yii2-adminlte3' => [
         'pluginMap' => [

@@ -42,6 +42,7 @@ $this->title = 'Nails';
     }
     ;*/ ?>
 
+
 	<div class="body-content" >
 
 		<div class="row mt-3">
@@ -50,7 +51,7 @@ $this->title = 'Nails';
                 echo NewsList::widget(['showLimit' => 3]); ?>
 			</div>
 			<div class="col-lg-9">
-				<div class="row">
+				<div class="row ">
                     <?php
                     foreach ($postsList as $post) : ?>
 
@@ -58,9 +59,6 @@ $this->title = 'Nails';
 							<h2><?php
                                 echo Html::a($post['title'], ['/blog/post/post', 'id' => $post['id']]); ?>
 							</h2>
-							<!--<p class="text-muted"><?php
-/*                                echo $post['subtitle']; */?></p>-->
-
 							<span class="truncate-text no-img"><?php
                             echo $post['description']; ?></span>
 							<?php

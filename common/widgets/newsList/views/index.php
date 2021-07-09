@@ -12,7 +12,7 @@ use yii\helpers\Html;
                 <?php
                 echo Html::a($item['title'], ['/blog/post/post', 'id' => $item['id']]); ?>
 			</h4>
-			<small class="text-muted"><?php
+			<small class="text-muted truncate-text"><?php
                 echo $item['subtitle']; ?></small>
 		</li>
     <?php
