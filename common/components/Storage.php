@@ -106,10 +106,8 @@ class Storage extends Component implements StorageInterface
 
         if (file_exists($file)) {
             // Если файл существует, удаляем
-
             return unlink($file);
         }
-
 
         // Файла нет - хорошо. И удалять не нужно
 
