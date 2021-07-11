@@ -3,6 +3,9 @@
 use common\models\Category;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -74,6 +77,11 @@ PluginAsset::register($this)->add(
 
 <?php
 
+Yii::$app->view->registerJs("url= " .Json::htmlEncode(Url::base()), View::POS_HEAD);
+
+
+echo Url::base();
+
 $editor = <<< JS
 $(function () {
     // Summernote
@@ -98,11 +106,11 @@ $(function () {
         
     let data = new FormData();
     data.append("file", file);
-   
+console.log(url)
     $.ajax({
       data: data,
       type: "POST",
-      url: '/admin/blog/post/upload-image-summernote/',
+      url: url + "/blog/post/upload-image-summernote/",
       cache: false,
       contentType: false,
       processData: false,
@@ -121,7 +129,7 @@ $(function () {
     $.ajax({
         data: {src : src},
         type: "POST",
-        url: "/admin/blog/post/delete-image-summernote/", // replace with your url
+        url: url +"/blog/post/delete-image-summernote/", // replace with your url
         cache: false,
         success: function(resp) {
             console.log(resp.message);

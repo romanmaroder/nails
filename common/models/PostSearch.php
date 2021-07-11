@@ -2,9 +2,12 @@
 
 namespace common\models;
 
+
+use common\models\Post;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Post;
+
 
 /**
  * PostSearch represents the model behind the search form of `common\models\Post`.
@@ -40,7 +43,12 @@ class PostSearch extends Post
      */
     public function search($params)
     {
-        $query = Post::find();
+
+        if (\Yii::$app->user->can('manager')) {
+            $query = Post::find();
+        }else {
+            $query = Post::find()->where(['user_id'=>Yii::$app->user->identity]);
+        }
 
         // add conditions that should always apply here
 

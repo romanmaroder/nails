@@ -62,7 +62,8 @@ $this->title = 'Nails';
 							<span class="truncate-text no-img"><?php
                             echo $post['description']; ?></span>
 							<?php
-                                echo Html::a('Подробнее...', ['/blog/post/post', 'id' => $post['id']],
+                                echo Html::a('<i class="fas fa-book-open"></i> Читать...', ['/blog/post/post', 'id'
+																											   => $post['id']],
 											 ['class'=>'btn btn-outline-info btn-sm mt-3']);
                                 ?>
 						</div>

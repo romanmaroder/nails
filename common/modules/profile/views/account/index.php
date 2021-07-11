@@ -185,6 +185,14 @@ $this->params['breadcrumbs'][] = $this->title;
 							</li>
                         <?php
                         endif; ?>
+                        <?php
+                        if (Yii::$app->user->can('perm_create-post')) : ?>
+							<li class="nav-item">
+								<?php echo Html::a('Статьи',['/blog/post/index'],['class'=>'nav-link',
+																				   'data-toggle'=>''])	;?>
+							</li>
+                        <?php
+                        endif; ?>
 					</ul>
 				</div><!-- /.card-header -->
 				<div class="card-body">
@@ -322,6 +330,15 @@ $this->params['breadcrumbs'][] = $this->title;
 							</div>
                         <?php
                         endif; ?>
+						<!-- /.tab-pane -->
+                        <?php
+/*                        if (Yii::$app->user->can('perm_create-post')) : */?><!--
+							<div class="tab-pane" id="post">-->
+
+								<!-- /.card-body -->
+							<!--</div>
+                        --><?php
+/*                        endif; */?>
 						<!-- /.tab-pane -->
 					</div>
 				</div>

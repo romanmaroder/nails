@@ -10,7 +10,7 @@ use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 
-class RbacMasterAssignController extends Controller
+class RbacAuthorAssignController extends Controller
 {
     public function actionInit($id): int
     {

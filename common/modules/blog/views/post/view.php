@@ -20,7 +20,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
 
 	<p>
         <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-		<?php if (Yii::$app->user->can('manager')) :?>
+		<?php if (Yii::$app->user->can('manager') && Yii::$app->id == 'app-backend') :?>
             <?= Html::a($model->status ? 'Снять с публикации' : 'Опубликовать', ['publish', 'id' => $model->id], [
                 'class' => 'btn btn-primary',
                 'id'=>'published',

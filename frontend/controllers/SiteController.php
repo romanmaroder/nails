@@ -5,7 +5,6 @@ namespace frontend\controllers;
 use common\models\Certificate;
 use common\models\Photo;
 use common\models\Post;
-use common\models\PostImage;
 use common\models\Profile;
 use common\models\User;
 use frontend\models\ResendVerificationEmailForm;

@@ -5,8 +5,9 @@ namespace console\controllers;
 
 
 use Yii;
+use yii\console\Controller;
 
-class RbacController extends \yii\console\Controller
+class RbacController extends Controller
 {
     public function actionInit()
     {
@@ -51,6 +52,7 @@ class RbacController extends \yii\console\Controller
         //-------------------Привяжем разрешение к роли
         //Роль - это родительский элемент. Разрешение дочерний элемент роли
         $auth->addChild($master, $permViewCalendar);
+        $auth->addChild($author, $permCreatePost);
         $auth->addChild($manager, $permCreateEvent);
         $auth->addChild($manager, $permCreatePost);
 

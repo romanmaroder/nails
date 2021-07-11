@@ -3,74 +3,90 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\PostSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Статьи';
+$this->title                   = 'Статьи';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="post-index">
+	<div class="post-index">
 
-    <p>
-        <?= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) ?>
-    </p>
+		<p>
+            <?= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) ?>
+		</p>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+        <?php
+        Pjax::begin(); ?>
+        <?php
+        // echo $this->render('_search', ['model' => $searchModel]); ?>
 
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'summary'      => '',
+        <?= GridView::widget(
+            [
+                'dataProvider' => $dataProvider,
+                'summary'      => '',
 //        'filterModel' => $searchModel,
-        'filterModel' => null,
-        'tableOptions' => [
-            'class' => 'table table-striped table-bordered',
-            'id'    => 'post'
-        ],
-        'columns' => [
-           // ['class' => 'yii\grid\SerialColumn'],
-            [
-                'attribute' => 'user_id',
-                'value'     => function ($model) {
-                    return $model->user->username;
-                }
-            ],
-            [
-                'attribute' => 'category_id',
-                'value'     => function ($model) {
-                    return $model->category->category_name;
-                }
-            ],
-            'title',
-            'subtitle',
-            /*[
-                'attribute' => 'description',
-                'format'    => 'html',
-            ],*/
-            [
-                'attribute' => 'status',
-				'format' => 'raw',
-                'value'    => function ($model) {
-                    return $model->status ? '<span class="text-success">опубликовано</span>' : '<span class="text-danger">не опубликовано</span>';
-                },
-            ],
-            //'description:ntext',
-            //'created_at',
-			[
-					'attribute' => 'created_at',
-				'format' =>['date','php: d-m-Y']
-			],
-            //'updated_at',
+                'filterModel'  => null,
+                'tableOptions' => [
+                    'class' => 'table table-striped table-bordered',
+                    'id'    => 'post'
+                ],
+                'columns'      => [
+                    // ['class' => 'yii\grid\SerialColumn'],
+                    [
+                        'attribute' => 'user_id',
+                        'value'     => function ($model) {
+                            return $model->user->username;
+                        }
+                    ],
+                    [
+                        'attribute' => 'category_id',
+                        'value'     => function ($model) {
+                            return $model->category->category_name;
+                        }
+                    ],
+                    'title',
+                    'subtitle',
+                    /*[
+                        'attribute' => 'description',
+                        'format'    => 'html',
+                    ],*/
+                    [
+                        'attribute' => 'status',
+                        'format'    => 'raw',
+                        'value'     => function ($model) {
+                            return $model->status ? '<span class="text-success">опубликовано</span>' : '<span class="text-danger">не опубликовано</span>';
+                        },
+                    ],
+                    //'description:ntext',
+                    //'created_at',
+                    [
+                        'attribute' => 'created_at',
+                        'format'    => ['date', 'php: d-m-Y']
+                    ],
+                    //'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                    [
+                    		'class' => 'yii\grid\ActionColumn',
+                            'visibleButtons' => [
+                                /*'update' => function () {
+                                    return Yii::$app->user->can('author');
+                                },*/
+                                'delete' => function () {
+                                    return Yii::$app->user->can('manager');
+                                },
+                            ]
+					],
+                ],
+            ]
+        ); ?>
 
-    <?php Pjax::end(); ?>
+        <?php
+        Pjax::end(); ?>
 
-</div>
+	</div>
 <?php
 $js = <<< JS
  $(function () {
