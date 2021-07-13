@@ -27,6 +27,9 @@ return [
         ],
         'storage'=>[
             'class'=>'common\components\Storage'
-        ]
+        ],
+        'errorHandler' => [
+            'errorAction' => 'site/error',
+        ],
     ],
 ];

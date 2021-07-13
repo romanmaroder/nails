@@ -170,6 +170,7 @@ if (Yii::$app->id == 'app-backend') {
    $("#example2").DataTable({
       "responsive": true,
       "lengthChange": false,
+      "pageLength": 10,
       "autoWidth": false,
       "info": false,
       buttons: [
@@ -187,11 +188,13 @@ if (Yii::$app->id == 'app-backend') {
         ],
          "language": {
           "search":"Поиск",
+          "zeroRecords": "Совпадений не найдено",
+    	  "emptyTable": "В таблице отсутствуют данные",
           "paginate": {
                     "first": "Первая",
-                    "previous": "Предыдущая",
+                    "previous": '<i class="fas fa-backward"></i>',
                     "last": "Последняя",
-                    "next": "Следующая"
+                    "next": '<i class="fas fa-forward"></i>'
                 }
          }
     
@@ -222,9 +225,9 @@ JS;
           "search":"Поиск",
           "paginate": {
                     "first": "Первая",
-                    "previous": "Предыдущая",
+                    "previous": '<i class="fas fa-backward"></i>',
                     "last": "Последняя",
-                    "next": "Следующая"
+                    "next": '<i class="fas fa-forward"></i>'
                 }
          }
     

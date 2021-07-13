@@ -360,6 +360,7 @@ $(function () {
       "lengthChange": false,
       "searching": true,
       "ordering": false,
+      "pageLength": 15,
       "info": false,
       "autoWidth": false,
       "responsive": true,
@@ -367,9 +368,9 @@ $(function () {
            "search": "Поиск:",
            "paginate": {
                     "first": "Первая",
-                    "previous": "Предыдущая",
+                    "previous": '<i class="fas fa-backward"></i>',
                     "last": "Последняя",
-                    "next": "Следующая"
+                    "next": '<i class="fas fa-forward"></i>'
                 }
        }
     });

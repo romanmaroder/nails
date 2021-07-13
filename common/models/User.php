@@ -39,6 +39,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     public $roles;
+    public $password;
 
     /**
      * {@inheritdoc}
@@ -72,7 +73,8 @@ class User extends ActiveRecord implements IdentityInterface
             ['birthday', 'safe'],
             ['phone', 'safe'],
             ['address', 'safe'],
-
+            ['email', 'unique'],
+            ['password', 'safe'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
@@ -92,6 +94,7 @@ class User extends ActiveRecord implements IdentityInterface
             'birthday'    => 'День рождения',
             'phone'       => 'Телефон',
             'address'     => 'Адрес',
+            'password'    => 'Пароль',
             'created_at'  => 'Создан'
         ];
     }
@@ -146,6 +149,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Get user role from RBAC
+     *
      * @return \yii\rbac\Role
      */
     public static function getRole(): Role
@@ -349,6 +353,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Getting user statuses
+     *
      * @return string[]
      */
     public function getStatus(): array
@@ -377,13 +382,14 @@ class User extends ActiveRecord implements IdentityInterface
             case  0:
                 return 'удален';
             default:
-                return  'запрещен';
+                return 'запрещен';
         }
     }
 
 
     /**
      * Getting a list of clients with the user role
+     *
      * @return array
      */
     public static function getClientList(): array
@@ -396,6 +402,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * * Getting a list of masters with the master role
+     *
      * @return array
      */
     public static function getMasterList(): array
@@ -410,6 +417,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Getting user data
+     *
      * @param $userId
      *
      * @return array|\common\models\User|\yii\db\ActiveRecord|null
@@ -424,27 +432,31 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Number of clients
+     *
      * @return bool|int|string|null
      */
     public static function getUserTotalCount()
     {
         $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
-        return User::find()->where(['id'=>$clientIds])->count();
+        return User::find()->where(['id' => $clientIds])->count();
     }
 
 
     /**
      * @param $id
      * Count master certificate from table[[Certificate]]
+     *
      * @return bool|int|string|null
      */
-    public function getCountCertificate($id){
-        return Certificate::find()->where(['user_id'=>$id])->count();
+    public function getCountCertificate($id)
+    {
+        return Certificate::find()->where(['user_id' => $id])->count();
     }
 
 
-    public function getCountWorkMaster($id) {
-        return Photo::find()->where(['user_id'=>$id])->count();
+    public function getCountWorkMaster($id)
+    {
+        return Photo::find()->where(['user_id' => $id])->count();
     }
 
     /**
@@ -480,6 +492,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Relationship with [[Photo]] table
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getUserPhoto(): ActiveQuery
@@ -489,11 +502,12 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Relationship with [[Certificate]] table
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCertificate(): ActiveQuery
     {
-        return $this->hasMany(Certificate::class, ['user_id'=>'id']);
+        return $this->hasMany(Certificate::class, ['user_id' => 'id']);
     }
 }
 

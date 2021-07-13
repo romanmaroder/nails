@@ -54,6 +54,16 @@ class ClientController extends Controller
         ];
     }
 
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+
+
     /**
      * Lists all User models.
      * Все записи кроме 1 (Администратора)
@@ -71,6 +81,7 @@ class ClientController extends Controller
         $dataProvider = new ActiveDataProvider(
             [
                 'query' => $query,
+                'pagination' => false,
             ]
         );
 
@@ -113,7 +124,8 @@ class ClientController extends Controller
         $profile = new Profile();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->email = 'user'.rand(1, 100).self::DEFAULT_EMAIL;
+            $model->email = 'user'.rand(1, 500).self::DEFAULT_EMAIL;
+
             $model->setPassword(self::DEFAULT_PASSWORD);
             $model->generateAuthKey();
             $model->generateEmailVerificationToken();
@@ -122,7 +134,11 @@ class ClientController extends Controller
                 $profile->user_id = $model->id;
                 $model->saveRoles();
                 $profile->save();
-                return $this->redirect(['view', 'id' => $model->id]);
+//                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect('index');
+            }else {
+                Yii::$app->session->setFlash('danger','Сохраните клиента еще раз');
+                return $this->refresh();
             }
         }
 

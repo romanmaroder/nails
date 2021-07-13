@@ -37,7 +37,7 @@ $form = ActiveForm::begin(
 <?= $form->field($user, 'phone')->widget(
     MaskedInput::class,
     [
-        'mask'          => '+38(071) 999-99-99',
+        'mask'          => '+38(099) 999-99-99',
         'options'       => [
             'class'       => 'form-control',
             'id'          => 'phone',
@@ -51,6 +51,8 @@ $form = ActiveForm::begin(
 ) ?>
 
 <?= $form->field($user, 'address')->textInput(['maxlength' => true]) ?>
+<?= $form->field($user, 'email')->textInput(['maxlength' => true]) ?>
+<?= $form->field($user, 'password')->input('password',['maxlength' => true]) ?>
 
 <?php
 if ($user->getPicture() !== User::DEFAULT_IMAGE) : ?>

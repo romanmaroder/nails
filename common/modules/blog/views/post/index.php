@@ -1,5 +1,6 @@
 <?php
 
+use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -10,85 +11,94 @@ use yii\widgets\Pjax;
 
 $this->title                   = 'Статьи';
 $this->params['breadcrumbs'][] = $this->title;
+
+PluginAsset::register($this)->add(
+    ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']
+);
+
 ?>
 	<div class="post-index">
 
-		<p>
-            <?= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) ?>
-		</p>
+	<p>
+        <?= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) ?>
+	</p>
 
-        <?php
-        Pjax::begin(); ?>
-        <?php
-        // echo $this->render('_search', ['model' => $searchModel]); ?>
+<?php
+Pjax::begin(); ?>
+<?php
+// echo $this->render('_search', ['model' => $searchModel]); ?>
 
-
-        <?= GridView::widget(
-            [
-                'dataProvider' => $dataProvider,
-                'summary'      => '',
+<?php
+if ($dataProvider->getCount() === 0) {
+    echo 'Вы пока не добавили статьи';
+} else {
+    echo GridView::widget(
+        [
+            'dataProvider' => $dataProvider,
+            'summary'      => '',
 //        'filterModel' => $searchModel,
-                'filterModel'  => null,
-                'tableOptions' => [
-                    'class' => 'table table-striped table-bordered',
-                    'id'    => 'post'
+            'filterModel'  => null,
+            'tableOptions' => [
+                'class' => 'table table-striped table-bordered',
+                'id'    => 'post'
+            ],
+            'columns'      => [
+                // ['class' => 'yii\grid\SerialColumn'],
+                [
+                    'attribute' => 'user_id',
+                    'value'     => function ($model) {
+                        return $model->user->username;
+                    },
+                    'visible' =>Yii::$app->user->can('manager')
                 ],
-                'columns'      => [
-                    // ['class' => 'yii\grid\SerialColumn'],
-                    [
-                        'attribute' => 'user_id',
-                        'value'     => function ($model) {
-                            return $model->user->username;
-                        }
-                    ],
-                    [
-                        'attribute' => 'category_id',
-                        'value'     => function ($model) {
-                            return $model->category->category_name;
-                        }
-                    ],
-                    'title',
-                    'subtitle',
-                    /*[
-                        'attribute' => 'description',
-                        'format'    => 'html',
-                    ],*/
-                    [
-                        'attribute' => 'status',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
-                            return $model->status ? '<span class="text-success">опубликовано</span>' : '<span class="text-danger">не опубликовано</span>';
+                [
+                    'attribute' => 'category_id',
+                    'value'     => function ($model) {
+                        return $model->category->category_name;
+                    }
+                ],
+                'title',
+                'subtitle',
+                /*[
+                    'attribute' => 'description',
+                    'format'    => 'html',
+                ],*/
+                [
+                    'attribute' => 'status',
+                    'format'    => 'raw',
+                    'value'     => function ($model) {
+                        return $model->status ? '<span class="text-success">опубликовано</span>' : '<span class="text-danger">не опубликовано</span>';
+                    },
+                ],
+                //'description:ntext',
+                //'created_at',
+                [
+                    'attribute' => 'created_at',
+                    'format'    => ['date', 'php: d-m-Y']
+                ],
+                //'updated_at',
+
+                [
+                    'class'          => 'yii\grid\ActionColumn',
+                    'visibleButtons' => [
+                        /*'update' => function () {
+                            return Yii::$app->user->can('author');
+                        },*/
+                        'delete' => function () {
+                            return Yii::$app->user->can('manager');
                         },
-                    ],
-                    //'description:ntext',
-                    //'created_at',
-                    [
-                        'attribute' => 'created_at',
-                        'format'    => ['date', 'php: d-m-Y']
-                    ],
-                    //'updated_at',
-
-                    [
-                    		'class' => 'yii\grid\ActionColumn',
-                            'visibleButtons' => [
-                                /*'update' => function () {
-                                    return Yii::$app->user->can('author');
-                                },*/
-                                'delete' => function () {
-                                    return Yii::$app->user->can('manager');
-                                },
-                            ]
-					],
+                    ]
                 ],
-            ]
-        ); ?>
+            ],
+        ]
+    );} ?>
 
-        <?php
-        Pjax::end(); ?>
+    <?php
+    Pjax::end(); ?>
 
 	</div>
-<?php
-$js = <<< JS
+    <?php
+    $js = <<< JS
  $(function () {
      
    /*$("#example2").DataTable({
@@ -111,11 +121,13 @@ $js = <<< JS
         ],
          "language": {
           "search":"Поиск",
+          "zeroRecords": "Совпадений не найдено",
+    	  "emptyTable": "В таблице отсутствуют данные",
           "paginate": {
                     "first": "Первая",
-                    "previous": "Предыдущая",
+                    "previous": '<i class="fas fa-backward"></i>',
                     "last": "Последняя",
-                    "next": "Следующая"
+                    "next": '<i class="fas fa-forward"></i>'
                 }
          }
     
@@ -138,6 +150,6 @@ $js = <<< JS
 JS;
 
 
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
+    $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
 
-?>
+    ?>

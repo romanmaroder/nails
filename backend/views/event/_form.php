@@ -4,6 +4,7 @@
 //use common\models\Master;
 use common\models\User;
 use kartik\datetime\DateTimePicker;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 
 //use yii\widgets\ActiveForm;/*/
@@ -79,35 +80,31 @@ use yii\bootstrap4\ActiveForm;
         ]
     ) ?>
 
-    <?= $form->field($model, 'client_id')->dropDownList(
-        User::getClientList(),
-        [
-            'prompt' => [
-                'text'    => 'Выберите мастера',
-                'options' => [
-                    'value' => 'none',
-                    'class' => 'prompt',
-                    'label' =>
-                        'Выберите клиента'
-                ]
-            ],
-        ]
-    ) ?>
+    <?= $form->field($model, 'client_id')->widget(
+            Select2::class,
+            [
+                'name'          => 'client',
+                'language'      => 'ru',
+                'data'          =>  User::getClientList(),
+                'options'       => ['placeholder' => 'Выберите клиента ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]
+        ) ?>
 
-    <?= $form->field($model, 'master_id', ['validateOnChange' => true])->dropDownList(
-        User::getMasterList(),
+    <?= $form->field($model, 'master_id', ['validateOnChange' => true])->widget(
+        Select2::class,
         [
-            'prompt' => [
-                'text'    => 'Выберите мастера',
-                'options' => [
-                    'value' => 'none',
-                    'class' => 'prompt',
-                    'label' =>
-                        'Выберите мастера'
-                ]
+            'name'          => 'client',
+            'language'      => 'ru',
+            'data'          => User::getMasterList(),
+            'options'       => ['placeholder' => 'Выберите мастера ...'],
+            'pluginOptions' => [
+                'allowClear' => true
             ],
         ]
-    ) ?>
+    ); ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 

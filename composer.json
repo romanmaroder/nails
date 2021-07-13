@@ -26,6 +26,7 @@
     "philippfrenzel/yii2fullcalendar": "3.9.0",
     "bower-asset/font-awesome": "^5.15.3",
     "kartik-v/yii2-widget-datetimepicker": "*",
+    "kartik-v/yii2-widget-select2": "*",
     "hail812/yii2-adminlte3": "~1.1",
     "2amigos/yii2-file-upload-widget": "~1.0",
     "intervention/image": "^2.4"
