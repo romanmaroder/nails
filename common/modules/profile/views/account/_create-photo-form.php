@@ -1,6 +1,7 @@
 <?php
 
 use common\models\User;
+use kartik\select2\Select2;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 
@@ -18,7 +19,7 @@ use yii\helpers\Html;
     echo $form->field($modelPhoto, 'client_check')->checkbox(); ?>
 
     <?php
-    echo $form->field($modelPhoto, 'client')->dropdownList(
+/*    echo $form->field($modelPhoto, 'client')->dropdownList(
         User::getClientList(),
         [
             'prompt' => [
@@ -33,7 +34,25 @@ use yii\helpers\Html;
 			'class'=>'form-control d-none'
         ]
     )
-        ->label(null, ['class' => 'd-none']); ?>
+        ->label(null, ['class' => 'd-none']); */?>
+
+	<?php
+   echo $form->field($modelPhoto, 'client')->widget(
+        Select2::class,
+        [
+            'name'          => 'client',
+            'language'      => 'ru',
+            'data'          =>  User::getClientList(),
+            'options'       => [
+            		'placeholder' => 'Выберите клиента ...',
+                    'class'       => 'client-photo',
+			],
+            'pluginOptions' => [
+
+                'allowClear' => true
+            ],
+        ]
+    )->label(null, ['class' => 'd-none']); ?>
     <?php
     echo $form->field($modelPhoto, 'master_work')->checkbox(); ?>
     <?php

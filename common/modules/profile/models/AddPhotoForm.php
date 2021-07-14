@@ -50,11 +50,11 @@ class AddPhotoForm extends Model
                 },
                 'whenClient' => 'function(attribute,value){
                                if($("#'. Html::getInputId($this, 'client_check').'").is(":checked")){
-                                  $("#'. Html::getInputId($this, 'client').'").removeClass("d-none");
+                                  $("#'. Html::getInputId($this, 'client').'").next(".select2-container").css({"display":"block"});
                                   $("label[for='. Html::getInputId($this, 'client').']").removeClass("d-none");
                                  return true;
                                }else{
-                                  $("#'. Html::getInputId($this, 'client').'").addClass("d-none");
+                                  $("#'. Html::getInputId($this, 'client').'").next(".select2-container").css({"display":"none"});
                                     $("label[for='. Html::getInputId($this, 'client').']").addClass("d-none");
                                   return true;
                                }

@@ -265,3 +265,6 @@ a.desc:after {
     background: #fdcb6e !important;
 
 }
+#addphotoform-client ~ .select2-container {
+    display: none;
+}

@@ -260,3 +260,7 @@ a.desc:after {
     height: auto;
     margin: 0 15px 0 0;
 }
+
+#addphotoform-client ~ .select2-container {
+    display: none;
+}
