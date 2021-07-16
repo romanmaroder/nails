@@ -141,9 +141,6 @@ $this->params['breadcrumbs'][] = $this->title;
                   					
                   					if(window.width <= 540){
 										let string = event.title;
-										console.log(
-										string.split(/\s/).slice(0,2).reduce((response,word)=> response+=word.slice(0,1),'')
-										);
 										event.title = string.split(/\s/).slice(0,2).reduce((response,word)=> response+=word.toUpperCase().slice(0,1),'');
 										element.find('.fc-title').html(event.title);
 									}
@@ -167,29 +164,29 @@ $this->params['breadcrumbs'][] = $this->title;
 						var view = $('#calendar').fullCalendar('getView');
 //						alert(view.name);
 //                		if (view.name != view.name) {
-                                    if ( view.name == 'basicWeek' )   
-                                      { 
-                                          
-                                          console.log(\"week\");
-                                      }
-                                     if (view.name == 'basicDay' ) 
-                                      { 
-                                         
-                                          console.log(\"day\");
-                                      }
-                                       if (view.name == 'month' ) 
-                                      { 
-                                       
-                                          console.log(\"month\");
-                                      }
-                                      if (view.name == 'listWeek' ) 
-                                      { 
-                                         
-                                          console.log(\"zzzzzzzzzzzzz\");
-                                      }
-                                      //You can use it some where else to know what view is active quickly
-                                      currentView = view.name;
-//                                  }
+//                                    if ( view.name == 'basicWeek' )   
+//                                      { 
+//                                          
+//                                          console.log(\"week\");
+//                                      }
+//                                     if (view.name == 'basicDay' ) 
+//                                      { 
+//                                         
+//                                          console.log(\"day\");
+//                                      }
+//                                       if (view.name == 'month' ) 
+//                                      { 
+//                                       
+//                                          console.log(\"month\");
+//                                      }
+//                                      if (view.name == 'listWeek' ) 
+//                                      { 
+//                                         
+//                                          console.log(\"zzzzzzzzzzzzz\");
+//                                      }
+//                                      //You can use it some where else to know what view is active quickly
+//                                      currentView = view.name;
+////                                  }
                 }"
                 )
             ],

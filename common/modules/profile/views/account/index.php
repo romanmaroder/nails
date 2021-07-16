@@ -354,6 +354,14 @@ $this->params['breadcrumbs'][] = $this->title;
 $js = <<< JS
 $(function () {
     $('#example2').DataTable({
+    "bStateSave": true,
+    "fnStateSave": function (oSettings, oData) {
+        localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+    },
+    "fnStateLoad": function (oSettings) {
+        var data = localStorage.getItem('DataTables_' + window.location.pathname);
+        return JSON.parse(data);
+    },
       "paging": true,
       "lengthChange": false,
       "searching": true,
@@ -364,6 +372,8 @@ $(function () {
       "responsive": true,
        "language": {
            "search": "Поиск:",
+           "zeroRecords": "Совпадений не найдено",
+    	  	"emptyTable": "В таблице отсутствуют данные",
            "paginate": {
                     "first": "Первая",
                     "previous": '<i class="fas fa-backward"></i>',
