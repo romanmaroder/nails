@@ -92,7 +92,7 @@ class Event extends ActiveRecord
 
     public static function findMasterEvents($id): ActiveQuery
     {
-        return Event::find()->where(['master_id' => $id]);
+        return Event::find()->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())');
     }
 
     public static function findClientEvents($id): ActiveQuery

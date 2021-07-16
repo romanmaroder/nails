@@ -41,15 +41,19 @@ die();*/
                          echo $item['image']; ?>"
 						 src="<?php
                          echo Yii::$app->storage->getFile($item['image']); ?>">
-					<?php if (!empty($item['user']['username'])) :?>
+					<?php /*if (!empty($item['user']['username'])) :*/?><!--
 					    <div class="ribbon-wrapper ribbon-sm">
 							<div class="ribbon bg-success text-sm">
 								<?php
-								echo $item['user']['username']; ?>
+/*								echo $item['user']['username']; */?>
 							</div>
 						</div>
-					<?php endif ;?>
+					--><?php /*endif ;*/?>
 				</div>
+				<?php if (!empty($item['user']['username'])) :?>
+				<div class="text-sm"><?php
+                    echo $item['user']['username']; ?></div>
+                <?php endif ;?>
 				<div class="d-flex justify-content-between">
 					<?php if (Yii::$app->user->can('perm_view-calendar')) :?>
 						<span class=" photo-delete">

@@ -95,7 +95,6 @@ $this->params['breadcrumbs'][] = $this->title;
 						<hr>
                     <?php
                     endif; ?>
-
                     <?php
                     if ($userInfo->address) : ?>
 
@@ -198,7 +197,6 @@ $this->params['breadcrumbs'][] = $this->title;
 				<div class="card-body">
 					<div class="tab-content">
 						<div class="active tab-pane" id="events">
-
 
 							<!-- /.card-header -->
                             <?php
