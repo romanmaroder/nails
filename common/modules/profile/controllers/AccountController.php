@@ -10,6 +10,7 @@ use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
 use common\models\Photo;
 use Yii;
+use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -99,17 +100,27 @@ class AccountController extends Controller
         $userInfo        = User::getUserInfo($userId);
         $userProfileInfo = Profile::getUserProfileInfo($userId);
 
-        if (Yii::$app->user->can('master')) {
+        if (Yii::$app->user->can('manager')){
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query' => Event::findManagerEvents(),
+                'pagination' => false,
+            ]
+        );
+    }
+        elseif(Yii::$app->user->can('master')) {
             $dataProvider = new ActiveDataProvider(
                 [
                     'query' => Event::findMasterEvents($userId),
-                    'sort'  => false,
+                    'pagination' => false,
                 ]
             );
-        } else {
+        }
+        else {
             $dataProvider = new ActiveDataProvider(
                 [
                     'query' => Event::findClientEvents($userId),
+                    'pagination' => false,
                 ]
             );
         }

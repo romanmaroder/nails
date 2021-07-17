@@ -90,17 +90,44 @@ class Event extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'client_id']);
     }
 
-    public static function findMasterEvents($id): ActiveQuery
+    /**
+     * Getting records for masters
+     *
+     * @param  int  $id
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public static function findMasterEvents(int $id): ActiveQuery
     {
-        return Event::find()->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())');
+        return Event::find()->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(['event_time_start'=>SORT_ASC]);
     }
 
-    public static function findClientEvents($id): ActiveQuery
+    /**
+     * Getting records for manager
+     * @return \yii\db\ActiveQuery
+     */
+    public static function findManagerEvents(): ActiveQuery
+    {
+        return Event::find()->where('event_time_start >= DATE(NOW())')->orderBy(['event_time_start'=>SORT_ASC]);
+    }
+
+    /**
+     * Getting records for client
+     *
+     * @param  int  $id
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public static function findClientEvents(int $id): ActiveQuery
     {
         return Event::find()->select(['id','client_id','master_id','description','event_time_start'])->where(['client_id' =>$id]);
     }
 
 
+    /**
+     * The total number of entries in the calendar
+     * @return bool|int|string|null
+     */
     public static function countEventTotal()
     {
         return Event::find()->where(['>=','event_time_start',date('Y-m-d')])->groupBy('event_time_start')

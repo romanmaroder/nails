@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\Event;
 use common\models\User;
 use backend\models\SignupForm;
 use Yii;
@@ -26,7 +27,7 @@ class SiteController extends AdminController
     {
         return [
             'verbs' => [
-                'class'   => VerbFilter::className(),
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -53,11 +54,15 @@ class SiteController extends AdminController
      */
     public function actionIndex()
     {
+        $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
+        $countEvents = Event::find()->select('COUNT(client_id)')->where(['master_id'=>$masterIds])->groupBy('master_id')
+            ->asArray()
+            ->all();
 
 
         return $this->render('index',[
-
+            'count'=>$countEvents
         ]);
     }
 

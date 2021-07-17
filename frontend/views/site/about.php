@@ -4,9 +4,6 @@
 /* @var $master \frontend\controllers\SiteController */
 /* @var $path\frontend\controllers\SiteController */
 
-/*echo '<pre>';
-var_dump($path);
-die()*/
 
 use yii\helpers\Html;
 
