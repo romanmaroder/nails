@@ -21,6 +21,7 @@ use yii\db\ActiveRecord;
 class Photo extends ActiveRecord
 {
 
+    public $totalCount;
     private const DEFAULT_BG = "img/bg/";
 
     public function behaviors(): array
@@ -121,7 +122,7 @@ class Photo extends ActiveRecord
     {
         $query = Photo::find()->where(['portfolio' => 1]);
         if ($id) {
-            $query->andWhere(['user_id'=>$id])->asArray();
+            $query->andWhere(['user_id' => $id])->asArray();
         }
         return $query->all();
     }
@@ -147,13 +148,13 @@ class Photo extends ActiveRecord
 
     /**
      * Getting a background picture for a card
+     *
      * @return string
      */
-    public static function getBaclgroundCard (): string
+    public static function getBaclgroundCard(): string
     {
-
         $images = scandir(self::DEFAULT_BG);
-        $arr=[];
+        $arr    = [];
         foreach ($images as $image) {
             if ($image == '.' || $image == '..') {
                 continue;
@@ -161,8 +162,42 @@ class Photo extends ActiveRecord
             $arr[] = $image;
         }
 
-        $img  = rand(0, sizeof($arr) - 1);
-       return  $path ="/".self::DEFAULT_BG.$arr[$img];
+        $img = rand(0, sizeof($arr) - 1);
+        return $path = "/".self::DEFAULT_BG.$arr[$img];
+    }
 
+    /**
+     * The total number of photos from the master
+     *
+     * @param $column_name
+     * @param $masterIds
+     *
+     * @return array
+     */
+    public function getTotalPhotoCount($masterIds): array
+    {
+        return Photo::find()->select(['COUNT(client_id) AS totalCount', 'user_id'])
+            ->where(['user_id' => $masterIds])
+            ->andWhere(['IS NOT','client_id',NULL])
+            ->groupBy('user_id')
+            ->all();
+    }
+    
+    public function getTotalPortfolioPhotoCount($masterIds): array
+    {
+        return Photo::find()->select(['COUNT(master_work) AS totalCount', 'user_id'])
+            ->where(['user_id' => $masterIds])
+            ->andWhere(['!=','portfolio',0])
+            ->groupBy('user_id')
+            ->all();
+    }
+
+    public function getTotalMasterPhotoCount($masterIds): array
+    {
+        return Photo::find()->select(['COUNT(master_work) AS totalCount', 'user_id'])
+            ->where(['user_id' => $masterIds])
+            ->andWhere(['!=','master_work',0])
+            ->groupBy('user_id')
+            ->all();
     }
 }

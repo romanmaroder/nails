@@ -211,13 +211,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                         'tableOptions' => [
                                             'class' => 'table table-bordered table-hover',
-                                            'id'    => 'example2',
+                                            'id'    => 'eventsList',
                                         ],
                                         'options'      => [
                                             'class' => 'table-responsive',
                                         ],
                                         'columns'      => [
-                                            ['class' => 'yii\grid\SerialColumn'],
+                                            //['class' => 'yii\grid\SerialColumn'],
                                             [
                                                 'attribute' => 'client_id',
                                                 'format'    => 'raw',
@@ -353,12 +353,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $js = <<< JS
 $(function () {
-    $('#example2').DataTable({
+    $('#eventsList').DataTable({
     "bStateSave": true,
     "fnStateSave": function (oSettings, oData) {
         localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
     },
-    "fnStateLoad": function (oSettings) {
+    "fnStateLoad": function () {
         var data = localStorage.getItem('DataTables_' + window.location.pathname);
         return JSON.parse(data);
     },

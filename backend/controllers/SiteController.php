@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use common\models\Event;
+use common\models\Photo;
 use common\models\User;
 use backend\models\SignupForm;
 use Yii;
@@ -26,7 +28,7 @@ class SiteController extends AdminController
     {
         return [
             'verbs' => [
-                'class'   => VerbFilter::className(),
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -53,12 +55,25 @@ class SiteController extends AdminController
      */
     public function actionIndex()
     {
+        $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
+        $event       = new Event();
+        $countEvents = $event->getTotalEventsMaster($masterIds);
 
+        $photo            = new Photo();
+        $portfolioCount   = $photo->getTotalPortfolioPhotoCount($masterIds);
+        $workCount        = $photo->getTotalMasterPhotoCount($masterIds);
+        $clientPhotoCount = $photo->getTotalPhotoCount($masterIds);
 
-        return $this->render('index',[
-
-        ]);
+        return $this->render(
+            'index',
+            [
+                'count'            => $countEvents,
+                'portfolioCount'   => $portfolioCount,
+                'workCount'        => $workCount,
+                'clientPhotoCount' => $clientPhotoCount,
+            ]
+        );
     }
 
     /**
