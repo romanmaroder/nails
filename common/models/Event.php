@@ -104,6 +104,7 @@ class Event extends ActiveRecord
         return Event::find()->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(
             ['event_time_start' => SORT_ASC]
         );
+
     }
 
     /**

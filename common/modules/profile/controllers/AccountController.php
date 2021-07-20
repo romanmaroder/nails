@@ -10,7 +10,6 @@ use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
 use common\models\Photo;
 use Yii;
-use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -62,7 +61,7 @@ class AccountController extends Controller
      * Lists all Event models.
      *
      * @return string|\yii\web\Response
-     * @throws \yii\web\NotFoundHttpException
+     * @throws \yii\web\NotFoundHttpException|\yii\base\Exception
      */
     public function actionIndex()
     {
