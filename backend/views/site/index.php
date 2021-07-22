@@ -87,6 +87,7 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
 		<!-- /.col -->
 	</div>
 
+
 	<!--<div class="row">
         <div class="col-lg-6">
             <?

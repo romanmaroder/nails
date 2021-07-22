@@ -1,4 +1,5 @@
 <?php
+
 return [
     'aliases'    => [
         '@bower' => '@vendor/bower-asset',
@@ -14,7 +15,7 @@ return [
         'client'  => [
             'class' => 'common\modules\client\Module',
         ],
-        'blog' => [
+        'blog'    => [
             'class' => 'common\modules\blog\Blog',
         ],
     ],
@@ -25,11 +26,12 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
-        'storage'=>[
-            'class'=>'common\components\Storage'
+        'storage'     => [
+            'class' => 'common\components\Storage'
         ],
-        'errorHandler' => [
+
+        /*'errorHandler' => [
             'errorAction' => 'site/error',
-        ],
+        ],*/
     ],
 ];

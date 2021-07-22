@@ -6,10 +6,11 @@ namespace console\controllers;
 
 use common\models\User;
 use Yii;
+use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 
-class RbacAdminAssignController extends \yii\console\Controller
+class RbacAdminAssignController extends Controller
 {
     public function actionInit($id): int
     {

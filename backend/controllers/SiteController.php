@@ -4,23 +4,15 @@ namespace backend\controllers;
 
 use common\models\Event;
 use common\models\Photo;
-use common\models\User;
-use backend\models\SignupForm;
 use Yii;
-use yii\base\BaseObject;
-use yii\helpers\Url;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 use common\models\LoginForm;
-use yii\web\Controller;
-use yii\web\ForbiddenHttpException;
 
 /**
  * Site controller
  */
 class SiteController extends AdminController
 {
-
+    public $enableCsrfValidation = false;
     /**
      * {@inheritdoc}
      */
@@ -64,6 +56,9 @@ class SiteController extends AdminController
         $portfolioCount   = $photo->getTotalPortfolioPhotoCount($masterIds);
         $workCount        = $photo->getTotalMasterPhotoCount($masterIds);
         $clientPhotoCount = $photo->getTotalPhotoCount($masterIds);
+
+
+
 
         return $this->render(
             'index',
