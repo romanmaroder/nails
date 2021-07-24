@@ -187,6 +187,15 @@ class User extends ActiveRecord implements IdentityInterface
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
+    public static function findByUserPhone( $phone): ?User
+    {
+        /*return User::findOne($phone);*/
+        return static::find()
+            ->where(['phone'=>$phone])
+            ->one();
+    }
+
+
     /**
      * Finds user by password reset token
      *
@@ -510,4 +519,3 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Certificate::class, ['user_id' => 'id']);
     }
 }
-

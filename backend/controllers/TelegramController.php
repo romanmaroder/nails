@@ -4,9 +4,11 @@
 namespace backend\controllers;
 
 
+use backend\models\Telegram;
 use Telegram\Bot\Api;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use common\models\User;
 
 class TelegramController extends Controller
 {
@@ -46,16 +48,47 @@ class TelegramController extends Controller
     {
         $result = $this->bot()->getWebhookUpdates();
 
-        $text       = $result['message']['text'];
+        $text       = $result->getMessage()->getText();
+        $chat_id    = $result->getMessage()->getChat()->getId();
+        $name       = $result->getMessage()->getFrom()->getUsername();
+        $first_name = $result->getMessage()->getFrom()->getFirstName();
+        $last_name  = $result->getMessage()->getFrom()->getLastName();
+        $username   = $first_name." ".$last_name;
+        $old_id     = Telegram::getOldId($chat_id);
+        $userfind   = User::findByUserPhone( $text );
+        $users_id    = $userfind->id;
+        /*$text       = $result['message']['text'];
         $chat_id    = $result['message']['chat']['id'];
         $name       = $result['message']['from']['username'];
         $first_name = $result['message']['from']['first_name'];
-        $last_name  = $result['message']['from']['last_name'];
+        $last_name  = $result['message']['from']['last_name'];*/
+
         if ($text == "/start") {
-            $reply        = "Menu:";
+            $reply = "Меню:";
+            if ($old_id->chat_id !== $chat_id) {
+                $reply        = "Напишите номер Вашего телефона";
+            } else {
+                $reply_markup = $this->bot()->replyKeyboardMarkup(
+                    [
+                        'keyboard'          => $this->botMenuGreetings(),
+                        'resize_keyboard'   => true,
+                        'one_time_keyboard' => false
+                    ]
+                );
+            }
+
+            $this->bot()->sendMessage(
+                [
+                    'chat_id'      => $chat_id,
+                    'text'         => $reply,
+                    'reply_markup' => $reply_markup
+                ]
+            );
+        } elseif ($text == "Привет") {
+            $reply        = "Привет ".$first_name." ".$last_name;
             $reply_markup = $this->bot()->replyKeyboardMarkup(
                 [
-                    'keyboard'          => $this->botMenu(),
+                    'keyboard'          => $this->botMenuGreetings(),
                     'resize_keyboard'   => true,
                     'one_time_keyboard' => false
                 ]
@@ -67,11 +100,11 @@ class TelegramController extends Controller
                     'reply_markup' => $reply_markup
                 ]
             );
-        } elseif ($text == "Hello") {
-            $reply        = "Hello ".$first_name." ".$last_name;
+        } elseif ($text == "Пока") {
+            $reply        = "Пока ".$first_name." ".$last_name;
             $reply_markup = $this->bot()->replyKeyboardMarkup(
                 [
-                    'keyboard'          => $this->botMenu(),
+                    'keyboard'          => $this->botMenuGreetings(),
                     'resize_keyboard'   => true,
                     'one_time_keyboard' => false
                 ]
@@ -84,23 +117,21 @@ class TelegramController extends Controller
                 ]
             );
         }
-        elseif ($text == "Bye") {
-            $reply        = "Bye ".$first_name." ".$last_name;
-            $reply_markup = $this->bot()->replyKeyboardMarkup(
-                [
-                    'keyboard'          => $this->botMenu(),
-                    'resize_keyboard'   => true,
-                    'one_time_keyboard' => false
-                ]
-            );
-            $this->bot()->sendMessage(
-                [
-                    'chat_id'      => $chat_id,
-                    'text'         => $reply,
-                    'reply_markup' => $reply_markup
-                ]
-            );
+        elseif($text == $text){
+
+            Telegram::start($chat_id, $name, $username, $users_id, $old_id);
+            $reply =" Привет ". $userfind->username. " Ваша почта ".$userfind->email;
+
+            $this->bot()->sendMessage([  'chat_id'      => $chat_id,
+                                         'text'         => $reply,
+                                      ]);
         }
+
+
+
+
+
+
     }
 
     /**
@@ -108,8 +139,18 @@ class TelegramController extends Controller
      *
      * @return array
      */
-    public function botMenu(): array
+    public function botMenuGreetings(): array
     {
-        return [['Hello'], ['Bye']];
+        return [['Привет'], ['Пока']];
+    }
+
+    /**
+     * Creating bot menu buttons
+     *
+     * @return array
+     */
+    public function botMenuPhone(): array
+    {
+        return [['Телефон']];
     }
 }
