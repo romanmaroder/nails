@@ -91,13 +91,16 @@ class TelegramController extends Controller
                 ]
             );
         } elseif ($text == "Следующая запись") {
-            $event = Event::findNextClientEvents($user_event_id);
-            $reply ="Следующая запись: \n";
-            foreach ($event as $item) {
-                $reply.= date(
-                        'd-m-Y',
-                        strtotime($item['event_time_start'])
-                    ). " - " . $item['description'] ."\n";
+            if ($event = Event::findNextClientEvents($user_event_id)) {
+                $reply = "Следующая запись: \n";
+                foreach ($event as $item) {
+                    $reply .= date(
+                            'd-m-Y',
+                            strtotime($item['event_time_start'])
+                        )." - ".$item['description']."\n";
+                }
+            } else {
+                $reply = "У вас нет записей";
             }
 
             $this->bot()->sendMessage(
@@ -140,7 +143,6 @@ class TelegramController extends Controller
                 ]
             );
         }
-        #return $this->render('webhook');
     }
 
     /**
