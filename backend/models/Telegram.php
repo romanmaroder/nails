@@ -68,7 +68,7 @@ class Telegram extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    public static function start($chat_id, $name, $username, $user_id, $old_id)
+    public static function start($chat_id, $name, $username, $users_id, $old_id)
     {
         $model = new Telegram();
 
@@ -78,7 +78,7 @@ class Telegram extends ActiveRecord
             $model->chat_id  = $chat_id;
             $model->name     = $name;
             $model->username = $username;
-            $model->user_id = $user_id;
+            $model->user_id  = $users_id;
             $model->save();
         }
         return true;
@@ -89,4 +89,8 @@ class Telegram extends ActiveRecord
         return Telegram::findOne(['chat_id' => $chat_id]);
     }
 
+    public static function getUserId($chat_id)
+    {
+        return static::find()->select('user_id')->where(['chat_id' => $chat_id]);
+    }
 }

@@ -131,6 +131,14 @@ class Event extends ActiveRecord
         );
     }
 
+    public static function findNextClientEvents( $user_id)
+    {
+        return Event::find()
+            ->select('event_time_start, description')
+            ->where(['client_id'=>$user_id])
+            ->asArray()
+            ->all();
+    }
 
     /**
      * The total number of entries in the calendar
