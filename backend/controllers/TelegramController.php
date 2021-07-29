@@ -91,15 +91,15 @@ class TelegramController extends Controller
                 ]
             );
         } elseif ($text == "Следующая запись") {
-            if ($event = Event::findNextClientEvents($user_event_id)) {
-                $reply = "Следующая запись: \n";
-                foreach ($event as $item) {
-                    $reply .= date(
+            if($eventNext = Event::findNextClientEvents($user_event_id)){
+                $reply ="Следующая запись: \n";
+                foreach ($eventNext as $item) {
+                    $reply.= date(
                             'd-m-Y',
                             strtotime($item['event_time_start'])
-                        )." - ".$item['description']."\n";
+                        ). " - " . $item['description'] ."\n";
                 }
-            } else {
+            }else {
                 $reply = "У вас нет записей";
             }
 
@@ -110,7 +110,17 @@ class TelegramController extends Controller
                 ]
             );
         } elseif ($text == "Предыдущая запись") {
-            $reply = "Предыдущая запись ".date('d-m-Y', strtotime('-1 day', strtotime(date('d-m-Y'))));
+            if($eventPrevious = Event::findPreviousClientEvents($user_event_id)){
+                $reply ="Предыдущая запись: \n";
+                foreach ($eventPrevious as $item) {
+                    $reply.= date(
+                            'd-m-Y',
+                            strtotime($item['event_time_start'])
+                        ). " - " . $item['description'] ."\n";
+                }
+            }else {
+                $reply = "У вас нет записей";
+            }
             $this->bot()->sendMessage(
                 [
                     'chat_id' => $chat_id,
@@ -143,6 +153,7 @@ class TelegramController extends Controller
                 ]
             );
         }
+
     }
 
     /**

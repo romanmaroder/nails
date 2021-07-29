@@ -4,6 +4,7 @@ namespace common\models;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "event".
@@ -131,11 +132,37 @@ class Event extends ActiveRecord
         );
     }
 
+    /**
+     * Returns a list of future records
+     * @param $user_id
+     *
+     * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
+     */
     public static function findNextClientEvents( $user_id)
     {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id'=>$user_id])
+            ->andWhere(['>','event_time_start',new Expression('CURDATE()')])
+            ->asArray()
+            ->all();
+    }
+
+
+    /**
+     * Returns a list of previous records
+     * @param $user_id
+     *
+     * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
+     */
+    public static function findPreviousClientEvents( $user_id)
+    {
+        return Event::find()
+            ->select('event_time_start, description')
+            ->where(['client_id'=>$user_id])
+            ->andWhere(['<','event_time_start',new Expression('CURDATE()')])
+            ->orderBy(['ABS'=>new Expression('DATEDIFF(NOW(), `event_time_start`)')])
+            ->limit(2)
             ->asArray()
             ->all();
     }
