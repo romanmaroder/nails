@@ -1,7 +1,7 @@
 <?php
 
-use common\models\Category;
 use hail812\adminlte3\assets\PluginAsset;
+use common\models\Category;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -12,9 +12,19 @@ use yii\widgets\ActiveForm;
 /* @var $model common\models\Post */
 /* @var $form yii\widgets\ActiveForm */
 
-PluginAsset::register($this)->add(
+/*PluginAsset::register($this)->add(
     ['summernote', 'codemirror']
-);
+);*/
+$bundle = PluginAsset::register($this);
+$bundle->css[] = 'summernote/summernote-bs4.min.css';
+$bundle->js[] = 'summernote/summernote-bs4.min.js';
+$bundle->js[] = 'summernote/lang/summernote-ru-Ru.js';
+$bundle->css[] = 'codemirror/codemirror.css';
+$bundle->css[] = 'codemirror/theme/monokai.css';
+$bundle->js[] = 'codemirror/codemirror.js';
+$bundle->js[] = 'codemirror/mode/css/css.js';
+$bundle->js[] = 'codemirror/mode/xml/xml.js';
+$bundle->js[] = 'codemirror/mode/htmlmixed/htmlmixed.js';
 ?>
 
 
@@ -80,7 +90,7 @@ PluginAsset::register($this)->add(
 Yii::$app->view->registerJs("url= " .Json::htmlEncode(Url::base()), View::POS_HEAD);
 
 
-echo Url::base();
+//echo Url::base();
 
 $editor = <<< JS
 $(function () {
