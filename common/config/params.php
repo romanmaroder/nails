@@ -78,7 +78,7 @@ return [
             'filterizr'                     => [
                 'js' => 'filterizr/jquery.filterizr.min.js'
             ],
-            'summernote'=>[
+            /*'summernote'=>[
                 'css'=>'summernote/summernote-bs4.min.css',
                 'js'=>[
                     'summernote/summernote-bs4.min.js',
@@ -96,7 +96,7 @@ return [
                     'codemirror/mode/xml/xml.js',
                     'codemirror/mode/htmlmixed/htmlmixed.js'
                 ]
-            ],
+            ],*/
         ]
     ],
 

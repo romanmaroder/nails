@@ -56,18 +56,19 @@ $this->title = 'Nails';
                     foreach ($postsList as $post) : ?>
 
 						<div class="col-12 mb-3">
+							<div class="post-card" id="<?php echo $post['id'];?>">
 							<h2><?php
                                 echo Html::a($post['title'], ['/blog/post/post', 'id' => $post['id']]); ?>
 							</h2>
 							<span class="truncate-text no-img"><?php
-                            echo $post['description']; ?></span>
+                            echo $post['subtitle']; ?></span>
 							<?php
                                 echo Html::a('<i class="fas fa-book-open"></i> Читать...', ['/blog/post/post', 'id'
 																											   => $post['id']],
 											 ['class'=>'btn btn-outline-info btn-sm mt-3']);
                                 ?>
 						</div>
-
+						</div>
                     <?php
                     endforeach; ?>
 				</div>
