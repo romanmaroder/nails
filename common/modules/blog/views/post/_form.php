@@ -1,7 +1,7 @@
 <?php
 
-use hail812\adminlte3\assets\PluginAsset;
 use common\models\Category;
+use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -85,7 +85,7 @@ $bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
 
 <?php
 
-Yii::$app->view->registerJs("url= ".Json::htmlEncode(Url::base()), View::POS_HEAD);
+Yii::$app->view->registerJs("url= " .Json::htmlEncode(Url::base()), View::POS_HEAD);
 
 
 $editor = <<< JS
