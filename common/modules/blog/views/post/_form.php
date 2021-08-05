@@ -9,7 +9,7 @@ use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Post */
+/* @var $model \common\modules\blog\models\AddPost */
 /* @var $form yii\widgets\ActiveForm */
 
 $bundle        = PluginAsset::register($this);
@@ -44,7 +44,6 @@ $bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
                         $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 						<div class="card-body">
 
-
                             <?= $form->field($model, 'category_id')->dropDownList(
                                 Category::getCategoryList(),
                                 [
@@ -65,7 +64,7 @@ $bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
                             <?= $form->field($model, 'subtitle')->textInput(['maxlength' => true]) ?>
 
                             <?= $form->field($model, 'description')->textarea(['rows' => 6, 'id' => 'summernote']) ?>
-
+                            <?= $form->field($model, 'picture')->fileInput(['class' => 'form-control-file']); ?>
 							<div class="form-group">
                                 <?= Html::submitButton('Добавить', ['class' => 'btn btn-outline-success']) ?>
 							</div>

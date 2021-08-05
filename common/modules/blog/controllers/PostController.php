@@ -4,6 +4,7 @@ namespace common\modules\blog\controllers;
 
 use common\models\PostImage;
 use common\models\User;
+use common\modules\blog\models\AddPost;
 use Yii;
 use common\models\Post;
 use common\models\PostSearch;
@@ -98,22 +99,16 @@ class PostController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Post();
+        $userId = Yii::$app->user->identity->getId();
+        $user   = User::findOne($userId);
+        $model  = new AddPost($user);
 
         if ($model->load(Yii::$app->request->post())) {
-            $userId = Yii::$app->user->identity->getId();
-            $user   = User::findOne($userId);
-
-            $model->user_id = $user->id;
-
-            $model->save();
-            return $this->redirect(
-                [
-                    'view',
-                    'id' => $model->id,
-//                    'pictureUri' => Yii::$app->storage->getFile($user->files),
-                ]
-            );
+            $model->picture = UploadedFile::getInstance($model, 'picture');
+            if ($model->save()) {
+                return $this->redirect('index');
+                //          return $this->redirect(['view', 'id' => $post->id]);
+            }
         }
 
         return $this->render(
@@ -127,6 +122,7 @@ class PostController extends Controller
 
     /**
      * Uploading an image to a directory
+     *
      * @return array
      */
     public function actionUploadImageSummernote(): array
@@ -151,6 +147,7 @@ class PostController extends Controller
 
     /**
      * Removing uploaded images to the editor
+     *
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
@@ -158,21 +155,19 @@ class PostController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $model                      = new PostImage();
+        $model = new PostImage();
 
 
-            $model->picture = Yii::$app->request->post('src');
+        $model->picture = Yii::$app->request->post('src');
 
-            if ($model->delete()) {
-
-                return [
-                    'message' => 'Удалено'
-                ];
-            }
+        if ($model->delete()) {
             return [
-                'message' => 'Не удалось удалить'
+                'message' => 'Удалено'
             ];
-
+        }
+        return [
+            'message' => 'Не удалось удалить'
+        ];
     }
 
 
@@ -238,9 +233,9 @@ class PostController extends Controller
      */
     public function actionDelete(int $id)
     {
-        $postImage = PostImage::find()->select('image')->where(['post_id'=>$id])->all();
+        $postImage = PostImage::find()->select('image')->where(['post_id' => $id])->all();
 
-        foreach($postImage as $image){
+        foreach ($postImage as $image) {
             Yii::$app->storage->deleteFile($image->image);
         }
 

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Intervention\Image\ImageManager;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -51,9 +52,10 @@ class Post extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'category_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'category_id', 'status'], 'integer'],
             [['description'], 'string'],
             [['title', 'subtitle'], 'string', 'max' => 255],
+
         ];
     }
 
@@ -70,6 +72,7 @@ class Post extends ActiveRecord
             'subtitle'    => 'Подзаголовок',
             'description' => 'Текст статьи',
             'status'      => 'Опубликовано',
+            'preview'     => 'Превью статьи',
             'created_at'  => 'Дата',
             'updated_at'  => 'Дата обновления',
         ];
@@ -90,7 +93,7 @@ class Post extends ActiveRecord
             $postCategory->save();
 
             $postImg = PostImage::find()
-                ->andWhere(['or',['post_id' => null],['post_id'=>$this->id]])
+                ->andWhere(['or', ['post_id' => null], ['post_id' => $this->id]])
                 ->all();
             foreach ($postImg as $item) {
                 $item->post_id = $this->id;
@@ -103,13 +106,12 @@ class Post extends ActiveRecord
             $postCategory->save();
 
             $postImg = PostImage::find()
-                ->andWhere(['or',['post_id' => null],['post_id'=>$this->id]])
+                ->andWhere(['or', ['post_id' => null], ['post_id' => $this->id]])
                 ->all();
             foreach ($postImg as $item) {
                 $item->post_id = $this->id;
                 $item->update(false);
             }
-
         }
         parent::afterSave($insert, $changedAttributes);
     }
@@ -123,6 +125,8 @@ class Post extends ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
+
 
     /**
      * Relations to table [[category]]
@@ -171,6 +175,19 @@ class Post extends ActiveRecord
     public static function getAllPostList(): array
     {
         return Post::find()->where(['status' => 1])->asArray()->all();
+    }
+
+    /**
+     * Get post preview
+     *
+     * @return string
+     */
+    public function getPicture(): string
+    {
+        if ($this->preview) {
+            return Yii::$app->storage->getFile($this->preview);
+        }
+        return '1233';
     }
 
 

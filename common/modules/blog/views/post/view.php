@@ -63,6 +63,12 @@ PluginAsset::register($this)->add(['sweetalert2']);
                     'format'    => 'raw',
                     
                 ],
+				[
+                    'attribute' => 'preview',
+					'format'=>'image',
+                   'value'=>Yii::$app->storage->getFile($model->preview)
+
+				],
                 [
                     'attribute' => 'created_at',
                     'format'    => ['date', 'php:d-m-Y H:i']

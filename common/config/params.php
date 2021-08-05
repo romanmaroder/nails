@@ -31,7 +31,10 @@ return [
         'maxWidth'  => 1024,
         'maxHeight' => 768
     ],
-
+    'postPreview' => [
+        'maxWidth'  => 1024,
+        'maxHeight' => 768
+    ],
     'hail812/yii2-adminlte3' => [
         'pluginMap' => [
             'datatables'                    => [
