@@ -84,7 +84,7 @@ $bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
 
 <?php
 
-Yii::$app->view->registerJs("url= " .Json::htmlEncode(Url::base()), View::POS_HEAD);
+Yii::$app->view->registerJs("url= ".Json::htmlEncode(Url::base()), View::POS_HEAD);
 
 
 $editor = <<< JS
@@ -92,7 +92,7 @@ $(function () {
    
     $('#summernote').summernote({
      lang: 'ru-RU',
-	  toolbar: [
+	 toolbar: [
 			  ['style', ['style']],
 			  ['font', ['bold', 'underline', 'clear']],
 			  ['color', ['color']],
@@ -111,14 +111,22 @@ $(function () {
      callbacks: {
         onImageUpload: function(files, editor, welEditable) {
 				  sendFile(files[0], editor, welEditable);
-				},
-				
+				},	
 		onMediaDelete : function(target) {
 		deleteFile(target[0].src);
-		}
+		},
+		onEnter: function() {
+            var  HTMLstring = '<div><p>Hello, world</p><p>Summernote can insert HTML string</p></div>';
+            $(this).summernote("pasteHTML", HTMLstring);
+     		
+      console.log('Enter/Return key pressed');
+    }
     }
     });
-    
+   /*$("#summernote").on("summernote.enter", function(we, e) {
+     $(this).summernote("pasteHTML", "<br><br>");
+     e.preventDefault();
+});*/
    function sendFile(file) {
         
     let data = new FormData();

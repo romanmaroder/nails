@@ -8,7 +8,11 @@ use common\widgets\newsList\NewsList;
 use yii\helpers\Html;
 
 $this->title = 'Nails';
+/*echo '<pre>';
+var_dump($postsList);
+die();*/
 ?>
+
 <div class="site-index">
     <?php
     /*
@@ -43,31 +47,63 @@ $this->title = 'Nails';
     ;*/ ?>
 
 
-	<div class="body-content" >
+	<div class="body-content">
 
 		<div class="row mt-3">
-			<div class="d-none d-lg-block col-lg-3">
+			<div class="d-none d-lg-block col-lg-2">
                 <?php
                 echo NewsList::widget(['showLimit' => 3]); ?>
 			</div>
-			<div class="col-lg-9">
+			<div class="col-lg-10">
 				<div class="row ">
                     <?php
-                    foreach ($postsList as $post) : ?>
-
-						<div class="col-12 mb-3">
-							<div class="post-card" id="<?php echo $post['id'];?>">
-							<h2><?php
-                                echo Html::a($post['title'], ['/blog/post/post', 'id' => $post['id']]); ?>
-							</h2>
-							<span class="truncate-text no-img"><?php
-                            echo $post['subtitle']; ?></span>
-							<?php
-                                echo Html::a('<i class="fas fa-book-open"></i> Читать...', ['/blog/post/post', 'id'
-																											   => $post['id']],
-											 ['class'=>'btn btn-outline-info btn-sm mt-3']);
-                                ?>
-						</div>
+                    foreach ($postsList as $key => $post) : ?>
+                        <?php
+                        if ($key % 2 !== 0) {
+                            $class = 'alt';
+                        } else {
+                            $class = '';
+                        }; ?>
+						<div class="col-12 col-md-6 mb-3">
+							<div class="blog-card <?php echo $class; ?>"
+								 id="<?php echo $post['id']; ?>">
+								<div class="meta">
+									<div class="photo"
+										 style="background-image: url(<?php
+                                         echo Yii::$app->storage->getFile($post['preview']) ?>)"></div>
+									<ul class="details">
+										<li class="author"><a href="#"><?php
+                                                echo $post['user']['username']; ?></a></li>
+										<li class="date"><?php
+                                            echo date('d/m/y', $post['created_at']); ?></li>
+										<!--<li class="tags">
+											<ul>
+												<li><a href="#">Learn</a></li>
+												<li><a href="#">Code</a></li>
+												<li><a href="#">HTML</a></li>
+												<li><a href="#">CSS</a></li>
+											</ul>
+										</li>-->
+									</ul>
+								</div>
+								<div class="description">
+									<h1><?php
+                                        echo Html::a($post['title'], ['/blog/post/post', 'id' => $post['id']]); ?></h1>
+									<h2><?php
+                                        echo $post['subtitle']; ?></h2>
+									<p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad eum dolorum
+										architecto obcaecati enim dicta
+										praesentium, quam nobis! Neque ad aliquam facilis numquam. Veritatis, sit.</p>
+									<p class="read-more">
+                                        <?php
+                                        echo Html::a(
+                                            ' Читать <i class="fas fa-arrow-right"></i>',
+                                            ['/blog/post/post', 'id' => $post['id']]
+                                        );
+                                        ?>
+									</p>
+								</div>
+							</div>
 						</div>
                     <?php
                     endforeach; ?>
