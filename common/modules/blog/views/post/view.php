@@ -61,12 +61,25 @@ PluginAsset::register($this)->add(['sweetalert2']);
                 [
                     'attribute' => 'description',
                     'format'    => 'raw',
-                    
+
                 ],
 				[
                     'attribute' => 'preview',
-					'format'=>'image',
-                   'value'=>Yii::$app->storage->getFile($model->preview)
+					'format'=>'raw',
+                   	//'value'=>Yii::$app->storage->getFile($model->preview),
+                   	 'value'     => function ($model) {
+                                                $option = [
+                                                    'style' => [
+                                                        'width'            => '200px',
+                                                        'height'           => 'auto',
+                                                    ]
+                                                ];
+                                                return Yii::$app->storage->getFile($model->preview) ? Html::tag
+												('div', Html::img(Yii::$app->storage->getFile($model->preview),
+																  ['alt'=>'Превью статьи','style'=>'max-width:100%; height:auto
+																  ']),
+												 $option) : 'Превью не выбрано';
+                                            },
 
 				],
                 [

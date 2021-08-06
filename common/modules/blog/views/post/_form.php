@@ -84,7 +84,7 @@ $bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
 
 <?php
 
-Yii::$app->view->registerJs("url= " .Json::htmlEncode(Url::base()), View::POS_HEAD);
+Yii::$app->view->registerJs("url= ".Json::htmlEncode(Url::base()), View::POS_HEAD);
 
 
 $editor = <<< JS

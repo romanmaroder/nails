@@ -239,6 +239,8 @@ class PostController extends Controller
             Yii::$app->storage->deleteFile($image->image);
         }
 
+        $postPreview = Post::find()->select('preview')->where(['id'=>$id])->one();
+        Yii::$app->storage->deleteFile($postPreview->preview);
 
         $this->findModel($id)->delete();
 

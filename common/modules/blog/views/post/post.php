@@ -9,15 +9,24 @@ $this->title = $post->title;
 ?>
 
 <div class="row mt-3">
-    <div class="col-md-3 d-none d-md-block">
-        <?php echo NewsList::widget(['showLimit' => 8]) ;?>
-    </div>
-    <div class="col-md-9">
+	<div class="col-md-2 d-none d-md-block">
+        <?php
+        echo NewsList::widget(['showLimit' => 8]); ?>
+	</div>
+	<div class="col-md-10">
 		<article class="post__inner">
-			<h1 class="post__title"> <?php echo $post->title ;?></h1>
-			<div class="post__description"><?php echo $post->description ;?></div>
+			<h1 class="post__title"> <?php
+                echo $post->title; ?></h1>
+			<div class="post__description"><?php
+                echo $post->description; ?></div>
 		</article>
-		<?php echo Html::a('<i class="fas fa-undo-alt"></i> Назад ',Yii::$app->request->referrer,['class'=>'btn btn-outline-info btn-sm mt-3']) ;?>
-    </div>
+        <p class="read-more"><?php
+        echo Html::a(
+            '<i class="fas fa-arrow-left"></i> Назад ',
+            Yii::$app->request->referrer,
+            ['class' => 'mt-3']
+        ); ?></p>
+	</div>
 </div>
+
 
