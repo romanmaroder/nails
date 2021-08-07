@@ -114,19 +114,10 @@ $(function () {
 				},	
 		onMediaDelete : function(target) {
 		deleteFile(target[0].src);
-		},
-		onEnter: function() {
-            var  HTMLstring = '<div><p>Hello, world</p><p>Summernote can insert HTML string</p></div>';
-            $(this).summernote("pasteHTML", HTMLstring);
-     		
-      console.log('Enter/Return key pressed');
-    }
+		}
     }
     });
-   /*$("#summernote").on("summernote.enter", function(we, e) {
-     $(this).summernote("pasteHTML", "<br><br>");
-     e.preventDefault();
-});*/
+	$.summernote.dom.emptyPara = "<p class=\"post-text\"><br></p>"
    function sendFile(file) {
         
     let data = new FormData();

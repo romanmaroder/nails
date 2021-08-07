@@ -73,6 +73,7 @@ class Post extends ActiveRecord
             'description' => 'Текст статьи',
             'status'      => 'Опубликовано',
             'preview'     => 'Превью статьи',
+            'picture'     => 'Превью статьи',
             'created_at'  => 'Дата',
             'updated_at'  => 'Дата обновления',
         ];

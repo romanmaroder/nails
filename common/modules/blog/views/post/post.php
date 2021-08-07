@@ -15,17 +15,18 @@ $this->title = $post->title;
 	</div>
 	<div class="col-md-10">
 		<article class="post__inner">
-			<h1 class="post__title"> <?php
+			<h1 class="post__title mb-4"> <?php
                 echo $post->title; ?></h1>
 			<div class="post__description"><?php
                 echo $post->description; ?></div>
+			<p class="read-more align-self-end"><?php
+                echo Html::a(
+                    '<i class="fas fa-arrow-left"></i> Назад ',
+                    Yii::$app->request->referrer,
+                    ['class' => 'mt-3']
+                ); ?></p>
 		</article>
-        <p class="read-more"><?php
-        echo Html::a(
-            '<i class="fas fa-arrow-left"></i> Назад ',
-            Yii::$app->request->referrer,
-            ['class' => 'mt-3']
-        ); ?></p>
+
 	</div>
 </div>
 

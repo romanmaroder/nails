@@ -50,11 +50,11 @@ die();*/
 	<div class="body-content">
 
 		<div class="row mt-3">
-			<div class="d-none d-lg-block col-lg-2">
+			<div class="d-none d-xl-block col-xl-2">
                 <?php
                 echo NewsList::widget(['showLimit' => 3]); ?>
 			</div>
-			<div class="col-lg-10">
+			<div class="col-xl-10">
 				<div class="row ">
                     <?php
                     foreach ($postsList as $key => $post) : ?>
@@ -64,8 +64,8 @@ die();*/
                         } else {
                             $class = '';
                         }; ?>
-						<div class="col-12 col-md-6 mb-3">
-							<div class="blog-card <?php echo $class; ?>"
+						<div class="col-12 col-lg-6 mb-3">
+							<div class="blog-card mx-auto <?php echo $class; ?>"
 								 id="<?php echo $post['id']; ?>">
 								<div class="meta">
 									<div class="photo"
@@ -89,11 +89,9 @@ die();*/
 								<div class="description">
 									<h1><?php
                                         echo Html::a($post['title'], ['/blog/post/post', 'id' => $post['id']]); ?></h1>
-									<h2><?php
-                                        echo $post['subtitle']; ?></h2>
-									<p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad eum dolorum
-										architecto obcaecati enim dicta
-										praesentium, quam nobis! Neque ad aliquam facilis numquam. Veritatis, sit.</p>
+									<h2><?php echo $post['subtitle']; ?></h2>
+									<p></p>
+									<div class="truncate-text no-img"> <?php echo $post['description'] ;?></div>
 									<p class="read-more">
                                         <?php
                                         echo Html::a(
