@@ -94,7 +94,7 @@ $(function () {
      lang: 'ru-RU',
 	 toolbar: [
 			  ['style', ['style']],
-			  ['font', ['bold', 'underline', 'clear']],
+			  ['font', ['bold','italic', 'underline', 'clear']],
 			  ['color', ['color']],
 			  ['para', ['ul', 'ol', 'paragraph']],
 			  ['fontname', ['fontname']],
@@ -117,7 +117,7 @@ $(function () {
 		}
     }
     });
-	$.summernote.dom.emptyPara = "<p class=\"post-text\"><br></p>"
+
    function sendFile(file) {
         
     let data = new FormData();

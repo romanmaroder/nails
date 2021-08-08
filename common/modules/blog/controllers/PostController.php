@@ -83,6 +83,8 @@ class PostController extends Controller
      */
     public function actionPost(int $id)
     {
+        $this->setMeta("{$this->findModel($id)->title} ::" . \Yii::$app->name, $this->findModel($id)->subtitle,
+                       $this->findModel($id)->description);
         return $this->render(
             'post',
             [
@@ -263,5 +265,12 @@ class PostController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function setMeta($title = null, $keywords = null, $description = null)
+    {
+        $this->view->title = $title;
+        $this->view->registerMetaTag(['name' => 'keywords', 'content' => strip_tags("$keywords")]);
+        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags("$description")]);
     }
 }

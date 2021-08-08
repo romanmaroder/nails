@@ -274,8 +274,9 @@ a.desc:after {
     display: flex;
     flex-direction: column;
     align-items:center;
-    padding: 0 25px;
+
 }
+
 
 #addphotoform-client ~ .select2-container {
     display: none;
@@ -321,7 +322,8 @@ a.desc:after {
     right: 0;
     bottom: 0;
     left: 0;
-    background-size: cover;
+    background-size: contain;
+    background-repeat:no-repeat;
     background-position: center;
     transition: transform .2s;
 }
@@ -544,7 +546,8 @@ a.desc:after {
         right: 0;
         bottom: 0;
         left: 0;
-        background-size: cover;
+        background-size: contain;
+        background-repeat:no-repeat;
         background-position: center;
         transition: transform .2s;
     }

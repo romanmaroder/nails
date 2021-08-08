@@ -29,11 +29,11 @@ return [
     ],
     'postPicture' => [
         'maxWidth'  => 1024,
-        'maxHeight' => 768
+        'maxHeight' => 'auto'
     ],
     'postPreview' => [
         'maxWidth'  => 1024,
-        'maxHeight' => 768
+        'maxHeight' => 1024
     ],
     'hail812/yii2-adminlte3' => [
         'pluginMap' => [

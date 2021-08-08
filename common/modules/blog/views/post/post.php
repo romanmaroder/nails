@@ -14,7 +14,7 @@ $this->title = $post->title;
         echo NewsList::widget(['showLimit' => 8]); ?>
 	</div>
 	<div class="col-md-9">
-		<article class="post__inner">
+		<article class="post__inner px-md-3">
 			<h1 class="post__title mb-4"> <?php
                 echo $post->title; ?></h1>
 			<div class="post__description"><?php
