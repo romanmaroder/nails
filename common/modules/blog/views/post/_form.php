@@ -104,6 +104,8 @@ $(function () {
 			  ['view', ['fullscreen', 'codeview', 'help']],
 			   ['height', ['height']]
 			],
+			fontNames: ['Roboto','Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','Times New Roman'],
+			fontNamesIgnoreCheck: ['Roboto'],
      placeholder: 'Добавить статью',
      codemirror: {
       mode: 'text/html'
