@@ -31,7 +31,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
             'Удалить',
             ['delete', 'id' => $model->id],
             [
-                'class' => 'btn btn-danger',
+                'class' => 'btn btn-danger my-2 my-md-0',
                 'data'  => [
                     'confirm' => 'Удалить статью?',
                     'method'  => 'post',

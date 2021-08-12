@@ -66,7 +66,14 @@ $bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
                             <?= $form->field($model, 'description')->textarea(['rows' => 6, 'id' => 'summernote']) ?>
                             <?= $form->field($model, 'picture')->fileInput(['class' => 'form-control-file']); ?>
 							<div class="form-group">
-                                <?= Html::submitButton('Добавить', ['class' => 'btn btn-outline-success']) ?>
+                                <?php
+                                if (Yii::$app->controller->action->id === 'create') : ?>
+                                    <?= Html::submitButton('Добавить', ['class' => 'btn btn-outline-success']) ?>
+                                <?php
+                                else: ?>
+                                <?= Html::submitButton('Обновить', ['class' => 'btn btn-outline-success']) ?>
+								<?php
+                                endif; ?>
 							</div>
 						</div>
                         <?php
