@@ -6,6 +6,7 @@ use common\widgets\newsList\NewsList;
 use yii\helpers\Html;
 
 $this->title = $post->title;
+
 ?>
 
 <div class="row mt-3">

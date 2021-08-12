@@ -21,10 +21,10 @@ $this->title = $name;
 			<h3><i class="fas fa-exclamation-triangle text-danger"></i><?= nl2br(Html::encode($message)) ?></h3>
 
 			<p>
-				The above error occurred while the Web server was processing your request.
+				Вышеупомянутая ошибка произошла во время обработки вашего запроса веб-сервером.
 			</p>
 			<p>
-				Please contact us if you think this is a server error. Thank you.
+				Свяжитесь с нами, если вы считаете, что это ошибка сервера. Спасибо.
 			</p>
 
 

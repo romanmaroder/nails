@@ -268,3 +268,8 @@ a.desc:after {
 #addphotoform-client ~ .select2-container {
     display: none;
 }
+
+.note-editable {
+    font-family: 'Roboto', sans-serif;
+
+}

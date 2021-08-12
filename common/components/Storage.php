@@ -3,6 +3,7 @@
 
 namespace common\components;
 
+use phpDocumentor\Reflection\Types\Mixed_;
 use Yii;
 use yii\base\Component;
 use yii\web\UploadedFile;
@@ -61,7 +62,7 @@ class Storage extends Component implements StorageInterface
     /**
      * @param  string  $filename
      *
-     * @return string
+     * @return string|null
      */
     public function getFile(string $filename): string
     {
