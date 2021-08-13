@@ -84,11 +84,11 @@ class PostController extends Controller
     public function actionPost(int $id)
     {
         $this->setMeta(
-            "{$this->findModel($id)->title} ::".\Yii::$app->name,
+            "{$this->findModel($id)->title} ::".Yii::$app->name,
             $this->findModel($id)->subtitle,
             $this->findModel($id)->description
         );
-        $post = Post::findOne(['id'=>$id,'status'=>1]);
+        $post = Post::findOne(['id' => $id, 'status' => 1]);
         if ($post == null) {
             throw new NotFoundHttpException('Запрошенная страница не существует.');
         }
@@ -221,15 +221,18 @@ class PostController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-
             if (!empty($preview = $model->preview = UploadedFile::getInstance($model, 'picture'))) {
-
+                if ($oldPreview = Post::getPreview($id)) {
+                    Yii::$app->storage->deleteFile($oldPreview->preview);
+                }
                 $model->preview = Yii::$app->storage->saveUploadedFile($preview);
-            }else {
-                $preview = Post::find()->select('preview')->where(['id'=>$id])->one();
+            } else {
+                $preview        = Post::getPreview($id);
                 $model->preview = $preview->preview;
             }
+
             $model->save();
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -284,6 +287,13 @@ class PostController extends Controller
         throw new NotFoundHttpException('Запрошенная страница не существует.');
     }
 
+    /**
+     * Sets the meta tags for keywords, descriptions and title
+     *
+     * @param  null  $title
+     * @param  null  $keywords
+     * @param  null  $description
+     */
     protected function setMeta($title = null, $keywords = null, $description = null)
     {
         $this->view->title = $title;

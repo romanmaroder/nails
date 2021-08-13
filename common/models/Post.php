@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use Intervention\Image\ImageManager;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -20,10 +19,12 @@ use yii\db\ActiveRecord;
  * @property int|null $created_at
  * @property-read \yii\db\ActiveQuery $user
  * @property-read \yii\db\ActiveQuery $category
+ * @property-read string $picture
  * @property int|null $updated_at
  */
 class Post extends ActiveRecord
 {
+    public $picture;
 
     public function behaviors(): array
     {
@@ -41,22 +42,9 @@ class Post extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'post';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['user_id', 'category_id', 'status'], 'integer'],
-            [['description'], 'string'],
-            [['title', 'subtitle'], 'string', 'max' => 255],
-
-        ];
     }
 
     /**
@@ -89,30 +77,18 @@ class Post extends ActiveRecord
     {
         if ($insert) {
             $postCategory              = new PostCategory();
-            $postCategory->post_id     = $this->id;
-            $postCategory->category_id = $this->category_id;
-            $postCategory->save();
-
-            $postImg = PostImage::find()
-                ->andWhere(['or', ['post_id' => null], ['post_id' => $this->id]])
-                ->all();
-            foreach ($postImg as $item) {
-                $item->post_id = $this->id;
-                $item->update(false);
-            }
         } else {
             $postCategory              = PostCategory::find()->where(['post_id' => $this->id])->one();
-            $postCategory->post_id     = $this->id;
-            $postCategory->category_id = $this->category_id;
-            $postCategory->save();
-
-            $postImg = PostImage::find()
-                ->andWhere(['or', ['post_id' => null], ['post_id' => $this->id]])
-                ->all();
-            foreach ($postImg as $item) {
-                $item->post_id = $this->id;
-                $item->update(false);
-            }
+        }
+        $postCategory->post_id     = $this->id;
+        $postCategory->category_id = $this->category_id;
+        $postCategory->save();
+        $postImg = PostImage::find()
+            ->andWhere(['or', ['post_id' => null], ['post_id' => $this->id]])
+            ->all();
+        foreach ($postImg as $item) {
+            $item->post_id = $this->id;
+            $item->update(false);
         }
         parent::afterSave($insert, $changedAttributes);
     }
@@ -126,8 +102,6 @@ class Post extends ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
-
-
 
     /**
      * Relations to table [[category]]
@@ -179,17 +153,13 @@ class Post extends ActiveRecord
     }
 
     /**
-     * Get post preview
+     * Get a preview of the article
+     * @param $id
      *
-     * @return string
+     * @return array|\common\models\Post|\yii\db\ActiveRecord|null
      */
-    public function getPicture(): string
+    public static function getPreview($id)
     {
-        if ($this->preview) {
-            return Yii::$app->storage->getFile($this->preview);
-        }
-        return '1233';
+        return Post::find()->select('preview')->where(['id'=>$id])->one();
     }
-
-
 }
