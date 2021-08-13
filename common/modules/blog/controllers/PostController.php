@@ -84,7 +84,7 @@ class PostController extends Controller
     public function actionPost(int $id)
     {
         $this->setMeta(
-            "{$this->findModel($id)->title} ::".Yii::$app->name,
+            $this->findModel($id)->title,
             $this->findModel($id)->subtitle,
             $this->findModel($id)->description
         );

@@ -7,10 +7,6 @@
 use common\widgets\newsList\NewsList;
 use yii\helpers\Html;
 
-$this->title = 'Nails';
-/*echo '<pre>';
-var_dump($postsList);
-die();*/
 ?>
 
 <div class="site-index">

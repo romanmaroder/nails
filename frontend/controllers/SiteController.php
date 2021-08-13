@@ -80,6 +80,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $this->setMeta(
+           'Nails - красота и уход за ногтями',
+           'Маникюр, коррекция, дизайн, лак-гель, гель, кутикула, обрезной маникюр, топ, база, пилочки для ногтей, баф, фрезер, фреза, ноготь, лампа, вытяжка, масло, лечебный лак, восстановливающий лак',
+           'Блог о ногтевом сервисе, примеры дизайна ногтей. Оказание услуг в сфере ногтевого сервиса'
+        );
+
+
         $posts = new Post();
         $postsList=  $posts->getAllPostList();
 
@@ -357,5 +364,19 @@ class SiteController extends Controller
                 'model' => $model
             ]
         );
+    }
+
+    /**
+     * Sets the meta tags for keywords, descriptions and title
+     *
+     * @param  null  $title
+     * @param  null  $keywords
+     * @param  null  $description
+     */
+    protected function setMeta($title = null, $keywords = null, $description = null)
+    {
+        $this->view->title = $title;
+        $this->view->registerMetaTag(['name' => 'keywords', 'content' => strip_tags("$keywords")]);
+        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags("$description")]);
     }
 }
