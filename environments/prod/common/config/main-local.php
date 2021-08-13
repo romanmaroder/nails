@@ -13,9 +13,9 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=host1827487',
-            'username' => 'host1827487',
-            'password' => 'N8c4ZkRzGj',
+            'dsn' => 'mysql:host=localhost;dbname=nails',
+            'username' => 'root',
+            'password' => 'root',
             'charset' => 'utf8',
         ],
         'mailer' => [

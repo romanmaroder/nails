@@ -1,5 +1,4 @@
 <?php
-
 return [
     'aliases'    => [
         '@bower' => '@vendor/bower-asset',
@@ -15,7 +14,7 @@ return [
         'client'  => [
             'class' => 'common\modules\client\Module',
         ],
-        'blog'    => [
+        'blog' => [
             'class' => 'common\modules\blog\Blog',
         ],
     ],
