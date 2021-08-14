@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -35,6 +36,16 @@ class Post extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
+            ],
+            [
+                'class' => SluggableBehavior::class,
+                'attribute' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['title', 'updated_at']
+                ],
+                //'transliterator' => 'Russian-Latin/BGN; NFKD',
+                'immutable' => true,//неизменный
+                'ensureUnique'=>true,//генерировать уникальный
+                'slugAttribute' => 'slug',//default name slug
             ],
         ];
     }

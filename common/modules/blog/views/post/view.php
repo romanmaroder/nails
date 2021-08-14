@@ -56,6 +56,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
                         return $model->category->category_name;
                     }
                 ],
+				'slug',
                 'title',
                 'subtitle',
                 [
