@@ -8,6 +8,13 @@ return [
             'password' => 'N8c4ZkRzGj',
             'charset' => 'utf8',
         ],
+        /*'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=nails',
+            'username' => 'root',
+            'password' => 'root',
+            'charset' => 'utf8',
+        ],*/
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
