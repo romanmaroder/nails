@@ -47,6 +47,7 @@ return [
                 ''      => 'site/index',
                 'event' => 'event/index',
                'post/<id:\d+>' => '/blog/post/post',
+               'post/<slug>' => '/blog/post/post',
             ],
         ],
     ],

@@ -84,7 +84,8 @@ use yii\helpers\Html;
 								</div>
 								<div class="description">
 									<h1><?php
-                                        echo Html::a($post['title'], ['/blog/post/post', 'id' => $post['id']]); ?></h1>
+                                        echo Html::a($post['title'], ['/blog/post/post', 'slug' => $post['slug']]);
+                                        ?></h1>
 									<h2><?php echo $post['subtitle']; ?></h2>
 									<p></p>
 									<div class="truncate-text no-img"> <?php echo $post['description'] ;?></div>
@@ -92,7 +93,7 @@ use yii\helpers\Html;
                                         <?php
                                         echo Html::a(
                                             ' Читать <i class="fas fa-arrow-right"></i>',
-                                            ['/blog/post/post', 'id' => $post['id']]
+                                            ['/blog/post/post', 'slug' => $post['slug']]
                                         );
                                         ?>
 									</p>

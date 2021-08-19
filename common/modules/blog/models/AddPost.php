@@ -4,62 +4,18 @@ namespace common\modules\blog\models;
 use common\models\Post;
 use common\models\User;
 use Yii;
-use yii\base\Model;
 use Intervention\Image\ImageManager;
+
 
 /**
  *
  * @property-read int $maxFileSize
  */
-class AddPost extends Model
+class AddPost extends Post
 {
-    public $id;
-    public $picture;
-    public $user_id;
-    public $category_id;
-    public $status;
-    public $description;
-    public $title;
-    public $subtitle;
-    public $slug;
+
     private $user;
 
-    public function rules()
-    {
-        return [
-            [
-                ['picture'],
-                'file',
-                'extensions'               => ['jpg','png'],
-                'checkExtensionByMimeType' => true,
-                'maxSize'                  => $this->getMaxFileSize(),
-            ],
-            [['picture'],'required','message' => 'Выберите превью'],
-            [['category_id'],'required','message' => 'Выберите категорию'],
-            [['description'], 'string'],
-            [['title', 'subtitle'], 'string', 'max' => 255],
-            [['title'],'required','message' => 'Придумайте заголовок'],
-            [['subtitle'],'required','message' => 'Придумайте подзаголовок'],
-            [['user_id', 'category_id', 'status'], 'integer'],
-            [['created_at', 'updated_at','slug'], 'safe'],
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return [
-            'id'          => 'ID',
-            'user_id'     => 'Автор',
-            'category_id' => 'Категория',
-            'title'       => 'Заголовок',
-            'subtitle'    => 'Подзаголовок',
-            'description' => 'Текст статьи',
-            'status'      => 'Опубликовано',
-            'picture'     => 'Превью статьи',
-            'created_at'  => 'Дата',
-            'updated_at'  => 'Дата обновления',
-        ];
-    }
 
     /**
      *@param  User  $user
@@ -100,7 +56,7 @@ class AddPost extends Model
     /**
      * @return bool|array
      */
-    public function save()
+    public function saved()
     {
         if ($this->validate()) {
             $post              = new Post();
@@ -117,15 +73,4 @@ class AddPost extends Model
         return $this->getErrors();
     }
 
-
-
-    /**
-     * Maximum size of the uploaded file
-     *
-     * @return int
-     */
-    private function getMaxFileSize(): int
-    {
-        return Yii::$app->params['maxFileSize'];
-    }
 }

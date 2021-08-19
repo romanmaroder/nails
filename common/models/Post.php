@@ -20,7 +20,7 @@ use yii\db\ActiveRecord;
  * @property int|null $created_at
  * @property-read \yii\db\ActiveQuery $user
  * @property-read \yii\db\ActiveQuery $category
- * @property-read string $picture
+ #* @property-read string $picture
  * @property int|null $updated_at
  */
 class Post extends ActiveRecord
@@ -39,14 +39,33 @@ class Post extends ActiveRecord
             ],
             [
                 'class' => SluggableBehavior::class,
-                'attribute' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['title', 'updated_at']
-                ],
+                'attribute' =>'title',
                 //'transliterator' => 'Russian-Latin/BGN; NFKD',
-                'immutable' => true,//неизменный
+                 'immutable' => true,//неизменный
                 'ensureUnique'=>true,//генерировать уникальный
                 'slugAttribute' => 'slug',//default name slug
             ],
+        ];
+    }
+
+    public function rules()
+    {
+        return [
+            [
+                ['picture'],
+                'file',
+                'extensions'               => ['jpg','png'],
+                'checkExtensionByMimeType' => true,
+                'maxSize'                  => $this->getMaxFileSize(),
+            ],
+            [['picture'],'required','message' => 'Выберите превью'],
+            [['category_id'],'required','message' => 'Выберите категорию'],
+            [['description'], 'string'],
+            [['title', 'subtitle'], 'string', 'max' => 255],
+            [['title'],'required','message' => 'Придумайте заголовок'],
+            [['subtitle'],'required','message' => 'Придумайте подзаголовок'],
+            [['user_id', 'category_id', 'status'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -81,8 +100,10 @@ class Post extends ActiveRecord
     /**
      * We save data to a table [[post_category]]
      *
-     * @param  bool  $insert
-     * @param  array  $changedAttributes
+     * @param bool $insert
+     * @param array $changedAttributes
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function afterSave($insert, $changedAttributes)
     {
@@ -137,11 +158,11 @@ class Post extends ActiveRecord
 
         if ($post->status == 0) {
             $post->status = 1;
-            $post->save();
+            $post->save(false);
             return true;
         } else {
             $post->status = 0;
-            $post->save();
+            $post->save(false);
             return false;
         }
     }
@@ -172,5 +193,14 @@ class Post extends ActiveRecord
     public static function getPreview($id)
     {
         return Post::find()->select('preview')->where(['id'=>$id])->one();
+    }
+    /**
+     * Maximum size of the uploaded file
+     *
+     * @return int
+     */
+    private function getMaxFileSize(): int
+    {
+        return Yii::$app->params['maxFileSize'];
     }
 }

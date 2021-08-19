@@ -76,19 +76,18 @@ class PostController extends Controller
     /**
      * Displays a single Post model.
      *
-     * @param  int  $id
-     *
+     * @param $slug
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionPost(int $id)
+    public function actionPost($slug)
     {
         $this->setMeta(
-            $this->findModel($id)->title,
-            $this->findModel($id)->subtitle,
-            $this->findModel($id)->description
+            $this->findModelBySlug($slug)->title,
+            $this->findModelBySlug($slug)->subtitle,
+            $this->findModelBySlug($slug)->description
         );
-        $post = Post::findOne(['id' => $id, 'status' => 1]);
+        $post = Post::findOne(['slug' => $slug, 'status' => 1]);
         if ($post == null) {
             throw new NotFoundHttpException('Запрошенная страница не существует.');
         }
@@ -115,7 +114,10 @@ class PostController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $model->picture = UploadedFile::getInstance($model, 'picture');
-            if ($model->save()) {
+            if ($model->saved()) {
+                /*echo'<pre>';
+                var_dump($model);
+                die();*/
                 return $this->redirect('index');
                 //          return $this->redirect(['view', 'id' => $post->id]);
             }
@@ -221,6 +223,7 @@ class PostController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+
             if (!empty($preview = $model->preview = UploadedFile::getInstance($model, 'picture'))) {
                 if ($oldPreview = Post::getPreview($id)) {
                     Yii::$app->storage->deleteFile($oldPreview->preview);
@@ -231,7 +234,7 @@ class PostController extends Controller
                 $model->preview = $preview->preview;
             }
 
-            $model->save();
+                $model->save(false);
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -281,6 +284,22 @@ class PostController extends Controller
     protected function findModel(int $id)
     {
         if (($model = Post::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('Запрошенная страница не существует.');
+    }
+
+    /**
+     * Finds the Post model based on its slug
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     *
+     * @param $slug
+     * @return Post the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModelBySlug($slug){
+        if (($model = Post::find()->where(['slug'=>$slug])->one()) !== null) {
             return $model;
         }
 

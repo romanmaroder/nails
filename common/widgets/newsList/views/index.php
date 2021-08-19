@@ -23,13 +23,13 @@ use yii\helpers\Html;
 				</div>
 				<div class="description">
 					<h4><?php
-                        echo Html::a($item['title'], ['/blog/post/post', 'id' => $item['id']]); ?></h4>
+                        echo Html::a($item['title'], ['/blog/post/post', 'slug' => $item['slug']]); ?></h4>
 					<h5><?php echo $item['subtitle']; ?></h5>
 					<p class="read-more">
                         <?php
                         echo Html::a(
                             ' Читать <i class="fas fa-arrow-right"></i>',
-                            ['/blog/post/post', 'id' => $item['id']]
+                            ['/blog/post/post', 'slug' => $item['slug']]
                         );
                         ?>
 					</p>

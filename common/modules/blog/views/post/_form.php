@@ -64,7 +64,11 @@ $bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
                             <?= $form->field($model, 'subtitle')->textInput(['maxlength' => true]) ?>
 
                             <?= $form->field($model, 'description')->textarea(['rows' => 6, 'id' => 'summernote']) ?>
+
+
                             <?= $form->field($model, 'picture')->fileInput(['class' => 'form-control-file']); ?>
+
+
 							<div class="form-group">
                                 <?php
                                 if (Yii::$app->controller->action->id === 'create') : ?>
