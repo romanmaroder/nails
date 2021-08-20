@@ -57,7 +57,8 @@ return [
                 'login'  => 'site/login',
                 'event'  => 'event/index',
                 'master' => 'employees/master',
-                'client' => 'client/client'
+                'client' => 'client/client',
+                'post/<id:\d+>' => '/blog/post/view',
             ],
         ],
     ],

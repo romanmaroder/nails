@@ -115,9 +115,6 @@ class PostController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->picture = UploadedFile::getInstance($model, 'picture');
             if ($model->saved()) {
-                /*echo'<pre>';
-                var_dump($model);
-                die();*/
                 return $this->redirect('index');
                 //          return $this->redirect(['view', 'id' => $post->id]);
             }

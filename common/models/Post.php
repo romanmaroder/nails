@@ -4,7 +4,6 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -27,7 +26,7 @@ class Post extends ActiveRecord
 {
     public $picture;
 
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             [
@@ -37,14 +36,18 @@ class Post extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
             ],
-            [
-                'class' => SluggableBehavior::class,
-                'attribute' =>'title',
-                //'transliterator' => 'Russian-Latin/BGN; NFKD',
-                 'immutable' => true,//неизменный
-                'ensureUnique'=>true,//генерировать уникальный
-                'slugAttribute' => 'slug',//default name slug
-            ],
+            'slug' => [
+                'class' => 'Zelenin\yii\behaviors\Slug',
+                'slugAttribute' => 'slug',
+                'attribute' => 'title',
+                // optional params
+                'ensureUnique' => true,
+                'replacement' => '-',
+                'lowercase' => true,
+                'immutable' => true,
+                // If intl extension is enabled, see http://userguide.icu-project.org/transforms/general.
+                'transliterateOptions' => 'Russian-Latin/BGN; Any-Latin; Latin-ASCII; NFD; [:Nonspacing Mark:] Remove; NFC;'
+            ]
         ];
     }
 

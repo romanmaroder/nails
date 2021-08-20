@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'title' => 'Добавить событие',
             'size'  => 'SIZE_SMALL',
             'id'    => 'modal',
+            'options'=>['tabindex'=>'']
         ]
     );
     echo '<div id="modalContent"></div>';
@@ -31,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'title' => 'Ошибка',
             'size'  => 'SIZE_SMALL',
             'id'    => 'modal-error',
+            'options'=>['tabindex'=>'']
         ]
     );
     echo '<div id="modalContent"></div>';
@@ -42,7 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
     Modal::begin(
         [
             'id'    => 'view',
-            'title' => 'О событии'
+            'title' => 'О событии',
+			'options'=>['tabindex'=>'']
         ]
     );
     Modal::end();
