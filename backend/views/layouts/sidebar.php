@@ -4,7 +4,7 @@ use common\models\Event as EventAlias;
 use common\models\User;
 
 /*@var $assetDir backend\views\layouts */
-
+//$assetDir                      = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 	<!-- Brand Logo -->

@@ -10,39 +10,6 @@ use yii\helpers\Html;
 ?>
 
 <div class="site-index">
-    <?php
-    /*
-    if (!Yii::$app->user->isGuest) {
-        $userId = \Yii::$app->user->getId();
-    echo '<pre>';
-        //Все роли текущего пользователя
-        var_dump(\Yii::$app->authManager->getRolesByUser($userId));
-        PHP_EOL;
-
-        //Разрешение пользователя
-        var_dump(\Yii::$app->authManager->getAssignment('admin', $userId));
-        PHP_EOL;
-
-        //Все разрешения пользователя
-        var_dump(\Yii::$app->authManager->getAssignments($userId));
-        PHP_EOL;
-
-        //Проверка доступа пользователя
-        echo 'Проверка доступа пользователя ';
-        var_dump(\Yii::$app->authManager->checkAccess($userId, 'admin', $params = []));
-        PHP_EOL;
-
-        //Тоже проверка доступа пользователя
-        echo 'Тоже проверка доступа пользователя ';
-        var_dump(Yii::$app->user->can('admin'));
-    echo '</pre>';
-
-    } else {
-        echo "Здравствуйте, Гость!";
-    }
-    ;*/ ?>
-
-
 	<div class="body-content">
 
 		<div class="row mt-3">

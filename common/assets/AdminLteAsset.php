@@ -16,7 +16,8 @@ class AdminLteAsset extends AssetBundle
     ];
 
     public $js = [
-        'js/adminlte.min.js'
+        'js/adminlte.min.js',
+
     ];
 
     public $depends = [
