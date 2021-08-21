@@ -28,6 +28,11 @@ return [
         'storage'     => [
             'class' => 'common\components\Storage'
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapAsset' => false,
+            ],
+        ],
 
         /*'errorHandler' => [
             'errorAction' => 'site/error',

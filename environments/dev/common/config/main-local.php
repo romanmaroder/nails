@@ -42,5 +42,10 @@ return [
                 ]
             ],
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapAsset' => false,
+            ],
+        ],
     ],
 ];
