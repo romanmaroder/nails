@@ -29,125 +29,216 @@ $this->params['breadcrumbs'][] = $this->title;
 						</div>
 						<!-- /.card-header -->
 						<div class="card-body">
-                            <?= GridView::widget(
-                                [
-                                    'dataProvider' => $dataProvider,
-                                    'summary'      => '',
-                                    'tableOptions' => [
-                                        'class' => 'table table-striped table-bordered',
-                                        'id'    => 'example2'
-                                    ],
-                                    'columns'      => [
+                            <?php
+                            if (Yii::$app->id =='app-frontend') : ?>
+                                <?= GridView::widget(
+                                    [
+                                        'dataProvider' => $dataProvider,
+                                        'summary'      => '',
+                                        'tableOptions' => [
+                                            'class' => 'table table-striped table-bordered',
+                                            'id'    => 'example2'
+                                        ],
+                                        'columns'      => [
 //            ['class' => 'yii\grid\SerialColumn'],
 
-                                        'username',
-                                        [
-                                            'attribute' => 'roles',
-//                                            'format'    => 'raw',
-                                            'value'     => function ($roles) {
-                                                $role = array_values(
-                                                    Yii::$app->authManager->getRolesByUser
-                                                    (
-                                                        $roles->id
-                                                    )
-                                                )[0];
-                                                return $role->description;
-                                            }
-                                        ],
-//                                        'email:email',
-                                        [
-                                            'attribute' => 'gallery',
-                                            'label'     => 'Дизайн',
-                                            'format'    => 'raw',
-                                            'value'     => function ($model) {
-                                                return Html::a(
-                                                    'Дизайн',
-                                                    [
-                                                        '/profile/account/gallery',
-                                                        'id' => $model->id
-                                                    ]
-                                                );
-                                            }
-                                        ],
-                                        [
-                                            'attribute' => 'status',
-                                            'format'    => 'raw',
-                                            'value'     => function ($model) {
-                                                return $model->getStatusUser($model->status);
-                                            },
-                                        ],
-//                                        'color',
-                                        [
-                                            'attribute' => 'color',
-                                            'format'    => 'raw',
-                                            'visible'   => Yii::$app->user->can('perm_view-calendar'),
-                                            'value'     => function ($model) {
-                                                $option = [
-                                                    'style' => [
-                                                        'width'            => '100%',
-                                                        'height'           => '20px',
-                                                        'border-radius'    => '20px',
-                                                        'margin'           => '0 auto',
-                                                        'background-color' => $model->color
-                                                    ]
-                                                ];
-                                                return $model->color ? Html::tag('div', '', $option) : Html::tag(
-                                                    'div',
-                                                    '-',
-                                                    $option
-                                                );
-                                            },
-                                        ],
-                                        [
-                                            'attribute' => 'avatar',
-                                            'format'    => 'raw',
-                                            'value'     => function ($model) {
-                                                return '<div class="image" style="width:100px">
+                                            'username',
+
+                                            [
+                                                'attribute' => 'gallery',
+                                                'label'     => 'Дизайн',
+                                                'format'    => 'raw',
+                                                'value'     => function ($model) {
+                                                    return Html::a(
+                                                        'Дизайн',
+                                                        [
+                                                            '/profile/account/gallery',
+                                                            'id' => $model->id
+                                                        ]
+                                                    );
+                                                }
+                                            ],
+                                            [
+                                                'attribute' => 'status',
+                                                'format'    => 'raw',
+                                                'value'     => function ($model) {
+                                                    return $model->getStatusUser($model->status);
+                                                },
+                                            ],
+                                            [
+                                                'attribute' => 'color',
+                                                'format'    => 'raw',
+                                                //'visible'   => Yii::$app->user->can('perm_view-calendar'),
+                                                'value'     => function ($model) {
+                                                    $option = [
+                                                        'style' => [
+                                                            'width'            => '100%',
+                                                            'height'           => '20px',
+                                                            'border-radius'    => '20px',
+                                                            'margin'           => '0 auto',
+                                                            'background-color' => $model->color
+                                                        ]
+                                                    ];
+                                                    return $model->color ? Html::tag('div', '', $option) : Html::tag(
+                                                        'div',
+                                                        '-',
+                                                        $option
+                                                    );
+                                                },
+                                            ],
+                                            [
+                                                'attribute' => 'avatar',
+                                                'format'    => 'raw',
+                                                'value'     => function ($model) {
+                                                    return '<div class="image" style="width:100px">
 														<img class="img-circle"
 															 style="width: 100%;height: auto"
 															 src="'.$model->getPicture().'" alt="">
 														</div>';
-                                            },
+                                                },
+                                            ],
+                                            'description:ntext',
+                                            [
+                                                'attribute' => 'birthday',
+                                                'format'    => ['date', 'php:d-m-Y'],
+                                                'value'     => function ($model) {
+                                                    return $model->birthday ?: null;
+                                                }
+                                            ],
+                                            [
+                                                'attribute' => 'phone',
+                                                'format'    => 'raw',
+                                                'value'     => function ($phone) {
+                                                    return $phone->phone ? Html::a(
+                                                        $phone->phone,
+                                                        'tel:'.$phone->phone
+                                                    ) : 'номер не указан';
+                                                }
+                                            ],
+                                            'address',
+                                            [
+                                                'class'          => 'yii\grid\ActionColumn',
+                                                'template' => '{view}'
+                                            ],
                                         ],
-                                        'description:ntext',
-//                                        'birthday',
-                                        [
-                                            'attribute' => 'birthday',
-                                            'format'    => ['date', 'php:d-m-Y'],
-                                            'value'     => function ($model) {
-                                                return $model->birthday ?: null;
-                                            }
+                                    ]
+                                ); ?>
+                            <?php
+                            else: ?>
+                                <?= GridView::widget(
+                                    [
+                                        'dataProvider' => $dataProvider,
+                                        'summary'      => '',
+                                        'tableOptions' => [
+                                            'class' => 'table table-striped table-bordered',
+                                            'id'    => 'example2'
                                         ],
-                                        [
-                                            'attribute' => 'phone',
-                                            'format'    => 'raw',
-                                            'value'     => function ($phone) {
-                                                return $phone->phone ? Html::a(
-                                                    $phone->phone,
-                                                    'tel:'.$phone->phone
-                                                ) : 'номер не указан';
-                                            }
-                                        ],
-                                        'address',
-                                        /*[
-                                            'attribute' => 'created_at',
-                                            'format'    => ['date', 'php:d-m-Y'],
-                                        ],*/
+                                        'columns'      => [
+//            ['class' => 'yii\grid\SerialColumn'],
 
-                                        [
-                                            'class'          => 'yii\grid\ActionColumn',
-                                            'visibleButtons' => [
-                                                'update' => function () {
-                                                    return Yii::$app->user->can('manager');
+                                            'username',
+                                           /* [
+                                                'attribute' => 'roles',
+//                                            'format'    => 'raw',
+                                                'value'     => function ($roles) {
+                                                    $role = array_values(
+                                                        Yii::$app->authManager->getRolesByUser
+                                                        (
+                                                            $roles->id
+                                                        )
+                                                    )[0];
+                                                    return $role->description;
+                                                }
+                                            ],*/
+//                                        'email:email',
+                                            [
+                                                'attribute' => 'gallery',
+                                                'label'     => 'Дизайн',
+                                                'format'    => 'raw',
+                                                'value'     => function ($model) {
+                                                    return Html::a(
+                                                        'Дизайн',
+                                                        [
+                                                            '/profile/account/gallery',
+                                                            'id' => $model->id
+                                                        ]
+                                                    );
+                                                }
+                                            ],
+                                            [
+                                                'attribute' => 'status',
+                                                'format'    => 'raw',
+                                                'value'     => function ($model) {
+                                                    return $model->getStatusUser($model->status);
                                                 },
-                                                'delete' => function () {
-                                                    return Yii::$app->user->can('manager');
+                                            ],
+                                            [
+                                                'attribute' => 'color',
+                                                'format'    => 'raw',
+                                                //'visible'   => Yii::$app->user->can('perm_view-calendar'),
+                                                'value'     => function ($model) {
+                                                    $option = [
+                                                        'style' => [
+                                                            'width'            => '100%',
+                                                            'height'           => '20px',
+                                                            'border-radius'    => '20px',
+                                                            'margin'           => '0 auto',
+                                                            'background-color' => $model->color
+                                                        ]
+                                                    ];
+                                                    return $model->color ? Html::tag('div', '', $option) : Html::tag(
+                                                        'div',
+                                                        '-',
+                                                        $option
+                                                    );
                                                 },
-                                            ]
+                                            ],
+                                            [
+                                                'attribute' => 'avatar',
+                                                'format'    => 'raw',
+                                                'value'     => function ($model) {
+                                                    return '<div class="image" style="width:100px">
+														<img class="img-circle"
+															 style="width: 100%;height: auto"
+															 src="'.$model->getPicture().'" alt="">
+														</div>';
+                                                },
+                                            ],
+                                            'description:ntext',
+                                            [
+                                                'attribute' => 'birthday',
+                                                'format'    => ['date', 'php:d-m-Y'],
+                                                'value'     => function ($model) {
+                                                    return $model->birthday ?: null;
+                                                }
+                                            ],
+                                            [
+                                                'attribute' => 'phone',
+                                                'format'    => 'raw',
+                                                'value'     => function ($phone) {
+                                                    return $phone->phone ? Html::a(
+                                                        $phone->phone,
+                                                        'tel:'.$phone->phone
+                                                    ) : 'номер не указан';
+                                                }
+                                            ],
+                                            'address',
+                                            [
+                                                'class'          => 'yii\grid\ActionColumn',
+                                                'visibleButtons' => [
+                                                    'update' => function () {
+                                                        return Yii::$app->user->can('manager');
+                                                    },
+                                                    'delete' => function () {
+                                                        return Yii::$app->user->can('manager');
+                                                    },
+                                                ]
+                                            ],
                                         ],
-                                    ],
-                                ]
-                            ); ?>
+                                    ]
+                                ); ?>
+                            <?php
+                            endif; ?>
 						</div>
 						<!-- /.card-body -->
 					</div>

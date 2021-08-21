@@ -37,7 +37,7 @@ class EventController extends Controller
         /*$searchModel = new EventSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);*/
 
-        $events = Event::find()->with('master')->all();
+        $events = Event::find()->with('master','client')->all();
 //        $tasks  = [];
         foreach ($events as $item) {
             $event        = new \yii2fullcalendar\models\Event();
