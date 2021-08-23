@@ -17,6 +17,9 @@ return [
         'blog' => [
             'class' => 'common\modules\blog\Blog',
         ],
+        'calendar' => [
+            'class' => 'common\modules\calendar\Module',
+        ],
     ],
     'components' => [
         'cache'       => [

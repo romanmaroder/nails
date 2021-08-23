@@ -1,7 +1,8 @@
 <?php
 
-namespace backend\controllers;
+namespace common\modules\calendar\controllers;
 
+use backend\controllers\AdminController;
 use Yii;
 use common\models\Event;
 use common\models\EventSearch;
@@ -15,22 +16,37 @@ use yii\widgets\ActiveForm;
 /**
  * EventController implements the CRUD actions for Event model.
  */
-class EventController extends AdminController
+class EventController extends Controller
 {
     /**
      * {@inheritdoc}
      */
-    /*public function behaviors()
+    public function behaviors(): array
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post'],
+                    'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['login', 'logout','index'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['login'],
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
-    }*/
+    }
 
     /**
      * Lists all Event models.

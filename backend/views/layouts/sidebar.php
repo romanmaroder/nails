@@ -95,7 +95,7 @@ use common\models\User;
                             'icon'  => 'calendar-alt',
                             'badge' => '<span class="right badge badge-info">'.EventAlias::countEventTotal().'</span>',
                             'iconClassAdded' => 'text-warning',
-                            'url'   => ['/event/index'],
+                            'url'   => ['/calendar/event/index'],
                         ],
                         [
                             'label' => 'Клиенты',
