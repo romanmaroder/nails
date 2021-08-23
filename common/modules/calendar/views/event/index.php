@@ -17,7 +17,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-index">
 
+<<<<<<< HEAD:common/modules/calendar/views/event/index.php
 <!--    Регистрация переменных для использования в js коде-->
+=======
+
+>>>>>>> origin/main:backend/views/event/index.php
     <?php Yii::$app->view->registerJs("app=". Json::encode(Yii::$app->id)."; basePath=". Json::encode(Yii::$app->request->baseUrl) .";",  View::POS_HEAD);?>
 
     <?php

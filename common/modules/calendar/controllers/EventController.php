@@ -2,10 +2,8 @@
 
 namespace common\modules\calendar\controllers;
 
-use backend\controllers\AdminController;
 use Yii;
 use common\models\Event;
-use common\models\EventSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
