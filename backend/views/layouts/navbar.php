@@ -15,7 +15,7 @@ use yii\helpers\Url;
             <a href="<?= Url::home()?>" class="nav-link">Главная</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/admin/event/index" class="nav-link">Календарь</a>
+            <a href="/admin/calendar/event/index" class="nav-link">Календарь</a>
         </li>
 		<li class="nav-item d-none d-sm-inline-block">
 			<a href="/admin/client" class="nav-link">Клиенты</a>
@@ -27,7 +27,7 @@ use yii\helpers\Url;
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 			   class="nav-link dropdown-toggle">Меню</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><a href="/admin/event/index" class="dropdown-item">Календарь</a></li>
+                <li><a href="/admin/calendar/event/index" class="dropdown-item">Календарь</a></li>
                 <li><a href="/admin/client" class="dropdown-item">Клиенты</a></li>
                 <li><a href="/admin/employees/master" class="dropdown-item">Мастера</a></li>
                 <li><?= Html::a('Выйти', ['/site/logout'], ['data-method' => 'post', 'class' => 'dropdown-item'])

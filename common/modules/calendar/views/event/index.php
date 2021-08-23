@@ -1,18 +1,24 @@
 <?php
 
+use common\modules\calendar\controllers\EventController;
 use yii\bootstrap4\Modal;
 use yii\web\JsExpression;
+use yii\web\View;
 use yii2fullcalendar\yii2fullcalendar;
+use yii\helpers\Json;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\EventSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $events \backend\controllers\EventController */
+/* @var $events EventController */
 
 $this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-index">
+
+<!--    Регистрация переменных для использования в js коде-->
+    <?php Yii::$app->view->registerJs("app=". Json::encode(Yii::$app->id)."; basePath=". Json::encode(Yii::$app->request->baseUrl) .";",  View::POS_HEAD);?>
 
     <?php
     Modal::begin(
@@ -105,23 +111,32 @@ $this->params['breadcrumbs'][] = $this->title;
 //                'googleCalendarApiKey' => 'AIzaSyDWfl1aqSSrH19_IxQKWZmOkjorYIvT7vc',
                 'dayClick'        => new JsExpression(
                     "function (date,view) {
-                   
-                    $.ajax({
-                    url:'/admin/event/create',
-                    type:'GET',
-                    data:{'date':date.format()},
-                    success:function (data) {			
-						$('#modal').modal('show').find('#modalContent').html(data)
-        				},
-        			error:function(jqXHR, textStatus, errorThrown){}
-                    }
-                    )}"
+                                   if(app == 'app-backend'){
+                                        $.ajax({
+                                        url:basePath +'/calendar/event/create',
+                                        type:'GET',
+                                        data:{'date':date.format()},
+                                        success:function (data) {			
+                                            $('#modal').modal('show').find('#modalContent').html(data)
+                                            },
+                                        error:function(jqXHR, textStatus, errorThrown){}
+                                        }
+                                        )}
+                        }"
                 ),
                 'eventClick'      => new JsExpression(
                     "function(event) {
-                        viewUrl = '/admin/event/view?id=' + event.id;
-                        updateUrl = '/admin/event/update?id=' + event.id;
-                        $('#edit-link').attr('href', updateUrl);
+                    
+                     if(app == 'app-backend'){
+                        viewUrl = basePath +'/calendar/event/view?id=' + event.id;
+                        updateUrl = basePath +'/calendar/event/update?id=' + event.id;
+                         $('#edit-link').attr('href', updateUrl);
+                     }else{
+                        viewUrl = '/calendar/event/view?id=' + event.id;
+                        //updateUrl = '/calendar/event/update?id=' + event.id;
+                     }
+                        
+                       
                       $('#view').find('.modal-body').load(viewUrl);
                       $('#view').modal('show');
                     }"

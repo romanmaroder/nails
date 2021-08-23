@@ -9,6 +9,12 @@ return [
         'client'  => [
             'class' => 'common\modules\client\Module',
         ],
+        'calendar' => [
+            'class' => 'common\modules\calendar\Module',
+        ],
+        'blog' => [
+            'class' => 'common\modules\blog\Blog',
+        ],
     ],
     'components' => [
         'db' => [

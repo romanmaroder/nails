@@ -50,7 +50,7 @@ $this->beginBody() ?>
         /*['label' => 'О нас', 'url' => ['/site/contact']],*/
     ];
     if (yii::$app->user->can('perm_view-calendar')) {
-        $menuItems[] = ['label' => 'Календарь', 'url' => ['/event/index']];
+        $menuItems[] = ['label' => 'Календарь', 'url' => ['/calendar/event/index']];
         $menuItems[] = ['label' => 'Клиенты', 'url' => ['/client/client/index']];
     }
 
