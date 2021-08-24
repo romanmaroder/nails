@@ -2,6 +2,7 @@
 
 use common\models\Event as EventAlias;
 use common\models\User;
+use hail812\adminlte\widgets\Menu;
 
 /*@var $assetDir backend\views\layouts */
 //$assetDir                      = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
@@ -57,7 +58,7 @@ use common\models\User;
 		<!-- Sidebar Menu -->
 		<nav class="mt-2">
             <?php
-            echo \hail812\adminlte\widgets\Menu::widget(
+            echo Menu::widget(
                 [
                     'options' => [
                         'class'          => 'nav nav-pills nav-sidebar flex-column nav-child-indent',
@@ -126,7 +127,7 @@ use common\models\User;
                                 ['label' => 'Level2', 'iconStyle' => 'far']*/
                             ]
                         ],
-                        ['label' => 'Мастера', 'icon' => 'fas fa-user-tag', 'url' => ['/employees/master/index'],'iconClassAdded' => 'text-info'],
+                        ['label' => 'Мастера', 'icon' => 'fas fa-user-tag', 'url' => ['/employees/master/index'],'iconClassAdded' =>	'text-info'],
                         [
                             'label' => 'Блог',
                             'icon'  => 'far fa-newspaper',

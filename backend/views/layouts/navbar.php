@@ -12,24 +12,24 @@ use yii\helpers\Url;
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="<?= Url::home()?>" class="nav-link">Главная</a>
+            <?php echo Html::a('Главная',Url::home(),['class'=>'nav-link']) ;?>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/admin/calendar/event/index" class="nav-link">Календарь</a>
+			<?php echo Html::a('Календарь',['/calendar/event/index'],['class'=>'nav-link']) ;?>
         </li>
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="/admin/client" class="nav-link">Клиенты</a>
+            <?php echo Html::a('Клиенты',['/client'],['class'=>'nav-link']) ;?>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
-			<a href="/admin/employees/master" class="nav-link">Мастера</a>
+            <?php echo Html::a('Мастера',['/master'],['class'=>'nav-link']) ;?>
 		</li>
         <li class="nav-item dropdown d-sm-none">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
 			   class="nav-link dropdown-toggle">Меню</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><a href="/admin/calendar/event/index" class="dropdown-item">Календарь</a></li>
-                <li><a href="/admin/client" class="dropdown-item">Клиенты</a></li>
-                <li><a href="/admin/employees/master" class="dropdown-item">Мастера</a></li>
+                <li><?php echo Html::a('Календарь',['/calendar/event/index'],['class'=>'nav-link']) ;?></li>
+                <li><?php echo Html::a('Клиенты',['/client'],['class'=>'nav-link']) ;?></li>
+                <li><?php echo Html::a('Мастера',['/master'],['class'=>'nav-link']) ;?></li>
                 <li><?= Html::a('Выйти', ['/site/logout'], ['data-method' => 'post', 'class' => 'dropdown-item'])
 					?></li>
 

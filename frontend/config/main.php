@@ -40,14 +40,20 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'urlManager' => [
+        'urlManager'   => [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,
             'rules'           => [
-                ''      => 'site/index',
-                'event' => 'event/index',
-               'post/<id:\d+>' => '/blog/post/post',
-               'post/<slug>' => '/blog/post/post',
+                ''              => 'site/index',
+                'event'         => '/calendar/event/index',
+                'client'         => '/client/client/index',
+                'client/<id:\d+>'         => '/client/client/view',
+                'portfolio'         => '/site/portfolio',
+                'about'         => '/site/about',
+                'login'         => '/site/login',
+                'account'         => '/profile/account',
+                'post/<id:\d+>' => '/blog/post/post',
+                'post/<slug>'   => '/blog/post/post',
             ],
         ],
     ],
