@@ -47,7 +47,6 @@ $this->beginBody() ?>
     );
     $menuItems = [
         ['label' => 'Главная', 'url' => ['/site/index']],
-        /*['label' => 'О нас', 'url' => ['/site/contact']],*/
     ];
     if (yii::$app->user->can('perm_view-calendar')) {
         $menuItems[] = ['label' => 'Календарь', 'url' => ['/calendar/event/index']];
