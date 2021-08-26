@@ -180,6 +180,8 @@ class Event extends ActiveRecord
 
     /**
      * Total number of records for each master
+     * @param $masterIds
+     * @return array
      */
     public function getTotalEventsMaster($masterIds): array
     {

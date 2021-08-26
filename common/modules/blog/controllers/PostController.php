@@ -82,12 +82,13 @@ class PostController extends Controller
      */
     public function actionPost($slug)
     {
+        $post = $this->findModelBySlug($slug);
+
         $this->setMeta(
-            $this->findModelBySlug($slug)->title,
-            $this->findModelBySlug($slug)->subtitle,
-            $this->findModelBySlug($slug)->description
+            $post->title,
+            $post->subtitle,
+            $post->description
         );
-        $post = Post::findOne(['slug' => $slug, 'status' => 1]);
         if ($post == null) {
             throw new NotFoundHttpException('Запрошенная страница не существует.');
         }
@@ -296,7 +297,7 @@ class PostController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModelBySlug($slug){
-        if (($model = Post::find()->where(['slug'=>$slug])->one()) !== null) {
+        if (($model = Post::find()->where(['slug'=>$slug,'status'=>1])->one()) !== null) {
             return $model;
         }
 

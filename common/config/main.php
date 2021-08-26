@@ -32,6 +32,7 @@ return [
             'class' => 'common\components\Storage'
         ],
         'assetManager' => [
+            'appendTimestamp' => true,
             'bundles' => [
                 'yii\bootstrap\BootstrapAsset' => false,
             ],
