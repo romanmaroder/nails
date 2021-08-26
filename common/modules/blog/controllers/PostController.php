@@ -293,7 +293,7 @@ class PostController extends Controller
      * If the model is not found, a 404 HTTP exception will be thrown.
      *
      * @param $slug
-     * @return Post the loaded model
+     * @return array|\yii\db\ActiveRecord
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModelBySlug($slug){
