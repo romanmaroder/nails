@@ -2,6 +2,7 @@
 
 namespace common\modules\blog\controllers;
 
+use common\components\behaviors\DeleteCacheBehavior;
 use common\models\PostImage;
 use common\models\User;
 use common\modules\blog\models\AddPost;
@@ -31,6 +32,11 @@ class PostController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            [
+                'class' => DeleteCacheBehavior::class,
+                'cache_key' => ['events_list'],
+                'actions' => ['create', 'update', 'delete'],
+            ],
 
         ];
     }
@@ -42,8 +48,18 @@ class PostController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel  = new PostSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $cache = Yii::$app->cache;
+        $key = 'post_list';  // Формируем ключ
+        // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+        $dataProvider = $cache->getOrSet(
+            $key,
+            function () {
+                $searchModel  = new PostSearch();
+               return $searchModel->search(Yii::$app->request->queryParams);
+            },
+            3600
+        );
+
 
         return $this->render(
             'index',

@@ -45,8 +45,10 @@ class Category extends \yii\db\ActiveRecord
 
     public static function getCategoryList() {
 
-        $category = Category::find()->asArray()->all();
+        $categories = Category::getDb()->cache(function (){
+            return Category::find()->asArray()->all();
+        }, 3600);
 
-        return ArrayHelper::map($category, 'id', 'category_name');
+        return ArrayHelper::map($categories, 'id', 'category_name');
     }
 }
