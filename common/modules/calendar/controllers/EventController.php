@@ -2,6 +2,7 @@
 
 namespace common\modules\calendar\controllers;
 
+use common\components\behaviors\DeleteCacheBehavior;
 use Yii;
 use common\models\Event;
 use yii\filters\AccessControl;
@@ -23,14 +24,14 @@ class EventController extends Controller
     {
         return [
             'verbs' => [
-                'class'   => VerbFilter::class,
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['login', 'logout','index'],
+                'only' => ['login', 'logout', 'index'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -42,6 +43,11 @@ class EventController extends Controller
                         'roles' => ['@'],
                     ],
                 ],
+            ],
+            [
+                'class' => DeleteCacheBehavior::class,
+                'cache_key' => ['events_list'],
+                'actions' => ['create', 'update', 'delete'],
             ],
         ];
     }
@@ -56,19 +62,32 @@ class EventController extends Controller
         /*$searchModel = new EventSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);*/
 
-        $events = Event::find()->with(['master','client'])->all();
+        $cache = Yii::$app->cache;
+        // Формируем ключ
+        $key = 'events_list';
+        // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+        $events = $cache->getOrSet(
+            $key,
+            function () {
+                return  Event::find()->with(['master', 'client'])->all();
+            },
+            3600
+        );
+
+
+
 //        $tasks  = [];
         foreach ($events as $item) {
-            $event              = new \yii2fullcalendar\models\Event();
-            $event->id          = $item->id;
-            $event->title       = $item->client->username;
+            $event = new \yii2fullcalendar\models\Event();
+            $event->id = $item->id;
+            $event->title = $item->client->username;
             $event->nonstandard = [
-                'description' =>$item->description,
+                'description' => $item->description,
                 'master_name' => $item->master->username,
             ];
-            $event->color       = $item->master->color;
-            $event->start       = $item->event_time_start;
-            $event->end         = $item->event_time_end;
+            $event->color = $item->master->color;
+            $event->start = $item->event_time_start;
+            $event->end = $item->event_time_end;
 
             $events[] = $event;
         }
@@ -87,7 +106,7 @@ class EventController extends Controller
     /**
      * Displays a single Event model.
      *
-     * @param  integer  $id
+     * @param integer $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -112,9 +131,9 @@ class EventController extends Controller
      */
     public function actionCreate($date)
     {
-        $model                   = new Event();
+        $model = new Event();
         $model->event_time_start = $date;
-        $model->event_time_end   = $date;
+        $model->event_time_end = $date;
 
         if ($model->load(Yii::$app->request->post())) {
             $isValid = $model->validate();
@@ -139,7 +158,7 @@ class EventController extends Controller
      * Updates an existing Event model.
      * If update is successful, the browser will be redirected to the 'view' page.
      *
-     * @param  integer  $id
+     * @param integer $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -168,10 +187,12 @@ class EventController extends Controller
      * Deletes an existing Event model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      *
-     * @param  integer  $id
+     * @param integer $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -184,7 +205,7 @@ class EventController extends Controller
      * Finds the Event model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      *
-     * @param  integer  $id
+     * @param integer $id
      *
      * @return Event the loaded model
      * @throws NotFoundHttpException if the model cannot be found

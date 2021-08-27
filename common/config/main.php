@@ -24,6 +24,7 @@ return [
     'components' => [
         'cache'       => [
             'class' => 'yii\caching\FileCache',
+            'cachePath' => '@common/runtime/cache' // Храним кэш в common/runtime/cache
         ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
