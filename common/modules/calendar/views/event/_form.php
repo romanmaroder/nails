@@ -88,7 +88,7 @@ use yii\bootstrap4\ActiveForm;
                 'data'          =>  User::getClientList(),
                 'options'       => ['placeholder' => 'Выберите клиента ...'],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => true,
                 ],
             ]
         ) ?>
