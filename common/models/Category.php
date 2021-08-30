@@ -43,8 +43,11 @@ class Category extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function getCategoryList() {
-
+    /**
+     * @throws \Throwable
+     */
+    public static function getCategoryList(): array
+    {
         $categories = Category::getDb()->cache(function (){
             return Category::find()->asArray()->all();
         }, 3600);

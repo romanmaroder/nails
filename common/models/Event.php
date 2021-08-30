@@ -172,10 +172,11 @@ class Event extends ActiveRecord
      *
      * @return bool|int|string|null
      */
-    public static function countEventTotal()
+    public static function countEventTotal($masterIds)
     {
         return Event::find()->where(['>=', 'event_time_start', date('Y-m-d')])
-            ->count();
+            ->andWhere(['master_id'=>$masterIds])
+            ->count('client_id');
     }
 
     /**

@@ -94,7 +94,7 @@ use hail812\adminlte\widgets\Menu;
                         [
                             'label' => 'Календарь',
                             'icon'  => 'calendar-alt',
-                            'badge' => '<span class="right badge badge-info">'.EventAlias::countEventTotal().'</span>',
+                            'badge' => '<span class="right badge badge-info">'.EventAlias::countEventTotal(Yii::$app->authManager->getUserIdsByRole('master')).'</span>',
                             'iconClassAdded' => 'text-warning',
                             'url'   => ['/calendar/event/index'],
                         ],
