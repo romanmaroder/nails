@@ -72,8 +72,11 @@ class ClientController extends Controller
      */
     public function actionIndex(): string
     {
-
-        if (Yii::$app->user->can('admin')) {
+$dataProvider = User::getDataProvider();
+/*echo '<pre>';
+var_dump($dataProvider);
+die();*/
+       /* if (Yii::$app->user->can('admin')) {
             $query = User::find();
         } else {
             $query = User::find()->where(['!=', 'id', '1']);
@@ -83,7 +86,7 @@ class ClientController extends Controller
                 'query' => $query,
                 'pagination' => false,
             ]
-        );
+        );*/
 
         return $this->render(
             'index',

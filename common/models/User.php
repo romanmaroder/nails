@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\data\ActiveDataProvider;
 use Yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
@@ -187,11 +188,11 @@ class User extends ActiveRecord implements IdentityInterface
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
-    public static function findByUserPhone( $phone): ?User
+    public static function findByUserPhone($phone): ?User
     {
         /*return User::findOne($phone);*/
         return static::find()
-            ->where(['phone'=>$phone])
+            ->where(['phone' => $phone])
             ->one();
     }
 
@@ -446,8 +447,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getUserTotalCount()
     {
-        $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
-        return User::find()->where(['id' => $clientIds])->count();
+        $client = User::getDb()->cache(
+            function () {
+                $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
+                return User::find()->where(['id' => $clientIds])->count();
+            },
+            3600
+        );
+
+        return $client;
     }
 
 
@@ -517,5 +525,42 @@ class User extends ActiveRecord implements IdentityInterface
     public function getCertificate(): ActiveQuery
     {
         return $this->hasMany(Certificate::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Return client list dataProvider
+     * @return \yii\data\ActiveDataProvider
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getDataProvider(): ActiveDataProvider
+    {
+        if (Yii::$app->user->can('admin')) {
+            $query = User::find();
+        } else {
+            $query = User::find()->where(['!=', 'id', '1']);
+        }
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query'      => $query,
+                'pagination' => false,
+            ]
+        );
+        $dependency   = \Yii::createObject(
+            [
+                'class' => 'yii\caching\DbDependency',
+                'sql'   => 'SELECT MAX(updated_at) FROM user',
+                'reusable'=>true
+            ]
+        );
+       Yii::$app->db->cache(
+            function () use ($dataProvider) {
+                $dataProvider->prepare();
+            },
+            3600,
+            $dependency
+        );
+
+        return $dataProvider;
     }
 }
