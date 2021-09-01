@@ -176,8 +176,7 @@ use yii\helpers\Url;
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="/admin/event/index" class="dropdown-item">
-                    <i class="fas fa-file mr-2"></i>Всего записей <?php echo \common\models\Event::countEventTotal(Yii::$app->authManager->getUserIdsByRole('master')) ;
-                    ?>
+                    <i class="fas fa-file mr-2"></i>Всего записей <?php echo $countEventTotal ; ?>
                     <span class="float-right text-muted text-sm">-</span>
                 </a>
                 <div class="dropdown-divider"></div>

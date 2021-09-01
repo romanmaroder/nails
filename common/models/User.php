@@ -546,7 +546,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'pagination' => false,
             ]
         );
-        $dependency   = \Yii::createObject(
+        $dependency   = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
                 'sql'   => 'SELECT MAX(updated_at) FROM user',

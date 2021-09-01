@@ -4,7 +4,8 @@ use common\models\Event as EventAlias;
 use common\models\User;
 use hail812\adminlte\widgets\Menu;
 
-/*@var $assetDir backend\views\layouts */
+/*@var $assetDir backend\views\layouts\main */
+/*@var $countEventTotal backend\views\layouts\main */
 //$assetDir                      = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -94,7 +95,7 @@ use hail812\adminlte\widgets\Menu;
                         [
                             'label' => 'Календарь',
                             'icon'  => 'calendar-alt',
-                            'badge' => '<span class="right badge badge-info">'.EventAlias::countEventTotal(Yii::$app->authManager->getUserIdsByRole('master')).'</span>',
+                            'badge' => '<span class="right badge badge-info">'.$countEventTotal.'</span>',
                             'iconClassAdded' => 'text-warning',
                             'url'   => ['/calendar/event/index'],
                         ],

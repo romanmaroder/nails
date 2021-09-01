@@ -5,7 +5,6 @@ namespace common\modules\client\controllers;
 use Yii;
 use common\models\User;
 use common\models\Profile;
-use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -30,7 +29,7 @@ class ClientController extends Controller
     public function behaviors(): array
     {
         return [
-            'verbs' => [
+            'verbs'  => [
                 'class'   => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
@@ -38,12 +37,12 @@ class ClientController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['login', 'logout','index'],
+                'only'  => ['login', 'logout', 'index'],
                 'rules' => [
                     [
-                        'allow' => true,
+                        'allow'   => true,
                         'actions' => ['login'],
-                        'roles' => ['?'],
+                        'roles'   => ['?'],
                     ],
                     [
                         'allow' => true,
@@ -72,21 +71,8 @@ class ClientController extends Controller
      */
     public function actionIndex(): string
     {
-$dataProvider = User::getDataProvider();
-/*echo '<pre>';
-var_dump($dataProvider);
-die();*/
-       /* if (Yii::$app->user->can('admin')) {
-            $query = User::find();
-        } else {
-            $query = User::find()->where(['!=', 'id', '1']);
-        }
-        $dataProvider = new ActiveDataProvider(
-            [
-                'query' => $query,
-                'pagination' => false,
-            ]
-        );*/
+        $dataProvider = User::getDataProvider();
+
 
         return $this->render(
             'index',
@@ -139,8 +125,8 @@ die();*/
                 $profile->save();
 //                return $this->redirect(['view', 'id' => $model->id]);
                 return $this->redirect('index');
-            }else {
-                Yii::$app->session->setFlash('danger','Сохраните клиента еще раз');
+            } else {
+                Yii::$app->session->setFlash('danger', 'Сохраните клиента еще раз');
                 return $this->refresh();
             }
         }
@@ -167,7 +153,6 @@ die();*/
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -192,7 +177,7 @@ die();*/
     {
         Yii::$app->authManager->revokeAll($id);
 
-            $this->findModel($id)->delete();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }

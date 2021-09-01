@@ -14,6 +14,7 @@ AdminLteAsset::register($this);
 
 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 $user = Yii::$app->user->identity;
+$countEventTotal = \common\models\Event::countEventTotal(Yii::$app->authManager->getUserIdsByRole('master'))
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -31,11 +32,11 @@ $user = Yii::$app->user->identity;
 
 <div class="wrapper">
     <!-- Navbar -->
-    <?= $this->render('navbar', ['assetDir' => $assetDir]) ?>
+    <?= $this->render('navbar', ['assetDir' => $assetDir,'countEventTotal'=>$countEventTotal]) ?>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <?= $this->render('sidebar', ['assetDir' => $assetDir,'user'=>$user]) ?>
+    <?= $this->render('sidebar', ['assetDir' => $assetDir,'user'=>$user,'countEventTotal'=>$countEventTotal]) ?>
 
     <!-- Content Wrapper. Contains page content -->
     <?= $this->render('content', ['content' => $content]) ?>
