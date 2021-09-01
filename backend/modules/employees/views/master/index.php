@@ -9,15 +9,13 @@ use yii\widgets\Pjax;
 
 $this->title                   = 'Мастера';
 $this->params['breadcrumbs'][] = $this->title;
-$assetDir                      = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+//$assetDir                      = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 
 
 ?>
 
 <!-- Main content -->
 <section class="content">
-    <?php
-    /*echo '<pre>';print_r( $dataProvider->getModels()) ;*/ ?>
 	<!-- Default box -->
 	<div class="card card-solid">
 		<div class="card-body pb-0">

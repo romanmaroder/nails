@@ -108,7 +108,7 @@ use yii\helpers\Url;
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="<?=$assetDir?>/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+						<?php echo Html::img('/img/user1-128x128.jpg',['class'=>'img-size-50 mr-3 img-circle','alt'=>'User Avatar']) ;?>
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
                                 Brad Diesel
@@ -124,7 +124,7 @@ use yii\helpers\Url;
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="<?=$assetDir?>/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                        <?php echo Html::img('/img/user8-128x128.jpg',['class'=>'img-size-50 img-circle mr-3','alt'=>'User Avatar']) ;?>
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
                                 John Pierce
@@ -140,7 +140,7 @@ use yii\helpers\Url;
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="<?=$assetDir?>/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                        <?php echo Html::img('/img/user3-128x128.jpg',['class'=>'img-size-50 img-circle mr-3','alt'=>'User Avatar']) ;?>
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
                                 Nora Silvester
