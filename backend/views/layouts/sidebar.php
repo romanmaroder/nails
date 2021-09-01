@@ -1,6 +1,5 @@
 <?php
 
-use common\models\Event as EventAlias;
 use common\models\User;
 use hail812\adminlte\widgets\Menu;
 use yii\helpers\Html;
