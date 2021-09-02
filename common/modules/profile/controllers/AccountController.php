@@ -67,7 +67,11 @@ class AccountController extends Controller
     {
         $userId = Yii::$app->user->getId();
 
-        $user = User::findOne($userId);
+        $user = User::getDb()->cache(function () use ($userId){
+            return User::findOne($userId);
+        }, 3600);
+
+        //$user = User::findOne($userId);
 
         $profile = Profile::findOne(['user_id' => $userId]);
 
@@ -80,6 +84,8 @@ class AccountController extends Controller
         $modelCertificate = new AddCertificate($user);
 
         $certificate = new Certificate();
+
+        $dataProvider = Event::getEventDataProvider($userId);
 
         if (!isset($user, $profile)) {
             throw new NotFoundHttpException("Пользователь не найден.");
@@ -99,7 +105,7 @@ class AccountController extends Controller
         $userInfo        = User::getUserInfo($userId);
         $userProfileInfo = Profile::getUserProfileInfo($userId);
 
-        if (Yii::$app->user->can('manager')){
+        /*if (Yii::$app->user->can('manager')){
         $dataProvider = new ActiveDataProvider(
             [
                 'query' => Event::findManagerEvents(),
@@ -122,7 +128,7 @@ class AccountController extends Controller
                     'pagination' => false,
                 ]
             );
-        }
+        }*/
 
 
         if ($modelPhoto->load(Yii::$app->request->post())) {
@@ -181,7 +187,10 @@ class AccountController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $userId                     = Yii::$app->user->getId();
 
-        $user          = User::findOne($userId);
+        #$user          = User::findOne($userId);
+        $user = User::getDb()->cache(function () use ($userId){
+            return User::findOne($userId);
+        }, 3600);
         $model         = new AvatarForm($user);
         $model->avatar = UploadedFile::getInstance($model, 'avatar');
 

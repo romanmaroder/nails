@@ -47,19 +47,19 @@ return [
                 'yii\bootstrap\BootstrapAsset' => false,
             ],
         ],
-        'modules'    => [
-            'profile' => [
-                'class' => 'common\modules\profile\module',
-            ],
-            'client'  => [
-                'class' => 'common\modules\client\Module',
-            ],
-            'blog' => [
-                'class' => 'common\modules\blog\Blog',
-            ],
-            'calendar' => [
-                'class' => 'common\modules\calendar\Module',
-            ],
+    ],
+    'modules'    => [
+        'profile' => [
+            'class' => 'common\modules\profile\module',
+        ],
+        'client'  => [
+            'class' => 'common\modules\client\Module',
+        ],
+        'blog' => [
+            'class' => 'common\modules\blog\Blog',
+        ],
+        'calendar' => [
+            'class' => 'common\modules\calendar\Module',
         ],
     ],
 ];

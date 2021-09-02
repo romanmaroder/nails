@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -105,7 +107,6 @@ class Event extends ActiveRecord
         return Event::find()->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(
             ['event_time_start' => SORT_ASC]
         );
-
     }
 
     /**
@@ -134,16 +135,17 @@ class Event extends ActiveRecord
 
     /**
      * Returns a list of future records
+     *
      * @param $user_id
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public static function findNextClientEvents( $user_id)
+    public static function findNextClientEvents($user_id)
     {
         return Event::find()
             ->select('event_time_start, description')
-            ->where(['client_id'=>$user_id])
-            ->andWhere(['>','event_time_start',new Expression('CURDATE()')])
+            ->where(['client_id' => $user_id])
+            ->andWhere(['>', 'event_time_start', new Expression('CURDATE()')])
             ->asArray()
             ->all();
     }
@@ -151,17 +153,18 @@ class Event extends ActiveRecord
 
     /**
      * Returns a list of previous records
+     *
      * @param $user_id
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public static function findPreviousClientEvents( $user_id)
+    public static function findPreviousClientEvents($user_id)
     {
         return Event::find()
             ->select('event_time_start, description')
-            ->where(['client_id'=>$user_id])
-            ->andWhere(['<','event_time_start',new Expression('CURDATE()')])
-            ->orderBy(['ABS'=>new Expression('DATEDIFF(NOW(), `event_time_start`)')])
+            ->where(['client_id' => $user_id])
+            ->andWhere(['<', 'event_time_start', new Expression('CURDATE()')])
+            ->orderBy(['ABS' => new Expression('DATEDIFF(NOW(), `event_time_start`)')])
             ->limit(2)
             ->asArray()
             ->all();
@@ -175,22 +178,73 @@ class Event extends ActiveRecord
     public static function countEventTotal($masterIds)
     {
         return Event::find()->where(['>=', 'event_time_start', date('Y-m-d')])
-            ->andWhere(['master_id'=>$masterIds])
+            ->andWhere(['master_id' => $masterIds])
             ->count('client_id');
     }
 
     /**
      * Total number of records for each master
+     *
      * @param $masterIds
+     *
      * @return array
      */
     public function getTotalEventsMaster($masterIds): array
     {
-        return Event::find()->select(['COUNT(client_id) AS totalEvent','master_id'])
-            ->with(['master'=>function($q){$q->select(['id','username','avatar']);}])
+        return Event::find()->select(['COUNT(client_id) AS totalEvent', 'master_id'])
+            ->with(
+                [
+                    'master' => function ($q) {
+                        $q->select(['id', 'username', 'avatar']);
+                    }
+                ]
+            )
             ->where(['master_id' => $masterIds])
             ->andWhere(['>=', 'event_time_start', date('Y-m-d')])
             ->groupBy('master_id')
             ->all();
     }
+
+
+    /**
+     * Return event list dataProvider
+     *
+     * @return \yii\data\ActiveDataProvider
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getEventDataProvider($userId): ActiveDataProvider
+    {
+        if (Yii::$app->user->can('manager')) {
+            $query = Event::findManagerEvents();
+        } elseif (Yii::$app->user->can('master')) {
+            $query = Event::findMasterEvents($userId);
+        } else {
+            $query     = Event::findClientEvents($userId);
+        }
+
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query'      => $query,
+                'pagination' => false,
+            ]
+        );
+        $dependency   = Yii::createObject(
+            [
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(event_time_start) FROM event',
+                'reusable' => true
+            ]
+        );
+        Yii::$app->db->cache(
+            function () use ($dataProvider) {
+                $dataProvider->prepare();
+            },
+            3600,
+            $dependency
+        );
+
+        return $dataProvider;
+    }
+
 }
