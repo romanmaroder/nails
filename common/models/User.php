@@ -426,21 +426,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Getting user data
-     *
-     * @param $userId
-     *
-     * @return array|\common\models\User|\yii\db\ActiveRecord|null
-     */
-    public static function getUserInfo($userId)
-    {
-        return User::find()
-            ->select(['username', 'avatar', 'description', 'address', 'birthday', 'phone'])
-            ->where(['id' => $userId])
-            ->one();
-    }
-
-    /**
      * Number of clients
      *
      * @return bool|int|string|null

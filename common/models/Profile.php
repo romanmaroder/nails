@@ -60,7 +60,7 @@ class Profile extends ActiveRecord
 
     public static function getUserProfileInfo($userId){
         return Profile::find()
-            ->select(['education','notes','skill'])
+            #->select(['education','notes','skill'])
             ->where(['user_id'=>$userId])
             ->one();
     }

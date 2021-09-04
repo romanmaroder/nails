@@ -20,7 +20,6 @@ use yii\web\Response;
 use yii\web\UploadedFile;
 
 
-
 /**
  * AccountController implements the CRUD actions for Event model.
  */
@@ -67,13 +66,11 @@ class AccountController extends Controller
     {
         $userId = Yii::$app->user->getId();
 
-        $user = User::getDb()->cache(function () use ($userId){
-            return User::findOne($userId);
-        }, 3600);
 
-        //$user = User::findOne($userId);
+        $user = User::findIdentity($userId);
 
-        $profile = Profile::findOne(['user_id' => $userId]);
+        $profile = Profile::getUserProfileInfo($userId);
+
 
         $modelAvatar = new AvatarForm($user);
 
@@ -86,6 +83,7 @@ class AccountController extends Controller
         $certificate = new Certificate();
 
         $dataProvider = Event::getEventDataProvider($userId);
+
 
         if (!isset($user, $profile)) {
             throw new NotFoundHttpException("Пользователь не найден.");
@@ -102,29 +100,25 @@ class AccountController extends Controller
             }
         }
 
-        $userInfo        = User::getUserInfo($userId);
-        $userProfileInfo = Profile::getUserProfileInfo($userId);
 
-        /*if (Yii::$app->user->can('manager')){
-        $dataProvider = new ActiveDataProvider(
-            [
-                'query' => Event::findManagerEvents(),
-                'pagination' => false,
-            ]
-        );
-    }
-        elseif(Yii::$app->user->can('master')) {
+       /* if (Yii::$app->user->can('manager')) {
             $dataProvider = new ActiveDataProvider(
                 [
-                    'query' => Event::findMasterEvents($userId),
+                    'query'      => Event::findManagerEvents(),
                     'pagination' => false,
                 ]
             );
-        }
-        else {
+        } elseif (Yii::$app->user->can('master')) {
             $dataProvider = new ActiveDataProvider(
                 [
-                    'query' => Event::findClientEvents($userId),
+                    'query'      => Event::findMasterEvents($userId),
+                    'pagination' => false,
+                ]
+            );
+        } else {
+            $dataProvider = new ActiveDataProvider(
+                [
+                    'query'      => Event::findClientEvents($userId),
                     'pagination' => false,
                 ]
             );
@@ -158,23 +152,21 @@ class AccountController extends Controller
 
         // Ids юзеров с ролью 'master'
 
-        $model           = $photo->getPhotoList($userId, $masterIds);
+        $model = $photo->getPhotoList($userId, $masterIds);
 
         $certificateList = $certificate->getCertificates($userId);
 
         return $this->render(
             'index',
             [
-                'dataProvider'    => $dataProvider,
-                'userInfo'        => $userInfo,
-                'userProfileInfo' => $userProfileInfo,
-                'user'            => $user,
-                'profile'         => $profile,
-                'modelAvatar'     => $modelAvatar,
-                'model'           => $model,
-                'modelCertificate'     => $modelCertificate,
-                'certificateList' => $certificateList,
-                'modelPhoto'      => $modelPhoto
+                'dataProvider'     => $dataProvider,
+                'user'             => $user,
+                'profile'          => $profile,
+                'modelAvatar'      => $modelAvatar,
+                'model'            => $model,
+                'modelCertificate' => $modelCertificate,
+                'certificateList'  => $certificateList,
+                'modelPhoto'       => $modelPhoto
             ]
         );
     }
@@ -187,10 +179,8 @@ class AccountController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $userId                     = Yii::$app->user->getId();
 
-        #$user          = User::findOne($userId);
-        $user = User::getDb()->cache(function () use ($userId){
-            return User::findOne($userId);
-        }, 3600);
+        $user = User::findIdentity($userId);
+//
         $model         = new AvatarForm($user);
         $model->avatar = UploadedFile::getInstance($model, 'avatar');
 

@@ -12,10 +12,8 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap4\ActiveForm */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $userInfo \common\modules\profile\controllers\AccountController */
-/* @var $userProfileInfo \common\modules\profile\controllers\AccountController */
-/* @var $user \common\modules\profile\controllers\AccountController */
 /* @var $profile \common\modules\profile\controllers\AccountController */
+/* @var $user \common\modules\profile\controllers\AccountController */
 /* @var $modelAvatar\common\modules\profile\models\AvatarForm */
 /* @var $modelPhoto \common\modules\profile\controllers\AccountController */
 /* @var $model\common\modules\profile\controllers\AccountController */
@@ -52,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					</div>
 
 					<h3 class="profile-username text-center"><?php
-                        echo $userInfo->username; ?></h3>
+                        echo $user->username; ?></h3>
                     <?php
                     if (Yii::$app->user->can('master')) : ?>
 						<p class="text-muted text-center">
@@ -86,44 +84,44 @@ $this->params['breadcrumbs'][] = $this->title;
 				<!-- /.card-header -->
 				<div class="card-body">
                     <?php
-                    if ($userProfileInfo->education) : ?>
+                    if ($profile->education) : ?>
 						<strong><i class="fas fa-book mr-1"></i> Образование</strong>
 						<p class="text-muted">
                             <?php
-                            echo $userProfileInfo->education; ?>
+                            echo $profile->education; ?>
 						</p>
 						<hr>
                     <?php
                     endif; ?>
                     <?php
-                    if ($userInfo->address) : ?>
+                    if ($user->address) : ?>
 
 
 						<strong><i class="fas fa-map-marker-alt mr-1"></i> Место проживание</strong>
 
 						<p class="text-muted"><?php
-                            echo $userInfo->address; ?></p>
+                            echo $user->address; ?></p>
 
                     <?php
                     endif; ?>
                     <?php
-                    if ($userProfileInfo->skill) : ?>
+                    if ($profile->skill) : ?>
 						<hr>
 
 						<strong><i class="fas fa-pencil-alt mr-1"></i> Навыки и умения</strong>
 
 						<p class="text-muted">
 								<span class="tag tag-info"><?php
-                                    echo $userProfileInfo->skill; ?></span>
+                                    echo $profile->skill; ?></span>
 						</p>
                     <?php
                     endif; ?>
                     <?php
-                    if ($userProfileInfo->notes) : ?>
+                    if ($profile->notes) : ?>
 						<hr>
 						<strong><i class="far fa-file-alt mr-1"></i> Заметки</strong>
 						<p class="text-muted"><?php
-                            echo $userProfileInfo->notes; ?></p>
+                            echo $profile->notes; ?></p>
                     <?php
                     endif; ?>
 				</div>
