@@ -116,9 +116,10 @@ class Photo extends ActiveRecord
     /**
      * Getting a photo for the gallery
      *
+     * @param int|null $id
      * @return array
      */
-    public function getPortfolio($id = null): array
+    public function getPortfolio(int $id = null): array
     {
         $query = Photo::find()->where(['portfolio' => 1]);
         if ($id) {
@@ -151,7 +152,7 @@ class Photo extends ActiveRecord
      *
      * @return string
      */
-    public static function getBaclgroundCard(): string
+    public static function getBackgroundCard(): string
     {
         $images = scandir(self::DEFAULT_BG);
         $arr    = [];
