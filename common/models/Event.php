@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -24,7 +25,18 @@ class Event extends ActiveRecord
     /**
      * @var mixed|null
      */
-
+    public function behaviors()
+    {
+        return [
+            [
+                'class'      => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -44,7 +56,7 @@ class Event extends ActiveRecord
             [['client_id'], 'integer', 'message' => 'Выберите клиента'],
             [['client_id'], 'required', 'message' => 'Выберите клиента'],
             [['description'], 'string'],
-            [['event_time_start', 'event_time_end'], 'safe'],
+            [['event_time_start', 'event_time_end','created_at','updated_at'], 'safe'],
             [['notice'], 'string', 'max' => 255],
             /*[
                 ['master_id'],
@@ -104,7 +116,7 @@ class Event extends ActiveRecord
      */
     public static function findMasterEvents(int $id): ActiveQuery
     {
-        return Event::find()->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(
+        return Event::find()->with('client')->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(
             ['event_time_start' => SORT_ASC]
         );
     }
@@ -116,7 +128,13 @@ class Event extends ActiveRecord
      */
     public static function findManagerEvents(): ActiveQuery
     {
-        return Event::find()->where('event_time_start >= DATE(NOW())')->orderBy(['event_time_start' => SORT_ASC]);
+        return Event::find()->with('client')->where('event_time_start >= DATE(NOW())')->orderBy(
+            [
+                'event_time_start'
+                => SORT_ASC
+            ]
+        );
+            #->asArray();
     }
 
     /**
@@ -128,7 +146,8 @@ class Event extends ActiveRecord
      */
     public static function findClientEvents(int $id): ActiveQuery
     {
-        return Event::find()->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])->where(
+        return Event::find()->with('client')->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
+            ->where(
             ['client_id' => $id]
         );
     }
@@ -220,7 +239,7 @@ class Event extends ActiveRecord
         } elseif (Yii::$app->user->can('master')) {
             $query = Event::findMasterEvents($userId);
         } else {
-            $query     = Event::findClientEvents($userId);
+            $query = Event::findClientEvents($userId);
         }
 
         $dataProvider = new ActiveDataProvider(
@@ -232,7 +251,7 @@ class Event extends ActiveRecord
         $dependency   = Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
-                'sql'      => 'SELECT MAX(event_time_start) FROM event',
+                'sql'      => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
