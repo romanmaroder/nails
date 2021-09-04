@@ -186,7 +186,7 @@ class SiteController extends Controller
 
         $master = User::find()->with('certificate')->where(['id' => $masterIds])->all();
 
-        $path = Photo::getBaclgroundCard();
+        $path = Photo::getBackgroundCard();
 
         return $this->render('about', ['master' => $master, 'path' => $path]);
     }

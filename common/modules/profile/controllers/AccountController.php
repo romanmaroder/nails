@@ -84,8 +84,6 @@ class AccountController extends Controller
 
         $dataProvider = Event::getEventDataProvider($userId);
 
-        /*echo '<pre>';
-        var_dump($dataProvider);*/
 
         if (!isset($user, $profile)) {
             throw new NotFoundHttpException("Пользователь не найден.");
@@ -101,30 +99,6 @@ class AccountController extends Controller
                 return $this->redirect(['index']);
             }
         }
-
-
-       /* if (Yii::$app->user->can('manager')) {
-            $dataProvider = new ActiveDataProvider(
-                [
-                    'query'      => Event::findManagerEvents(),
-                    'pagination' => false,
-                ]
-            );
-        } elseif (Yii::$app->user->can('master')) {
-            $dataProvider = new ActiveDataProvider(
-                [
-                    'query'      => Event::findMasterEvents($userId),
-                    'pagination' => false,
-                ]
-            );
-        } else {
-            $dataProvider = new ActiveDataProvider(
-                [
-                    'query'      => Event::findClientEvents($userId),
-                    'pagination' => false,
-                ]
-            );
-        }*/
 
 
         if ($modelPhoto->load(Yii::$app->request->post())) {

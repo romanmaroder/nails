@@ -22,6 +22,7 @@ class Event extends ActiveRecord
 {
 
     public $totalEvent;
+
     /**
      * @var mixed|null
      */
@@ -29,7 +30,7 @@ class Event extends ActiveRecord
     {
         return [
             [
-                'class'      => TimestampBehavior::class,
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -37,6 +38,7 @@ class Event extends ActiveRecord
             ],
         ];
     }
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +58,7 @@ class Event extends ActiveRecord
             [['client_id'], 'integer', 'message' => 'Выберите клиента'],
             [['client_id'], 'required', 'message' => 'Выберите клиента'],
             [['description'], 'string'],
-            [['event_time_start', 'event_time_end','created_at','updated_at'], 'safe'],
+            [['event_time_start', 'event_time_end', 'created_at', 'updated_at'], 'safe'],
             [['notice'], 'string', 'max' => 255],
             /*[
                 ['master_id'],
@@ -77,13 +79,13 @@ class Event extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'               => 'ID',
-            'client_id'        => 'Клиент',
-            'master_id'        => 'Мастер',
-            'description'      => 'Что делаем',
-            'notice'           => 'Пожелания',
+            'id' => 'ID',
+            'client_id' => 'Клиент',
+            'master_id' => 'Мастер',
+            'description' => 'Что делаем',
+            'notice' => 'Пожелания',
             'event_time_start' => 'Время начала',
-            'event_time_end'   => 'Время окончания',
+            'event_time_end' => 'Время окончания',
         ];
     }
 
@@ -92,7 +94,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getMaster(): ActiveQuery
+     public function getMaster(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'master_id']);
     }
@@ -110,15 +112,30 @@ class Event extends ActiveRecord
     /**
      * Getting records for masters
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return \yii\db\ActiveQuery
      */
     public static function findMasterEvents(int $id): ActiveQuery
     {
-        return Event::find()->with(['master', 'client'])->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(
-            ['event_time_start' => SORT_ASC]
-        )->asArray();
+        $dependency = Yii::createObject(
+            [
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'reusable' => true
+            ]
+        );
+        return Event::getDb()->cache(
+            function () use ($id) {
+                return Event::find()->with(['master', 'client'])->where(['master_id' => $id])->andWhere(
+                    'event_time_start >= DATE(NOW())'
+                )->orderBy(
+                    ['event_time_start' => SORT_ASC]
+                )->asArray();
+            },
+            3600,
+            $dependency
+        );
     }
 
     /**
@@ -128,28 +145,56 @@ class Event extends ActiveRecord
      */
     public static function findManagerEvents(): ActiveQuery
     {
-        return Event::find()->with(['master', 'client'])->where('event_time_start >= DATE(NOW())')->orderBy(
+        $dependency = Yii::createObject(
             [
-                'event_time_start'
-                => SORT_ASC
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'reusable' => true
             ]
-        )
-            ->asArray();
+        );
+        return Event::getDb()->cache(
+            function () {
+                return Event::find()->with(['master', 'client'])->where('event_time_start >= DATE(NOW())')->orderBy(
+                    [
+                        'event_time_start'
+                        => SORT_ASC
+                    ]
+                )
+                    ->asArray();
+            },
+            3600,
+            $dependency
+        );
     }
 
     /**
      * Getting records for client
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return \yii\db\ActiveQuery
      */
     public static function findClientEvents(int $id): ActiveQuery
     {
-        return Event::find()->with(['master', 'client'])->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
-            ->where(
-            ['client_id' => $id]
-        )->asArray();
+        $dependency = Yii::createObject(
+            [
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'reusable' => true
+            ]
+        );
+        return Event::getDb()->cache(
+            function () use ($id) {
+                return Event::find()->with(['master', 'client'])->select(
+                    ['id', 'client_id', 'master_id', 'description', 'event_time_start']
+                )
+                    ->where(
+                        ['client_id' => $id]
+                    )->asArray();
+            },
+            3600,
+            $dependency
+        );
     }
 
     /**
@@ -196,9 +241,25 @@ class Event extends ActiveRecord
      */
     public static function countEventTotal($masterIds)
     {
-        return Event::find()->where(['>=', 'event_time_start', date('Y-m-d')])
-            ->andWhere(['master_id' => $masterIds])
-            ->count('client_id');
+
+        $dependency = Yii::createObject(
+            [
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'reusable' => true
+            ]
+        );
+        return Event::getDb()->cache(
+            function () use ($masterIds) {
+                return Event::find()->where(['>=', 'event_time_start', date('Y-m-d')])
+                    ->andWhere(['master_id' => $masterIds])
+                    ->count('client_id');
+            },
+            3600,
+            $dependency
+        );
+
+
     }
 
     /**
@@ -210,18 +271,34 @@ class Event extends ActiveRecord
      */
     public function getTotalEventsMaster($masterIds): array
     {
-        return Event::find()->select(['COUNT(client_id) AS totalEvent', 'master_id'])
-            ->with(
-                [
-                    'master' => function ($q) {
-                        $q->select(['id', 'username', 'avatar']);
-                    }
-                ]
-            )
-            ->where(['master_id' => $masterIds])
-            ->andWhere(['>=', 'event_time_start', date('Y-m-d')])
-            ->groupBy('master_id')
-            ->all();
+
+        $dependency = Yii::createObject(
+            [
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'reusable' => true
+            ]
+        );
+        return Event::getDb()->cache(
+            function () use ($masterIds) {
+                return Event::find()->select(['COUNT(client_id) AS totalEvent', 'master_id'])
+                    ->with(
+                        [
+                            'master' => function ($q) {
+                                $q->select(['id', 'username', 'avatar']);
+                            }
+                        ]
+                    )
+                    ->where(['master_id' => $masterIds])
+                    ->andWhere(['>=', 'event_time_start', date('Y-m-d')])
+                    ->groupBy('master_id')
+                    ->all();
+            },
+            3600,
+            $dependency
+        );
+
+
     }
 
 
@@ -244,14 +321,14 @@ class Event extends ActiveRecord
 
         $dataProvider = new ActiveDataProvider(
             [
-                'query'      => $query,
+                'query' => $query,
                 'pagination' => false,
             ]
         );
-        $dependency   = Yii::createObject(
+        $dependency = Yii::createObject(
             [
-                'class'    => 'yii\caching\DbDependency',
-                'sql'      => 'SELECT MAX(updated_at) FROM event',
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );

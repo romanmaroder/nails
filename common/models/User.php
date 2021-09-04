@@ -513,6 +513,17 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Relationship with [[Certificate]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile(): ActiveQuery
+    {
+        return $this->hasOne(Profile::class, ['user_id' => 'id']);
+    }
+
+
+    /**
      * Return client list dataProvider
      * @return \yii\data\ActiveDataProvider
      * @throws \Throwable
