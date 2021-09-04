@@ -223,7 +223,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'value'     => function ($client) {
                                                     return Html::a(
                                                         $client['client']['username'],
-                                                        ['/client/client/view', 'id' => $client->client->id]
+                                                        ['/client/client/view', 'id' => $client['client']['id']]
                                                     );
                                                 }
                                             ],
