@@ -222,7 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'visible'   => Yii::$app->user->can('perm_view-calendar'),
                                                 'value'     => function ($client) {
                                                     return Html::a(
-                                                        $client->client->username,
+                                                        $client['client']['username'],
                                                         ['/client/client/view', 'id' => $client->client->id]
                                                     );
                                                 }
@@ -232,7 +232,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'format'    => 'raw',
                                                 'visible'   => Yii::$app->user->can('user'),
                                                 'value'     => function ($master) {
-                                                    return $master->master->username;
+                                                    return $master['master']['username'];
                                                 }
                                             ],
                                             [

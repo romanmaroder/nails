@@ -84,6 +84,8 @@ class AccountController extends Controller
 
         $dataProvider = Event::getEventDataProvider($userId);
 
+        /*echo '<pre>';
+        var_dump($dataProvider);*/
 
         if (!isset($user, $profile)) {
             throw new NotFoundHttpException("Пользователь не найден.");

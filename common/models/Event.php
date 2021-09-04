@@ -116,9 +116,9 @@ class Event extends ActiveRecord
      */
     public static function findMasterEvents(int $id): ActiveQuery
     {
-        return Event::find()->with('client')->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(
+        return Event::find()->with(['master', 'client'])->where(['master_id' => $id])->andWhere('event_time_start >= DATE(NOW())')->orderBy(
             ['event_time_start' => SORT_ASC]
-        );
+        )->asArray();
     }
 
     /**
@@ -128,13 +128,13 @@ class Event extends ActiveRecord
      */
     public static function findManagerEvents(): ActiveQuery
     {
-        return Event::find()->with('client')->where('event_time_start >= DATE(NOW())')->orderBy(
+        return Event::find()->with(['master', 'client'])->where('event_time_start >= DATE(NOW())')->orderBy(
             [
                 'event_time_start'
                 => SORT_ASC
             ]
-        );
-            #->asArray();
+        )
+            ->asArray();
     }
 
     /**
@@ -146,10 +146,10 @@ class Event extends ActiveRecord
      */
     public static function findClientEvents(int $id): ActiveQuery
     {
-        return Event::find()->with('client')->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
+        return Event::find()->with(['master', 'client'])->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
             ->where(
             ['client_id' => $id]
-        );
+        )->asArray();
     }
 
     /**
