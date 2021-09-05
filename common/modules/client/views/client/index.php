@@ -312,7 +312,6 @@ JS;
       "pageLength": 10,
         "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
         "buttons": [
-      
         ],
          "language": {
           "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
