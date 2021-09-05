@@ -368,6 +368,7 @@ $(function () {
     "info": false,
     "autoWidth": false,
     "bStateSave": true,
+    "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
     "fnStateSave": function (oSettings, oData) {
         localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
     },
@@ -392,7 +393,7 @@ $(function () {
                     "next": '<i class="fas fa-forward"></i>'
                 }
        }
-    });
+    }).buttons().container().appendTo('#eventsList_wrapper .col-md-6:eq(0)');
   });
 JS;
 

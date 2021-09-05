@@ -257,13 +257,15 @@ $this->params['breadcrumbs'][] = $this->title;
 if (Yii::$app->id == 'app-backend') {
     $js = <<< JS
  $(function () {
-     
+   
    $("#example2").DataTable({
       "responsive": true,
+      "lengthChange":true,
       "pageLength": 10,
       "autoWidth": false,
       "info": false,
-      buttons: [
+      "dom": "<'row'<'col-sm-12 col-md-4 order-3 order-md-1 text-left'B><'col-sm-12 col-md-4 order-md-3 text-md-right'l><'col-sm-12 order-md-2 col-md-4'f>>tp",
+      "buttons": [
         {
 				"text": "Добавить клиента",
 				"className":"btn btn-success",
@@ -294,8 +296,10 @@ if (Yii::$app->id == 'app-backend') {
                 }
          }
     
-    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
- 
+    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)')
+    
+ //.buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)')
+  
     /*$('#example2').DataTable({
       "paging": true,
       "lengthChange": false,
