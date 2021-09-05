@@ -257,7 +257,7 @@ $this->params['breadcrumbs'][] = $this->title;
 if (Yii::$app->id == 'app-backend') {
     $js = <<< JS
  $(function () {
-   
+     
    $("#example2").DataTable({
       "responsive": true,
       "lengthChange":true,
