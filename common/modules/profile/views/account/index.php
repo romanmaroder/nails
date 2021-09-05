@@ -132,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		<!-- /.col -->
 		<div class="col-md-9">
 			<div class="card card-outline card-primary">
-				<div class="card-header p-2">
+				<div class="card-header ">
 					<ul class="nav nav-pills">
 						<li class="nav-item">
 							<a class="nav-link active"
@@ -157,7 +157,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php
                         endif; ?>
                         <?php
-						 if (Yii::$app->user->can('perm_view-calendar')) : ?>
+                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
 							<li class="nav-item">
 								<a class="nav-link"
 								   href="#certificate"
@@ -185,8 +185,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php
                         if (Yii::$app->user->can('perm_create-post')) : ?>
 							<li class="nav-item">
-								<?php echo Html::a('Статьи',['/blog/post/index'],['class'=>'nav-link',
-																				   'data-toggle'=>''])	;?>
+                                <?php
+                                echo Html::a(
+                                    'Статьи',
+                                    ['/blog/post/index'],
+                                    [
+                                        'class'       => 'nav-link',
+                                        'data-toggle' => ''
+                                    ]
+                                ); ?>
 							</li>
                         <?php
                         endif; ?>
@@ -205,14 +212,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'dataProvider' => $dataProvider,
                                         'summary'      => "",
-                                        'filterModel'  => null,
+                                        #'filterModel'  => null,
 
                                         'tableOptions' => [
                                             'class' => 'table table-bordered table-hover',
+                                            'style'=>'width:100%',
                                             'id'    => 'eventsList',
                                         ],
                                         'options'      => [
-                                            'class' => 'table-responsive',
+                                            #'class' => 'table-responsive',
                                         ],
                                         'columns'      => [
                                             //['class' => 'yii\grid\SerialColumn'],
@@ -328,13 +336,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         endif; ?>
 						<!-- /.tab-pane -->
                         <?php
-/*                        if (Yii::$app->user->can('perm_create-post')) : */?><!--
+                        /*                        if (Yii::$app->user->can('perm_create-post')) : */ ?><!--
 							<div class="tab-pane" id="post">-->
 
-								<!-- /.card-body -->
-							<!--</div>
-                        --><?php
-/*                        endif; */?>
+						<!-- /.card-body -->
+						<!--</div>
+                    --><?php
+                        /*                        endif; */ ?>
 						<!-- /.tab-pane -->
 					</div>
 				</div>
@@ -351,7 +359,14 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $js = <<< JS
 $(function () {
-    $('#eventsList').DataTable({
+    $("#eventsList").DataTable({
+    "responsive": true,
+   "pageLength": 10,
+    "paging": true,
+    "searching": true,
+    "ordering": false,
+    "info": false,
+    "autoWidth": false,
     "bStateSave": true,
     "fnStateSave": function (oSettings, oData) {
         localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
@@ -360,15 +375,13 @@ $(function () {
         var data = localStorage.getItem('DataTables_' + window.location.pathname);
         return JSON.parse(data);
     },
-      "paging": true,
-      "lengthChange": false,
-      "searching": true,
-      "ordering": false,
-      "pageLength": 15,
-      "info": false,
-      "autoWidth": false,
-      "responsive": true,
        "language": {
+       "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
+      '<option value="10">10</option>'+
+      '<option value="20">20</option>'+
+      '<option value="50">50</option>'+
+      '<option value="-1">Все</option>'+
+      '</select>',
            "search": "Поиск:",
            "zeroRecords": "Совпадений не найдено",
     	  	"emptyTable": "В таблице отсутствуют данные",

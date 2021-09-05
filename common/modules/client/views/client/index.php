@@ -260,7 +260,6 @@ if (Yii::$app->id == 'app-backend') {
      
    $("#example2").DataTable({
       "responsive": true,
-      "lengthChange": false,
       "pageLength": 10,
       "autoWidth": false,
       "info": false,
@@ -278,6 +277,12 @@ if (Yii::$app->id == 'app-backend') {
         }
         ],
          "language": {
+           "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
+      '<option value="10">10</option>'+
+      '<option value="20">20</option>'+
+      '<option value="50">50</option>'+
+      '<option value="-1">Все</option>'+
+      '</select>',
           "search":"Поиск",
           "zeroRecords": "Совпадений не найдено",
     	  "emptyTable": "В таблице отсутствуют данные",
