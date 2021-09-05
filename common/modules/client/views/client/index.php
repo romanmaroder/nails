@@ -257,13 +257,15 @@ $this->params['breadcrumbs'][] = $this->title;
 if (Yii::$app->id == 'app-backend') {
     $js = <<< JS
  $(function () {
-     
+   
    $("#example2").DataTable({
       "responsive": true,
+      "lengthChange":true,
       "pageLength": 10,
       "autoWidth": false,
       "info": false,
-      buttons: [
+      "dom": "<'row'<'col-sm-12 col-md-4 order-3 order-md-1 text-left'B><'col-sm-12 col-md-4 order-md-3 text-md-right'l><'col-sm-12 order-md-2 col-md-4'f>>tp",
+      "buttons": [
         {
 				"text": "Добавить клиента",
 				"className":"btn btn-success",
@@ -294,17 +296,8 @@ if (Yii::$app->id == 'app-backend') {
                 }
          }
     
-    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
- 
-    /*$('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });*/
+    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)')
+    
   });
 JS;
 } else {
@@ -313,11 +306,21 @@ JS;
      
    $("#example2").DataTable({
       "responsive": true,
-      "lengthChange": false,
       "autoWidth": false,
       "info": false,
-       /*"order": [[ "role", "desc" ]],*/
+      "lengthChange":true,
+      "pageLength": 10,
+        "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
+        "buttons": [
+      
+        ],
          "language": {
+          "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
+      '<option value="10">10</option>'+
+      '<option value="20">20</option>'+
+      '<option value="50">50</option>'+
+      '<option value="-1">Все</option>'+
+      '</select>',
           "search":"Поиск",
           "paginate": {
                     "first": "Первая",
@@ -327,7 +330,7 @@ JS;
                 }
          }
     
-    });
+    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
  
   });
 JS;
