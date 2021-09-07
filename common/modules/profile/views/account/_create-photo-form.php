@@ -18,24 +18,6 @@ use yii\helpers\Html;
     <?php
     echo $form->field($modelPhoto, 'client_check')->checkbox(); ?>
 
-    <?php
-/*    echo $form->field($modelPhoto, 'client')->dropdownList(
-        User::getClientList(),
-        [
-            'prompt' => [
-                'text'    => 'Выберите клиента',
-                'options' => [
-                    'value' => 'none',
-                    'class' => 'prompt',
-                    'label' =>
-                        'Выберите клиента'
-                ]
-            ],
-			'class'=>'form-control d-none'
-        ]
-    )
-        ->label(null, ['class' => 'd-none']); */?>
-
 	<?php
    echo $form->field($modelPhoto, 'client')->widget(
         Select2::class,

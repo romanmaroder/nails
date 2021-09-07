@@ -204,6 +204,8 @@ class AccountController extends Controller
     /**
      * Delete user avatar
      *
+     * @param int $id
+     * @param $class
      * @return array|\yii\web\Response
      */
     public function actionDeletePhoto(int $id, $class)
@@ -226,7 +228,7 @@ class AccountController extends Controller
         } else {
             return [
                 'success' => false,
-                'message' => 'Error occured',
+                'message' => 'Error occurred',
             ];
         }
     }
