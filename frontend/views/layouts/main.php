@@ -11,7 +11,7 @@ use yii\bootstrap4\NavBar;
 use yii\bootstrap4\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
-
+use common\widgets\buttonUp\ButtonUp;
 AppAsset::register($this);
 ?>
 <?php
@@ -113,7 +113,7 @@ $this->beginBody() ?>
 		<!--<p class="pull-right"><?/*= Yii::powered() */?></p>-->
 	</div>
 </footer>
-
+<?php echo ButtonUp::widget() ;?>
 <?php
 $this->endBody() ?>
 

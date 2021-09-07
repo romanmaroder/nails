@@ -56,6 +56,9 @@ return [
                 'post/<slug>'   => '/blog/post/post',
             ],
         ],
+        'assetManager' => [
+           # 'linkAssets' => true,
+        ],
     ],
     'params'              => $params,
 ];

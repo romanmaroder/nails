@@ -17,6 +17,7 @@ class AdminLteAsset extends AssetBundle
     ];
 
     public $js = [
+        'js/tooltip.js',
         'js/adminlte.min.js',
     ];
 
