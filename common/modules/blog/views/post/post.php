@@ -59,9 +59,6 @@ $(function () {
 		fullHeight = $(document.body).prop('scrollHeight');
 		innerHeight = $(window).prop('innerHeight');
 		progressBar.css({"width" : (pageYOffset * 100 / (fullHeight - innerHeight)) + '%'});
-		let a =pageYOffset * 100 / (fullHeight - innerHeight);
-		if (a.toFixed() == 50){alert('Половина')}
-		console.log(a.toFixed());
 	}
 	fillProgressLine();
    });
