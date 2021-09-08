@@ -57,7 +57,6 @@ return [
             ],
         ],
         'assetManager' => [
-           # 'linkAssets' => true,
         ],
     ],
     'params'              => $params,
