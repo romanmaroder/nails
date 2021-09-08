@@ -20,6 +20,9 @@ function scrollFunction() {
 mybutton.addEventListener("click", backToTop);
 
 function backToTop() {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
+    $('html, body').animate({
+        scrollTop: $('body').offset().top
+    }, 800);
+    //document.body.scrollTop = 0;
+    //document.documentElement.scrollTop = 0;
 }
