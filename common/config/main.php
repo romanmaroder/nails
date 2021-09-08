@@ -34,7 +34,7 @@ return [
         ],
         'assetManager' => [
             'appendTimestamp' => true,
-            #'linkAssets' => true,
+            'linkAssets' => true,
             'bundles' => [
                 'yii\bootstrap\BootstrapAsset' => false,
             ],
