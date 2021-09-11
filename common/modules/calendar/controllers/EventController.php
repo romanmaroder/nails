@@ -62,12 +62,18 @@ class EventController extends Controller
         $cache = Yii::$app->cache;
         $key = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+        $dependency   = Yii::createObject(
+            [
+                'class' => 'yii\caching\DbDependency',
+                'sql'   => 'SELECT MAX(updated_at) FROM user',
+            ]
+        );
         $events = $cache->getOrSet(
             $key,
             function () {
                 return  Event::find()->with(['master', 'client'])->all();
             },
-            3600
+            3600,$dependency
         );
 
         foreach ($events as $item) {

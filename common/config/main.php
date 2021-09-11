@@ -22,10 +22,10 @@ return [
         ],
     ],
     'components' => [
-        /*'cache'       => [
+        'cache'       => [
             'class' => 'yii\caching\FileCache',
             'cachePath' => '@common/runtime/cache' // Храним кэш в common/runtime/cache
-        ],*/
+        ],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
@@ -33,7 +33,7 @@ return [
             'class' => 'common\components\Storage'
         ],
         'assetManager' => [
-            #'appendTimestamp' => true,
+            'appendTimestamp' => true,
             #'linkAssets' => true,
             'bundles' => [
                 'yii\bootstrap\BootstrapAsset' => false,
