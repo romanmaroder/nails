@@ -3,8 +3,9 @@
     bottom: 20px;
     left: 20px;
     display: none;
-    z-index:999;
+    z-index: 999;
 }
+
 .btn-circle {
     width: 38px;
     height: 38px;
@@ -16,4 +17,25 @@
     -webkit-box-shadow: 1px 1px 5px 2px rgba(34, 60, 80, 0.5);
     -moz-box-shadow: 1px 1px 5px 2px rgba(34, 60, 80, 0.5);
     box-shadow: 1px 1px 5px 2px rgba(34, 60, 80, 0.5);
+}
+.animate{
+    animation-name:animated;
+    animation-duration:5s;
+}
+.no-animate{
+    animation-name:animated;
+    animation-duration:5s;
+    animation-direction:reverse;
+}
+@keyframes animated {
+
+    0% {
+        transform: scale(0);
+    }
+    50%{
+        transform: scale(0.5);
+    }
+    100%{
+        transform: scale(1);
+    }
 }
