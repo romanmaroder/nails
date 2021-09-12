@@ -12,11 +12,12 @@ function scrollFunction() {
         document.documentElement.scrollTop > 20
     ) {
         mybutton.style.display = "block";
-        mybutton.classList.remove('no-animated');
+        mybutton.classList.remove('no-animate');
         mybutton.classList.add('animate');
-    } else {
+    } else if(document.body.scrollTop === 0 ||
+        document.documentElement.scrollTop === 0) {
         mybutton.classList.remove('animate');
-        mybutton.classList.add('no-animated');
+        mybutton.classList.add('no-animate');
     }
 }
 // When the user clicks on the button, scroll to the top of the document
@@ -26,6 +27,4 @@ function backToTop() {
     $('html, body').animate({
         scrollTop: $('body').offset().top
     }, 800);
-    //document.body.scrollTop = 0;
-    //document.documentElement.scrollTop = 0;
 }
