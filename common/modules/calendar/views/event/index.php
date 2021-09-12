@@ -66,9 +66,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'events' => $events,
 //                'googleCalendarId' => 'katya04111985@gmail.com',
             ],
-            'defaultView' => 'basicDay',
+            'defaultView' => new JsExpression("(localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') :'basicDay') "),
 //            'googleCalendar'=>true,
-
             'header' => [
                 'left'   => 'prev,next,today',
                 'center' => 'title',
@@ -180,35 +179,13 @@ $this->params['breadcrumbs'][] = $this->title;
        ),*/
                 'viewRender'      => new JsExpression(
                     "function (view,event, element){
-						var view = $('#calendar').fullCalendar('getView');
-//						alert(view.name);
-//                		if (view.name != view.name) {
-//                                    if ( view.name == 'basicWeek' )   
-//                                      { 
-//                                          
-//                                          console.log(\"week\");
-//                                      }
-//                                     if (view.name == 'basicDay' ) 
-//                                      { 
-//                                         
-//                                          console.log(\"day\");
-//                                      }
-//                                       if (view.name == 'month' ) 
-//                                      { 
-//                                       
-//                                          console.log(\"month\");
-//                                      }
-//                                      if (view.name == 'listWeek' ) 
-//                                      { 
-//                                         
-//                                          console.log(\"zzzzzzzzzzzzz\");
-//                                      }
-//                                      //You can use it some where else to know what view is active quickly
-//                                      currentView = view.name;
-////                                  }
+                    var b = $('#calendar').fullCalendar('getDate');
+						localStorage.setItem('fcDefaultView', view.name);
+						localStorage.setItem('fcDefaultViewDate', b);
                 }"
                 )
             ],
+
         ]
     ); ?>
 
