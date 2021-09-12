@@ -114,7 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                'googleCalendarApiKey' => 'AIzaSyDWfl1aqSSrH19_IxQKWZmOkjorYIvT7vc',
                 'defaultDate'=>new JsExpression("
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
-                "),
+                " ),
                 'dayClick'        => new JsExpression(
                     "function (date,view) {
                                    if(app == 'app-backend'){
