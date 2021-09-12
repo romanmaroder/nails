@@ -66,7 +66,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'events' => $events,
 //                'googleCalendarId' => 'katya04111985@gmail.com',
             ],
-            'defaultView' => new JsExpression("(localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') :'basicDay') "),
+            'defaultView' => new JsExpression("
+             localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
+            "),
+
 //            'googleCalendar'=>true,
             'header' => [
                 'left'   => 'prev,next,today',
@@ -109,6 +112,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'theme'           => true,
                 'fixedWeekCount'  => false,
 //                'googleCalendarApiKey' => 'AIzaSyDWfl1aqSSrH19_IxQKWZmOkjorYIvT7vc',
+                'defaultDate'=>new JsExpression("
+                localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
+                "),
                 'dayClick'        => new JsExpression(
                     "function (date,view) {
                                    if(app == 'app-backend'){
@@ -121,7 +127,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             },
                                         error:function(jqXHR, textStatus, errorThrown){}
                                         }
-                                        )}
+                                        )};
+										
                         }"
                 ),
                 'eventClick'      => new JsExpression(
@@ -142,7 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }"
                 ),
                 'dayRender'       => new JsExpression(
-                    "function (date,cell) {} "
+                    "function(){} "
                 ),
                 'eventRender'     => new JsExpression(
                     "function (event, element, view){
@@ -170,18 +177,11 @@ $this->params['breadcrumbs'][] = $this->title;
                   				 
                 	}"
                 ),
-                /*'viewRender'      => new \yii\web\JsExpression(
-           "function (view, element){
-               if( $('#calendar').fullCalendar('getView') === 'month') {
-                       alert('month');
-               }
-       }"
-       ),*/
                 'viewRender'      => new JsExpression(
                     "function (view,event, element){
-                    var b = $('#calendar').fullCalendar('getDate');
 						localStorage.setItem('fcDefaultView', view.name);
-						localStorage.setItem('fcDefaultViewDate', b);
+						var date = $('#calendar').fullCalendar('getDate');
+							localStorage.setItem('fcDefaultViewDate', date.format());
                 }"
                 )
             ],
