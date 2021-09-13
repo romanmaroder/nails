@@ -155,7 +155,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     "function (event, element, view){
 								element.addClass('event-render');
 								element.find('.fc-content').append(element.find('.fc-time').addClass('font-italic'));
-                  					console.log(event);
                   				if (view.name == 'basicDay' ) { 
                   					element.find('.fc-content').addClass('d-flex flex-column');
                   					element.addClass('fc-basic_day');
