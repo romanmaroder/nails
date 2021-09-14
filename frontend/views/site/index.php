@@ -12,7 +12,7 @@ use yii\helpers\Html;
 <div class="site-index">
 	<div class="body-content">
 
-		<div class="row mt-3">
+		<div class="row">
 			<div class="d-none d-xl-block col-xl-2">
                 <?php
                 echo NewsList::widget(['showLimit' => 3]); ?>
@@ -55,7 +55,7 @@ use yii\helpers\Html;
                                         ?></h1>
 									<h2><?php echo $post['subtitle']; ?></h2>
 									<p></p>
-									<div class="truncate-text no-img"> <?php echo $post['description'] ;?></div>
+									<!--<div class="truncate-text no-img"> <?php /*echo $post['subtitle'] ;*/?></div>-->
 									<p class="read-more">
                                         <?php
                                         echo Html::a(

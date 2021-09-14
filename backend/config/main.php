@@ -65,7 +65,7 @@ return [
                 'category'        => 'category/index',
                 'category/new'    => 'category/create',
                 'account'         => '/profile/account',
-                'post/'           => '/blog/post/index',
+                'post'           => '/blog/post/index',
                 'post/new'        => '/blog/post/create',
                 'post/<id:\d+>'   => '/blog/post/view',
             ],
