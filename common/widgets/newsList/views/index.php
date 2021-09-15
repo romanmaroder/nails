@@ -18,7 +18,7 @@ use yii\helpers\Html;
 						<li class="author"><a href="#"><?php
                                 echo $item['user']['username']; ?></a></li>
 						<li class="date"><?php
-                            echo date('d/m/y', $item['created_at']); ?></li>
+                            echo  Yii::$app->formatter->asDate( $item['created_at'] ); ?></li>
 					</ul>
 				</div>
 				<div class="description">
