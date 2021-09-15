@@ -513,7 +513,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Relationship with [[Certificate]] table
+     * Relationship with [[Profile]] table
      *
      * @return \yii\db\ActiveQuery
      */

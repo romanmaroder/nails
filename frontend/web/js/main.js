@@ -35,6 +35,6 @@ $( document ).ready(function() {
     })*/
 
 
-
+$('.post__author--link').click(function(e){e.preventDefault()})
 
 });

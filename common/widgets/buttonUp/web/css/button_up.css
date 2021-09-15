@@ -19,7 +19,7 @@
     -moz-box-shadow: 1px 1px 5px 2px rgba(34, 60, 80, 0.5);
     box-shadow: 1px 1px 5px 2px rgba(34, 60, 80, 0.5);
     animation-name:animated;
-    animation-duration:.75s;
+    animation-duration:.3s;
     animation-timing-function: linear;
 }
 .no-animate{
@@ -35,7 +35,7 @@
     -moz-box-shadow: 1px 1px 5px 2px rgba(34, 60, 80, 0.5);
     box-shadow: 1px 1px 5px 2px rgba(34, 60, 80, 0.5);
     animation-name:no-animated;
-    animation-duration:.75s;
+    animation-duration:.3s;
     animation-fill-mode:forwards;
     animation-timing-function: linear;
 }

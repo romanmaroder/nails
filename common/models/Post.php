@@ -179,12 +179,13 @@ class Post extends ActiveRecord
      */
     public static function getPostList($max): array
     {
-        return Post::find()->with('user')->where(['status' => 1])->orderBy('RAND()')->asArray()->limit($max)->all();
+        return Post::find()->with('user','category')->where(['status' => 1])->orderBy('RAND()')->asArray()->limit($max)
+            ->all();
     }
 
     public static function getAllPostList(): array
     {
-        return Post::find()->with('user')->where(['status' => 1])->asArray()->all();
+        return Post::find()->with('user','category')->where(['status' => 1])->asArray()->all();
     }
 
     /**

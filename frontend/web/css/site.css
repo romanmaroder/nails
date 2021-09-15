@@ -258,16 +258,24 @@ a.desc:after {
 .no-img  p img {
     display: none;
 }
+
+/*Post block*/
 .post__description {
     display: flex;
     flex-direction: column;
-    /*align-items: center;*/
-
+    font-size: 1.25rem;
+}
+.post__description .note-float-right{
+    margin-left: 15px;
+}
+.post__description .note-float-left{
+    margin-right: 15px;
 }
 .post__description img {
+    display: flex;
     max-width: 100%;
     height: auto;
-    margin: 0 15px 0 0;
+    margin: 0 auto;
     border-radius:5px;
 }
 
@@ -277,7 +285,30 @@ a.desc:after {
     align-items:center;
     font-family: 'Roboto', sans-serif;
 }
+.post__title {
+    font-size: 1.875rem;
+}
+.post__meta {
+    font-size: 0.6875rem;
+}
+.post__author--name .card-body {
+    left: -20px;
+}
 
+.post__meta .card-body {
+    display: none;
+}
+.post__meta .post__author--name:hover .card-body {
+    display:block;
+}
+@media (min-width: 768px){
+    .post__title {
+        font-size: 2.25rem;
+    }
+}
+
+
+/* -----*/
 
 #addphotoform-client ~ .select2-container {
     display: none;

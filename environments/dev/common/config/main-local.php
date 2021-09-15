@@ -1,12 +1,13 @@
 <?php
+
 return [
     'components' => [
-        'db' => [
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=host1827487',
+        'db'           => [
+            'class'    => 'yii\db\Connection',
+            'dsn'      => 'mysql:host=localhost;dbname=host1827487',
             'username' => 'host1827487',
             'password' => 'N8c4ZkRzGj',
-            'charset' => 'utf8',
+            'charset'  => 'utf8',
         ],
         /*'db' => [
             'class' => 'yii\db\Connection',
@@ -15,9 +16,9 @@ return [
             'password' => 'root',
             'charset' => 'utf8',
         ],*/
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            'viewPath' => '@common/mail',
+        'mailer'       => [
+            'class'            => 'yii\swiftmailer\Mailer',
+            'viewPath'         => '@common/mail',
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
@@ -49,13 +50,13 @@ return [
         ],
     ],
     'modules'    => [
-        'profile' => [
+        'profile'  => [
             'class' => 'common\modules\profile\module',
         ],
-        'client'  => [
+        'client'   => [
             'class' => 'common\modules\client\Module',
         ],
-        'blog' => [
+        'blog'     => [
             'class' => 'common\modules\blog\Blog',
         ],
         'calendar' => [
