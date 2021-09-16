@@ -34,7 +34,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only'  => ['logout', 'signup'],
+                'only'  => ['logout', 'signup','view'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -46,7 +46,17 @@ class SiteController extends Controller
                         'allow'   => true,
                         'roles'   => ['@'],
                     ],
+                    [
+                        'actions' => ['view'],
+                        'allow'   => true,
+                        'roles'   => ['@'],
+                    ],
                 ],
+                'denyCallback' => function ($rule, $action) {
+                        Yii::$app->session->setFlash('info','Авторизуйтесь чтобы узнать больше');
+            return $this->redirect(['site/login']);
+                   # throw new \Exception('У вас нет доступа к этой странице');
+                }
             ],
             'verbs'  => [
                 'class'   => VerbFilter::class,
