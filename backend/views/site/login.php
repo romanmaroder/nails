@@ -17,7 +17,7 @@ $this->title = 'Логин';
         else: ?>
 			<p class="login-box-msg">Войдите, чтобы начать сеанс</p>
         <?php
-        endif;; ?>
+        endif; ?>
         <?php
         $form = ActiveForm::begin(['id' => 'login-form']) ?>
 

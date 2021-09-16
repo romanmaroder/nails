@@ -113,7 +113,7 @@ class ClientController extends Controller
         $profile = new Profile();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->email = 'user'.rand(1, 500).self::DEFAULT_EMAIL;
+            $model->email = 'user'.rand(1, 5000).self::DEFAULT_EMAIL;
 
             $model->setPassword(self::DEFAULT_PASSWORD);
             $model->generateAuthKey();
@@ -153,6 +153,7 @@ class ClientController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

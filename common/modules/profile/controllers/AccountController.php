@@ -90,7 +90,9 @@ class AccountController extends Controller
         }
 
         if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
-            $user->setPassword($user->password);
+            if ($user->password) {
+                $user->setPassword($user->password);
+            }
             $isValid = $user->validate();
             $isValid = $profile->validate() && $isValid;
             if ($isValid) {
