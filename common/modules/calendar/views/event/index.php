@@ -17,17 +17,21 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-index">
 
-<!--    Регистрация переменных для использования в js коде-->
+	<!--    Регистрация переменных для использования в js коде-->
 
-    <?php Yii::$app->view->registerJs("app=". Json::encode(Yii::$app->id)."; basePath=". Json::encode(Yii::$app->request->baseUrl) .";",  View::POS_HEAD);?>
+    <?php
+    Yii::$app->view->registerJs(
+        "app=".Json::encode(Yii::$app->id)."; basePath=".Json::encode(Yii::$app->request->baseUrl).";",
+        View::POS_HEAD
+    ); ?>
 
     <?php
     Modal::begin(
         [
-            'title' => 'Добавить событие',
-            'size'  => 'SIZE_SMALL',
-            'id'    => 'modal',
-            'options'=>['tabindex'=>'']
+            'title'   => 'Добавить событие',
+            'size'    => 'SIZE_SMALL',
+            'id'      => 'modal',
+            'options' => ['tabindex' => '']
         ]
     );
     echo '<div id="modalContent"></div>';
@@ -36,10 +40,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     Modal::begin(
         [
-            'title' => 'Ошибка',
-            'size'  => 'SIZE_SMALL',
-            'id'    => 'modal-error',
-            'options'=>['tabindex'=>'']
+            'title'   => 'Ошибка',
+            'size'    => 'SIZE_SMALL',
+            'id'      => 'modal-error',
+            'options' => ['tabindex' => '']
         ]
     );
     echo '<div id="modalContent"></div>';
@@ -50,9 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
     // Модальное окно просмотра и редактирования
     Modal::begin(
         [
-            'id'    => 'view',
-            'title' => 'О событии',
-			'options'=>['tabindex'=>'']
+            'id'      => 'view',
+            'title'   => 'О событии',
+            'options' => ['tabindex' => '']
         ]
     );
     Modal::end();
@@ -66,12 +70,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'events' => $events,
 //                'googleCalendarId' => 'katya04111985@gmail.com',
             ],
-            'defaultView' => new JsExpression("
+            'defaultView' => new JsExpression(
+                "
              localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
-            "),
+            "
+            ),
 
 //            'googleCalendar'=>true,
-            'header' => [
+            'header'      => [
                 'left'   => 'prev,next,today',
                 'center' => 'title',
                 'right'  => 'month,basicWeek,listWeek'
@@ -79,23 +85,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
             'clientOptions' => [
-                'eventOverlap '   => 'red',
-                'todayBtn'        => true,
-                'themeSystem'     => 'bootstrap4',
-                'navLinks'        => true,
-                'contentHeight'   => 'auto',
-                'editable'        => true,
-                'minTime'         => '07:00',
-                'maxTime'         => '19:30',
-                'slotDuration'    => '00:15:00',
-//                'timezone'        => 'local',
-                'locale'          => 'ru',
+                'eventOverlap '     => 'red',
+                'todayBtn'          => true,
+                'themeSystem'       => 'bootstrap4',
+                'navLinks'          => true,
+                'contentHeight'     => 'auto',
                 'timeFormat'      => 'HH:mm',
-                'slotLabelFormat' => 'HH:mm',
-                'scrollTime'      => '00:00:30',
-                'eventLimit'      => true,
-                'eventOrder'      => '-title',
-                'views'           => [
+                'locale'            => 'ru',
+                'eventLimit'        => true,
+                'eventOrder'        => '-title',
+                'views'             => [
                     'month'     => [
                         'eventLimit'       => 10,
                         'displayEventTime' => false,
@@ -108,14 +107,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'displayEventTime' => false
                     ]
                 ],
-                'eventLimitClick' => 'popover',
-                'theme'           => true,
-                'fixedWeekCount'  => false,
+                'eventLimitClick'   => 'popover',
+                'theme'             => true,
+                'fixedWeekCount'    => false,
 //                'googleCalendarApiKey' => 'AIzaSyDWfl1aqSSrH19_IxQKWZmOkjorYIvT7vc',
-                'defaultDate'=>new JsExpression("
+                'defaultDate'       => new JsExpression(
+                    "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
-                "),
-                'dayClick'        => new JsExpression(
+                "
+                ),
+                'dayClick'          => new JsExpression(
                     "function (date,view) {
                                    if(app == 'app-backend'){
                                         $.ajax({
@@ -131,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
 										
                         }"
                 ),
-                'eventClick'      => new JsExpression(
+                'eventClick'        => new JsExpression(
                     "function(event) {
                     
                      if(app == 'app-backend'){
@@ -148,10 +149,10 @@ $this->params['breadcrumbs'][] = $this->title;
                       $('#view').modal('show');
                     }"
                 ),
-                'dayRender'       => new JsExpression(
+                'dayRender'         => new JsExpression(
                     "function(){} "
                 ),
-                'eventRender'     => new JsExpression(
+                'eventRender'       => new JsExpression(
                     "function (event, element, view){
 								element.addClass('event-render');
 								element.find('.fc-content').append(element.find('.fc-time').addClass('font-italic'));
@@ -176,7 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   				 
                 	}"
                 ),
-                'viewRender'      => new JsExpression(
+                'viewRender'        => new JsExpression(
                     "function (view,event, element){
 						localStorage.setItem('fcDefaultView', view.name);
 						var date = $('#calendar').fullCalendar('getDate');

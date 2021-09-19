@@ -154,16 +154,21 @@ a.desc:after {
 .fc-header-toolbar .fc-left {
     margin-bottom: 5px;
 }
-
+.event-render {
+    margin-bottom: 3px;
+}
 @media screen and (min-width: 540px) {
     .fc-header-toolbar {
         display: block;
     }
 
+
     .fc-header-toolbar .fc-left {
         margin-bottom: 0;
     }
-
+    .event-render {
+        padding: 2.5px;
+    }
     .fc-basic_day {
         width: calc(100% - 5%);
         margin: 0 auto 15px auto;

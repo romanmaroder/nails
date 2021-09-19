@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'adminEmail'   => 'roma12041985@yandex.ru',
-    'supportEmail' => 'roma12041985@yandex.ru',
+    'adminEmail'   => 'admmin@yandex.ru',
+    'supportEmail' => 'admmin@yandex.ru',
     'senderEmail'  => 'noreply@example.com',
     'senderName'   => 'Example.com mailer',
 
