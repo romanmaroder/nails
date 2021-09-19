@@ -143,7 +143,7 @@ $(function () {
       contentType: false,
       processData: false,
       success: function(responce) {
-          var image = $('<img>').attr('src', responce.uri);
+          var image = $('<img>').attr({src:responce.uri,class:"post__img"});
             $('#summernote').summernote("insertNode", image[0]);
       },
       error: function(responce) {
