@@ -35,6 +35,20 @@ $( document ).ready(function() {
     })*/
 
 
-$('.post__author--link').click(function(e){e.preventDefault()})
+$('.post__author--link').click(function(e){e.preventDefault()});
+
+
+    const postImg = $('.post__description p > img:first-child');
+    const postList = $('.post__description ol > li > img');
+
+    if (postImg) {
+        postImg.parent().addClass('post__img-inner');
+    }
+    if (postList) {
+        var block = $('<span></span>');
+        $('.post__description ol>li').prepend(block);
+        $('.post__description ol>li >span').append(postList);
+        postList.parent().addClass('post__img-list');
+    }
 
 });
