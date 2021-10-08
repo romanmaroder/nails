@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = 'редактировать';
 ?>
 <div class="event-update">
 
-    <h1 style="color:<?= $model->master->color ?>"><?= Html::encode($this->title) ?></h1>
+    <h3 style="color:<?= $model->master->color ?>"><?= Html::encode($this->title) ?></h3>
 
     <?= $this->render('_form', [
         'model' => $model,

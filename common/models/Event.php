@@ -22,6 +22,7 @@ class Event extends ActiveRecord
 {
 
     public $totalEvent;
+    public $checkEvent;
 
     /**
      * @var mixed|null
@@ -30,7 +31,7 @@ class Event extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::class,
+                'class'      => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -51,15 +52,45 @@ class Event extends ActiveRecord
      * {@inheritdoc}
      */
 
-    public function rules(): array
+    public function rules()
     {
         return [
+            [['master_id'], 'required', 'message' => 'Выберите мастера'],
+            [['client_id'], 'required', 'message' => 'Выберите клиента'],
             [['master_id'], 'integer', 'message' => 'Выберите мастера'],
             [['client_id'], 'integer', 'message' => 'Выберите клиента'],
-            [['client_id'], 'required', 'message' => 'Выберите клиента'],
             [['description'], 'string'],
             [['event_time_start', 'event_time_end', 'created_at', 'updated_at'], 'safe'],
             [['notice'], 'string', 'max' => 255],
+            [
+                ['checkEvent'],
+                'required',
+                'when'    => function ($model) {
+                    $old_model = Event::find()
+                        ->where(['event_time_start' => $model->event_time_start, 'master_id' => $model->master_id])
+                        ->asArray()
+                        ->one();
+
+                    if (date('Y-m-d H:i', strtotime($old_model['event_time_start'])) === $model->event_time_start ||
+                        $old_model['master_id'] === $model->master_id ) {
+                        return false;
+                    }
+                    return true;
+                },
+                'whenClient' => 'function (attribute, value) {
+              
+                    console.log(attribute);
+                    console.log($("#event-master_id").val());
+                    console.log($("#event-client_id").val());
+                    if( $("#event-master_id").val() == "" && $("#event-client_id").val() == "" ){
+                     return false;
+                    }
+                   return true;
+                }',
+                'message' => 'У мастера есть запись на это время '
+            ]
+
+
             /*[
                 ['master_id'],
                 'exist',
@@ -73,19 +104,21 @@ class Event extends ActiveRecord
         ];
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels(): array
+    public
+    function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'client_id' => 'Клиент',
-            'master_id' => 'Мастер',
-            'description' => 'Что делаем',
-            'notice' => 'Пожелания',
+            'id'               => 'ID',
+            'client_id'        => 'Клиент',
+            'master_id'        => 'Мастер',
+            'description'      => 'Что делаем',
+            'notice'           => 'Пожелания',
             'event_time_start' => 'Время начала',
-            'event_time_end' => 'Время окончания',
+            'event_time_end'   => 'Время окончания',
         ];
     }
 
@@ -94,7 +127,8 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-     public function getMaster(): ActiveQuery
+    public
+    function getMaster(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'master_id']);
     }
@@ -104,7 +138,8 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getClient(): ActiveQuery
+    public
+    function getClient(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'client_id']);
     }
@@ -112,12 +147,14 @@ class Event extends ActiveRecord
     /**
      * Getting records for masters
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \yii\db\ActiveQuery
      */
-    public static function findMasterEvents(int $id): ActiveQuery
-    {
+    public
+    static function findMasterEvents(
+        int $id
+    ): ActiveQuery {
         /*$dependency = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
@@ -148,7 +185,8 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public static function findManagerEvents(): ActiveQuery
+    public
+    static function findManagerEvents(): ActiveQuery
     {
         /*$dependency = Yii::createObject(
             [
@@ -171,24 +209,26 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-         return Event::find()->with(['master', 'client'])->where('event_time_start >= DATE(NOW())')->orderBy(
-        [
-            'event_time_start'
-            => SORT_ASC
-        ]
-    )
-        ->asArray();
+        return Event::find()->with(['master', 'client'])->where('event_time_start >= DATE(NOW())')->orderBy(
+            [
+                'event_time_start'
+                => SORT_ASC
+            ]
+        )
+            ->asArray();
     }
 
     /**
      * Getting records for client
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \yii\db\ActiveQuery
      */
-    public static function findClientEvents(int $id): ActiveQuery
-    {
+    public
+    static function findClientEvents(
+        int $id
+    ): ActiveQuery {
         /*$dependency = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
@@ -223,8 +263,10 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public static function findNextClientEvents($user_id)
-    {
+    public
+    static function findNextClientEvents(
+        $user_id
+    ) {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])
@@ -241,8 +283,10 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public static function findPreviousClientEvents($user_id)
-    {
+    public
+    static function findPreviousClientEvents(
+        $user_id
+    ) {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])
@@ -258,13 +302,14 @@ class Event extends ActiveRecord
      *
      * @return bool|int|string|null
      */
-    public static function countEventTotal($masterIds)
-    {
-
+    public
+    static function countEventTotal(
+        $masterIds
+    ) {
         $dependency = Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
@@ -277,8 +322,6 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );
-
-
     }
 
     /**
@@ -288,13 +331,14 @@ class Event extends ActiveRecord
      *
      * @return array
      */
-    public function getTotalEventsMaster($masterIds): array
-    {
-
+    public
+    function getTotalEventsMaster(
+        $masterIds
+    ): array {
         $dependency = Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
@@ -316,8 +360,6 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );
-
-
     }
 
 
@@ -328,8 +370,10 @@ class Event extends ActiveRecord
      * @throws \Throwable
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getEventDataProvider($userId): ActiveDataProvider
-    {
+    public
+    static function getEventDataProvider(
+        $userId
+    ): ActiveDataProvider {
         if (Yii::$app->user->can('manager')) {
             $query = Event::findManagerEvents();
         } elseif (Yii::$app->user->can('master')) {
@@ -340,14 +384,14 @@ class Event extends ActiveRecord
 
         $dataProvider = new ActiveDataProvider(
             [
-                'query' => $query,
+                'query'      => $query,
                 'pagination' => false,
             ]
         );
-        $dependency = Yii::createObject(
+        $dependency   = Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
@@ -361,5 +405,4 @@ class Event extends ActiveRecord
 
         return $dataProvider;
     }
-
 }

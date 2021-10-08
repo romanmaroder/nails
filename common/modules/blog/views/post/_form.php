@@ -143,10 +143,12 @@ $(function () {
       contentType: false,
       processData: false,
       success: function(responce) {
-          var image = $('<img>').attr({src:responce.uri,class:"post__img"});
-          // var block = $('<span class="post__inner-img"></span>').prepend(image);
-          //   $('#summernote').summernote("insertNode", block[0]);
-            $('#summernote').summernote("insertNode", image[0]);
+          var image = $('<img>').attr({src:responce.uri,class:"img"});
+           var block = $('<span ></span>').prepend(function (indx, val){
+               return $('<span >'+val+'</span>').prepend(image);
+           });
+             $('#summernote').summernote("insertNode", block[0]);
+           // $('#summernote').summernote("insertNode", image[0]);
       },
       error: function(responce) {
             alert(responce.message);

@@ -21,10 +21,10 @@ use yii\bootstrap4\ActiveForm;
     $form = ActiveForm::begin(
         [
             'id' => 'event-form',
-//            'enableAjaxValidation'   => true,
-//            'enableClientValidation' => true,
-            /*'validateOnChange'       => true,
-            'validateOnBlur'         => true*/
+           'enableAjaxValidation'   => true,
+           'enableClientValidation' => false,
+            'validateOnChange'       => false,
+            'validateOnBlur'         => false
         ]
     ); ?>
 
@@ -93,10 +93,10 @@ use yii\bootstrap4\ActiveForm;
             ]
         ) ?>
 
-    <?= $form->field($model, 'master_id', ['validateOnChange' => true])->widget(
+    <?= $form->field($model, 'master_id')->widget(
         Select2::class,
         [
-            'name'          => 'client',
+            'name'          => 'master',
             'language'      => 'ru',
             'data'          => User::getMasterList(),
             'options'       => ['placeholder' => 'Выберите мастера ...'],
@@ -109,12 +109,12 @@ use yii\bootstrap4\ActiveForm;
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'notice')->textInput(['maxlength' => true]) ?>
-
+    <?= $form->field($model, 'checkEvent')->label(false)
+		->hiddenInput() ?>
 
 	<div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-sm']) ?>
 	</div>
-
     <?php
     ActiveForm::end(); ?>
 

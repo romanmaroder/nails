@@ -23,20 +23,20 @@ class EventController extends Controller
     public function behaviors(): array
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::class,
+            'verbs'  => [
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['login', 'logout', 'index'],
+                'only'  => ['login', 'logout', 'index'],
                 'rules' => [
                     [
-                        'allow' => true,
+                        'allow'   => true,
                         'actions' => ['login'],
-                        'roles' => ['?'],
+                        'roles'   => ['?'],
                     ],
                     [
                         'allow' => true,
@@ -45,9 +45,9 @@ class EventController extends Controller
                 ],
             ],
             [
-                'class' => DeleteCacheBehavior::class,
+                'class'     => DeleteCacheBehavior::class,
                 'cache_key' => ['events_list'],
-                'actions' => ['create', 'update', 'delete'],
+                'actions'   => ['create', 'update', 'delete'],
             ],
         ];
     }
@@ -60,33 +60,34 @@ class EventController extends Controller
     public function actionIndex()
     {
         $cache = Yii::$app->cache;
-        $key = 'events_list';  // Формируем ключ
+        $key   = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
-        $dependency   = Yii::createObject(
+        $dependency = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
                 'sql'   => 'SELECT MAX(updated_at) FROM user',
             ]
         );
-        $events = $cache->getOrSet(
+        $events     = $cache->getOrSet(
             $key,
             function () {
-                return  Event::find()->with(['master', 'client'])->all();
+                return Event::find()->with(['master', 'client'])->all();
             },
-            3600,$dependency
+            3600,
+            $dependency
         );
 
         foreach ($events as $item) {
-            $event = new \yii2fullcalendar\models\Event();
-            $event->id = $item->id;
-            $event->title = $item->client->username;
+            $event              = new \yii2fullcalendar\models\Event();
+            $event->id          = $item->id;
+            $event->title       = $item->client->username;
             $event->nonstandard = [
                 'description' => $item->description,
                 'master_name' => $item->master->username,
             ];
-            $event->color = $item->master->color;
-            $event->start = $item->event_time_start;
-            $event->end = $item->event_time_end;
+            $event->color       = $item->master->color;
+            $event->start       = $item->event_time_start;
+            $event->end         = $item->event_time_end;
 
             $events[] = $event;
         }
@@ -102,7 +103,7 @@ class EventController extends Controller
     /**
      * Displays a single Event model.
      *
-     * @param integer $id
+     * @param  integer  $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -127,18 +128,19 @@ class EventController extends Controller
      */
     public function actionCreate($date)
     {
-        $model = new Event();
+        $model                   = new Event();
         $model->event_time_start = $date;
-        $model->event_time_end = $date;
+        $model->event_time_end   = $date;
+
 
         if ($model->load(Yii::$app->request->post())) {
-            $isValid = $model->validate();
-            if (Yii::$app->request->isAjax && $isValid) {
+            if (Yii::$app->request->isAjax && $model->validate()) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
                 $model->save(false);
-                return $this->redirect('index');
+//                    die();
+                return $this->redirect('/admin/calendar/event/index');
             }
         }
 
@@ -162,13 +164,14 @@ class EventController extends Controller
     public function actionUpdate(int $id)
     {
         $events = $this->findModel($id);
+
         if ($events->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax) {
+            if (Yii::$app->request->isAjax && $events->validate()) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($events);
             } else {
                 $events->save(false);
-                return $this->redirect('index');
+                return $this->redirect('/admin/calendar/event/index');
             }
         }
         return $this->renderAjax(

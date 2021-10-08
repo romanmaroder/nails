@@ -16,7 +16,6 @@ $this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-index">
-
 	<!--    Регистрация переменных для использования в js коде-->
 
     <?php
@@ -126,7 +125,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         success:function (data) {			
                                             $('#modal').modal('show').find('#modalContent').html(data)
                                             },
-                                        error:function(jqXHR, textStatus, errorThrown){}
+                                        error:function(data,jqXHR, textStatus, errorThrown){
+                                        $('#modal').modal('show').find('#modalContent').html(data.error)
+                                        }
                                         }
                                         )};
 										

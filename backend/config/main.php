@@ -55,7 +55,7 @@ return [
             'rules'           => [
                 ''                => 'site/index',
                 'login'           => 'site/login',
-                'event'           => '/calendar/event/index',
+                'event'           => 'admin/calendar/event/index',
                 'master'          => 'employees/master/index',
                 'client'          => 'client/client/index',
                 'client/new'      => 'client/client/create',

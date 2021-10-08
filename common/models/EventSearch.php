@@ -18,7 +18,7 @@ class EventSearch extends Event
     {
         return [
             [['id'], 'integer'],
-            [['client_id', 'master', 'description', 'notice', 'created_date'], 'safe'],
+            [[ 'description', 'notice', 'created_date'], 'safe'],
         ];
     }
 
@@ -63,7 +63,7 @@ class EventSearch extends Event
         ]);
 
         $query->andFilterWhere(['like', 'client_id', $this->client_id])
-            ->andFilterWhere(['like', 'master', $this->master])
+            ->andFilterWhere(['like', 'master_id', $this->master_id])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'notice', $this->notice]);
 
