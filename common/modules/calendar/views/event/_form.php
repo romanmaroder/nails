@@ -21,9 +21,9 @@ use yii\bootstrap4\ActiveForm;
     $form = ActiveForm::begin(
         [
             'id' => 'event-form',
-           'enableAjaxValidation'   => true,
-           'enableClientValidation' => false,
-            'validateOnChange'       => false,
+           'enableAjaxValidation'   => false,
+           'enableClientValidation' => true,
+            'validateOnChange'       => true,
             'validateOnBlur'         => false
         ]
     ); ?>
@@ -109,7 +109,7 @@ use yii\bootstrap4\ActiveForm;
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'notice')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'checkEvent')->label(false)
+    <?= $form->field($model, 'checkEvent',['enableAjaxValidation'=>true])->label(false)
 		->hiddenInput() ?>
 
 	<div class="form-group">

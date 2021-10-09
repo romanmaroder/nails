@@ -60,34 +60,30 @@ class Event extends ActiveRecord
             [['master_id'], 'integer', 'message' => 'Выберите мастера'],
             [['client_id'], 'integer', 'message' => 'Выберите клиента'],
             [['description'], 'string'],
-            [['event_time_start', 'event_time_end', 'created_at', 'updated_at'], 'safe'],
+            [['event_time_start', 'event_time_end', 'created_at', 'updated_at','checkEvent'], 'safe'],
             [['notice'], 'string', 'max' => 255],
             [
                 ['checkEvent'],
                 'required',
-                'when'    => function ($model) {
+                'when'       => function ($model) {
                     $old_model = Event::find()
                         ->where(['event_time_start' => $model->event_time_start, 'master_id' => $model->master_id])
                         ->asArray()
                         ->one();
 
                     if (date('Y-m-d H:i', strtotime($old_model['event_time_start'])) === $model->event_time_start ||
-                        $old_model['master_id'] === $model->master_id ) {
-                        return false;
+                        $old_model['master_id'] === $model->master_id  && $model->hasErrors()) {
+                        return true;
                     }
-                    return true;
+                    return false;
                 },
                 'whenClient' => 'function (attribute, value) {
-              
-                    console.log(attribute);
-                    console.log($("#event-master_id").val());
-                    console.log($("#event-client_id").val());
-                    if( $("#event-master_id").val() == "" && $("#event-client_id").val() == "" ){
-                     return false;
+                    if( $("#event-master_id").val() !== "" && $("#event-client_id").val() !== "" || $("#event-master_id").val() == "" && $("#event-client_id").val() == "" ){
+                           return false;
                     }
-                   return true;
+                     return true;
                 }',
-                'message' => 'У мастера есть запись на это время '
+                'message'    => 'У мастера есть запись на это время '
             ]
 
 
