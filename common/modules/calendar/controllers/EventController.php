@@ -134,12 +134,12 @@ class EventController extends Controller
 
 
         if ($model->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax && $model->validate()) {
+
+            if (Yii::$app->request->isAjax && $model->validate() || $model->hasErrors() ) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
-            } else {
+            }else{
                 $model->save(false);
-//                    die();
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
@@ -166,7 +166,7 @@ class EventController extends Controller
         $events = $this->findModel($id);
 
         if ($events->load(Yii::$app->request->post())) {
-            if (Yii::$app->request->isAjax && $events->validate()) {
+            if (Yii::$app->request->isAjax && $events->validate() || $events->hasErrors()) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($events);
             } else {
