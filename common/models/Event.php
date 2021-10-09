@@ -72,7 +72,7 @@ class Event extends ActiveRecord
                         ->one();
 
                     if (date('Y-m-d H:i', strtotime($old_model['event_time_start'])) === $model->event_time_start ||
-                        $old_model['master_id'] === $model->master_id  && $model->hasErrors()) {
+                        $old_model['master_id'] === $model->master_id  || $model->hasErrors()) {
                         return true;
                     }
                     return false;
