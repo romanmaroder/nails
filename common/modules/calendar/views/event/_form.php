@@ -20,9 +20,9 @@ use yii\bootstrap4\ActiveForm;
 
     $form = ActiveForm::begin(
         [
-            'id' => 'event-form',
-           'enableAjaxValidation'   => false,
-           'enableClientValidation' => true,
+            'id'                     => 'event-form',
+            'enableAjaxValidation'   => false,
+            'enableClientValidation' => true,
             'validateOnChange'       => true,
             'validateOnBlur'         => false
         ]
@@ -81,17 +81,17 @@ use yii\bootstrap4\ActiveForm;
     ) ?>
 
     <?= $form->field($model, 'client_id')->widget(
-            Select2::class,
-            [
-                'name'          => 'client',
-                'language'      => 'ru',
-                'data'          =>  User::getClientList(),
-                'options'       => ['placeholder' => 'Выберите клиента ...'],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
-            ]
-        ) ?>
+        Select2::class,
+        [
+            'name'          => 'client',
+            'language'      => 'ru',
+            'data'          => User::getClientList(),
+            'options'       => ['placeholder' => 'Выберите клиента ...'],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ],
+        ]
+    ) ?>
 
     <?= $form->field($model, 'master_id')->widget(
         Select2::class,
@@ -109,8 +109,8 @@ use yii\bootstrap4\ActiveForm;
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'notice')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'checkEvent',['enableAjaxValidation'=>true])->label(false)
-		->hiddenInput() ?>
+    <?= $form->field($model, 'checkEvent', ['enableAjaxValidation' => true])->label(false)
+        ->hiddenInput() ?>
 
 	<div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-sm']) ?>
