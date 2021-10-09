@@ -24,7 +24,7 @@ use yii\bootstrap4\ActiveForm;
             'enableAjaxValidation'   => false,
             'enableClientValidation' => true,
             'validateOnChange'       => true,
-            'validateOnBlur'         => false
+            'validateOnBlur'         =>  false
         ]
     ); ?>
 
