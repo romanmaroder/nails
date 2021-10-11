@@ -60,21 +60,28 @@ class Event extends ActiveRecord
             [['master_id'], 'integer', 'message' => 'Выберите мастера'],
             [['client_id'], 'integer', 'message' => 'Выберите клиента'],
             [['description'], 'string'],
-            [['event_time_start', 'event_time_end', 'created_at', 'updated_at','checkEvent'], 'safe'],
+            [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent'], 'safe'],
             [['notice'], 'string', 'max' => 255],
-            [
+            ['checkEvent', 'checkEv', 'skipOnEmpty' => false, 'skipOnError' => false]
+            /*[
                 ['checkEvent'],
                 'required',
                 'when'       => function ($model) {
                     $old_model = Event::find()
-                        ->where(['event_time_start' => $model->event_time_start, 'master_id' => $model->master_id])
+                        ->select('event_time_start, master_id, client_id')
+                        ->where(['event_time_start' => $model->event_time_start, 'master_id' =>
+                            $model->master_id])
                         ->asArray()
                         ->one();
 
-                    if (date('Y-m-d H:i', strtotime($old_model['event_time_start'])) === $model->event_time_start ||
-                        $old_model['master_id'] === $model->master_id  || $model->hasErrors()) {
-                        return true;
-                    }
+                        if( date('Y-m-d H:i', strtotime($old_model['event_time_start'])) ===
+                            $model->event_time_start &&
+                            $old_model['master_id'] === $model->master_id  || $model->hasErrors()){
+
+
+                            return true;
+                        };
+
                     return false;
                 },
                 'whenClient' => 'function (attribute, value) {
@@ -84,7 +91,7 @@ class Event extends ActiveRecord
                      return true;
                 }',
                 'message'    => 'У мастера есть запись на это время '
-            ]
+            ]*/
 
 
             /*[
@@ -100,6 +107,55 @@ class Event extends ActiveRecord
         ];
     }
 
+    public function checkEv()
+    {
+        $old_model = Event::find()
+            ->with('client', 'master')
+            ->select('event_time_start, master_id, client_id')
+            ->where(
+                [
+                    'event_time_start' => $this->event_time_start,
+                    'master_id'        =>
+                        $this->master_id
+                ]
+            )
+            ->asArray()
+            ->one();
+
+
+        if ($this->isNewRecord) {
+            if (date('Y-m-d H:i', strtotime($old_model['event_time_start'])) ==
+                $this->event_time_start && $old_model['master_id'] == $this->master_id) {
+                $this->addError('checkEvent', 'Мастер '.$old_model['master']['username'].' занята в это время');
+            }
+            return true;
+        }
+
+       /* echo '<pre>';
+        var_dump($old_model);
+        die();*/
+
+        if (date( 'Y-m-d H:i:s', strtotime($old_model['event_time_start'])) == $this->event_time_start) {
+
+            if ( $old_model['master_id'] !== $this->master_id) {
+
+                $this->addError('checkEvent', ' Выбран другой мастер');
+
+            }
+
+            if ( $old_model['client_id'] !== $this->client_id ) {
+
+
+                $this->addError('checkEvent', ' Выбран другой клиент');
+            }
+
+
+
+            $this->addError('checkEvent', 'Дата занята у мастера '.$old_model['master']['username']);
+
+        }
+        return true;
+    }
 
     /**
      * {@inheritdoc}
