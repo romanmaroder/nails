@@ -21,7 +21,7 @@ use yii\bootstrap4\ActiveForm;
     $form = ActiveForm::begin(
         [
             'id'                     => 'event-form',
-            'enableAjaxValidation'   => true,
+            'enableAjaxValidation'   => false,
             'enableClientValidation' => true,
             'validateOnChange'       => true,
             'validateOnBlur'         =>  false

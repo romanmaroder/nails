@@ -13,7 +13,6 @@ use yii\db\Expression;
  * This is the model class for table "event".
  *
  * @property int $id
- * @property string|null $client_id
  * @property string|null $master
  * @property string|null $description
  * @property string|null $notice
@@ -31,7 +30,7 @@ class Event extends ActiveRecord
     {
         return [
             [
-                'class'      => TimestampBehavior::class,
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -57,57 +56,17 @@ class Event extends ActiveRecord
         return [
             [['master_id'], 'required', 'message' => 'Выберите мастера'],
             [['client_id'], 'required', 'message' => 'Выберите клиента'],
-            [['master_id'], 'integer', 'message' => 'Выберите мастера'],
-            [['client_id'], 'integer', 'message' => 'Выберите клиента'],
+            ['master_id', 'filter', 'filter' => 'intval'],
+            ['client_id', 'filter', 'filter' => 'intval'],
             [['description'], 'string'],
             [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent'], 'safe'],
             [['notice'], 'string', 'max' => 255],
-            ['checkEvent', 'checkEv', 'skipOnEmpty' => false, 'skipOnError' => false]
-            /*[
-                ['checkEvent'],
-                'required',
-                'when'       => function ($model) {
-                    $old_model = Event::find()
-                        ->select('event_time_start, master_id, client_id')
-                        ->where(['event_time_start' => $model->event_time_start, 'master_id' =>
-                            $model->master_id])
-                        ->asArray()
-                        ->one();
+            ['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
 
-                        if( date('Y-m-d H:i', strtotime($old_model['event_time_start'])) ===
-                            $model->event_time_start &&
-                            $old_model['master_id'] === $model->master_id  || $model->hasErrors()){
-
-
-                            return true;
-                        };
-
-                    return false;
-                },
-                'whenClient' => 'function (attribute, value) {
-                    if( $("#event-master_id").val() !== "" && $("#event-client_id").val() !== "" || $("#event-master_id").val() == "" && $("#event-client_id").val() == "" ){
-                           return false;
-                    }
-                     return true;
-                }',
-                'message'    => 'У мастера есть запись на это время '
-            ]*/
-
-
-            /*[
-                ['master_id'],
-                'exist',
-                'skipOnError'     => false,
-                'skipOnEmpty'     => false,
-                'targetClass'     => Master::class,
-                'targetAttribute' =>
-                    ['master_id' => 'id'],
-                'message'         => 'Такой мастер не работает у нас'
-            ],*/
         ];
     }
 
-    public function checkEv()
+    public function validateEvent()
     {
         $old_model = Event::find()
             ->with('client', 'master')
@@ -115,8 +74,7 @@ class Event extends ActiveRecord
             ->where(
                 [
                     'event_time_start' => $this->event_time_start,
-                    'master_id'        =>
-                        $this->master_id
+                    'master_id' =>$this->master_id
                 ]
             )
             ->asArray()
@@ -124,38 +82,44 @@ class Event extends ActiveRecord
 
 
         if ($this->isNewRecord) {
-            if (date('Y-m-d H:i', strtotime($old_model['event_time_start'])) ==
-                $this->event_time_start && $old_model['master_id'] == $this->master_id) {
-                $this->addError('checkEvent', 'Мастер '.$old_model['master']['username'].' занята в это время');
+            if (
+                date('Y-m-d H:i', strtotime($old_model['event_time_start'])) == $this->event_time_start &&
+                $old_model['master_id'] == $this->master_id
+            ) {
+                $this->addError(
+                    'checkEvent',
+                    'Мастер ' . $this['master']['username'] . ' занят в это время'
+                );
             }
             return true;
         }
 
-       /* echo '<pre>';
-        var_dump($old_model);
-        die();*/
 
-        if (date( 'Y-m-d H:i:s', strtotime($old_model['event_time_start'])) == $this->event_time_start) {
+        if (!empty($old_model)) {
 
-            if ( $old_model['master_id'] !== $this->master_id) {
+                if (
+                    date('Y-m-d H:i:s', strtotime($old_model['event_time_start'])) == $this->event_time_start &&
+                    $old_model['master_id'] == $this->master_id &&
+                    !$this->isAttributeChanged('client_id') ||
+                    date('Y-m-d H:i', strtotime($old_model['event_time_start'])) == $this->event_time_start &&
+                    $old_model['master_id'] == $this->master_id &&
+                    !$this->isAttributeChanged('client_id')
+                ) {
+                    $this->addError(
+                        'checkEvent',
+                        'Мастер ' . $this['master']['username'] . ' занят в это время'
+                    );
 
-                $this->addError('checkEvent', ' Выбран другой мастер');
+                } else {
 
-            }
-
-            if ( $old_model['client_id'] !== $this->client_id ) {
-
-
-                $this->addError('checkEvent', ' Выбран другой клиент');
-            }
-
-
-
-            $this->addError('checkEvent', 'Дата занята у мастера '.$old_model['master']['username']);
-
+                    return true;
+                }
         }
-        return true;
+
+
+
     }
+
 
     /**
      * {@inheritdoc}
@@ -164,13 +128,13 @@ class Event extends ActiveRecord
     function attributeLabels(): array
     {
         return [
-            'id'               => 'ID',
-            'client_id'        => 'Клиент',
-            'master_id'        => 'Мастер',
-            'description'      => 'Что делаем',
-            'notice'           => 'Пожелания',
+            'id' => 'ID',
+            'client_id' => 'Клиент',
+            'master_id' => 'Мастер',
+            'description' => 'Что делаем',
+            'notice' => 'Пожелания',
             'event_time_start' => 'Время начала',
-            'event_time_end'   => 'Время окончания',
+            'event_time_end' => 'Время окончания',
         ];
     }
 
@@ -199,7 +163,7 @@ class Event extends ActiveRecord
     /**
      * Getting records for masters
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return \yii\db\ActiveQuery
      */
@@ -273,7 +237,7 @@ class Event extends ActiveRecord
     /**
      * Getting records for client
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return \yii\db\ActiveQuery
      */
@@ -360,8 +324,8 @@ class Event extends ActiveRecord
     ) {
         $dependency = Yii::createObject(
             [
-                'class'    => 'yii\caching\DbDependency',
-                'sql'      => 'SELECT MAX(updated_at) FROM event',
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
@@ -389,8 +353,8 @@ class Event extends ActiveRecord
     ): array {
         $dependency = Yii::createObject(
             [
-                'class'    => 'yii\caching\DbDependency',
-                'sql'      => 'SELECT MAX(updated_at) FROM event',
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
@@ -436,14 +400,14 @@ class Event extends ActiveRecord
 
         $dataProvider = new ActiveDataProvider(
             [
-                'query'      => $query,
+                'query' => $query,
                 'pagination' => false,
             ]
         );
-        $dependency   = Yii::createObject(
+        $dependency = Yii::createObject(
             [
-                'class'    => 'yii\caching\DbDependency',
-                'sql'      => 'SELECT MAX(updated_at) FROM event',
+                'class' => 'yii\caching\DbDependency',
+                'sql' => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );

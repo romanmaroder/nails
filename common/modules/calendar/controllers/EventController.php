@@ -167,7 +167,8 @@ class EventController extends Controller
 
         if ($events->load(Yii::$app->request->post())) {
 
-            if (Yii::$app->request->isAjax && $events->validate() || $events->hasErrors()) {
+            if (Yii::$app->request->isAjax && $events->validate()  || $events->hasErrors()) {
+
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($events);
             } else {
