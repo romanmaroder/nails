@@ -48,6 +48,15 @@ return [
                 'yii\bootstrap\BootstrapAsset' => false,
             ],
         ],
+        'authManager'  => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+        'smsSender'=>[
+            'class'=>'common\components\sms\SmsSender'
+        ],
+        'storage'      => [
+            'class' => 'common\components\Storage'
+        ],
     ],
     'modules'    => [
         'profile'  => [

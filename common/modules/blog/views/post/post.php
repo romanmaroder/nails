@@ -24,11 +24,7 @@ $this->title = $post->title;
 		</div>
 	</div>
 	<div class="row mt-3">
-		<div class="col-md-3 d-none d-md-block">
-            <?php
-            echo NewsList::widget(['showLimit' => 8]); ?>
-		</div>
-		<div class="col-md-9">
+		<div class="col-md-10">
 			<article class="post__inner px-md-3">
 				<div class="post__header w-100">
 					<h1 class="post__title mb-4"><?php
@@ -149,6 +145,10 @@ $this->title = $post->title;
 			</article>
 
 		</div>
+        <div class="col-md-2 d-none d-md-block">
+            <?php
+            echo NewsList::widget(['showLimit' => 8]); ?>
+        </div>
 	</div>
 
 

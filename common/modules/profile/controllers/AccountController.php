@@ -9,7 +9,9 @@ use common\models\User;
 use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
 use common\models\Photo;
+use Throwable;
 use Yii;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -32,20 +34,20 @@ class AccountController extends Controller
     public function behaviors(): array
     {
         return [
-            'verbs'  => [
-                'class'   => VerbFilter::class,
+            'verbs' => [
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
             'access' => [
                 'class' => AccessControl::class,
-                'only'  => ['login', 'logout', 'index'],
+                'only' => ['login', 'logout', 'index'],
                 'rules' => [
                     [
-                        'allow'   => true,
+                        'allow' => true,
                         'actions' => ['login'],
-                        'roles'   => ['?'],
+                        'roles' => ['?'],
                     ],
                     [
                         'allow' => true,
@@ -59,8 +61,8 @@ class AccountController extends Controller
     /**
      * Lists all Event models.
      *
-     * @return string|\yii\web\Response
-     * @throws \yii\web\NotFoundHttpException|\yii\base\Exception
+     * @return string|Response
+     * @throws NotFoundHttpException|Exception|Throwable
      */
     public function actionIndex()
     {
@@ -137,14 +139,14 @@ class AccountController extends Controller
         return $this->render(
             'index',
             [
-                'dataProvider'     => $dataProvider,
-                'user'             => $user,
-                'profile'          => $profile,
-                'modelAvatar'      => $modelAvatar,
-                'model'            => $model,
+                'dataProvider' => $dataProvider,
+                'user' => $user,
+                'profile' => $profile,
+                'modelAvatar' => $modelAvatar,
+                'model' => $model,
                 'modelCertificate' => $modelCertificate,
-                'certificateList'  => $certificateList,
-                'modelPhoto'       => $modelPhoto
+                'certificateList' => $certificateList,
+                'modelPhoto' => $modelPhoto
             ]
         );
     }
@@ -155,18 +157,18 @@ class AccountController extends Controller
     public function actionUploadAvatar(): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $userId                     = Yii::$app->user->getId();
+        $userId = Yii::$app->user->getId();
 
         $user = User::findIdentity($userId);
 //
-        $model         = new AvatarForm($user);
+        $model = new AvatarForm($user);
         $model->avatar = UploadedFile::getInstance($model, 'avatar');
 
         if ($model->save()) {
             return [
-                'success'    => true,
+                'success' => true,
                 'pictureUri' => Yii::$app->storage->getFile($user->avatar),
-                'message'    => 'Аватар загружен'
+                'message' => 'Аватар загружен'
             ];
         }
         return ['success' => false, 'errors' => $model->getErrors()];
@@ -175,7 +177,7 @@ class AccountController extends Controller
     /**
      * Delete user avatar
      *
-     * @return array|\yii\web\Response
+     * @return array|Response
      */
     public function actionDeletePicture()
     {
@@ -191,8 +193,8 @@ class AccountController extends Controller
 
         if ($currentUser->deletePicture()) {
             return [
-                'success'    => true,
-                'message'    => 'Аватар удален',
+                'success' => true,
+                'message' => 'Аватар удален',
                 'pictureUri' => User::DEFAULT_IMAGE,
             ];
         } else {
@@ -208,7 +210,7 @@ class AccountController extends Controller
      *
      * @param int $id
      * @param $class
-     * @return array|\yii\web\Response
+     * @return array|Response
      */
     public function actionDeletePhoto(int $id, $class)
     {
@@ -238,7 +240,7 @@ class AccountController extends Controller
     /**
      * Displays a single Event model.
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -256,7 +258,7 @@ class AccountController extends Controller
     /**
      * Getting a list of user photos
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return string
      */
@@ -284,12 +286,12 @@ class AccountController extends Controller
      * Finds the Event model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return Event the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(int $id): Event
+    private function findModel(int $id): Event
     {
         if (($model = Event::findOne($id)) !== null) {
             return $model;

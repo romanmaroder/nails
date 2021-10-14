@@ -74,7 +74,7 @@ class Event extends ActiveRecord
             ->where(
                 [
                     'event_time_start' => $this->event_time_start,
-                    'master_id' =>$this->master_id
+                    'master_id' => $this->master_id
                 ]
             )
             ->asArray()
@@ -96,28 +96,22 @@ class Event extends ActiveRecord
 
 
         if (!empty($old_model)) {
-
-                if (
-                    date('Y-m-d H:i:s', strtotime($old_model['event_time_start'])) == $this->event_time_start &&
-                    $old_model['master_id'] == $this->master_id &&
-                    !$this->isAttributeChanged('client_id') ||
-                    date('Y-m-d H:i', strtotime($old_model['event_time_start'])) == $this->event_time_start &&
-                    $old_model['master_id'] == $this->master_id &&
-                    !$this->isAttributeChanged('client_id')
-                ) {
-                    $this->addError(
-                        'checkEvent',
-                        'Мастер ' . $this['master']['username'] . ' занят в это время'
-                    );
-
-                } else {
-
-                    return true;
-                }
+            if (
+                date('Y-m-d H:i:s', strtotime($old_model['event_time_start'])) == $this->event_time_start &&
+                $old_model['master_id'] == $this->master_id &&
+                !$this->isAttributeChanged('client_id') ||
+                date('Y-m-d H:i', strtotime($old_model['event_time_start'])) == $this->event_time_start &&
+                $old_model['master_id'] == $this->master_id &&
+                !$this->isAttributeChanged('client_id')
+            ) {
+                $this->addError(
+                    'checkEvent',
+                    'Мастер ' . $this['master']['username'] . ' занят в это время'
+                );
+            } else {
+                return true;
+            }
         }
-
-
-
     }
 
 
@@ -279,10 +273,7 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public
-    static function findNextClientEvents(
-        $user_id
-    ) {
+    public static function findNextClientEvents( $user_id ) {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])

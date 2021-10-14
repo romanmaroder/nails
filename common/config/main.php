@@ -6,7 +6,7 @@ return [
     ],
     'vendorPath' => dirname(dirname(__DIR__)).'/vendor',
     'language'   => 'ru-RU',
-    'timeZone'   => 'UTC',
+    'timeZone'   => 'Europe/Moscow',
     'modules'    => [
         'profile' => [
             'class' => 'common\modules\profile\module',
@@ -22,6 +22,14 @@ return [
         ],
     ],
     'components' => [
+        'formatter' => [
+            'locale' => 'ru-RU',
+            'defaultTimeZone' => 'Europe/Moscow',
+            'timeZone' => 'Europe/Moscow',
+            'dateFormat' => 'dd.MM.yyyy',
+            'timeFormat' => 'HH:mm:ss',
+            'datetimeFormat' => 'dd.MM.yyyy HH:mm:ss',
+        ],
         'cache'       => [
             'class' => 'yii\caching\FileCache',
             'cachePath' => '@common/runtime/cache' // Храним кэш в common/runtime/cache
@@ -31,6 +39,9 @@ return [
         ],
         'storage'     => [
             'class' => 'common\components\Storage'
+        ],
+        'smsSender'=>[
+            'class'=>'common\components\sms\SmsSender'
         ],
         'assetManager' => [
             'appendTimestamp' => true,

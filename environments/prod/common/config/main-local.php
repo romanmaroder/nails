@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'language'   => 'ru-RU',
-    'timeZone'   => 'UTC',
+    'language' => 'ru-RU',
+    'timeZone' => 'Europe/Moscow',
     'components' => [
         /* 'db' => [
              'class' => 'yii\db\Connection',
@@ -11,16 +11,16 @@ return [
              'password' => 'root',
              'charset' => 'utf8',
          ],*/
-        'db'           => [
-            'class'    => 'yii\db\Connection',
-            'dsn'      => 'mysql:host=localhost;dbname=host1827487',
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=host1827487',
             'username' => 'host1827487',
             'password' => 'N8c4ZkRzGj',
-            'charset'  => 'utf8',
+            'charset' => 'utf8',
         ],
-        'mailer'       => [
-            'class'            => 'yii\swiftmailer\Mailer',
-            'viewPath'         => '@common/mail',
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
@@ -30,50 +30,53 @@ return [
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
             'useFileTransport' => false,
-            'transport'        => [
-                'class'         => 'Swift_SmtpTransport',
-                'host'          => 'smtp.yandex.ru',
-                'username'      => 'roma12041985@yandex.ru',
-                'password'      => 'Roman_maroder',
-                'port'          => '587', // 465
-                'encryption'    => 'tls', // tls
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.yandex.ru',
+                'username' => 'roma12041985@yandex.ru',
+                'password' => 'Roman_maroder',
+                'port' => '587', // 465
+                'encryption' => 'tls', // tls
                 'streamOptions' => [
                     'ssl' => [
-                        'verify_peer'      => false,
+                        'verify_peer' => false,
                         'verify_peer_name' => false
                     ]
                 ]
             ],
         ],
-        'cache'        => [
-            'class'     => 'yii\caching\FileCache',
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
             'cachePath' => '@common/runtime/cache' // Храним кэш в common/runtime/cache
         ],
-        'authManager'  => [
+        'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
-        'storage'      => [
+        'smsSender' => [
+            'class' => 'common\components\sms\SmsSender'
+        ],
+        'storage' => [
             'class' => 'common\components\Storage'
         ],
         'assetManager' => [
             'appendTimestamp' => true,
-            'linkAssets'      => true,
-            'bundles'         => [
+            'linkAssets' => true,
+            'bundles' => [
                 'yii\bootstrap\BootstrapAsset' => false,
             ],
         ],
     ],
-    'modules'    => [
-        'profile'  => [
+    'modules' => [
+        'profile' => [
             'class' => 'common\modules\profile\module',
         ],
-        'client'   => [
+        'client' => [
             'class' => 'common\modules\client\Module',
         ],
         'calendar' => [
             'class' => 'common\modules\calendar\Module',
         ],
-        'blog'     => [
+        'blog' => [
             'class' => 'common\modules\blog\Blog',
         ],
     ],

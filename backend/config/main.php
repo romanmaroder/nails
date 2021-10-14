@@ -20,8 +20,6 @@ return [
         ],
     ],
     'name'                => 'NAILS-ADMIN',
-    'timeZone'            => 'UTC',
-    'language'            => 'ru-RU',
     'components'          => [
         'request'      => [
             'csrfParam' => '_csrf-backend',

@@ -1,30 +1,30 @@
 <?php
+
 return [
-    'id'                  => 'app-frontend',
+    'id' => 'app-frontend',
     'controllerNamespace' => 'frontend\controllers',
-    'name'                => 'NAILS',
-    'language'            => 'ru',
+    'name' => 'NAILS',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
-            'baseUrl'   => '',
+            'baseUrl' => '',
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '',
         ],
-        'user'         => [
-            'identityClass'   => 'common\models\User',
+        'user' => [
+            'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie'  => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
-        'session'      => [
+        'session' => [
             // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
         ],
-        'log'          => [
+        'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets'    => [
+            'targets' => [
                 [
-                    'class'  => 'yii\log\FileTarget',
+                    'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -34,9 +34,9 @@ return [
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName'  => false,
-            'rules'           => [
-                ''      => 'site/index',
+            'showScriptName' => false,
+            'rules' => [
+                '' => 'site/index',
                 'event' => 'event/index'
             ],
         ],

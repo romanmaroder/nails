@@ -13,10 +13,6 @@ use yii\helpers\Html;
 	<div class="body-content">
 
 		<div class="row">
-			<div class="d-none d-xl-block col-xl-2">
-                <?php
-                echo NewsList::widget(['showLimit' => 3]); ?>
-			</div>
 			<div class="col-xl-10">
 				<div class="row ">
                     <?php
@@ -72,6 +68,10 @@ use yii\helpers\Html;
 				</div>
 
 			</div>
+            <div class="d-none d-xl-block col-xl-2">
+                <?php
+                echo NewsList::widget(['showLimit' => 3]); ?>
+            </div>
 		</div>
 
 	</div>
