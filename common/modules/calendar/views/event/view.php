@@ -55,6 +55,22 @@ YiiAsset::register($this);
                 'class'   => 'btn btn-primary btn-sm'
             ]
         ) ?>
+        <?php
+
+        $options = ['class' => 'btn btn-info btn-sm d-none',
+                    'href'=>'sms:' . $model->client->phone . Yii::$app->smsSender->checkOperatingSystem(
+                        ) . Yii::$app->smsSender->messageText(
+                            $model->event_time_start
+                        ),
+                    'title'          => 'Отправить смс',
+                   ];
+
+        if ($model->client->phone ) {
+            Html::removeCssClass($options, 'd-none');
+            Html::addCssClass($options, 'd-in;ine-block');
+        }
+        echo Html::tag('a', '<i class="far fa-envelope"></i>', $options);
+        ?>
         <?= Html::a(
             Yii::t('app', 'Удалить'),
             ['delete', 'id' => $model->id],

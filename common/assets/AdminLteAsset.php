@@ -18,10 +18,14 @@ class AdminLteAsset extends AssetBundle
 
     public $js = [
         'js/adminlte.min.js',
+
     ];
 
     public $depends = [
-        'hail812\adminlte3\assets\BaseAsset',
+        'yii\web\YiiAsset',
+        'yii\bootstrap4\BootstrapAsset',
+        'yii\bootstrap4\BootstrapPluginAsset',
+//        'hail812\adminlte3\assets\BaseAsset',
         'hail812\adminlte3\assets\PluginAsset',
     ];
 }
