@@ -1,4 +1,5 @@
 <?php
+/* @var $countEventTotal string */
 
 use common\models\User;
 use hail812\adminlte\widgets\Menu;
@@ -175,6 +176,7 @@ use yii\helpers\Html;
                         ['label' => 'Warning', 'iconClass' => 'nav-icon far fa-circle text-warning'],
                         ['label' => 'Informational', 'iconStyle' => 'far', 'iconClassAdded' => 'text-info'],*/
                     ],
+
                 ]
             );
             ?>

@@ -1,66 +1,96 @@
 <?php
 
+/* @var $countEventTotal string */
+
 use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\widgets\Menu;
 
 ?>
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
-    <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <?php echo Html::a('Главная',Url::home(),['class'=>'nav-link']) ;?>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-			<?php echo Html::a('Календарь',['/calendar/event/index'],['class'=>'nav-link']) ;?>
-        </li>
-		<li class="nav-item d-none d-sm-inline-block">
-            <?php echo Html::a('Клиенты',['/client'],['class'=>'nav-link']) ;?>
-		</li>
-		<li class="nav-item d-none d-sm-inline-block">
-            <?php echo Html::a('Мастера',['/master'],['class'=>'nav-link']) ;?>
-		</li>
-        <li class="nav-item dropdown d-sm-none">
-            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-			   class="nav-link dropdown-toggle">Меню</a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><?php echo Html::a('Календарь',['/calendar/event/index'],['class'=>'nav-link']) ;?></li>
-                <li><?php echo Html::a('Клиенты',['/client'],['class'=>'nav-link']) ;?></li>
-                <li><?php echo Html::a('Мастера',['/master'],['class'=>'nav-link']) ;?></li>
-                <li><?= Html::a('Выйти', ['/site/logout'], ['data-method' => 'post', 'class' => 'dropdown-item'])
-					?></li>
 
-                <!--<li class="dropdown-divider"></li>-->
+    <?= Menu::widget(
+        [
+            'options' => [
+                'class' => 'navbar-nav',
+                'data' => 'menu',
+            ],
+            'labelTemplate' => '{label}',
+            'linkTemplate' => '<a class="nav-link" href="{url}">{label}</a>',
+            'itemOptions' => ['class' => 'nav-item d-none d-sm-inline-block'],
+            'activeCssClass' => 'active',
+            'encodeLabels' => false,
+            'items' => [
+                [
+                    'label' => '<i class="fas fa-bars"></i>',
+                    'url' => '#',
+                    'options' => ['class' => 'nav-item'],
+                    'template' => '<a href="{url}" class="nav-link" 
+                                                    data-widget="pushmenu"
+                                                    role="button"
+                                                   >{label}
+                                    </a>',
+                ],
+                [
+                    'label' => 'Календарь',
+                    'url' => ['/calendar/event/index'],
+                ],
+                [
+                    'label' => 'Клиенты',
+                    'url' => ['/client/client/index'],
+                ],
+                ['label' => 'Мастера', 'url' => ['/employees/master/index']],
+                [
+                    'label' => 'Блог',
+                    'url' => ['/blog/post/index'],
+                ],
+                [
+                    'label' => 'Меню',
+                    'url' => '#',
+                    'options' => ['class' => 'nav-item dropdown d-sm-none'],
+                    'template' => '<a href="{url}" id="dropdownSubMenu1" 
+                                                    data-toggle="dropdown" 
+                                                    aria-haspopup="true" 
+                                                    aria-expanded="false" 
+                                                    class="nav-link dropdown-toggle">{label}
+                                    </a>',
+                    'items' => [
+                        [
+                            'label' => 'Календарь',
+                            'url' => ['/calendar/event/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
+                            'label' => 'Клиенты',
+                            'url' => ['/client/client/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        ['label' => 'Мастера',
+                            'url' => ['/employees/master/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
+                            'label' => 'Блог',
+                            'url' => ['/blog/post/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
+                            'label' => 'Выйти',
+                            'url' =>  ['/site/logout'],
+                            'options' => ['class' => 'nav-item' ,],
+                            'template'=>'<a class="nav-link " data-method="post" href="{url}">{label}</a>',
+                        ],
 
-                <!-- Level two dropdown-->
-                <!--<li class="dropdown-submenu dropdown-hover">
-                    <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">Hover for action</a>
-                    <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                        <li>
-                            <a tabindex="-1" href="#" class="dropdown-item">level 2</a>
-                        </li>-->
 
-                        <!-- Level three dropdown-->
-                        <!--<li class="dropdown-submenu">
-                            <a id="dropdownSubMenu3" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">level 2</a>
-                            <ul aria-labelledby="dropdownSubMenu3" class="dropdown-menu border-0 shadow">
-                                <li><a href="#" class="dropdown-item">3rd level</a></li>
-                                <li><a href="#" class="dropdown-item">3rd level</a></li>
-                            </ul>
-                        </li>-->
-                        <!-- End Level three -->
+                    ],
+                    'submenuTemplate' => "\n<ul class='dropdown-menu border-0 shadow' role='menu' aria-labelledby='dropdownSubMenu1'>\n{items}\n</ul>\n",
+                ],
+            ],
 
-                        <!--<li><a href="#" class="dropdown-item">level 2</a></li>
-                        <li><a href="#" class="dropdown-item">level 2</a></li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-                <!-- End Level two -->
-            </ul>
-        </li>
-    </ul>
+        ]
+    );
+    ?>
 
     <!-- SEARCH FORM -->
     <!--<form class="form-inline ml-3">
@@ -84,7 +114,8 @@ use yii\helpers\Url;
             <div class="navbar-search-block">
                 <form class="form-inline">
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Search"
+                               aria-label="Search">
                         <div class="input-group-append">
                             <button class="btn btn-navbar" type="submit">
                                 <i class="fas fa-search"></i>
@@ -108,7 +139,11 @@ use yii\helpers\Url;
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-						<?php echo Html::img('/img/user1-128x128.jpg',['class'=>'img-size-50 mr-3 img-circle','alt'=>'User Avatar']) ;?>
+                        <?php
+                        echo Html::img(
+                            '/img/user1-128x128.jpg',
+                            ['class' => 'img-size-50 mr-3 img-circle', 'alt' => 'User Avatar']
+                        ); ?>
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
                                 Brad Diesel
@@ -124,7 +159,11 @@ use yii\helpers\Url;
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <?php echo Html::img('/img/user8-128x128.jpg',['class'=>'img-size-50 img-circle mr-3','alt'=>'User Avatar']) ;?>
+                        <?php
+                        echo Html::img(
+                            '/img/user8-128x128.jpg',
+                            ['class' => 'img-size-50 img-circle mr-3', 'alt' => 'User Avatar']
+                        ); ?>
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
                                 John Pierce
@@ -140,7 +179,11 @@ use yii\helpers\Url;
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <?php echo Html::img('/img/user3-128x128.jpg',['class'=>'img-size-50 img-circle mr-3','alt'=>'User Avatar']) ;?>
+                        <?php
+                        echo Html::img(
+                            '/img/user3-128x128.jpg',
+                            ['class' => 'img-size-50 img-circle mr-3', 'alt' => 'User Avatar']
+                        ); ?>
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
                                 Nora Silvester
@@ -176,7 +219,8 @@ use yii\helpers\Url;
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="/admin/event/index" class="dropdown-item">
-                    <i class="fas fa-file mr-2"></i>Всего записей <?php echo $countEventTotal ; ?>
+                    <i class="fas fa-file mr-2"></i>Всего записей <?php
+                    echo $countEventTotal; ?>
                     <span class="float-right text-muted text-sm">-</span>
                 </a>
                 <div class="dropdown-divider"></div>
@@ -184,7 +228,11 @@ use yii\helpers\Url;
             </div>
         </li>
         <li class="nav-item d-none d-sm-block">
-            <?= Html::a('<i class="fas fa-sign-out-alt"></i>', ['/site/logout'], ['data-method' => 'post', 'class' => 'nav-link']) ?>
+            <?= Html::a(
+                '<i class="fas fa-sign-out-alt"></i>',
+                ['/site/logout'],
+                ['data-method' => 'post', 'class' => 'nav-link']
+            ) ?>
         </li>
         <!--<li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
