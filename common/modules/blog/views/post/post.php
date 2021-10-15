@@ -10,7 +10,7 @@ $this->title = $post->title;
 
 ?>
 
-	<div class="row sticky-top">
+	<div class="row fixed-top">
 		<div class="col-12">
             <?php
             echo Progress::widget(

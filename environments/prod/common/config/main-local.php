@@ -2,7 +2,7 @@
 
 return [
     'language' => 'ru-RU',
-    'timeZone' => 'Europe/Moscow',
+    'timeZone' => 'Europe/Kiev',
     'components' => [
         /* 'db' => [
              'class' => 'yii\db\Connection',
