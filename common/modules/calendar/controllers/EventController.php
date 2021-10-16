@@ -83,6 +83,7 @@ class EventController extends Controller
             $event->title       = $item->client->username;
             $event->nonstandard = [
                 'description' => $item->description,
+                'notice' => $item->notice,
                 'master_name' => $item->master->username,
             ];
             $event->color       = $item->master->color;

@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'views'             => [
                     'month'     => [
                         'eventLimit'       => 10,
-                        'displayEventTime' => false,
+                        'displayEventTime' => true, // отображение времени в месяце
                     ],
                     'day'       => [
                         'eventLimit' => 15,
@@ -156,20 +156,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'eventRender'       => new JsExpression(
                     "function (event, element, view){
 								element.addClass('event-render');
-								element.find('.fc-content').append(element.find('.fc-time').addClass('font-italic'));
+								element.find('.fc-content').append( element.find('.fc-time').addClass('font-italic') );
+								
                   				if (view.name == 'basicDay' ) { 
                   					element.find('.fc-content').addClass('d-flex flex-column');
                   					element.addClass('fc-basic_day');
-                  				 	element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-3\"><i>' + event.nonstandard.description + '</i></span>');
-                  				 }
+                  				 	element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
+                  				 	if( event.nonstandard.notice){
+                  				 		element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
+                  				 	}
+                  				}
                   				 if (view.name == 'month' ) { 
                   					element.addClass('fc-basic_month');
+                  					element.find('.fc-content').prepend(element.find('.fc-time'))
+                  					element.find('.fc-content').find('.fc-time').css({'white-space':'break-spaces'});
+                  					element.find('.fc-content').find('.fc-title').addClass('d-none d-sm-block');
                   					
-                  					if(window.width <= 540){
-										let string = event.title;
-										event.title = string.split(/\s/).slice(0,2).reduce((response,word)=> response+=word.toUpperCase().slice(0,1),'');
-										element.find('.fc-title').html(event.title);
-									}
                   				 }
                   				 if ( view.name == 'listWeek' )   
                                       { 
