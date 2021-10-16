@@ -304,7 +304,7 @@ JS;
     $js = <<< JS
  $(function () {
      
-   $("#example2").DataTable({
+   $("#example2").DataTable({ 
       "responsive": true,
       "autoWidth": false,
       "info": false,

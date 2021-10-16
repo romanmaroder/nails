@@ -67,7 +67,7 @@ class Post extends ActiveRecord
             [['title', 'subtitle'], 'string', 'max' => 255],
             [['title'],'required','message' => 'Придумайте заголовок'],
             [['subtitle'],'required','message' => 'Придумайте подзаголовок'],
-            [['user_id', 'category_id', 'status'], 'integer'],
+            [['user_id', 'category_id', 'status'], 'integer','message' => 'Выберите {attribute}'],
             [['created_at', 'updated_at'], 'safe'],
         ];
     }

@@ -19,9 +19,9 @@ PluginAsset::register($this)->add(
 ?>
 	<div class="post-index">
 
-	<p>
-        <?= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) ?>
-	</p>
+	<!--<p>
+        <?/*= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) */?>
+	</p>-->
 
 <?php
 Pjax::begin(); ?>
@@ -98,6 +98,7 @@ if ($dataProvider->getCount() === 0) {
 
 	</div>
     <?php
+if (Yii::$app->id == 'app-backend') {
     $js = <<< JS
  $(function () {
      
@@ -141,15 +142,46 @@ if ($dataProvider->getCount() === 0) {
       "info": false,
       "autoWidth": false,
       "responsive": true,
+       "dom": "<'row'<'col-6 col-sm-6 col-md-6  text-left'B><'col-12 col-sm-6 col-md-6 d-flex d-md-block'f>>tp",
+      "buttons": [
+        {
+				"text": "Новая статья",
+				"className":"btn btn-success",
+				"tag":"a",
+				"attr":{
+				"href":"/admin/blog/post/create"
+				},
+				"action": function ( e, dt, node, config ) {
+				  $(location).attr('href',config.attr.href);
+				}
+        }
+        ],
       "language": {
           "search":"Поиск"
          
          }
     });
+
   });
 JS;
+}else {
+    $js = <<< JS
+ $(function () {
+    $('#post').DataTable({
+      "paging": false,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": false,
+      "autoWidth": false,
+      "responsive": true,
+      "language": {
+          "search":"Поиск"
+         }
+    });
 
-
+  });
+JS;
+}
     $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
-
     ?>
