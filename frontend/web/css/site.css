@@ -146,7 +146,6 @@ a.desc:after {
     height: auto;
 }
 
-
 .fc-header-toolbar {
     display: flex;
     flex-direction: column;
@@ -154,6 +153,9 @@ a.desc:after {
 
 .fc-header-toolbar .fc-left {
     margin-bottom: 5px;
+}
+.event-render {
+    margin-bottom: 3px;
 }
 
 @media screen and (min-width: 540px) {
@@ -164,8 +166,12 @@ a.desc:after {
     .fc-header-toolbar .fc-left {
         margin-bottom: 0;
     }
+
     .event-render {
         padding: 2.5px;
+    }
+    tr:first-child > td > .fc-basic_day{
+        margin-top: 15px;
     }
     .fc-basic_day {
         width: calc(100% - 5%);
