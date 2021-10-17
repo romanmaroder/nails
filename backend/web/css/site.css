@@ -183,6 +183,9 @@ a.desc:after {
     .event-render {
         padding: 2.5px;
     }
+    tr:first-child > td > .fc-basic_day{
+        margin-top: 15px;
+    }
     .fc-basic_day {
         width: calc(100% - 5%);
         margin: 0 auto 15px auto;

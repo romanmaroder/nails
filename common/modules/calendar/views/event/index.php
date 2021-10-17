@@ -84,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
             'clientOptions' => [
-                'eventOverlap '     => 'red',
+                'eventOverlap '     => false,
                 'todayBtn'          => true,
                 'themeSystem'       => 'bootstrap4',
                 'navLinks'          => true,
@@ -151,10 +151,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     }"
                 ),
                 'dayRender'         => new JsExpression(
-                    "function(){} "
+                    "function(){
+
+                    } "
                 ),
                 'eventRender'       => new JsExpression(
-                    "function (event, element, view){
+                    "function (event, element, view, popover){
 								element.addClass('event-render');
 								element.find('.fc-content').append( element.find('.fc-time').addClass('font-italic') );
 								
@@ -169,12 +171,42 @@ $this->params['breadcrumbs'][] = $this->title;
                   				 if (view.name == 'month' ) { 
                   					element.addClass('fc-basic_month');
                   					element.find('.fc-content').prepend(element.find('.fc-time'))
-                  					element.find('.fc-content').find('.fc-time').css({'white-space':'break-spaces'});
-                  					element.find('.fc-content').find('.fc-title').addClass('d-none d-sm-block');
                   					
+                  					element.find('.fc-content').find('.fc-time').css({'white-space':'break-spaces'});
+                  					element.find('.fc-content').find('.fc-title').addClass('d-none d-sm-block').css({'float':'none'});
+                  					
+                  					if( $('.fc-basic_month').closest('div').length > 0 ){
+										element.find('.fc-content').find('.fc-title').removeClass('d-none').addClass('d-inline-block');     
+										element.addClass('w-100');
+                  					}
+                  					
+                  					 element.popover({
+											placement: 'top',
+											html: true,
+											image: true,
+											trigger : 'hover',
+											title: event.title,
+											content: event.nonstandard.description,
+											container:'body'
+										}); 
                   				 }
+                  				 if ( view.name == 'basicWeek' )   
+                                      { 
+                                     element.popover({
+											placement: 'top',
+											html: true,
+											image: true,
+											trigger : 'hover',
+											title: event.title + ' ' + event.start.format('HH:mm'),
+											content: event.nonstandard.description,
+											container:'body'
+										}); 
+                                      }
+                  				 
+                  				 
                   				 if ( view.name == 'listWeek' )   
                                       { 
+                                   
                                      element.find('.fc-list-item-marker ').append(' (' + event.nonstandard.master_name + ') '); 
                                       }
                   				 
