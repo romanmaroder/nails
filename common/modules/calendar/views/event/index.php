@@ -12,6 +12,12 @@ use yii\helpers\Json;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $events EventController */
 
+Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = [
+    'sourcePath' => null,
+    'js'         => ['jquery.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js'],
+];
+
+
 $this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -79,23 +85,34 @@ $this->params['breadcrumbs'][] = $this->title;
             'header'      => [
                 'left'   => 'prev,next,today',
                 'center' => 'title',
-                'right'  => 'month,basicWeek,listWeek'
+                'right'  => 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek'
             ],
 
 
             'clientOptions' => [
-                'eventOverlap '     => false,
-                'todayBtn'          => true,
-                'themeSystem'       => 'bootstrap4',
-                'navLinks'          => true,
-                'contentHeight'     => 'auto',
-                'timeFormat'      => 'HH:mm',
-                'locale'            => 'ru',
-                'eventLimit'        => true,
-                'eventOrder'        => '-title',
-                'views'             => [
+                'eventOverlap '        => false,
+                'todayBtn'             => true,
+                'themeSystem'          => 'bootstrap4',
+                'navLinks'             => true,
+                'contentHeight'        => 'auto',
+                'timeFormat'           => 'H:mm',
+                'locale'               => 'ru',
+                'eventLimit'           => true,
+                'eventOrder'           => '-title',
+                'buttonText'=>[
+                		'listWeek'=>'Повестка недели',
+                		'agendaDay'=>'День-Время',
+						'agendaWeek'=>'Неделя-Время'
+				],
+                'views'                => [
                     'month'     => [
                         'eventLimit'       => 10,
+                        'displayEventTime' => true, // отображение времени в месяце
+                    ],
+                    'agendaDay'     => [
+                        'displayEventTime' => true, // отображение времени в месяце
+                    ],
+                    'agendaWeek'     => [
                         'displayEventTime' => true, // отображение времени в месяце
                     ],
                     'day'       => [
@@ -106,16 +123,41 @@ $this->params['breadcrumbs'][] = $this->title;
                         'displayEventTime' => false
                     ]
                 ],
-                'eventLimitClick'   => 'popover',
-                'theme'             => true,
-                'fixedWeekCount'    => false,
+                'eventLimitClick'      => 'popover',
+                'theme'                => true,
+                'fixedWeekCount'       => false,
+                'allDaySlot'=>false,
+                //'allDayText'=>false,
+                'slotEventOverlap'     => true,
+                'agendaEventMinHeight' => 100,
+                'slotDuration'         => '0:15:00',
+                'slotLabelInterval'    => '01:00:00',
+                'slotLabelFormat'      => 'HH:mm',
+                'minTime'              => '07:00:00',
+                'maxTime'              => '21:00:00',
 //                'googleCalendarApiKey' => 'AIzaSyDWfl1aqSSrH19_IxQKWZmOkjorYIvT7vc',
-                'defaultDate'       => new JsExpression(
+                'defaultDate'          => new JsExpression(
                     "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
                 "
                 ),
-                'dayClick'          => new JsExpression(
+                'windowResize'=> new JsExpression("function(view) {
+						if( $(window).width() > 540 ){
+						 		view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						 		view.calendar.el.find('.fc-right').find('.fc-agendaDay-button ').addClass('d-block');
+						 		view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').addClass('d-block');
+						}
+						if ($(window).width() < 540 ){
+								view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+								view.calendar.el.find('.fc-right').find('.fc-agendaDay-button').removeClass('d-block').addClass('d-none');
+								view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').removeClass('d-block').addClass('d-none');
+   						}
+  				}"
+  				),
+
+
+
+                'dayClick'             => new JsExpression(
                     "function (date,view) {
                                    if(app == 'app-backend'){
                                         $.ajax({
@@ -133,7 +175,7 @@ $this->params['breadcrumbs'][] = $this->title;
 										
                         }"
                 ),
-                'eventClick'        => new JsExpression(
+                'eventClick'           => new JsExpression(
                     "function(event) {
                     
                      if(app == 'app-backend'){
@@ -150,13 +192,23 @@ $this->params['breadcrumbs'][] = $this->title;
                       $('#view').modal('show');
                     }"
                 ),
-                'dayRender'         => new JsExpression(
-                    "function(){
-
+                'dayRender'            => new JsExpression(
+                    "function(cell,date){
+console.log(date);
                     } "
                 ),
-                'eventRender'       => new JsExpression(
+                'eventRender'          => new JsExpression(
                     "function (event, element, view, popover){
+							
+							if( $(window).width() > 540 ){
+						 		view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						 		view.calendar.el.find('.fc-right').find('.fc-agendaDay-button ').addClass('d-block');
+						 		view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').addClass('d-block');
+							}else if ($(window).width() < 540){
+								view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+								view.calendar.el.find('.fc-right').find('.fc-agendaDay-button').removeClass('d-block').addClass('d-none');
+								view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').removeClass('d-block').addClass('d-none');
+   							}
 								element.addClass('event-render');
 								element.find('.fc-content').append( element.find('.fc-time').addClass('font-italic') );
 								
@@ -170,7 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   				}
                   				 if (view.name == 'month' ) { 
                   					element.addClass('fc-basic_month');
-                  					element.find('.fc-content').prepend(element.find('.fc-time'))
+                  					element.find('.fc-content').prepend(element.find('.fc-time'));
                   					
                   					element.find('.fc-content').find('.fc-time').css({'white-space':'break-spaces'});
                   					element.find('.fc-content').find('.fc-title').addClass('d-none d-sm-block').css({'float':'none'});
@@ -188,10 +240,9 @@ $this->params['breadcrumbs'][] = $this->title;
 											title: event.title,
 											content: event.nonstandard.description,
 											container:'body'
-										}); 
+									}); 
                   				 }
-                  				 if ( view.name == 'basicWeek' )   
-                                      { 
+                  				 if ( view.name == 'basicWeek' ){ 
                                      element.popover({
 											placement: 'top',
 											html: true,
@@ -200,25 +251,33 @@ $this->params['breadcrumbs'][] = $this->title;
 											title: event.title + ' ' + event.start.format('HH:mm'),
 											content: event.nonstandard.description,
 											container:'body'
-										}); 
-                                      }
+									}); 
+                                 }
                   				 
                   				 
-                  				 if ( view.name == 'listWeek' )   
-                                      { 
-                                   
-                                     element.find('.fc-list-item-marker ').append(' (' + event.nonstandard.master_name + ') '); 
-                                      }
+                  				 if ( view.name == 'listWeek' ) { 
+                  				  	element.find('.fc-list-item-marker ').append(' (' + event.nonstandard.master_name + ') '); 
+                                 }
+                                 
+                                  if (view.name == 'agendaWeek' || view.name == 'agendaDay' ) {
+                                   //element.find('.fc-content').prepend(element.find('.fc-time'));
+                                  
+									//element.find('.fc-content').addClass('d-flex flex-column');
+                                  element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
+                  				 	if( event.nonstandard.notice){
+                  				 		element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
+                  				 	}
+                                  }
                   				 
                 	}"
                 ),
-                'viewRender'        => new JsExpression(
+                'viewRender'           => new JsExpression(
                     "function (view,event, element){
 						localStorage.setItem('fcDefaultView', view.name);
 						var date = $('#calendar').fullCalendar('getDate');
 							localStorage.setItem('fcDefaultViewDate', date.format());
                 }"
-                )
+                ),
             ],
 
         ]
