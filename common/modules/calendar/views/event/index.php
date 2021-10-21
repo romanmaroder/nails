@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'options' => ['tabindex' => '']
         ]
     );
-    echo '<div id="modalContent"></div>';
+    echo '<div id="modalContentError"></div>';
     Modal::end(); ?>
 
 
@@ -66,14 +66,19 @@ $this->params['breadcrumbs'][] = $this->title;
     );
     Modal::end();
     ?>
-
+    <?php
+    if (Yii::$app->user->can('admin')) {
+    	$right = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
+    }else{
+        $right = 'month,basicDay,basicWeek,listWeek';
+	}
+    ; ?>
     <?= yii2fullcalendar::widget(
         [
             'id' => 'calendar',
 
             'events'      => [
                 'events' => $events,
-//                'googleCalendarId' => 'katya04111985@gmail.com',
             ],
             'defaultView' => new JsExpression(
                 "
@@ -81,14 +86,11 @@ $this->params['breadcrumbs'][] = $this->title;
             "
             ),
 
-//            'googleCalendar'=>true,
-            'header'      => [
+            'header'        => [
                 'left'   => 'prev,next,today',
                 'center' => 'title',
-                'right'  => 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek'
+                'right'  => $right
             ],
-
-
             'clientOptions' => [
                 'eventOverlap '        => false,
                 'todayBtn'             => true,
@@ -99,26 +101,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 'locale'               => 'ru',
                 'eventLimit'           => true,
                 'eventOrder'           => '-title',
-                'buttonText'=>[
-                		'listWeek'=>'Повестка недели',
-                		'agendaDay'=>'День-Время',
-						'agendaWeek'=>'Неделя-Время'
-				],
+                'buttonText'           => [
+                    'listWeek'   => 'Повестка недели',
+                    'agendaDay'  => 'День-Время',
+                    'agendaWeek' => 'Неделя-Время'
+                ],
                 'views'                => [
-                    'month'     => [
+                    'month'      => [
                         'eventLimit'       => 10,
                         'displayEventTime' => true, // отображение времени в месяце
                     ],
-                    'agendaDay'     => [
+                    'agendaDay'  => [
                         'displayEventTime' => true, // отображение времени в месяце
                     ],
-                    'agendaWeek'     => [
+                    'agendaWeek' => [
                         'displayEventTime' => true, // отображение времени в месяце
                     ],
-                    'day'       => [
+                    'day'        => [
                         'eventLimit' => 15,
                     ],
-                    'basicWeek' => [
+                    'basicWeek'  => [
                         'eventLimit'       => false,
                         'displayEventTime' => false
                     ]
@@ -126,7 +128,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'eventLimitClick'      => 'popover',
                 'theme'                => true,
                 'fixedWeekCount'       => false,
-                'allDaySlot'=>false,
+                'allDaySlot'           => false,
                 //'allDayText'=>false,
                 'slotEventOverlap'     => true,
                 'agendaEventMinHeight' => 100,
@@ -135,29 +137,83 @@ $this->params['breadcrumbs'][] = $this->title;
                 'slotLabelFormat'      => 'HH:mm',
                 'minTime'              => '07:00:00',
                 'maxTime'              => '21:00:00',
-//                'googleCalendarApiKey' => 'AIzaSyDWfl1aqSSrH19_IxQKWZmOkjorYIvT7vc',
+                'selectable'           => Yii::$app->user->can('manager'),
+                'selectHelper'         => true,
+                'select'               => new JsExpression(
+                    "function (start,end,view) {
+							var start = $.fullCalendar.formatDate(start,'Y-MM-DD HH:mm:ss');
+							var end = $.fullCalendar.formatDate(end,'Y-MM-DD HH:mm:ss');
+                        if(app == 'app-backend'){
+                            $.ajax({
+								url:basePath +'/calendar/event/create',
+								type:'GET',
+								data:{start:start, end:end},
+								success:function (data) {
+									$('#modal').modal('show').find('#modalContent').html(data);
+								},
+								error:function(data,jqXHR, textStatus, errorThrown){
+									$('#modal').modal('show').find('#modalContentError').html(data.error);
+								},
+							});
+						}
+                    }"
+                ),
+                'editable'             => Yii::$app->user->can('manager'),
+                'eventResize'          => new JsExpression(
+                    "function(event){
+									var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm');
+									var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm');
+									var id = event.id;
+									 if(app == 'app-backend'){
+										$.ajax({
+											url: basePath +'/calendar/event/update-resize',
+											type: 'GET',
+											data:{id:id,start:start,end:end},
+											success: function(){
+												$('#calendar').fullCalendar('refetchEvents');
+											},
+										});
+									 }
+						}"
+                ),
+                'eventDrop'            => new JsExpression(
+                    "function(event){
+									var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm');
+									var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm');
+									var id = event.id;
+									if(app == 'app-backend'){
+										$.ajax({
+											url: basePath +'/calendar/event/update-drop',
+											type: 'GET',
+											data:{id:id,start:start,end:end},
+											success: function(){
+												$('#calendar').fullCalendar('refetchEvents');
+											},
+										});
+									 }
+                		}"
+                ),
                 'defaultDate'          => new JsExpression(
                     "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
                 "
                 ),
-                'windowResize'=> new JsExpression("function(view) {
+                'windowResize'         => new JsExpression(
+                    "function(view) {
 						if( $(window).width() > 540 ){
-						 		view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						 		//view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
 						 		view.calendar.el.find('.fc-right').find('.fc-agendaDay-button ').addClass('d-block');
 						 		view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').addClass('d-block');
 						}
 						if ($(window).width() < 540 ){
-								view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+//								view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
 								view.calendar.el.find('.fc-right').find('.fc-agendaDay-button').removeClass('d-block').addClass('d-none');
 								view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').removeClass('d-block').addClass('d-none');
    						}
   				}"
-  				),
+                ),
 
-
-
-                'dayClick'             => new JsExpression(
+                /*'dayClick'             => new JsExpression(
                     "function (date,view) {
                                    if(app == 'app-backend'){
                                         $.ajax({
@@ -174,7 +230,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         )};
 										
                         }"
-                ),
+                ),*/
                 'eventClick'           => new JsExpression(
                     "function(event) {
                     
@@ -194,18 +250,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 ),
                 'dayRender'            => new JsExpression(
                     "function(cell,date){
-console.log(date);
                     } "
                 ),
                 'eventRender'          => new JsExpression(
                     "function (event, element, view, popover){
 							
 							if( $(window).width() > 540 ){
-						 		view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						 		//view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
 						 		view.calendar.el.find('.fc-right').find('.fc-agendaDay-button ').addClass('d-block');
 						 		view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').addClass('d-block');
 							}else if ($(window).width() < 540){
-								view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+								//view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
 								view.calendar.el.find('.fc-right').find('.fc-agendaDay-button').removeClass('d-block').addClass('d-none');
 								view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').removeClass('d-block').addClass('d-none');
    							}
@@ -278,6 +333,7 @@ console.log(date);
 							localStorage.setItem('fcDefaultViewDate', date.format());
                 }"
                 ),
+
             ],
 
         ]
