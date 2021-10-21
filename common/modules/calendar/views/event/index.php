@@ -14,133 +14,77 @@ use yii\helpers\Json;
 
 Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = [
     'sourcePath' => null,
-    'js'         => ['jquery.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js'],
+    'js' => ['jquery.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js'],
 ];
 
 
-$this->title                   = 'Календарь';
+$this->title = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-index">
-	<!--    Регистрация переменных для использования в js коде-->
 
     <?php
+    #Регистрация переменных для использования в js коде
+
     Yii::$app->view->registerJs(
-        "app=".Json::encode(Yii::$app->id)."; basePath=".Json::encode(Yii::$app->request->baseUrl).";",
+        "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
         View::POS_HEAD
     ); ?>
 
     <?php
     Modal::begin(
         [
-            'title'   => 'Добавить событие',
-            'size'    => 'SIZE_SMALL',
-            'id'      => 'modal',
+            'title' => 'Добавить событие',
+            'size' => 'SIZE_SMALL',
+            'id' => 'modal',
             'options' => ['tabindex' => '']
         ]
     );
-    echo '<div id="modalContent"></div>';
     Modal::end(); ?>
 
     <?php
     Modal::begin(
         [
-            'title'   => 'Ошибка',
-            'size'    => 'SIZE_SMALL',
-            'id'      => 'modal-error',
+            'title' => 'Ошибка',
+            'titleOptions' => [
+                'class' => 'text-danger'
+            ],
+            'size' => 'SIZE_SMALL',
+            'id' => 'modal-error',
             'options' => ['tabindex' => '']
         ]
     );
-    echo '<div id="modalContentError"></div>';
     Modal::end(); ?>
 
 
     <?php
-    // Модальное окно просмотра и редактирования
+    # Модальное окно просмотра и редактирования
     Modal::begin(
         [
-            'id'      => 'view',
-            'title'   => 'О событии',
+            'id' => 'view',
+            'title' => 'О событии',
             'options' => ['tabindex' => '']
         ]
     );
     Modal::end();
     ?>
+
     <?php
+
     if (Yii::$app->user->can('admin')) {
-    	$right = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
-    }else{
+        $right = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
+        $editable = true;
+    } else {
         $right = 'month,basicDay,basicWeek,listWeek';
-	}
-    ; ?>
-    <?= yii2fullcalendar::widget(
-        [
-            'id' => 'calendar',
+        $editable = false;
+    }
 
-            'events'      => [
-                'events' => $events,
-            ],
-            'defaultView' => new JsExpression(
-                "
-             localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
-            "
-            ),
-
-            'header'        => [
-                'left'   => 'prev,next,today',
-                'center' => 'title',
-                'right'  => $right
-            ],
-            'clientOptions' => [
-                'eventOverlap '        => false,
-                'todayBtn'             => true,
-                'themeSystem'          => 'bootstrap4',
-                'navLinks'             => true,
-                'contentHeight'        => 'auto',
-                'timeFormat'           => 'H:mm',
-                'locale'               => 'ru',
-                'eventLimit'           => true,
-                'eventOrder'           => '-title',
-                'buttonText'           => [
-                    'listWeek'   => 'Повестка недели',
-                    'agendaDay'  => 'День-Время',
-                    'agendaWeek' => 'Неделя-Время'
-                ],
-                'views'                => [
-                    'month'      => [
-                        'eventLimit'       => 10,
-                        'displayEventTime' => true, // отображение времени в месяце
-                    ],
-                    'agendaDay'  => [
-                        'displayEventTime' => true, // отображение времени в месяце
-                    ],
-                    'agendaWeek' => [
-                        'displayEventTime' => true, // отображение времени в месяце
-                    ],
-                    'day'        => [
-                        'eventLimit' => 15,
-                    ],
-                    'basicWeek'  => [
-                        'eventLimit'       => false,
-                        'displayEventTime' => false
-                    ]
-                ],
-                'eventLimitClick'      => 'popover',
-                'theme'                => true,
-                'fixedWeekCount'       => false,
-                'allDaySlot'           => false,
-                //'allDayText'=>false,
-                'slotEventOverlap'     => true,
-                'agendaEventMinHeight' => 100,
-                'slotDuration'         => '0:15:00',
-                'slotLabelInterval'    => '01:00:00',
-                'slotLabelFormat'      => 'HH:mm',
-                'minTime'              => '07:00:00',
-                'maxTime'              => '21:00:00',
-                'selectable'           => Yii::$app->user->can('manager'),
-                'selectHelper'         => true,
-                'select'               => new JsExpression(
-                    "function (start,end,view) {
+    /**
+     * Triggered when a date/time selection is made
+     * @var  $select
+     */
+    $select = new JsExpression(
+        "function (start,end,view) {
 							var start = $.fullCalendar.formatDate(start,'Y-MM-DD HH:mm:ss');
 							var end = $.fullCalendar.formatDate(end,'Y-MM-DD HH:mm:ss');
                         if(app == 'app-backend'){
@@ -149,18 +93,23 @@ $this->params['breadcrumbs'][] = $this->title;
 								type:'GET',
 								data:{start:start, end:end},
 								success:function (data) {
-									$('#modal').modal('show').find('#modalContent').html(data);
+									$('#modal').modal('show').find('.modal-body').html(data);
 								},
-								error:function(data,jqXHR, textStatus, errorThrown){
-									$('#modal').modal('show').find('#modalContentError').html(data.error);
+								error:function(data){
+									$('#modal-error').modal('show').find('.modal-body').html(data.responseText);
 								},
 							});
 						}
                     }"
-                ),
-                'editable'             => Yii::$app->user->can('manager'),
-                'eventResize'          => new JsExpression(
-                    "function(event){
+    );
+
+
+    /**
+     * Triggered when resizing stops and the event has changed in duration.
+     * @var  $eventResize
+     */
+    $eventResize = new JsExpression(
+        "function(event){
 									var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm');
 									var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm');
 									var id = event.id;
@@ -175,9 +124,14 @@ $this->params['breadcrumbs'][] = $this->title;
 										});
 									 }
 						}"
-                ),
-                'eventDrop'            => new JsExpression(
-                    "function(event){
+    );
+
+    /**
+     * Triggered when dragging stops and the event has moved to a different day/time.
+     * @var  $eventDrop
+     */
+    $eventDrop = new JsExpression(
+        "function(event){
 									var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm');
 									var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm');
 									var id = event.id;
@@ -192,13 +146,85 @@ $this->params['breadcrumbs'][] = $this->title;
 										});
 									 }
                 		}"
-                ),
-                'defaultDate'          => new JsExpression(
+    );
+    ; ?>
+
+    <?= yii2fullcalendar::widget(
+        [
+            'id' => 'calendar',
+
+            'events' => [
+                'events' => $events,
+            ],
+            'defaultView' => new JsExpression(
+                "
+             localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
+            "
+            ),
+
+            'header' => [
+                'left' => 'prev,next,today',
+                'center' => 'title',
+                'right' => $right
+            ],
+            'clientOptions' => [
+                'eventOverlap ' => false,
+                'todayBtn' => true,
+                'themeSystem' => 'bootstrap4',
+                'navLinks' => true,
+                'contentHeight' => 'auto',
+                'timeFormat' => 'H:mm',
+                'locale' => 'ru',
+                'eventLimit' => true,
+                'eventOrder' => '-title',
+                'buttonText' => [
+                    'listWeek' => 'Повестка недели',
+                    'agendaDay' => 'День-Время',
+                    'agendaWeek' => 'Неделя-Время'
+                ],
+                'views' => [
+                    'month' => [
+                        'eventLimit' => 10,
+                        'displayEventTime' => true, // отображение времени в месяце
+                    ],
+                    'agendaDay' => [
+                        'displayEventTime' => true, // отображение времени в месяце
+                    ],
+                    'agendaWeek' => [
+                        'displayEventTime' => true, // отображение времени в месяце
+                    ],
+                    'day' => [
+                        'eventLimit' => 15,
+                    ],
+                    'basicWeek' => [
+                        'eventLimit' => false,
+                        'displayEventTime' => false
+                    ]
+                ],
+                'eventLimitClick' => 'popover',
+                'theme' => true,
+                'fixedWeekCount' => false,
+                'allDaySlot' => false,
+                //'allDayText'=>false,
+                'slotEventOverlap' => true,
+                'agendaEventMinHeight' => 100,
+                'slotDuration' => '0:15:00',
+                'slotLabelInterval' => '01:00:00',
+                'slotLabelFormat' => 'HH:mm',
+                'minTime' => '07:00:00',
+                'maxTime' => '21:00:00',
+                'selectable' => Yii::$app->user->can('manager'),
+                'selectHelper' => true,
+                'select' => $select,
+                'editable' => $editable,
+                'eventResize' => $eventResize,
+                'eventDrop' => $eventDrop,
+                'defaultDate' => new JsExpression(
                     "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
                 "
                 ),
-                'windowResize'         => new JsExpression(
+                'windowResize' => new JsExpression(
                     "function(view) {
 						if( $(window).width() > 540 ){
 						 		//view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
@@ -213,27 +239,9 @@ $this->params['breadcrumbs'][] = $this->title;
   				}"
                 ),
 
-                /*'dayClick'             => new JsExpression(
-                    "function (date,view) {
-                                   if(app == 'app-backend'){
-                                        $.ajax({
-                                        url:basePath +'/calendar/event/create',
-                                        type:'GET',
-                                        data:{'date':date.format()},
-                                        success:function (data) {			
-                                            $('#modal').modal('show').find('#modalContent').html(data)
-                                            },
-                                        error:function(data,jqXHR, textStatus, errorThrown){
-                                        $('#modal').modal('show').find('#modalContent').html(data.error)
-                                        }
-                                        }
-                                        )};
-										
-                        }"
-                ),*/
-                'eventClick'           => new JsExpression(
+                'eventClick' => new JsExpression(
                     "function(event) {
-                    
+                   
                      if(app == 'app-backend'){
                         viewUrl = basePath +'/calendar/event/view?id=' + event.id;
                         updateUrl = basePath +'/calendar/event/update?id=' + event.id;
@@ -243,18 +251,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         //updateUrl = '/calendar/event/update?id=' + event.id;
                      }
                         
-                       
+                        $('.popover').remove();
                       $('#view').find('.modal-body').load(viewUrl);
                       $('#view').modal('show');
                     }"
                 ),
-                'dayRender'            => new JsExpression(
+                'dayRender' => new JsExpression(
                     "function(cell,date){
                     } "
                 ),
-                'eventRender'          => new JsExpression(
+                'eventRender' => new JsExpression(
                     "function (event, element, view, popover){
-							
+							$('.popover').remove();
 							if( $(window).width() > 540 ){
 						 		//view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
 						 		view.calendar.el.find('.fc-right').find('.fc-agendaDay-button ').addClass('d-block');
@@ -326,7 +334,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   				 
                 	}"
                 ),
-                'viewRender'           => new JsExpression(
+                'viewRender' => new JsExpression(
                     "function (view,event, element){
 						localStorage.setItem('fcDefaultView', view.name);
 						var date = $('#calendar').fullCalendar('getDate');
