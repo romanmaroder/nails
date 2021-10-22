@@ -23,12 +23,12 @@ class EventController extends Controller
     public function behaviors(): array
     {
         return [
-            'verbs'  => [
+            /*'verbs'  => [
                 'class'   => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
-            ],
+            ],*/
             'access' => [
                 'class' => AccessControl::class,
                 'only'  => ['login', 'logout', 'index'],
@@ -121,9 +121,9 @@ class EventController extends Controller
 
     /**
      * Creates a new Event model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
      *
-     * @param $start,$end
+     * @param $start
+     * @param  $end
      *
      * @return mixed
      */
@@ -140,6 +140,7 @@ class EventController extends Controller
                 return ActiveForm::validate($model);
             } else {
                 $model->save(false);
+                Yii::$app->session->setFlash('msg', "Запись ".$model->client->username. " сохранена");
                 return $this->redirect('/admin/calendar/event/index');
             }
         }

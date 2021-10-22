@@ -1,5 +1,6 @@
 <?php
 
+use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
@@ -11,6 +12,7 @@ $this->title                   = $model->client->username;
 $this->params['breadcrumbs'][] = ['label' => 'События', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 YiiAsset::register($this);
+PluginAsset::register($this)->add(['sweetalert2']);
 ?>
 <div class="event-view">
 
@@ -71,6 +73,7 @@ YiiAsset::register($this);
         }
         echo Html::tag('a', '<i class="far fa-envelope"></i>', $options);
         ?>
+
         <?= Html::a(
             Yii::t('app', 'Удалить'),
             ['delete', 'id' => $model->id],

@@ -1,6 +1,7 @@
 <?php
 
 use common\modules\calendar\controllers\EventController;
+use hail812\adminlte3\assets\PluginAsset;
 use yii\bootstrap4\Modal;
 use yii\web\JsExpression;
 use yii\web\View;
@@ -11,6 +12,8 @@ use yii\helpers\Json;
 /* @var $searchModel common\models\EventSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $events EventController */
+
+PluginAsset::register($this)->add(['sweetalert2']);
 
 Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = [
     'sourcePath' => null,
@@ -69,6 +72,27 @@ $this->params['breadcrumbs'][] = $this->title;
     Modal::end();
     ?>
 
+    <?php if (Yii::$app->session->hasFlash('msg')){
+
+        $js = "$(function (){
+    var Toast = Swal.mixin({
+                      toast: true,
+                      position: 'top-end',
+                      showConfirmButton: false,
+                      timer: 5000,
+                    });
+                      Toast.fire({
+                        icon: 'success',
+                        title: '".Yii::$app->session->getFlash('msg')."'
+                      });
+})
+";
+
+        $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
+
+    };?>
+
+
     <?php
 
     if (Yii::$app->user->can('admin')) {
@@ -89,14 +113,24 @@ $this->params['breadcrumbs'][] = $this->title;
 							var end = $.fullCalendar.formatDate(end,'Y-MM-DD HH:mm:ss');
                         if(app == 'app-backend'){
                             $.ajax({
-								url:basePath +'/calendar/event/create',
-								type:'GET',
-								data:{start:start, end:end},
+								url:basePath +'/calendar/event/create?start='+start+'&end='+end,
+								type:'POST',
+								//data:{'start':start, 'end':end},
 								success:function (data) {
 									$('#modal').modal('show').find('.modal-body').html(data);
 								},
 								error:function(data){
-									$('#modal-error').modal('show').find('.modal-body').html(data.responseText);
+									//$('#modal-error').modal('show').find('.modal-body').html(data.responseText);
+									var Toast = Swal.mixin({
+															  toast: true,
+															  position: 'top-end',
+															  showConfirmButton: false,
+															  timer: 5000,
+															});
+															  Toast.fire({
+																icon: 'error',
+																title: data.responseText
+															  });
 								},
 							});
 						}
@@ -115,9 +149,9 @@ $this->params['breadcrumbs'][] = $this->title;
 									var id = event.id;
 									 if(app == 'app-backend'){
 										$.ajax({
-											url: basePath +'/calendar/event/update-resize',
-											type: 'GET',
-											data:{id:id,start:start,end:end},
+											url: basePath +'/calendar/event/update-resize?id='+id+'&start='+start+'&end='+end,
+											type: 'POST',
+											//data:{id:id,start:start,end:end},
 											success: function(){
 												$('#calendar').fullCalendar('refetchEvents');
 											},
@@ -137,9 +171,9 @@ $this->params['breadcrumbs'][] = $this->title;
 									var id = event.id;
 									if(app == 'app-backend'){
 										$.ajax({
-											url: basePath +'/calendar/event/update-drop',
-											type: 'GET',
-											data:{id:id,start:start,end:end},
+											url: basePath +'/calendar/event/update-drop?id='+id+'&start='+start+'&end='+end,
+											type: 'POST',
+											//data:{id:id,start:start,end:end},
 											success: function(){
 												$('#calendar').fullCalendar('refetchEvents');
 											},

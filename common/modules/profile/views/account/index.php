@@ -275,7 +275,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             //'notice',
                                             [
                                                 'class' => 'yii\grid\ActionColumn',
-                                                'template' => "{view}\n\n\n{sms}",
+                                                'template' => "{view}\n\n\n{sms}\n\n\n{delete}",
                                                 'visibleButtons' => [
                                                     'sms' => function ($model) {
                                                         return Yii::$app->user->can('manager');
