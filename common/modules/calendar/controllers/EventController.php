@@ -23,12 +23,12 @@ class EventController extends Controller
     public function behaviors(): array
     {
         return [
-            /*'verbs'  => [
+            'verbs'  => [
                 'class'   => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
-            ],*/
+            ],
             'access' => [
                 'class' => AccessControl::class,
                 'only'  => ['login', 'logout', 'index'],

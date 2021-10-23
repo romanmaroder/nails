@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 PluginAsset::register($this)->add(
-    ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']
+    ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons','sweetalert2']
 );
 
 

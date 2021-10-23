@@ -545,7 +545,7 @@ class User extends ActiveRecord implements IdentityInterface
         $dependency   = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
-                'sql'   => 'SELECT MAX(updated_at) FROM user',
+                'sql'   => 'SELECT MAX(updated_at) FROM user ',
                 'reusable'=>true
             ]
         );

@@ -7,29 +7,29 @@
  * @param string cancelCallback callback triggered when cancelled
  */
 yii.confirm = function (message, okCallback, cancelCallback) {
-   /* swal({
-        title: message,
-        type: 'warning',
-        showCancelButton: true,
-        closeOnConfirm: true,
-        allowOutsideClick: true
-    }, okCallback);*/
+
 
     Swal.fire({
         title: message,
-        text: "You won't be able to revert this!",
+        text: "Вы не сможете отменить это!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Да, удалить!',
+        cancelButtonText: 'Отмена!'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-            )
+            Swal.fire({
+                title:'Удалено!',
+                text:'Ваш файл был удален.',
+                icon:'success',
+                showCancelButton: false,
+            });
+
+            okCallback();
         }
-    },okCallback)
+        cancelCallback();
+    })
+
 };

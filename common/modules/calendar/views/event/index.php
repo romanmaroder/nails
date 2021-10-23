@@ -13,14 +13,14 @@ use yii\helpers\Json;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $events EventController */
 
-PluginAsset::register($this)->add(['sweetalert2']);
+
 
 Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = [
     'sourcePath' => null,
     'js' => ['jquery.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js'],
 ];
 
-
+PluginAsset::register($this)->add(['sweetalert2']);
 $this->title = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
