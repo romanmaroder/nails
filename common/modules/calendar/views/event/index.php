@@ -151,8 +151,17 @@ $this->params['breadcrumbs'][] = $this->title;
 										$.ajax({
 											url: basePath +'/calendar/event/update-resize?id='+id+'&start='+start+'&end='+end,
 											type: 'POST',
-											//data:{id:id,start:start,end:end},
-											success: function(){
+											success: function(data){
+											var Toast = Swal.mixin({
+															  toast: true,
+															  position: 'top-end',
+															  showConfirmButton: false,
+															  timer: 5000,
+															});
+															  Toast.fire({
+																icon: 'info',
+																title: start + ' - ' + end
+															  });
 												$('#calendar').fullCalendar('refetchEvents');
 											},
 										});
@@ -173,8 +182,17 @@ $this->params['breadcrumbs'][] = $this->title;
 										$.ajax({
 											url: basePath +'/calendar/event/update-drop?id='+id+'&start='+start+'&end='+end,
 											type: 'POST',
-											//data:{id:id,start:start,end:end},
 											success: function(){
+											var Toast = Swal.mixin({
+															  toast: true,
+															  position: 'top-end',
+															  showConfirmButton: false,
+															  timer: 5000,
+															});
+															  Toast.fire({
+																icon: 'info',
+																title: event.title+'</br>'+start + ' - ' + end
+															  });
 												$('#calendar').fullCalendar('refetchEvents');
 											},
 										});
