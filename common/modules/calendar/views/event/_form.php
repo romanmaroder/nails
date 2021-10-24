@@ -106,7 +106,7 @@ use yii\bootstrap4\ActiveForm;
         ]
     ); ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'description')->textarea(['rows' => 3]) ?>
 
     <?= $form->field($model, 'notice')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'checkEvent', ['enableAjaxValidation' => true])->label(false)

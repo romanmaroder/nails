@@ -1,5 +1,6 @@
 <?php
 
+use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -10,6 +11,10 @@ $this->title = $model->category_name;
 $this->params['breadcrumbs'][] = ['label' => 'категории', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
+PluginAsset::register($this)->add(['sweetalert2']);
+
+
 ?>
 <div class="category-view">
 

@@ -43,7 +43,7 @@ $this->title = $post->title;
 								<!-- Default box -->
 									<div class="card-body pb-0 position-absolute ">
 										<div class="row">
-												<div class="col-12 col-sm-8 d-flex align-items-stretch
+												<div class="col-12 col-sm-10 d-flex align-items-stretch
 												flex-column">
 													<div class="card bg-light d-flex flex-fill">
 														<div class="card-header text-muted border-bottom-0">

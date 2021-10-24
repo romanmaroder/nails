@@ -65,7 +65,7 @@ class EventController extends Controller
         $dependency = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
-                'sql'   => 'SELECT MAX(updated_at) FROM user',
+                'sql'   => 'SELECT MAX(updated_at) FROM event',
             ]
         );
         $events     = $cache->getOrSet(
@@ -86,7 +86,7 @@ class EventController extends Controller
                 'notice' => $item->notice,
                 'master_name' => $item->master->username,
             ];
-            $event->color       = $item->master->color;
+            $event->backgroundColor       = $item->master->color;
             $event->start       = $item->event_time_start;
             $event->end         = $item->event_time_end;
 
@@ -121,17 +121,17 @@ class EventController extends Controller
 
     /**
      * Creates a new Event model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
      *
-     * @param $date
+     * @param $start
+     * @param  $end
      *
      * @return mixed
      */
-    public function actionCreate($date)
+    public function actionCreate($start, $end)
     {
         $model                   = new Event();
-        $model->event_time_start = $date;
-        $model->event_time_end   = $date;
+        $model->event_time_start = $start;
+        $model->event_time_end   = $end;
 
 
         if ($model->load(Yii::$app->request->post())) {
@@ -140,6 +140,7 @@ class EventController extends Controller
                 return ActiveForm::validate($model);
             } else {
                 $model->save(false);
+                Yii::$app->session->setFlash('msg', "Запись ".$model->client->username. " сохранена");
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
@@ -183,6 +184,40 @@ class EventController extends Controller
                 'model' => $events,
             ]
         );
+    }
+
+
+    public function actionUpdateResize($id, $start, $end)
+    {
+        $model = $this->findModel($id);
+        $model->event_time_start = $start;
+        $model->event_time_end   = $end;
+        $model->save(false);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionUpdateDrop($id, $start, $end)
+    {
+        $model = $this->findModel($id);
+        $model->event_time_start = $start;
+        $model->event_time_end   = $end;
+
+        $model->save(false);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     /**
