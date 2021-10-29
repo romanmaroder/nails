@@ -171,15 +171,21 @@ a.desc:after {
 .fc-header-toolbar .fc-left {
     margin-bottom: 5px;
 }
+.fc-toolbar .fc-right {
+    order:1;
+}
 
 @media screen and (min-width: 540px) {
     .fc-header-toolbar {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
 
-    .fc-header-toolbar .fc-left {
-        margin-bottom: 0;
-    }
+    /*.fc-header-toolbar .fc-left {
+        margin-bottom: 10px;
+    }*/
     .event-render {
         padding: 2.5px;
     }

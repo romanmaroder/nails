@@ -14,14 +14,13 @@ use yii\helpers\Json;
 /* @var $events EventController */
 
 
-
 Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = [
     'sourcePath' => null,
-    'js' => ['jquery.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js'],
+    'js'         => ['jquery.js' => 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js'],
 ];
 
 PluginAsset::register($this)->add(['sweetalert2']);
-$this->title = 'Календарь';
+$this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-index">
@@ -30,16 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
     #Регистрация переменных для использования в js коде
 
     Yii::$app->view->registerJs(
-        "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
+        "app=".Json::encode(Yii::$app->id)."; basePath=".Json::encode(Yii::$app->request->baseUrl).";",
         View::POS_HEAD
     ); ?>
 
     <?php
     Modal::begin(
         [
-            'title' => 'Добавить событие',
-            'size' => 'SIZE_SMALL',
-            'id' => 'modal',
+            'title'   => 'Добавить событие',
+            'size'    => 'SIZE_SMALL',
+            'id'      => 'modal',
             'options' => ['tabindex' => '']
         ]
     );
@@ -48,13 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     Modal::begin(
         [
-            'title' => 'Ошибка',
+            'title'        => 'Ошибка',
             'titleOptions' => [
                 'class' => 'text-danger'
             ],
-            'size' => 'SIZE_SMALL',
-            'id' => 'modal-error',
-            'options' => ['tabindex' => '']
+            'size'         => 'SIZE_SMALL',
+            'id'           => 'modal-error',
+            'options'      => ['tabindex' => '']
         ]
     );
     Modal::end(); ?>
@@ -64,47 +63,57 @@ $this->params['breadcrumbs'][] = $this->title;
     # Модальное окно просмотра и редактирования
     Modal::begin(
         [
-            'id' => 'view',
-            'title' => 'О событии',
+            'id'      => 'view',
+            'title'   => 'О событии',
             'options' => ['tabindex' => '']
         ]
     );
     Modal::end();
     ?>
 
-    <?php if (Yii::$app->session->hasFlash('msg')){
-
+    <?php
+    if (Yii::$app->session->hasFlash('msg')) {
         $js = "$(function (){
-    var Toast = Swal.mixin({
-                      toast: true,
-                      position: 'top-end',
-                      showConfirmButton: false,
-                      timer: 5000,
-                    });
-                      Toast.fire({
-                        icon: 'success',
-                        title: '".Yii::$app->session->getFlash('msg')."'
-                      });
-})
-";
+				var Toast = Swal.mixin({
+							  toast: true,
+							  position: 'top-end',
+							  showConfirmButton: false,
+							  timer: 5000,
+							});
+							Toast.fire({
+									icon: 'success',
+									title: '".Yii::$app->session->getFlash('msg')."'
+							});	  
+				})
+		";
 
         $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
-
-    };?>
+    }; ?>
 
 
     <?php
 
-    if (Yii::$app->user->can('admin')) {
-        $right = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
+    if (Yii::$app->user->can('manager')) {
         $editable = true;
     } else {
-        $right = 'month,basicDay,basicWeek,listWeek';
+        $right    = 'month,basicDay,basicWeek,listWeek';
         $editable = false;
+    }
+    if (Yii::$app->user->can('admin')) {
+        $right         = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
+        $window_resize = new JsExpression(
+            "function(view){
+						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						if ($(window).width() < 540 ){
+							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+   						}
+        	}"
+        );
     }
 
     /**
      * Triggered when a date/time selection is made
+     *
      * @var  $select
      */
     $select = new JsExpression(
@@ -140,6 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     /**
      * Triggered when resizing stops and the event has changed in duration.
+     *
      * @var  $eventResize
      */
     $eventResize = new JsExpression(
@@ -171,6 +181,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     /**
      * Triggered when dragging stops and the event has moved to a different day/time.
+     *
      * @var  $eventDrop
      */
     $eventDrop = new JsExpression(
@@ -198,14 +209,13 @@ $this->params['breadcrumbs'][] = $this->title;
 										});
 									 }
                 		}"
-    );
-    ; ?>
+    );; ?>
 
     <?= yii2fullcalendar::widget(
         [
             'id' => 'calendar',
 
-            'events' => [
+            'events'      => [
                 'events' => $events,
             ],
             'defaultView' => new JsExpression(
@@ -214,84 +224,71 @@ $this->params['breadcrumbs'][] = $this->title;
             "
             ),
 
-            'header' => [
-                'left' => 'prev,next,today',
+            'header'        => [
+                'left'   => 'prev,next,today',
                 'center' => 'title',
-                'right' => $right
+                'right'  => $right
             ],
             'clientOptions' => [
-                'eventOverlap ' => false,
-                'todayBtn' => true,
-                'themeSystem' => 'bootstrap4',
-                'navLinks' => true,
-                'contentHeight' => 'auto',
-                'timeFormat' => 'H:mm',
-                'locale' => 'ru',
-                'eventLimit' => true,
-                'eventOrder' => '-title',
-                'buttonText' => [
-                    'listWeek' => 'Повестка недели',
-                    'agendaDay' => 'День-Время',
+                'eventOverlap '        => false,
+                'todayBtn'             => true,
+                'themeSystem'          => 'bootstrap4',
+                'navLinks'             => true,
+                'contentHeight'        => 'auto',
+                'timeFormat'           => 'H:mm',
+                'locale'               => 'ru',
+                'eventLimit'           => true,
+                'eventOrder'           => '-title',
+                'buttonText'           => [
+                    'listWeek'   => 'Повестка недели',
+                    'agendaDay'  => 'День-Время',
                     'agendaWeek' => 'Неделя-Время'
                 ],
-                'views' => [
-                    'month' => [
-                        'eventLimit' => 10,
+                'views'                => [
+                    'month'      => [
+                        'eventLimit'       => 10,
                         'displayEventTime' => true, // отображение времени в месяце
                     ],
-                    'agendaDay' => [
+                    'agendaDay'  => [
                         'displayEventTime' => true, // отображение времени в месяце
                     ],
                     'agendaWeek' => [
                         'displayEventTime' => true, // отображение времени в месяце
                     ],
-                    'day' => [
+                    'day'        => [
                         'eventLimit' => 15,
                     ],
-                    'basicWeek' => [
-                        'eventLimit' => false,
+                    'basicWeek'  => [
+                        'eventLimit'       => false,
                         'displayEventTime' => false
                     ]
                 ],
-                'eventLimitClick' => 'popover',
-                'theme' => true,
-                'fixedWeekCount' => false,
-                'allDaySlot' => false,
+                'eventLimitClick'      => 'popover',
+                'theme'                => true,
+                'fixedWeekCount'       => false,
+                'allDaySlot'           => false,
                 //'allDayText'=>false,
-                'slotEventOverlap' => true,
+                'slotEventOverlap'     => true,
                 'agendaEventMinHeight' => 100,
-                'slotDuration' => '0:15:00',
-                'slotLabelInterval' => '01:00:00',
-                'slotLabelFormat' => 'HH:mm',
-                'minTime' => '07:00:00',
-                'maxTime' => '21:00:00',
-                'selectable' => Yii::$app->user->can('manager'),
-                'selectHelper' => true,
-                'select' => $select,
-                'editable' => $editable,
-                'eventResize' => $eventResize,
-                'eventDrop' => $eventDrop,
-                'defaultDate' => new JsExpression(
+                'slotDuration'         => '0:15:00',
+                'slotLabelInterval'    => '01:00:00',
+                'slotLabelFormat'      => 'HH:mm',
+                'minTime'              => '07:00:00',
+                'maxTime'              => '21:00:00',
+                'selectable'           => Yii::$app->user->can('manager'),
+                'selectHelper'         => true,
+                'select'               => $select,
+                'editable'             => $editable,
+                'eventResize'          => $eventResize,
+                'eventDrop'            => $eventDrop,
+                'defaultDate'          => new JsExpression(
                     "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
                 "
                 ),
-                'windowResize' => new JsExpression(
-                    "function(view) {
-						if( $(window).width() > 540 ){
-						 		//view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
-						 		view.calendar.el.find('.fc-right').find('.fc-agendaDay-button ').addClass('d-block');
-						 		view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').addClass('d-block');
-						}
-						if ($(window).width() < 540 ){
-//								view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
-								view.calendar.el.find('.fc-right').find('.fc-agendaDay-button').removeClass('d-block').addClass('d-none');
-								view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').removeClass('d-block').addClass('d-none');
-   						}
-  				}"
-                ),
+                'windowResize'         => $window_resize,
 
-                'eventClick' => new JsExpression(
+                'eventClick'  => new JsExpression(
                     "function(event) {
                    
                      if(app == 'app-backend'){
@@ -303,27 +300,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         //updateUrl = '/calendar/event/update?id=' + event.id;
                      }
                         
-                        $('.popover').remove();
+                      $('.popover').remove();
                       $('#view').find('.modal-body').load(viewUrl);
                       $('#view').modal('show');
                     }"
                 ),
-                'dayRender' => new JsExpression(
+                'dayRender'   => new JsExpression(
                     "function(cell,date){
                     } "
                 ),
                 'eventRender' => new JsExpression(
                     "function (event, element, view, popover){
-							$('.popover').remove();
-							if( $(window).width() > 540 ){
-						 		//view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
-						 		view.calendar.el.find('.fc-right').find('.fc-agendaDay-button ').addClass('d-block');
-						 		view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').addClass('d-block');
-							}else if ($(window).width() < 540){
-								//view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
-								view.calendar.el.find('.fc-right').find('.fc-agendaDay-button').removeClass('d-block').addClass('d-none');
-								view.calendar.el.find('.fc-right').find('.fc-agendaWeek-button').removeClass('d-block').addClass('d-none');
-   							}
+								$('.popover').remove();
 								element.addClass('event-render');
 								element.find('.fc-content').append( element.find('.fc-time').addClass('font-italic') );
 								
@@ -375,9 +363,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                  }
                                  
                                   if (view.name == 'agendaWeek' || view.name == 'agendaDay' ) {
-                                   //element.find('.fc-content').prepend(element.find('.fc-time'));
                                   
-									//element.find('.fc-content').addClass('d-flex flex-column');
                                   element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
                   				 	if( event.nonstandard.notice){
                   				 		element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
@@ -386,14 +372,21 @@ $this->params['breadcrumbs'][] = $this->title;
                   				 
                 	}"
                 ),
-                'viewRender' => new JsExpression(
+                'eventAfterAllRender'=>new JsExpression("
+                	function(view){
+						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						if ($(window).width() < 540 ){
+							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+						}
+					}
+                "),
+                'viewRender'  => new JsExpression(
                     "function (view,event, element){
-						localStorage.setItem('fcDefaultView', view.name);
-						var date = $('#calendar').fullCalendar('getDate');
-							localStorage.setItem('fcDefaultViewDate', date.format());
-                }"
+								localStorage.setItem('fcDefaultView', view.name);
+								var date = $('#calendar').fullCalendar('getDate');
+								localStorage.setItem('fcDefaultViewDate', date.format());
+                	}"
                 ),
-
             ],
 
         ]

@@ -154,9 +154,9 @@ a.desc:after {
 .fc-header-toolbar .fc-left {
     margin-bottom: 5px;
 }
-.event-render {
+/*.event-render {
     margin-bottom: 3px;
-}
+}*/
 
 @media screen and (min-width: 540px) {
     .fc-header-toolbar {

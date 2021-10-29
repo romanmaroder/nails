@@ -266,6 +266,7 @@ class Event extends ActiveRecord
         return Event::find()->with(['master', 'client'])
             ->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
             ->where(['client_id' => $id])
+            ->andWhere('event_time_start >= DATE(NOW())')
             ->orderBy(
                 [
                     'event_time_start'

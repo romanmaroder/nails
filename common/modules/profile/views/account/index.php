@@ -249,6 +249,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     );
                                                 }
                                             ],
+
+                                            [
+                                                'attribute' => 'event_time_start',
+                                                'contentOptions' => ['style' => 'white-space: nowrap;'],
+                                                'label' => 'Дата',
+                                                'format' => ['date', 'php:d-m-Y'],
+                                            ],
+                                            [
+                                                'attribute' => 'event_time_start',
+                                                'label' => 'Время',
+                                                'format' => ['date', 'php:H:i'],
+                                            ],
                                             [
                                                 'attribute' => 'master_id',
                                                 'format' => 'raw',
@@ -260,17 +272,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                             [
                                                 'attribute' => 'description',
                                                 'contentOptions' => ['style' => 'white-space: nowrap;'],
-                                            ],
-                                            [
-                                                'attribute' => 'event_time_start',
-                                                'contentOptions' => ['style' => 'white-space: nowrap;'],
-                                                'label' => 'Дата',
-                                                'format' => ['date', 'php:d-m-Y'],
-                                            ],
-                                            [
-                                                'attribute' => 'event_time_start',
-                                                'label' => 'Время',
-                                                'format' => ['date', 'php:H:i'],
                                             ],
                                             //'notice',
                                             [

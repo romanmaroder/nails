@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\Event */
 
-$this->title                   = 'запись:'.$model->client->username;
+$this->title                   = $model->client->username;
 $this->params['breadcrumbs'][] = ['label' => 'записи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -15,10 +15,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-12">
+		<div class="col-12 col-md-8">
 			<div class="card">
 				<div class="card-header">
-					<h3 class="card-title"><?= Html::encode('Запись:'.$model->client->username) ?></h3>
+					<h3 class="card-title"><?= Html::encode('Запись: '.$model->client->username) ?></h3>
 				</div>
 				<!-- /.card-header -->
 				<div class="card-body">
