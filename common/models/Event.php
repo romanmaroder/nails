@@ -15,6 +15,7 @@ use yii\db\Expression;
  * @property int $id
  * @property string|null $master
  * @property string|null $description
+ * @property-read \yii\db\ActiveQuery $client
  * @property string|null $notice
  */
 class Event extends ActiveRecord
@@ -24,7 +25,8 @@ class Event extends ActiveRecord
     public $checkEvent;
 
     /**
-     * @var mixed|null
+     *
+     * @return array[]
      */
     public function behaviors()
     {
@@ -112,6 +114,7 @@ class Event extends ActiveRecord
                 return true;
             }
         }
+        return true;
     }
 
 
@@ -183,11 +186,11 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );*/
-        return Event::find()->with(['master', 'client'])->where(['master_id' => $id])->andWhere(
-            'event_time_start >= DATE(NOW())'
-        )->orderBy(
-            ['event_time_start' => SORT_ASC]
-        )->asArray();
+        return Event::find()->with(['master', 'client'])
+            ->where(['master_id' => $id])
+            ->andWhere('event_time_start >= DATE(NOW())')
+            ->orderBy( ['event_time_start' => SORT_ASC])
+            ->asArray();
     }
 
     /**
@@ -219,12 +222,14 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        return Event::find()->with(['master', 'client'])->where('event_time_start >= DATE(NOW())')->orderBy(
-            [
-                'event_time_start'
-                => SORT_ASC
-            ]
-        )
+        return Event::find()->with(['master', 'client'])
+            ->where('event_time_start >= DATE(NOW())')
+            ->orderBy(
+                [
+                    'event_time_start'
+                    => SORT_ASC
+                ]
+            )
             ->asArray();
     }
 
@@ -258,12 +263,16 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );*/
-        return Event::find()->with(['master', 'client'])->select(
-            ['id', 'client_id', 'master_id', 'description', 'event_time_start']
-        )
-            ->where(
-                ['client_id' => $id]
-            )->asArray();
+        return Event::find()->with(['master', 'client'])
+            ->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
+            ->where(['client_id' => $id])
+            ->orderBy(
+                [
+                    'event_time_start'
+                    => SORT_ASC
+                ]
+            )
+            ->asArray();
     }
 
     /**
@@ -273,7 +282,8 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public static function findNextClientEvents( $user_id ) {
+    public static function findNextClientEvents( $user_id ): array
+    {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])
@@ -293,7 +303,7 @@ class Event extends ActiveRecord
     public
     static function findPreviousClientEvents(
         $user_id
-    ) {
+    ): array {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])

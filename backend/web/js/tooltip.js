@@ -6,6 +6,6 @@ $(function () {
     // $(document).ajaxComplete(function() {
     //     $("a[rel=popover]").popover().wrap('<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Please select color first"></span>');
     // });
-    /*$("[data-toggle='tooltip']").tooltip();
-    $("[data-toggle='popover']").popover();*/
+    //$("[data-toggle='tooltip']").tooltip();
+    /* $("[data-toggle='popover']").popover();*/
 });
