@@ -43,12 +43,15 @@ class PostSearch extends Post
      */
     public function search($params)
     {
-
-        if (\Yii::$app->user->can('manager')) {
             $query = Post::find();
-        }else {
-            $query = Post::find()->where(['user_id'=>Yii::$app->user->identity]);
-        }
+
+
+
+//        if (Yii::$app->id ==='app-frontend' && Yii::$app->controller->route == 'blog/post/index') {
+//
+//            $query = Post::find()->where(['user_id'=>Yii::$app->user->identity->getId()]);
+//        }
+
 
         // add conditions that should always apply here
 

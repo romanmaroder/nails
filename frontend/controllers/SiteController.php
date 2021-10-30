@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\Certificate;
 use common\models\Photo;
 use common\models\Post;
+use common\models\PostSearch;
 use common\models\Profile;
 use common\models\User;
 use frontend\models\ResendVerificationEmailForm;
@@ -95,13 +96,17 @@ class SiteController extends Controller
            'Маникюр, коррекция, дизайн, лак-гель, гель, кутикула, обрезной маникюр, топ, база, пилочки для ногтей, баф, фрезер, фреза, ноготь, лампа, вытяжка, масло, лечебный лак, восстанавливающий лак',
            'Блог о ногтевом сервисе, примеры дизайна ногтей. Оказание услуг в сфере ногтевого сервиса'
         );
+        $searchModel  = new PostSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
-        $posts = new Post();
-        $postsList=  $posts->getAllPostList();
+        //$posts = new Post();
+        //$postsList=  $posts->getAllPostList();
 
         return $this->render('index',[
-            'postsList'=>$postsList,
+            //'postsList'=>$postsList,
+            'dataProvider'=>$dataProvider,
+            'searchModel'  => $searchModel,
         ]);
     }
 

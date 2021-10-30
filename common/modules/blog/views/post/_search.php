@@ -14,19 +14,23 @@ use yii\widgets\ActiveForm;
         'action' => ['index'],
         'method' => 'get',
         'options' => [
-            'data-pjax' => 1
+            'data-pjax' => 1,
+            'class' => 'mt-3',
         ],
+        'fieldConfig' => ['options' => ['class' => 'form-group col'],
+                          'template' => "<div class='col'>{input}\n{hint}\n{error}</div>"],
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?/*= $form->field($model, 'id') */?>
 
-    <?= $form->field($model, 'user_id') ?>
+    <?= $form->field($model, 'user_id')->dropDownList(\common\models\Post::getAuthorPostList(),['prompt' => 'По автору',
+		]) ?>
 
-    <?= $form->field($model, 'category_id') ?>
+    <?= $form->field($model, 'category_id')->dropDownList(\common\models\Category::getCategoryList(),['prompt' => 'По категории',]) ?>
 
-    <?= $form->field($model, 'title') ?>
+    <?/*= $form->field($model, 'title') */?>
 
-    <?= $form->field($model, 'subtitle') ?>
+    <?/*= $form->field($model, 'subtitle') */?>
 
     <?php // echo $form->field($model, 'description') ?>
 
@@ -34,9 +38,9 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'updated_at') ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+    <div class="form-group col">
+        <?= Html::submitButton('Поиск', ['class' => 'btn btn-success btn-sm']) ?>
+<!--        --><?//= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -17,7 +17,6 @@ PluginAsset::register($this)->add(
 );
 ?>
 	<div class="post-index">
-
 	<!--<p>
         <?/*= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) */?>
 	</p>-->
@@ -25,7 +24,7 @@ PluginAsset::register($this)->add(
 <?php
 Pjax::begin(); ?>
 <?php
-// echo $this->render('_search', ['model' => $searchModel]); ?>
+ //echo $this->render('_search', ['model' => $searchModel]); ?>
 
 <?php
 if ($dataProvider->getCount() === 0) {
@@ -35,7 +34,7 @@ if ($dataProvider->getCount() === 0) {
         [
             'dataProvider' => $dataProvider,
             'summary'      => '',
-//        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
             'filterModel'  => null,
             'tableOptions' => [
                 'class' => 'table table-striped table-bordered',

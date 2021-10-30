@@ -51,6 +51,7 @@ return [
                 'about' => '/site/about',
                 'login' => '/site/login',
                 'account' => '/profile/account',
+                'master/<id:\d+>' => '/site/view',
                 'post/<id:\d+>' => '/blog/post/post',
                 'post/<slug>' => '/blog/post/post',
             ],

@@ -51,10 +51,10 @@ class PostController extends Controller
         $cache = Yii::$app->cache;
         $key = 'post_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+        $searchModel  = new PostSearch();
         $dataProvider = $cache->getOrSet(
             $key,
-            function () {
-                $searchModel  = new PostSearch();
+            function () use($searchModel) {
                return $searchModel->search(Yii::$app->request->queryParams);
             },
             3600
@@ -64,7 +64,7 @@ class PostController extends Controller
         return $this->render(
             'index',
             [
-//            'searchModel' => $searchModel,
+            'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
 
             ]

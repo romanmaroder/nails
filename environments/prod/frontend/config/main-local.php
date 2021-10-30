@@ -37,7 +37,16 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
-                'event' => 'event/index'
+                'event' => '/calendar/event/index',
+                'client' => '/client/client/index',
+                'client/<id:\d+>' => '/client/client/view',
+                'portfolio' => '/site/portfolio',
+                'about' => '/site/about',
+                'login' => '/site/login',
+                'account' => '/profile/account',
+                'master/<id:\d+>' => '/site/view',
+                'post/<id:\d+>' => '/blog/post/post',
+                'post/<slug>' => '/blog/post/post',
             ],
         ],
     ],

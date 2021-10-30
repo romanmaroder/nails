@@ -29,15 +29,14 @@ $this->title = $post->title;
 				<div class="post__header w-100">
 					<h1 class="post__title mb-4"><?php
                         echo $post->title; ?></h1>
-					<div class="post__meta d-flex justify-content-start position-relative mb-3">
+					<div class="post__meta d-flex justify-content-start position-relative mb-3 flex-wrap">
 						<div class="post__author text-muted mr-2 d-flex">
 							<div class="text-lowercase mr-1">Автор: </div>
 							<div class="post__author--name font-weight-bold">
                             	<?php
                                 echo Html::a(
                                     $post->user->username,
-//                                    ['/site/view', 'id' => $post->user_id],
-                                    ['#', 'id' => $post->user_id],
+                                    ['/site/view', 'id' => $post->user_id],
                                     ['class' => 'post__author--link text-uppercase']
                                 ); ?>
 								<!-- Default box -->
@@ -126,12 +125,20 @@ $this->title = $post->title;
 								<!-- /.card -->
 							</div>
 						</div>
-						<span class="post__publish text-muted text-uppercase"> Опубликовано <?php
-                            echo Yii::$app->formatter->asDate
-                            (
-                                $post->created_at
-                            );
-                            ?></span>
+						<span class="post__publish text-muted text-lowercase mr-2"> Категория:
+							<span class="text-uppercase"><?=
+                                $post->category->category_name
+                                ?></span>
+						</span>
+						<span class="post__publish text-muted text-lowercase"> Опубликовано:
+							<span
+									class="text-uppercase"><?php
+                                echo Yii::$app->formatter->asDate
+                                (
+                                    $post->created_at
+                                );
+                                ?></span>
+						</span>
 					</div>
 				</div>
 				<div class="post__description"><?php

@@ -15,8 +15,17 @@ use yii\helpers\Html;
 						 style="background-image: url(<?php
                          echo Yii::$app->storage->getFile($item['preview']) ?>)"></div>
 					<ul class="details">
-						<li class="author"><a href="#"><?php
-                                echo $item['user']['username']; ?></a></li>
+						<li class="author">
+                            <?php
+                            echo Html::a(
+                                $item['user']['username'],
+                                ['/site/view', 'id' => $item['user_id']],
+                            ); ?>
+						</li>
+						<li class="tags">
+							<i class="fas fa-tag  mr-2"></i>
+                            <?= $item['category']['category_name']; ?>
+						</li>
 						<li class="date"><?php
                             echo  Yii::$app->formatter->asDate( $item['created_at'] ); ?></li>
 					</ul>

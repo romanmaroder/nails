@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "post".
@@ -19,7 +20,6 @@ use yii\db\ActiveRecord;
  * @property int|null $created_at
  * @property-read \yii\db\ActiveQuery $user
  * @property-read \yii\db\ActiveQuery $category
- #* @property-read string $picture
  * @property int|null $updated_at
  */
 class Post extends ActiveRecord
@@ -37,14 +37,14 @@ class Post extends ActiveRecord
                 ],
             ],
             'slug' => [
-                'class' => 'Zelenin\yii\behaviors\Slug',
-                'slugAttribute' => 'slug',
-                'attribute' => 'title',
+                'class'                => 'Zelenin\yii\behaviors\Slug',
+                'slugAttribute'        => 'slug',
+                'attribute'            => 'title',
                 // optional params
-                'ensureUnique' => true,
-                'replacement' => '-',
-                'lowercase' => true,
-                'immutable' => true,
+                'ensureUnique'         => true,
+                'replacement'          => '-',
+                'lowercase'            => true,
+                'immutable'            => true,
                 // If intl extension is enabled, see http://userguide.icu-project.org/transforms/general.
                 'transliterateOptions' => 'Russian-Latin/BGN; Any-Latin; Latin-ASCII; NFD; [:Nonspacing Mark:] Remove; NFC;'
             ]
@@ -57,17 +57,17 @@ class Post extends ActiveRecord
             [
                 ['picture'],
                 'file',
-                'extensions'               => ['jpg','png'],
+                'extensions'               => ['jpg', 'png'],
                 'checkExtensionByMimeType' => true,
                 'maxSize'                  => $this->getMaxFileSize(),
             ],
-            [['picture'],'required','message' => 'Выберите превью'],
-            [['category_id'],'required','message' => 'Выберите категорию'],
+            [['picture'], 'required', 'message' => 'Выберите превью'],
+            [['category_id'], 'required', 'message' => 'Выберите категорию'],
             [['description'], 'string'],
             [['title', 'subtitle'], 'string', 'max' => 255],
-            [['title'],'required','message' => 'Придумайте заголовок'],
-            [['subtitle'],'required','message' => 'Придумайте подзаголовок'],
-            [['user_id', 'category_id', 'status'], 'integer','message' => 'Выберите {attribute}'],
+            [['title'], 'required', 'message' => 'Придумайте заголовок'],
+            [['subtitle'], 'required', 'message' => 'Придумайте подзаголовок'],
+            [['user_id', 'category_id', 'status'], 'integer', 'message' => 'Выберите {attribute}'],
             [['created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -103,17 +103,18 @@ class Post extends ActiveRecord
     /**
      * We save data to a table [[post_category]]
      *
-     * @param bool $insert
-     * @param array $changedAttributes
+     * @param  bool  $insert
+     * @param  array  $changedAttributes
+     *
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $postCategory              = new PostCategory();
+            $postCategory = new PostCategory();
         } else {
-            $postCategory              = PostCategory::find()->where(['post_id' => $this->id])->one();
+            $postCategory = PostCategory::find()->where(['post_id' => $this->id])->one();
         }
         $postCategory->post_id     = $this->id;
         $postCategory->category_id = $this->category_id;
@@ -179,25 +180,34 @@ class Post extends ActiveRecord
      */
     public static function getPostList($max): array
     {
-        return Post::find()->with('user','category')->where(['status' => 1])->orderBy('RAND()')->asArray()->limit($max)
+        return Post::find()->with('user', 'category')->where(['status' => 1])->orderBy('RAND()')->asArray()->limit($max)
             ->all();
     }
 
-    public static function getAllPostList(): array
+    /*public static function getAllPostList(): array
     {
-        return Post::find()->with('user','category')->where(['status' => 1])->asArray()->all();
+        return Post::find()->with('user', 'category')->where(['status' => 1])->asArray()->all();
+    }*/
+
+    public static function getAuthorPostList(): array
+    {
+        $authorList = Post::find()->with('user')->select('user_id')->where(['status' => 1])->asArray()->all();
+
+        return  ArrayHelper::map($authorList, 'user_id', 'user.username');
     }
 
     /**
      * Get a preview of the article
+     *
      * @param $id
      *
      * @return array|\common\models\Post|\yii\db\ActiveRecord|null
      */
     public static function getPreview($id)
     {
-        return Post::find()->select('preview')->where(['id'=>$id])->one();
+        return Post::find()->select('preview')->where(['id' => $id])->one();
     }
+
     /**
      * Maximum size of the uploaded file
      *
