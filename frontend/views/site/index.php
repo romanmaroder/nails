@@ -18,7 +18,7 @@ die();*/
 ?>
 <?php
 Pjax::begin(); ?>
-	<div class="site-index">
+	<div class="site-index" >
 		<div class="body-content">
 			<div class="row">
 				<div class="col-xl-2">
@@ -26,7 +26,7 @@ Pjax::begin(); ?>
                     echo $this->render('@common/modules/blog/views/post/_search', ['model' => $searchModel]);
                     ?>
 				</div>
-				<div class="col-xl-8">
+				<div class="col-xl-8" id="pjax-container">
 					<div class="row ">
                         <?php
                         foreach ($dataProvider->getModels() as $key => $post) : ?>
