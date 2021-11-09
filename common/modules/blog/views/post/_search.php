@@ -8,26 +8,23 @@ use yii\widgets\Pjax;
 /* @var $model common\models\PostSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<?php
-Pjax::begin(); ?>
+
     <div class="post-search">
 
         <?php
         $form = ActiveForm::begin(
             [
-                    'id'=>'filterPost',
+            	'id'=>'filterPost',
                 'action' => ['index'],
                 'method' => 'get',
-                //'enableAjaxValidation' => true,
-                //'validateOnChange' => true,
                 'options' => [
                     'data-pjax' => 1,
-                    'class' => 'mt-3',
-                    'pjax-container'=>''
+                    'class' => 'row mt-2',
+                    'pjax-container'=>'pjax-container'
                 ],
                 'fieldConfig' => [
-                    'options' => ['class' => 'form-group col'],
-                    'template' => "<div class='col'>{input}\n{hint}\n{error}</div>"
+                    'options' => ['class' => 'form-group col-12 col-sm-6 col-xl-12'],
+                    'template' => "<div class=''>{input}\n{hint}\n{error}</div>"
                 ],
             ]
         ); ?>
@@ -62,52 +59,21 @@ Pjax::begin(); ?>
         <?php
         // echo $form->field($model, 'updated_at') ?>
 
-        <div class="form-group col">
-            <?= Html::submitButton('Поиск', ['class' => 'btn btn-success btn-sm','id'=>'qwe']) ?>
-            <!--        --><?
-            //= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
-        </div>
-
         <?php
         ActiveForm::end(); ?>
 
     </div>
-<?php
-Pjax::end(); ?>
+
 <?php
 
 $js = <<< JS
 
  $(function () {
-     $('input, select').on('change', function(event) {
-          $(document).on('submit', 'form[pjax-container]', function(event) {
-                        $.pjax.submit(event, '#pjax-container')
-})
-
+     $(document).on('change','#filterPost', function(event) {
+     $('form[pjax-container]').submit();
+    
     });
    
-     /*$(document).on('submit', 'form', function(event) {
-   $.pjax.submit(event, '[data-pjax-container]')
-     
-     })*/
-     
-     /*var form = $("#filterPost");
-    form.on("beforeSubmit", function() {
-    var data = form.serialize();
-    $.ajax({
-        "url": form.attr("action"),
-        "type": "POST",
-        "data": data,
-        "success": function (data) {
-            // Implement successful
-             alert('1321');
-        },
-        "error": function(jqXHR, errMsg) {
-            alert(errMsg);
-        }
-     });
-     return false; // prevent default submit
-});*/
  })
 
 JS;
