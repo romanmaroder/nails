@@ -43,7 +43,7 @@ class PostSearch extends Post
      */
     public function search($params)
     {
-            $query = Post::find();
+            $query = Post::find()->where(['status'=>1]);
 
 
 

@@ -28,7 +28,10 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [
-                ['category_name'], 'string', 'max' => 255]
+                ['category_name'],
+                'string',
+                'max' => 255
+            ]
         ];
     }
 
@@ -38,7 +41,7 @@ class Category extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id'            => 'ID',
             'category_name' => 'Название категории',
         ];
     }
@@ -48,10 +51,36 @@ class Category extends \yii\db\ActiveRecord
      */
     public static function getCategoryList(): array
     {
-        $categories = Category::getDb()->cache(function (){
-            return Category::find()->asArray()->all();
-        }, 3600);
+        $categories = Category::getDb()->cache(
+            function () {
+                return Category::find()->asArray()->all();
+            },
+            3600
+        );
 
         return ArrayHelper::map($categories, 'id', 'category_name');
     }
+
+
+    public static function getCategoryPostList(): array
+    {
+        /*$dependency   = Yii::createObject(
+            [
+                'class' => 'yii\caching\DbDependency',
+                'sql'   => 'SELECT MAX(updated_at) FROM post ',
+                'reusable'=>true
+            ]
+        );
+            $categoriesIds = Post::find()->select('category_id')->asArray()->distinct();
+
+        $categories = Category::getDb()->cache(function () use($categoriesIds){
+            return Category::find()->where(['id'=>$categoriesIds])->asArray()->all();
+        }, null,$dependency);*/
+
+        $categoriesIds = Post::find()->select('category_id')->asArray()->distinct();
+        $categories    = Category::find()->where(['id' => $categoriesIds])->asArray()->all();
+
+        return ArrayHelper::map($categories, 'id', 'category_name');
+    }
+
 }

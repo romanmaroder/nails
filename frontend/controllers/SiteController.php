@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Category;
 use common\models\Certificate;
 use common\models\Photo;
 use common\models\Post;
@@ -99,12 +100,7 @@ class SiteController extends Controller
         $searchModel  = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-
-        //$posts = new Post();
-        //$postsList=  $posts->getAllPostList();
-
         return $this->render('index',[
-            //'postsList'=>$postsList,
             'dataProvider'=>$dataProvider,
             'searchModel'  => $searchModel,
         ]);
