@@ -3,6 +3,7 @@
 namespace common\modules\blog\controllers;
 
 use common\components\behaviors\DeleteCacheBehavior;
+use common\models\Category;
 use common\models\PostImage;
 use common\models\User;
 use common\modules\blog\models\AddPost;
@@ -33,9 +34,9 @@ class PostController extends Controller
                 ],
             ],
             [
-                'class' => DeleteCacheBehavior::class,
+                'class'     => DeleteCacheBehavior::class,
                 'cache_key' => ['events_list'],
-                'actions' => ['create', 'update', 'delete'],
+                'actions'   => ['create', 'update', 'delete'],
             ],
 
         ];
@@ -49,22 +50,21 @@ class PostController extends Controller
     public function actionIndex()
     {
         $cache = Yii::$app->cache;
-        $key = 'post_list';  // Формируем ключ
+        $key   = 'post_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
-        $searchModel  = new PostSearch();
-        $dataProvider = $cache->getOrSet(
+        $searchModel   = new PostSearch();
+        $dataProvider  = $cache->getOrSet(
             $key,
-            function () use($searchModel) {
-               return $searchModel->search(Yii::$app->request->queryParams);
+            function () use ($searchModel) {
+                return $searchModel->search(Yii::$app->request->queryParams);
             },
             3600
         );
 
-
         return $this->render(
             'index',
             [
-            'searchModel' => $searchModel,
+                'searchModel'  => $searchModel,
                 'dataProvider' => $dataProvider,
 
             ]
@@ -93,6 +93,7 @@ class PostController extends Controller
      * Displays a single Post model.
      *
      * @param $slug
+     *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -236,7 +237,6 @@ class PostController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-
             if (!empty($preview = $model->preview = UploadedFile::getInstance($model, 'picture'))) {
                 if ($oldPreview = Post::getPreview($id)) {
                     Yii::$app->storage->deleteFile($oldPreview->preview);
@@ -247,7 +247,7 @@ class PostController extends Controller
                 $model->preview = $preview->preview;
             }
 
-                $model->save(false);
+            $model->save(false);
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -264,7 +264,7 @@ class PostController extends Controller
      * Deletes an existing Post model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      *
-     * @param integer $id
+     * @param  integer  $id
      *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -310,11 +310,13 @@ class PostController extends Controller
      * If the model is not found, a 404 HTTP exception will be thrown.
      *
      * @param $slug
+     *
      * @return array|\yii\db\ActiveRecord
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModelBySlug($slug){
-        if (($model = Post::find()->where(['slug'=>$slug,'status'=>1])->one()) !== null) {
+    protected function findModelBySlug($slug)
+    {
+        if (($model = Post::find()->where(['slug' => $slug, 'status' => 1])->one()) !== null) {
             return $model;
         }
 

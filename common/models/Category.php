@@ -47,6 +47,8 @@ class Category extends \yii\db\ActiveRecord
     }
 
     /**
+     * Get all post category
+     * @return array
      * @throws \Throwable
      */
     public static function getCategoryList(): array
@@ -62,23 +64,26 @@ class Category extends \yii\db\ActiveRecord
     }
 
 
+    /**
+     * Get categories of published posts with status = 1
+     * @return array
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     */
     public static function getCategoryPostList(): array
     {
-        /*$dependency   = Yii::createObject(
+        $dependency   = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
                 'sql'   => 'SELECT MAX(updated_at) FROM post ',
                 'reusable'=>true
             ]
         );
-            $categoriesIds = Post::find()->select('category_id')->asArray()->distinct();
+            $categoriesIds =Post::find()->select('category_id')->where(['status'=>1])->asArray()->distinct();
 
         $categories = Category::getDb()->cache(function () use($categoriesIds){
-            return Category::find()->where(['id'=>$categoriesIds])->asArray()->all();
-        }, null,$dependency);*/
-
-        $categoriesIds = Post::find()->select('category_id')->asArray()->distinct();
-        $categories    = Category::find()->where(['id' => $categoriesIds])->asArray()->all();
+            return Category::find()->where(['id' => $categoriesIds])->asArray()->all();
+        }, null,$dependency);
 
         return ArrayHelper::map($categories, 'id', 'category_name');
     }

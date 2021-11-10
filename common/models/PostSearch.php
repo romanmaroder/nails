@@ -37,14 +37,17 @@ class PostSearch extends Post
     /**
      * Creates data provider instance with search query applied
      *
-     * @param array $params
+     * @param  array  $params
      *
      * @return ActiveDataProvider
      */
     public function search($params)
     {
-            $query = Post::find()->where(['status'=>1]);
+        $query = Post::find();
 
+        if (Yii::$app->id === 'app-frontend') {
+            $query = Post::find()->where(['status' => 1]);
+        }
 
 
 //        if (Yii::$app->id ==='app-frontend' && Yii::$app->controller->route == 'blog/post/index') {
@@ -55,9 +58,11 @@ class PostSearch extends Post
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query' => $query,
+            ]
+        );
 
         $this->load($params);
 
@@ -68,13 +73,15 @@ class PostSearch extends Post
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'category_id' => $this->category_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
+        $query->andFilterWhere(
+            [
+                'id'          => $this->id,
+                'user_id'     => $this->user_id,
+                'category_id' => $this->category_id,
+                'created_at'  => $this->created_at,
+                'updated_at'  => $this->updated_at,
+            ]
+        );
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'subtitle', $this->subtitle])
