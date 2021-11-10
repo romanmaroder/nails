@@ -89,4 +89,8 @@ class PostSearch extends Post
 
         return $dataProvider;
     }
+
+    public function formName() {
+        return '';
+    }
 }
