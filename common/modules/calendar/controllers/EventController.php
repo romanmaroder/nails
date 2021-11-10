@@ -5,6 +5,7 @@ namespace common\modules\calendar\controllers;
 use common\components\behaviors\DeleteCacheBehavior;
 use Yii;
 use common\models\Event;
+use yii\caching\DbDependency;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -62,10 +63,16 @@ class EventController extends Controller
         $cache = Yii::$app->cache;
         $key   = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+        $eventDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM event']);
+        $userDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM user']);
         $dependency = Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql'   => 'SELECT MAX(updated_at) FROM event',
+                'class' => 'yii\caching\ChainedDependency',
+                'dependOnAll'=>true,
+                'dependencies'=>[
+                    $eventDependency,
+                    $userDependency
+                ],
             ]
         );
         $events     = $cache->getOrSet(

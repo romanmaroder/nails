@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -406,13 +407,19 @@ class Event extends ActiveRecord
                 'pagination' => false,
             ]
         );
+        $eventDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM event']);
+        $userDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM user']);
         $dependency = Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
-                'reusable' => true
+                'class' => 'yii\caching\ChainedDependency',
+                'dependOnAll'=>true,
+                'dependencies'=>[
+                    $eventDependency,
+                    $userDependency
+                ],
             ]
         );
+
         Yii::$app->db->cache(
             function () use ($dataProvider) {
                 $dataProvider->prepare();
