@@ -4,6 +4,8 @@
 namespace common\components\sms;
 
 
+use DateTime;
+use DateTimeZone;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -88,6 +90,20 @@ class SmsSender extends Component implements SmsSenderInterface
         $greeting = self::checkTimeOfDay();
         $data = Yii::$app->formatter->asDatetime($dataEvent,'php:d M Y на H:i');
 
-        return $greeting.' У вас запись '.$data .'. Вы будете?';
+        $launchDate = new DateTime(Yii::$app->formatter->asDate($dataEvent,'php:d-m-Y'));
+        $today = new DateTime();
+        $daysToLaunch = $today->diff($launchDate, false)->days;
+
+
+        if ($daysToLaunch >= 1) {
+            return $greeting.' У Вас следующая запись '.$data .'.';
+        }
+
+        return $greeting.' У Вас запись '.$data .'. Вы будете?';
     }
 }
+
+#$data=date("d.m.Y",time() + 24 * 60 * 60);
+#$launchDate = new DateTime(date('d-m-Y H:i:s'), new DateTimeZone("UTC"));
+#$today = new DateTime();
+#$daysToLaunch = $today->diff($launchDate, false)->days;
