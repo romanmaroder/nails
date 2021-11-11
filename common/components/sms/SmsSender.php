@@ -96,14 +96,9 @@ class SmsSender extends Component implements SmsSenderInterface
 
 
         if ($daysToLaunch >= 1) {
-            return $greeting.' У Вас следующая запись '.$data .'.';
+            return $greeting.' У Вас следующая запись '.$data.'.';
         }
 
         return $greeting.' У Вас запись '.$data .'. Вы будете?';
     }
 }
-
-#$data=date("d.m.Y",time() + 24 * 60 * 60);
-#$launchDate = new DateTime(date('d-m-Y H:i:s'), new DateTimeZone("UTC"));
-#$today = new DateTime();
-#$daysToLaunch = $today->diff($launchDate, false)->days;

@@ -14,13 +14,15 @@ use yii\data\ActiveDataProvider;
  */
 class PostSearch extends Post
 {
+    public $author;
+    public $category;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'user_id', 'category_id', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'user_id','author', 'category_id','category', 'created_at', 'updated_at'], 'integer'],
             [['title', 'subtitle', 'description'], 'safe'],
         ];
     }
@@ -90,7 +92,8 @@ class PostSearch extends Post
         return $dataProvider;
     }
 
-    public function formName() {
+    public function formName(): string
+    {
         return '';
     }
 }

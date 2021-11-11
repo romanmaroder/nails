@@ -30,14 +30,16 @@ use yii\widgets\ActiveForm;
         <?
         /*= $form->field($model, 'id') */ ?>
 
-        <?= $form->field($model, 'user_id')->dropDownList(
+        <?= $form->field($model, 'user_id'/*,['inputOptions'=>['name'=>'author','class'=>'form-control']]*/)
+->dropDownList(
             \common\models\Post::getAuthorPostList(),
             [
                 'prompt' => 'По автору',
             ]
         ) ?>
 
-        <?= $form->field($model, 'category_id')->dropDownList(
+        <?= $form->field($model, 'category_id'/*,['inputOptions'=>['name'=>'category','class'=>'form-control']]*/)
+			->dropDownList(
             \common\models\Category::getCategoryPostList(),
             ['prompt' => 'По категории',]
         ) ?>
