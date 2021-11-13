@@ -50,16 +50,17 @@ class TelegramController extends Controller
     public function actionWebhook()
     {
         $result = $this->bot()->getWebhookUpdates();
+        file_put_contents(__DIR__.'/logs.txt', print_r($result, 1), FILE_APPEND);
 
-        $text          = $result->getMessage()->getText();
-        $chat_id       = $result->getMessage()->getChat()->getId();
-        $name          = $result->getMessage()->getFrom()->getUsername();
-        $first_name    = $result->getMessage()->getFrom()->getFirstName();
-        $last_name     = $result->getMessage()->getFrom()->getLastName();
+        $text          = $result['message']['text'];
+        $chat_id       = $result['message']['chat']['id'];
+        $name          = $result['message']['from']['username'];
+        $first_name    = $result['message']['from']['first_name'];
+        $last_name     = $result['message']['from']['last_name'];
         $username      = $first_name." ".$last_name;
         $old_id        = Telegram::getOldId($chat_id);
-        $userfind      = User::findByUserPhone($text);
-        $users_id      = $userfind->id;
+        $user_find     = User::findByUserPhone($text);
+        $users_id      = $user_find->id;
         $user_event_id = Telegram::getUserId($chat_id);
 
 
@@ -70,7 +71,8 @@ class TelegramController extends Controller
         $last_name  = $result['message']['from']['last_name'];*/
 
         if ($text == "/start") {
-            $reply = " ";
+            $reply = Yii::$app->smsSender->checkTimeOfDay().' '.$username;
+
             if ($old_id->chat_id !== $chat_id) {
                 $reply = "Напишите номер Вашего телефона";
             } else {
@@ -91,40 +93,42 @@ class TelegramController extends Controller
                 ]
             );
         } elseif ($text == "Следующая запись") {
-            if($eventNext = Event::findNextClientEvents($user_event_id)){
-                $reply ="Следующая запись: \n";
+            if ($eventNext = Event::findNextClientEvents($user_event_id)) {
+                $reply = "Следующая запись: \n";
                 foreach ($eventNext as $item) {
-                    $reply.= date(
-                            'd-m-Y',
+                    $reply .= date(
+                            'd-m-Y H:i',
                             strtotime($item['event_time_start'])
-                        ). " - " . $item['description'] ."\n";
+                        )." - ".$item['description']."\n";
                 }
-            }else {
+            } else {
                 $reply = "У вас нет записей";
             }
 
             $this->bot()->sendMessage(
                 [
-                    'chat_id' => $chat_id,
-                    'text'    => $reply,
+                    'chat_id'    => $chat_id,
+                    'text'       => "<i>$reply</i>",
+                    'parse_mode' => 'HTML'
                 ]
             );
         } elseif ($text == "Предыдущая запись") {
-            if($eventPrevious = Event::findPreviousClientEvents($user_event_id)){
-                $reply ="Предыдущая запись: \n";
+            if ($eventPrevious = Event::findPreviousClientEvents($user_event_id)) {
+                $reply = "Предыдущая запись: \n";
                 foreach ($eventPrevious as $item) {
-                    $reply.= date(
+                    $reply .= date(
                             'd-m-Y',
                             strtotime($item['event_time_start'])
-                        ). " - " . $item['description'] ."\n";
+                        )." - ".$item['description']."\n";
                 }
-            }else {
+            } else {
                 $reply = "У вас нет записей";
             }
             $this->bot()->sendMessage(
                 [
-                    'chat_id' => $chat_id,
-                    'text'    => $reply,
+                    'chat_id'    => $chat_id,
+                    'text'       => "<i>$reply</i>",
+                    'parse_mode' => 'HTML'
                 ]
             );
         } elseif (preg_match(Yii::$app->params['phonePattern'], $text) == 0) {
