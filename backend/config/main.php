@@ -18,6 +18,9 @@ return [
         'employees' => [
             'class' => 'backend\modules\employees\Module',
         ],
+        'telegram' => [
+            'class' => 'backend\modules\telegram\Module',
+        ]
     ],
     'name'                => 'NAILS-ADMIN',
     'components'          => [
@@ -53,7 +56,7 @@ return [
             'rules'           => [
                 ''                => 'site/index',
                 'login'           => 'site/login',
-                'event'           => 'admin/calendar/event/index',
+                'event'           => '/calendar/event/index',
                 'master'          => 'employees/master/index',
                 'client'          => 'client/client/index',
                 'client/new'      => 'client/client/create',
@@ -62,7 +65,6 @@ return [
                 'client/delete/<id:\d+>' => '/client/client/delete',
                 'category'        => 'category/index',
                 'category/new'    => 'category/create',
-                'account'         => '/profile/account',
                 'post'           => '/blog/post/index',
                 'post/new'        => '/blog/post/create',
                 'post/<id:\d+>'   => '/blog/post/view',

@@ -10,12 +10,8 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
 
-/*echo '<pre>';
-var_dump($dataProvider);
-die();*/
-
-
 ?>
+
 <?php
 Pjax::begin(); ?>
 	<div class="site-index" >
