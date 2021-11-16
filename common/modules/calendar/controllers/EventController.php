@@ -2,6 +2,8 @@
 
 namespace common\modules\calendar\controllers;
 
+use backend\modules\telegram\api\Botan;
+use backend\modules\telegram\models\Telegram;
 use common\components\behaviors\DeleteCacheBehavior;
 use Yii;
 use common\models\Event;
@@ -63,19 +65,19 @@ class EventController extends Controller
         $cache = Yii::$app->cache;
         $key   = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
-        $eventDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM event']);
-        $userDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM user']);
-        $dependency = Yii::createObject(
+        $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
+        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency      = Yii::createObject(
             [
-                'class' => 'yii\caching\ChainedDependency',
-                'dependOnAll'=>true,
-                'dependencies'=>[
+                'class'        => 'yii\caching\ChainedDependency',
+                'dependOnAll'  => true,
+                'dependencies' => [
                     $eventDependency,
                     $userDependency
                 ],
             ]
         );
-        $events     = $cache->getOrSet(
+        $events          = $cache->getOrSet(
             $key,
             function () {
                 return Event::find()->with(['master', 'client'])->all();
@@ -85,17 +87,17 @@ class EventController extends Controller
         );
 
         foreach ($events as $item) {
-            $event              = new \yii2fullcalendar\models\Event();
-            $event->id          = $item->id;
-            $event->title       = $item->client->username;
-            $event->nonstandard = [
+            $event                  = new \yii2fullcalendar\models\Event();
+            $event->id              = $item->id;
+            $event->title           = $item->client->username;
+            $event->nonstandard     = [
                 'description' => $item->description,
-                'notice' => $item->notice,
+                'notice'      => $item->notice,
                 'master_name' => $item->master->username,
             ];
-            $event->backgroundColor       = $item->master->color;
-            $event->start       = $item->event_time_start;
-            $event->end         = $item->event_time_end;
+            $event->backgroundColor = $item->master->color;
+            $event->start           = $item->event_time_start;
+            $event->end             = $item->event_time_end;
 
             $events[] = $event;
         }
@@ -147,7 +149,22 @@ class EventController extends Controller
                 return ActiveForm::validate($model);
             } else {
                 $model->save(false);
-                Yii::$app->session->setFlash('msg', "Запись ".$model->client->username. " сохранена");
+
+                $chat = Telegram::find()->where(['user_id'=>$model->client_id])->asArray()->one();
+                $chat_id = $chat['chat_id'];
+                if ($chat_id) {
+                    $bot = new Botan(Yii::$app->params['telegramToken']);
+                    $bot->sendMessage(
+                        [
+                            'chat_id' => $chat_id,
+                            'text'    =>Yii::$app->smsSender->checkTimeOfDay().'Дата следующей записи '
+                                .Yii::$app->formatter->asDatetime
+                                ($model->event_time_start,'php:d M Y на H:i'),
+                        ]
+                    );
+                }
+
+                Yii::$app->session->setFlash('msg', "Запись ".$model->client->username." сохранена");
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
@@ -175,13 +192,24 @@ class EventController extends Controller
         $events = $this->findModel($id);
 
         if ($events->load(Yii::$app->request->post())) {
-
-            if (Yii::$app->request->isAjax && $events->validate()  || $events->hasErrors()) {
-
+            if (Yii::$app->request->isAjax && $events->validate() || $events->hasErrors()) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($events);
             } else {
                 $events->save(false);
+
+                $chat = Telegram::find()->where(['user_id'=>$events->client_id])->asArray()->one();
+                $chat_id = $chat['chat_id'];
+                if ($chat_id) {
+                    $bot = new Botan(Yii::$app->params['telegramToken']);
+                    $bot->sendMessage(
+                        [
+                            'chat_id' => $chat_id,
+                            'text'    =>Yii::$app->smsSender->checkTimeOfDay().'Дата записи изменена '.Yii::$app->formatter->asDatetime($events->event_time_start,'php:d M Y на H:i'),
+                        ]
+                    );
+                }
+
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
@@ -196,7 +224,7 @@ class EventController extends Controller
 
     public function actionUpdateResize($id, $start, $end)
     {
-        $model = $this->findModel($id);
+        $model                   = $this->findModel($id);
         $model->event_time_start = $start;
         $model->event_time_end   = $end;
         $model->save(false);
@@ -205,14 +233,17 @@ class EventController extends Controller
             return $this->redirect(['index']);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'update',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     public function actionUpdateDrop($id, $start, $end)
     {
-        $model = $this->findModel($id);
+        $model                   = $this->findModel($id);
         $model->event_time_start = $start;
         $model->event_time_end   = $end;
 
@@ -222,9 +253,12 @@ class EventController extends Controller
             return $this->redirect(['index']);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'update',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     /**

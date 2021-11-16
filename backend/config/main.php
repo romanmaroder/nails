@@ -1,7 +1,5 @@
 <?php
 
-use yii\helpers\Url;
-
 $params = array_merge(
     require __DIR__.'/../../common/config/params.php',
     require __DIR__.'/../../common/config/params-local.php',
@@ -18,6 +16,9 @@ return [
         'employees' => [
             'class' => 'backend\modules\employees\Module',
         ],
+        'telegram' => [
+            'class' => 'backend\modules\telegram\Module',
+        ]
     ],
     'name'                => 'NAILS-ADMIN',
     'components'          => [

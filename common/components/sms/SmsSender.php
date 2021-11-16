@@ -5,7 +5,6 @@ namespace common\components\sms;
 
 
 use DateTime;
-use DateTimeZone;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -21,10 +20,10 @@ class SmsSender extends Component implements SmsSenderInterface
 
 
 
-    protected const MORNING = "Доброе утро.".PHP_EOL;
-    protected const DAY = "Добрый день.".PHP_EOL;
-    protected const EVENING = "Добрый вечер.".PHP_EOL;
-    protected const NIGHT = "Доброй ночи.".PHP_EOL;
+    protected const MORNING = "Доброе утро".PHP_EOL;
+    protected const DAY = "Добрый день".PHP_EOL;
+    protected const EVENING = "Добрый вечер".PHP_EOL;
+    protected const NIGHT = "Доброй ночи".PHP_EOL;
 
     /**
      * Checking what operating system the user is using
@@ -96,9 +95,9 @@ class SmsSender extends Component implements SmsSenderInterface
 
 
         if ($daysToLaunch >= 1) {
-            return $greeting.' У Вас следующая запись '.$data.'.';
+            return $greeting.'. У Вас следующая запись '.$data.'.';
         }
 
-        return $greeting.' У Вас запись '.$data .'. Вы будете?';
+        return $greeting.'. У Вас запись '.$data .'. Вы будете?';
     }
 }

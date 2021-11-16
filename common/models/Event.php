@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\modules\telegram\models\Telegram;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\caching\DbDependency;
@@ -159,6 +160,17 @@ class Event extends ActiveRecord
     }
 
     /**
+     * Gets query for [[Telegram]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public
+    function getTelegram(): ActiveQuery
+    {
+        return $this->hasOne(Telegram::class, ['user_id' => 'client_id']);
+    }
+
+    /**
      * Getting records for masters
      *
      * @param int $id
@@ -290,6 +302,7 @@ class Event extends ActiveRecord
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])
             ->andWhere(['>', 'event_time_start', new Expression('CURDATE()')])
+            ->orderBy(['event_time_start'=>SORT_ASC])
             ->asArray()
             ->all();
     }

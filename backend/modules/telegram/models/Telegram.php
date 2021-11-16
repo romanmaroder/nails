@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace backend\modules\telegram\models;
 
 use common\models\User;
 use yii\db\ActiveRecord;
