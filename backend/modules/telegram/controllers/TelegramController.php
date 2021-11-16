@@ -44,7 +44,6 @@ class TelegramController extends Controller
      */
     public function bot(): Botan
     {
-        #return new Api('1903642753:AAGQ18pg2H2iUJJ6ogU3s5wmyRAnq1eTsmk');
         return new Botan(Yii::$app->params['telegramToken']);
     }
 

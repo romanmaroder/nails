@@ -7,6 +7,9 @@ return [
         'employees' => [
             'class' => 'backend\modules\employees\Module',
         ],
+        'telegram' => [
+            'class' => 'backend\modules\telegram\Module',
+        ]
     ],
     'components' => [
         'request' => [
