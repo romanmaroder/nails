@@ -1,0 +1,14 @@
+Telegram\Bot\Objects\Update Object
+(
+    [items:protected] => Array
+        (
+        )
+
+)
+Telegram\Bot\Objects\Update Object
+(
+    [items:protected] => Array
+        (
+        )
+
+)
