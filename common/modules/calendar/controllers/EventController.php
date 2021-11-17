@@ -2,7 +2,7 @@
 
 namespace common\modules\calendar\controllers;
 
-use backend\modules\telegram\api\Botan;
+use backend\modules\telegram\api\TelegramBot;
 use backend\modules\telegram\models\Telegram;
 use common\components\behaviors\DeleteCacheBehavior;
 use Yii;
@@ -153,8 +153,8 @@ class EventController extends Controller
                 $chat = Telegram::find()->where(['user_id'=>$model->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
                 if ($chat_id) {
-                    $bot = new Botan(Yii::$app->params['telegramToken']);
-                    $bot->sendMessage(
+                    $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
+                    $telegram_bot->sendMessage(
                         [
                             'chat_id' => $chat_id,
                             'text'    =>Yii::$app->smsSender->checkTimeOfDay().'Дата следующей записи '
@@ -201,8 +201,8 @@ class EventController extends Controller
                 $chat = Telegram::find()->where(['user_id'=>$events->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
                 if ($chat_id) {
-                    $bot = new Botan(Yii::$app->params['telegramToken']);
-                    $bot->sendMessage(
+                    $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
+                    $telegram_bot->sendMessage(
                         [
                             'chat_id' => $chat_id,
                             'text'    =>Yii::$app->smsSender->checkTimeOfDay().'Дата записи изменена '.Yii::$app->formatter->asDatetime($events->event_time_start,'php:d M Y на H:i'),

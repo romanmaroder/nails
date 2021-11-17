@@ -4,7 +4,7 @@
 namespace backend\modules\telegram\controllers;
 
 
-use backend\modules\telegram\api\Botan;
+use backend\modules\telegram\api\TelegramBot;
 use backend\modules\telegram\models\Telegram;
 use common\models\Event;
 use Yii;
@@ -39,18 +39,22 @@ class TelegramController extends Controller
     /**
      * Bot initialization
      *
-     * @return \backend\modules\telegram\api\Botan
+     * @return \backend\modules\telegram\api\TelegramBot
      * @throws \Telegram\Bot\Exceptions\TelegramSDKException
      */
-    public function bot(): Botan
+    public function telegramBot(): TelegramBot
     {
-        return new Botan(Yii::$app->params['telegramToken']);
+        return new TelegramBot(Yii::$app->params['telegramToken']);
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     */
     public function actionWebhook()
     {
-        $result = $this->bot()->getWebhookUpdates();
-        #file_put_contents(__DIR__ . '/logs.txt', print_r($result, 1), FILE_APPEND);
+        $result = $this->telegramBot()->getWebhookUpdates();
+        file_put_contents(__DIR__ . '/logs.txt', print_r($result, 1), FILE_APPEND);
 
         $text          = $result['message']['text'];
         $chat_id       = $result['message']['chat']['id'];
@@ -64,11 +68,12 @@ class TelegramController extends Controller
 
         if ($text == "/start") {
             if ($old_id->chat_id !== $chat_id) {
-                $this->bot()->sendMessage(
+                $this->telegramBot()->sendMessage(
                     [
                         'chat_id'      => $chat_id,
-                        'text'         => Yii::$app->smsSender->checkTimeOfDay().$username.'. Для продолжение работы отправьте свой номер телефона',
-                        'reply_markup' => $this->bot()->replyKeyboardMarkup(
+                        'text'         => Yii::$app->smsSender->checkTimeOfDay(
+                            ).$username.'. Для продолжение работы отправьте свой номер телефона',
+                        'reply_markup' => $this->telegramBot()->replyKeyboardMarkup(
                             [
                                 'keyboard'          => $this->botMenuPhone(),
                                 'resize_keyboard'   => true,
@@ -79,11 +84,11 @@ class TelegramController extends Controller
                     ]
                 );
             } else {
-                $this->bot()->sendMessage(
+                $this->telegramBot()->sendMessage(
                     [
                         'chat_id'      => $chat_id,
                         'text'         => Yii::$app->smsSender->checkTimeOfDay()."{$username}, что Вы хотите узнать?",
-                        'reply_markup' => $this->bot()->replyKeyboardMarkup(
+                        'reply_markup' => $this->telegramBot()->replyKeyboardMarkup(
                             [
                                 'inline_keyboard'   => $this->botMenuEvents(),
                                 'resize_keyboard'   => true,
@@ -94,7 +99,7 @@ class TelegramController extends Controller
                 );
             }
         } elseif ($text == "/help") {
-            $this->bot()->sendMessage(
+            $this->telegramBot()->sendMessage(
                 [
                     'chat_id'    => $chat_id,
                     'text'       => 'Начать работу с ботом можно нажав кнопку <b>СТАРТ</b> или написав смс /start.'
@@ -105,16 +110,28 @@ class TelegramController extends Controller
 
                 ]
             );
+        }elseif (isset($result['message']['contact']['phone_number']) && $old_id->chat_id == $chat_id){
+            $this->telegramBot()->sendMessage(
+                [
+                    'chat_id'      => $chat_id,
+                    'text'=>'Вы уже отправляли номер.'.PHP_EOL.' Выберите команду /start чтобы продолжить',
+                    'reply_markup' => $this->telegramBot()->replyKeyboardMarkup(
+                        [
+                            'remove_keyboard' => true,
+                        ]
+                    )
+                ]
+            );
         } elseif (isset($result['message']['contact']['phone_number']) && $old_id->chat_id !== $chat_id) {
             $user_id = $this->findUser($result['message']['contact']['phone_number']);
             if ($user_id) {
                 Telegram::start($chat_id, $name, $username, $user_id, $old_id);
 
-                $this->bot()->sendMessage(
+                $this->telegramBot()->sendMessage(
                     [
                         'chat_id'      => $chat_id,
                         'text'         => 'Что Вы хотите узнать?',
-                        'reply_markup' => $this->bot()->replyKeyboardMarkup(
+                        'reply_markup' => $this->telegramBot()->replyKeyboardMarkup(
                             [
                                 'inline_keyboard'   => $this->botMenuEvents(),
                                 'resize_keyboard'   => true,
@@ -124,24 +141,18 @@ class TelegramController extends Controller
                     ]
                 );
             } else {
-                $this->bot()->sendMessage(
+                $this->telegramBot()->sendMessage(
                     [
-                        'chat_id' => $chat_id,
-                        'text'    => 'Вашего номера нет у нас в базе или Вы зарегистрированы под другим номером телефона!',
-                        /*'reply_markup' => $this->bot()->replyKeyboardMarkup(
-                            [
-                                'inline_keyboard' => $this->botMenuEvents(),
-                                'resize_keyboard' => true,
-                                'one_time_keyboard' => false,
-                            ]
-                        )*/
+                        'chat_id' => $chat_id,  // TODO додумать логику при вводе некорректного номера
+                        'text'    => 'Хм! Возможно, Вы с нами общаетесь по другому номеру телефона?',
+
                     ]
                 );
-                $this->bot()->sendMessage(
+                $this->telegramBot()->sendMessage(
                     [
-                        'chat_id'      => $chat_id,
-                        'text'         => 'Введите номер телефона по которому вы созваниваетесь с мастером в формате: <code>380999999999</code> или <code>+380999999999</code>',
-                        'reply_markup' => $this->bot()->replyKeyboardMarkup(
+                        'chat_id'      => $chat_id,  // TODO додумать логику при вводе некорректного номера
+                        'text'         => 'Попробуйте ввести другой номер телефона в формате: <code>380999999999</code> или <code>+380999999999</code>',
+                        'reply_markup' => $this->telegramBot()->replyKeyboardMarkup(
                             [
                                 'remove_keyboard' => true,
                             ]
@@ -150,7 +161,7 @@ class TelegramController extends Controller
                     ]
                 );
             }
-        } elseif (isset($result['callback_query']['message'])) {
+        } elseif(isset($result['callback_query']['message'])) {
             if ($result['callback_query']['data'] == 'next') {
                 if ($eventNext = Event::findNextClientEvents($user_event_id)) {
                     $reply = "Следующая запись: \n";
@@ -164,7 +175,12 @@ class TelegramController extends Controller
                 } else {
                     $reply = "Вы еще не записались.";
                 }
-                $this->bot()->sendMessage(
+                $this->telegramBot()->answerCallbackQuery(
+                    [
+                        'callback_query_id' => $result['callback_query']['id'],
+                    ]
+                );
+                $this->telegramBot()->sendMessage(
                     [
                         'chat_id'    => $result['callback_query']['message']['chat']['id'],
                         'text'       => $reply,
@@ -185,7 +201,12 @@ class TelegramController extends Controller
                 } else {
                     $reply = "У вас нет предыдущих записей";
                 }
-                $this->bot()->sendMessage(
+                $this->telegramBot()->answerCallbackQuery(
+                    [
+                        'callback_query_id' => $result['callback_query']['id'],
+                    ]
+                );
+                $this->telegramBot()->sendMessage(
                     [
                         'chat_id'    => $result['callback_query']['message']['chat']['id'],
                         'text'       => $reply,
@@ -193,29 +214,45 @@ class TelegramController extends Controller
                     ]
                 );
             }
-        } elseif ($text = $this->convertPhone($text)) {
-            $user_id = $this->findUser($text);
-            if ($user_id) {
-                Telegram::start($chat_id, $name, $username, $user_id, $old_id);
-                $this->bot()->sendMessage(
+        }
+        elseif ( preg_match(Yii::$app->params['phonePattern'], $text) == 1 ) {
+            $user = $this->findUser($text);
+$user_id = $user->id;
+            if ($old_id->chat_id !== $chat_id){
+
+                if ( $user_id) {
+                    Telegram::start($chat_id, $name, $username, $user_id, $old_id);
+                    $this->telegramBot()->sendMessage(
+                        [
+                            'chat_id'      => $chat_id,
+                            'text'         => 'Что Вы хотите узнать?',
+                            'reply_markup' => $this->telegramBot()->replyKeyboardMarkup(
+                                [
+                                    'inline_keyboard'   => $this->botMenuEvents(),
+                                    'resize_keyboard'   => true,
+                                    'one_time_keyboard' => false,
+                                ]
+                            )
+                        ]
+                    );
+                } else {
+
+                    $this->telegramBot()->sendMessage(
+                        [
+                            'chat_id' => $chat_id,  // TODO додумать логику при вводе некорректного номера
+                            'text'    => 'Клиента с таким номером у нас нет!',
+
+                        ]
+                    );
+                }
+            }else{
+
+
+                $this->telegramBot()->sendMessage(
                     [
                         'chat_id'      => $chat_id,
-                        'text'         => 'Что Вы хотите узнать?',
-                        'reply_markup' => $this->bot()->replyKeyboardMarkup(
-                            [
-                                'inline_keyboard'   => $this->botMenuEvents(),
-                                'resize_keyboard'   => true,
-                                'one_time_keyboard' => false,
-                            ]
-                        )
-                    ]
-                );
-            } else {
-                $this->bot()->sendMessage(
-                    [
-                        'chat_id'      => $chat_id,
-                        'text'         => 'Я, только, помогаю найти Ваши записи на маникюр. ',
-                        'reply_markup' => $this->bot()->replyKeyboardMarkup(
+                        'text'=>$username .', Вы уже присылали нам свой номер.',
+                        'reply_markup' => $this->telegramBot()->replyKeyboardMarkup(
                             [
                                 'remove_keyboard' => true,
                             ]
@@ -223,6 +260,15 @@ class TelegramController extends Controller
                     ]
                 );
             }
+
+        }elseif (preg_match(Yii::$app->params['phonePattern'], $text) == 0 ) {
+            $this->telegramBot()->sendMessage(
+                [
+                    'chat_id'      => $chat_id,
+                    'text'=>'Номер введен неправильно',
+
+                ]
+            );
         }
     }
 
@@ -271,8 +317,8 @@ class TelegramController extends Controller
 
     public function findUser($phone)
     {
-        $user = User::findByUserPhone($this->convertPhone($phone));
-        return $user->id;
+        return User::findByUserPhone($this->convertPhone($phone));
+        #return  Telegram::find()->with('user')->where(['user_id'=>$user->id]);
     }
 
     public function convertPhone($phone)
