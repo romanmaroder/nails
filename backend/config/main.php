@@ -19,9 +19,6 @@ return [
         'telegram' => [
             'class' => 'backend\modules\telegram\Module',
         ],
-        'viber' => [
-            'class' => 'backend\modules\viber\Module',
-        ],
     ],
     'name'                => 'NAILS-ADMIN',
     'components'          => [
