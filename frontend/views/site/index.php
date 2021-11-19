@@ -5,6 +5,7 @@
 /* @var $dataProvider  \frontend\controllers\SiteController */
 /* @var $searchModel  \frontend\controllers\SiteController */
 
+use common\models\User;
 use common\widgets\newsList\NewsList;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -14,6 +15,29 @@ use yii\widgets\Pjax;
 
 <?php
 Pjax::begin(); ?>
+<!--	<div class="row">-->
+<!--		<div class="col">-->
+<!--			--><?php
+//
+//            function findUserByNameAndPhone($name, $phone)
+//            {
+//                $users = User::find()->where(['LIKE', 'username', ':param',[':param'=> $name . '%' ]  ])
+//                    ->andFilterWhere([ 'phone'=>$phone  ])
+//                    ->asArray()
+//                    ->all();
+//                foreach ($users as $user ) {
+//                    return  $user;
+//                }
+//                return false;
+//            }
+//
+//        $user =  findUserByNameAndPhone('Тест', '+38(071)338-82-87');
+//            echo  $user['username'] . '<br>';
+//            echo  $user['id'] . '<br>';
+//			;?>
+<!---->
+<!--		</div>-->
+<!--	</div>-->
 	<div class="site-index" >
 		<div class="body-content">
 			<div class="row">

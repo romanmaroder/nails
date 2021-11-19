@@ -9,6 +9,8 @@
 $this->title                 = 'Статистика';
 $this->params['breadcrumbs'] = [['label' => $this->title]];
 ?>
+
+
 <div class="container-fluid">
 
 	<div class="row">

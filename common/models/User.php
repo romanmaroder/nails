@@ -188,12 +188,42 @@ class User extends ActiveRecord implements IdentityInterface
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
-    public static function findByUserPhone($phone): ?User
+    /**
+     * Finds user by phone
+     *
+     * @param  string  $phone
+     *
+     * @return User
+     */
+
+    public static function findByUserPhone(string $phone): ?User
     {
         /*return User::findOne($phone);*/
         return static::find()
             ->where(['phone' => $phone])
             ->one();
+    }
+
+
+    /**
+     * Finds user by phone
+     *
+     * @param  string  $name
+     * @param  string  $phone
+     *
+     * @return User|false
+     */
+    public static function findByUserNameAndPhone(string $name, string $phone)
+    {
+        $users = User::find()->where(['LIKE', 'username', ':param', [':param' => $name . '%']])
+            ->andFilterWhere(['phone' => $phone])
+            ->asArray()
+            ->all();
+
+        foreach ($users as $user) {
+            return $user;
+        }
+        return false;
     }
 
 
@@ -405,9 +435,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getClientList(): array
     {
         $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
-        $clients   = User::find()->where(['id' => $clientIds])->orderBy(['username'=>SORT_ASC])
-            ->asArray()
-            ->all();
+        $clients   = User::find()->where(['id' => $clientIds])->orderBy(['username'=>SORT_ASC])->asArray()->all();
         return ArrayHelper::map($clients, 'id', 'username');
     }
 
@@ -425,6 +453,21 @@ class User extends ActiveRecord implements IdentityInterface
         $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
         $master    = User::find()->where(['id' => $masterIds])->asArray()->all();
         return ArrayHelper::map($master, 'id', 'username');
+    }
+
+    /**
+     * Getting user data
+     *
+     * @param $userId
+     *
+     * @return array|\common\models\User|\yii\db\ActiveRecord|null
+     */
+    public static function getUserInfo($userId)
+    {
+        return User::find()
+            ->select(['username', 'avatar', 'description', 'address', 'birthday', 'phone'])
+            ->where(['id' => $userId])
+            ->one();
     }
 
     /**
@@ -514,6 +557,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Certificate::class, ['user_id' => 'id']);
     }
 
+
     /**
      * Relationship with [[Profile]] table
      *
@@ -544,14 +588,14 @@ class User extends ActiveRecord implements IdentityInterface
                 'pagination' => false,
             ]
         );
-        $dependency   = Yii::createObject(
+        $dependency   = \Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
-                'sql'   => 'SELECT MAX(updated_at) FROM user ',
+                'sql'   => 'SELECT MAX(updated_at) FROM user',
                 'reusable'=>true
             ]
         );
-       Yii::$app->db->cache(
+        Yii::$app->db->cache(
             function () use ($dataProvider) {
                 $dataProvider->prepare();
             },

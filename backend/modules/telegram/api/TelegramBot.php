@@ -3,7 +3,7 @@ namespace backend\modules\telegram\api;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Message;
 
-class Botan extends Api
+class TelegramBot extends Api
 {
     /**
      *  Method for sending responses to callback requests sent from built-in keypads
