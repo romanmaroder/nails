@@ -3,7 +3,7 @@
 return [
     'bsVersion' => '4.x',
     'adminEmail' => 'roma12041985@yandex.ru',
-    'telegramToken'=>'1903642753:AAGQ18pg2H2iUJJ6ogU3s5wmyRAnq1eTsmk',
+    'telegramToken'=>''
     'phonePattern'=>'/\+?([0-9]{2})(\W[0-9]{3}\W)([0-9]{3})-([0-9]{2})-([0-9]{2})/',
     'hail812/yii2-adminlte3' => [
         'pluginMap' => [
