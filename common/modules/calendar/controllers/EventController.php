@@ -4,7 +4,11 @@ namespace common\modules\calendar\controllers;
 
 use backend\modules\telegram\api\TelegramBot;
 use backend\modules\telegram\models\Telegram;
+use backend\modules\viber\api\ViberBot;
+use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
+use Viber\Api\Entity;
+use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
 use yii\caching\DbDependency;
@@ -153,15 +157,56 @@ class EventController extends Controller
                 $chat = Telegram::find()->where(['user_id'=>$model->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
                 if ($chat_id) {
-                   $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
-                   $telegram_bot->sendMessage(
+                    $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
+                    $telegram_bot->sendMessage(
                         [
                             'chat_id' => $chat_id,
                             'text'    =>Yii::$app->smsSender->checkTimeOfDay().'Дата следующей записи '
-                                .Yii::$app->formatter->asDatetime
-                                ($model->event_time_start,'php:d M Y на H:i'),
+                                .Yii::$app->formatter->asDatetime($model->event_time_start,'php:d M Y на H:i'),
                         ]
                     );
+                }
+
+                $viber = Viber::find()->where(['user_id'=>$model->client_id])->asArray()->one();
+                $viber_id = $viber['viber_user_id'];
+                if ( $viber_id) {
+                    $viber_bot = new ViberBot(['token' => Yii::$app->params['viber']['viberToken']]);
+                    $botSender = new Sender(
+                        [
+                            'name' => Yii::$app->params['viber']['viberBotName'],
+                            'avatar' => Yii::$app->params['viber']['viberBotAvatar'],
+                        ]
+                    );
+                    $viber_bot->getClient()->sendMessage(
+                        (new \Viber\Api\Message\Text())
+                            ->setSender($botSender)
+                            ->setReceiver($viber_id)
+                            ->setMinApiVersion(3)
+                            ->setText(Yii::$app->smsSender->checkTimeOfDay().'Дата следующей записи '
+                                      .Yii::$app->formatter->asDatetime($model->event_time_start,'php:d M Y на H:i'))
+                            ->setKeyboard(
+                                (new \Viber\Api\Keyboard())
+                                    ->setButtons(
+                                        [
+                                            (new \Viber\Api\Keyboard\Button())
+                                                ->setColumns('3')
+                                                ->setBgColor('#7f8c8d')
+                                                ->setTextSize('regular')
+                                                ->setActionType('reply')
+                                                ->setActionBody('next')
+                                                ->setText('Следующие'),
+                                            (new \Viber\Api\Keyboard\Button())
+                                                ->setColumns('3')
+                                                ->setBgColor('#7f8c8d')
+                                                ->setTextSize('regular')
+                                                ->setActionType('reply')
+                                                ->setActionBody('previous')
+                                                ->setText('Предыдущие')
+                                        ]
+                                    )
+                            )
+                    );
+
                 }
 
                 Yii::$app->session->setFlash('msg', "Запись ".$model->client->username." сохранена");
@@ -201,13 +246,55 @@ class EventController extends Controller
                 $chat = Telegram::find()->where(['user_id'=>$events->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
                 if ($chat_id) {
-                   $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
-                   $telegram_bot->sendMessage(
+                    $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
+                    $telegram_bot->sendMessage(
                         [
                             'chat_id' => $chat_id,
                             'text'    =>Yii::$app->smsSender->checkTimeOfDay().'Дата записи изменена '.Yii::$app->formatter->asDatetime($events->event_time_start,'php:d M Y на H:i'),
                         ]
                     );
+                }
+
+                $viber = Viber::find()->where(['user_id'=>$events->client_id])->asArray()->one();
+                $viber_id = $viber['viber_user_id'];
+                if ( $viber_id) {
+                    $viber_bot = new ViberBot(['token' => Yii::$app->params['viber']['viberToken']]);
+                    $botSender = new Sender(
+                        [
+                            'name' => Yii::$app->params['viber']['viberBotName'],
+                            'avatar' => Yii::$app->params['viber']['viberBotAvatar'],
+                        ]
+                    );
+                    $viber_bot->getClient()->sendMessage(
+                        (new \Viber\Api\Message\Text())
+                            ->setSender($botSender)
+                            ->setReceiver($viber_id)
+                            ->setMinApiVersion(3)
+                            ->setText(Yii::$app->smsSender->checkTimeOfDay().'Дата следующей записи '
+                                      .Yii::$app->formatter->asDatetime($events->event_time_start,'php:d M Y на H:i'))
+                            ->setKeyboard(
+                                (new \Viber\Api\Keyboard())
+                                    ->setButtons(
+                                        [
+                                            (new \Viber\Api\Keyboard\Button())
+                                                ->setColumns('3')
+                                                ->setBgColor('#7f8c8d')
+                                                ->setTextSize('regular')
+                                                ->setActionType('reply')
+                                                ->setActionBody('next')
+                                                ->setText('Следующие'),
+                                            (new \Viber\Api\Keyboard\Button())
+                                                ->setColumns('3')
+                                                ->setBgColor('#7f8c8d')
+                                                ->setTextSize('regular')
+                                                ->setActionType('reply')
+                                                ->setActionBody('previous')
+                                                ->setText('Предыдущие')
+                                        ]
+                                    )
+                            )
+                    );
+
                 }
 
                 return $this->redirect('/admin/calendar/event/index');
