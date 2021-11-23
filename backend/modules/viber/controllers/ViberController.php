@@ -446,21 +446,10 @@ class ViberController extends Controller
 
             $bot->run();
         } catch (Exception $e) {
-            echo "Error: " . $e->getMessage() . "\n";
+            echo "Error: ".$e->getMessage()."\n";
         }
     }
 
-    /**
-     * Searching for a user by phone number
-     *
-     * @param string $phone
-     *
-     * @return User
-     */
-    public function findUser(string $phone): ?User
-    {
-        return User::findByUserPhone($this->convertPhone($phone));
-    }
 
     /**
      * Search for a user by name and phone number
