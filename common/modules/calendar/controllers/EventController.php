@@ -7,7 +7,6 @@ use backend\modules\telegram\models\Telegram;
 use backend\modules\viber\api\ViberBot;
 use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
-use Viber\Api\Entity;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
