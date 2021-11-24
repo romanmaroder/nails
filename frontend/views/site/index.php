@@ -17,24 +17,9 @@ use yii\widgets\Pjax;
 Pjax::begin(); ?>
 <!--	<div class="row">-->
 <!--		<div class="col">-->
-<!--			--><?php
-//
-//            function findUserByNameAndPhone($name, $phone)
-//            {
-//                $users = User::find()->where(['LIKE', 'username', ':param',[':param'=> $name . '%' ]  ])
-//                    ->andFilterWhere([ 'phone'=>$phone  ])
-//                    ->asArray()
-//                    ->all();
-//                foreach ($users as $user ) {
-//                    return  $user;
-//                }
-//                return false;
-//            }
-//
-//        $user =  findUserByNameAndPhone('Тест', '+38(071)338-82-87');
-//            echo  $user['username'] . '<br>';
-//            echo  $user['id'] . '<br>';
-//			;?>
+<!--			--><?php // $headers = Yii::$app->request->headers;
+//            echo $accept = $headers->get('Accept');
+//             ;?>
 <!---->
 <!--		</div>-->
 <!--	</div>-->
