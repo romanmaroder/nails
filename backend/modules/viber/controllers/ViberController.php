@@ -8,6 +8,7 @@ use common\models\User;
 use Exception;
 use Viber\Api\Keyboard;
 use Viber\Api\Keyboard\Button;
+use Viber\Api\Message\Sticker;
 use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use backend\modules\viber\api\ViberBot;
@@ -18,11 +19,11 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 
 /**
- * Default controller for the `viber` module
+ * ViberController controller for the `viber` module
  */
 class ViberController extends Controller
 {
-    public $webhookUrl = 'https://sparkc.ru/admin/';
+
 
     public function beforeAction($action)//Обязательно нужно отключить Csr валидацию, так не будет работать
     {
@@ -54,11 +55,10 @@ class ViberController extends Controller
 
     public function actionSetup()
     {
-        $this->webhookUrl .= 'viber/viber/webhook';
 
         try {
             $client = new Client(['token' => Yii::$app->params['viber']['viberToken']]);
-            $result = $client->setWebhook($this->webhookUrl);
+            $result = $client->setWebhook( Yii::$app->params['viber']['viberWebhook']);
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage() . "\n";
         }
@@ -200,7 +200,6 @@ class ViberController extends Controller
                         $user_by_phone = $this->findUser(strval($clientPhone));
 
                         if ($user_by_phone->id) {
-                            $id = $user_by_phone->id;
 
                             Viber::start($receiverId, $receiverName, $user_by_phone->id);
                             $bot->getClient()->sendMessage(
@@ -234,14 +233,24 @@ class ViberController extends Controller
                             );
                         } else {
                             $bot->getClient()->sendMessage(
+                                (new Sticker())
+                                    ->setSender($botSender)
+                                    ->setReceiver($receiverId)
+                                    ->setStickerId(24803)
+
+                            );
+                            $bot->getClient()->sendMessage(
                                 (new Text())
                                     ->setSender($botSender)
                                     ->setReceiver($receiverId)
                                     ->setMinApiVersion(3)
                                     ->setText(
                                         $receiverName . ', возможно, мы Вас знаем по другому номеру телефона?'
-                                        . PHP_EOL . 'Напишите своё ИМЯ и ТЕЛЕФОН через пробел и я схожу проверю.'
-                                        . PHP_EOL . 'Пример:Лена 380999999999 или Елена +380999999999'
+                                        . PHP_EOL . 'Напишите своё *ИМЯ* и *ТЕЛЕФОН* через пробел.'
+                                        . PHP_EOL . 'Пример:'
+                                        . PHP_EOL .'*Лена* _380999999999_'
+                                        . PHP_EOL .'или'
+                                        . PHP_EOL .' *Елена* _+380999999999_'
                                     )
 
                             );
@@ -266,7 +275,13 @@ class ViberController extends Controller
 
                             if (isset($user['id'])) {
                                 Viber::start($receiverId, $receiverName, $user['id']);
+                                $bot->getClient()->sendMessage(
+                                    (new Sticker())
+                                        ->setSender($botSender)
+                                        ->setReceiver($receiverId)
+                                        ->setStickerId(24824)
 
+                                );
                                 $bot->getClient()->sendMessage(
                                     (new Text())
                                         ->setSender($botSender)
@@ -316,47 +331,47 @@ class ViberController extends Controller
 
                         $user_event_id = Viber::getUserId($receiverId);
 
-                            if ($eventNext = Event::findNextClientEvents($user_event_id)) {
-                                $reply = "Следующая запись: \n";
-                                foreach ($eventNext as $item) {
-                                    $reply .= '*' . Yii::$app->formatter->asDatetime(
-                                            $item['event_time_start'],
-                                            'php:d M Y на H:i'
-                                        ) . "* - _"
-                                        . $item['description'] . "_\n";
-                                }
-                            } else {
-                                $reply = "Вы еще не записались.";
+                        if ($eventNext = Event::findNextClientEvents($user_event_id)) {
+                            $reply = "Следующая запись: \n";
+                            foreach ($eventNext as $item) {
+                                $reply .= '*' . Yii::$app->formatter->asDatetime(
+                                        $item['event_time_start'],
+                                        'php:d M Y на H:i'
+                                    ) . "* - _"
+                                    . $item['description'] . "_\n";
                             }
-                            $bot->getClient()->sendMessage(
-                                (new Text())
-                                    ->setSender($botSender)
-                                    ->setReceiver($receiverId)
-                                    ->setMinApiVersion(3)
-                                    ->setText($reply)
-                                    ->setKeyboard(
-                                        (new Keyboard())
-                                            ->setButtons(
-                                                [
-                                                    (new Button())
-                                                        ->setColumns('3')
-                                                        ->setBgColor('#7f8c8d')
-                                                        ->setTextSize('regular')
-                                                        ->setActionType('reply')
-                                                        ->setActionBody('next')
-                                                        ->setText('Следующие'),
-                                                    (new Button())
-                                                        ->setColumns('3')
-                                                        ->setBgColor('#7f8c8d')
-                                                        ->setTextSize('regular')
-                                                        ->setActionType('reply')
-                                                        ->setActionBody('previous')
-                                                        ->setText('Предыдущие')
-                                                ]
-                                            )
-                                    )
+                        } else {
+                            $reply = "Вы еще не записались.";
+                        }
+                        $bot->getClient()->sendMessage(
+                            (new Text())
+                                ->setSender($botSender)
+                                ->setReceiver($receiverId)
+                                ->setMinApiVersion(3)
+                                ->setText($reply)
+                                ->setKeyboard(
+                                    (new Keyboard())
+                                        ->setButtons(
+                                            [
+                                                (new Button())
+                                                    ->setColumns('3')
+                                                    ->setBgColor('#7f8c8d')
+                                                    ->setTextSize('regular')
+                                                    ->setActionType('reply')
+                                                    ->setActionBody('next')
+                                                    ->setText('Следующие'),
+                                                (new Button())
+                                                    ->setColumns('3')
+                                                    ->setBgColor('#7f8c8d')
+                                                    ->setTextSize('regular')
+                                                    ->setActionType('reply')
+                                                    ->setActionBody('previous')
+                                                    ->setText('Предыдущие')
+                                            ]
+                                        )
+                                )
 
-                            );
+                        );
 
 
 
@@ -371,47 +386,47 @@ class ViberController extends Controller
 
                         $user_event_id = Viber::getUserId($receiverId);
 
-                            if ($eventPrevious = Event::findPreviousClientEvents($user_event_id)) {
-                                $reply = "Предыдущая запись: \n";
-                                foreach ($eventPrevious as $item) {
-                                    $reply .= '*' . Yii::$app->formatter->asDatetime(
-                                            $item['event_time_start'],
-                                            'php:d M Y на H:i'
-                                        ) . "* - _"
-                                        . $item['description'] . "_\n";
-                                }
-                            } else {
-                                $reply = "У вас нет предыдущих записей.";
+                        if ($eventPrevious = Event::findPreviousClientEvents($user_event_id)) {
+                            $reply = "Предыдущая запись: \n";
+                            foreach ($eventPrevious as $item) {
+                                $reply .= '*' . Yii::$app->formatter->asDatetime(
+                                        $item['event_time_start'],
+                                        'php:d M Y на H:i'
+                                    ) . "* - _"
+                                    . $item['description'] . "_\n";
                             }
-                            $bot->getClient()->sendMessage(
-                                (new Text())
-                                    ->setSender($botSender)
-                                    ->setReceiver($receiverId)
-                                    ->setMinApiVersion(3)
-                                    ->setText($reply)
-                                    ->setKeyboard(
-                                        (new Keyboard())
-                                            ->setButtons(
-                                                [
-                                                    (new Button())
-                                                        ->setColumns('3')
-                                                        ->setBgColor('#7f8c8d')
-                                                        ->setTextSize('regular')
-                                                        ->setActionType('reply')
-                                                        ->setActionBody('next')
-                                                        ->setText('Следующие'),
-                                                    (new Button())
-                                                        ->setColumns('3')
-                                                        ->setBgColor('#7f8c8d')
-                                                        ->setTextSize('regular')
-                                                        ->setActionType('reply')
-                                                        ->setActionBody('previous')
-                                                        ->setText('Предыдущие')
-                                                ]
-                                            )
-                                    )
+                        } else {
+                            $reply = "У вас нет предыдущих записей.";
+                        }
+                        $bot->getClient()->sendMessage(
+                            (new Text())
+                                ->setSender($botSender)
+                                ->setReceiver($receiverId)
+                                ->setMinApiVersion(3)
+                                ->setText($reply)
+                                ->setKeyboard(
+                                    (new Keyboard())
+                                        ->setButtons(
+                                            [
+                                                (new Button())
+                                                    ->setColumns('3')
+                                                    ->setBgColor('#7f8c8d')
+                                                    ->setTextSize('regular')
+                                                    ->setActionType('reply')
+                                                    ->setActionBody('next')
+                                                    ->setText('Следующие'),
+                                                (new Button())
+                                                    ->setColumns('3')
+                                                    ->setBgColor('#7f8c8d')
+                                                    ->setTextSize('regular')
+                                                    ->setActionType('reply')
+                                                    ->setActionBody('previous')
+                                                    ->setText('Предыдущие')
+                                            ]
+                                        )
+                                )
 
-                            );
+                        );
 
                     }
                 )
@@ -421,7 +436,13 @@ class ViberController extends Controller
                     function ($event) use ($bot, $botSender) {
                         $receiverId = $event->getSender()->getId();
                         $receiverName = $event->getSender()->getName();
+                        $bot->getClient()->sendMessage(
+                            (new Sticker())
+                                ->setSender($botSender)
+                                ->setReceiver($receiverId)
+                                ->setStickerId(24803)
 
+                        );
                         $bot->getClient()->sendMessage(
                             (new Text())
                                 ->setSender($botSender)
@@ -446,10 +467,21 @@ class ViberController extends Controller
 
             $bot->run();
         } catch (Exception $e) {
-            echo "Error: ".$e->getMessage()."\n";
+            echo "Error: " . $e->getMessage() . "\n";
         }
     }
 
+    /**
+     * Searching for a user by phone number
+     *
+     * @param string $phone
+     *
+     * @return User
+     */
+    private function findUser(string $phone): ?User
+    {
+        return User::findByUserPhone($this->convertPhone($phone));
+    }
 
     /**
      * Search for a user by name and phone number
@@ -459,7 +491,7 @@ class ViberController extends Controller
      *
      * @return User|false
      */
-    public function findUserByNameAndPhone(string $name, string $phone)
+    private function findUserByNameAndPhone(string $name, string $phone)
     {
         return User::findByUserNameAndPhone($name, $phone);
     }
@@ -471,7 +503,7 @@ class ViberController extends Controller
      *
      * @return string
      */
-    public function convertPhone(string $phone): string
+    private function convertPhone(string $phone): string
     {
         $cleaned = preg_replace('/[^\W*[:digit:]]/', '', $phone);
 
