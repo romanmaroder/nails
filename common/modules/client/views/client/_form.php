@@ -26,6 +26,13 @@ use yii\widgets\MaskedInput;
 					</div>
 					<!-- /.card-header -->
 					<!-- form start -->
+                    <?php if( Yii::$app->session->hasFlash('danger') ): ?>
+                        <div class="alert alert-danger alert-dismissible mt-3" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <?php echo Yii::$app->session->getFlash('danger') .'<br><small>Рандомайзер 
+                            предложил не уникальную почту.</small>'; ?>
+                        </div>
+                    <?php endif;?>
 
                     <?php
                     $form = ActiveForm::begin(); ?>

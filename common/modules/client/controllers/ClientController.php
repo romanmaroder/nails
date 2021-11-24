@@ -125,10 +125,8 @@ class ClientController extends Controller
                 $profile->save();
 //                return $this->redirect(['view', 'id' => $model->id]);
                 return $this->redirect('index');
-            } else {
-                Yii::$app->session->setFlash('danger', 'Сохраните клиента еще раз');
-                return $this->refresh();
             }
+        Yii::$app->session->setFlash('danger', 'Сохраните клиента еще раз. ');
         }
 
         return $this->render(
