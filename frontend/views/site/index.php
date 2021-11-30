@@ -9,6 +9,7 @@ use common\models\User;
 use common\widgets\newsList\NewsList;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\widgets\ListView;
 use yii\widgets\Pjax;
 
 ?>
@@ -33,6 +34,14 @@ Pjax::begin(); ?>
 				</div>
 				<div class="col-xl-8" id="pjax-container">
 					<div class="row ">
+                        <div class="col">
+                            <?=
+                            ListView::widget([
+                                'dataProvider' => $dataProvider,
+                            ]);
+                            ?>
+
+                        </div>
                         <?php
                         foreach ($dataProvider->getModels() as $key => $post) : ?>
                             <?php
