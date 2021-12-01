@@ -88,7 +88,7 @@ $this->beginBody() ?>
     NavBar::end();
     ?>
 
-	<div class="container-fluid bg-light">
+	<div class="container-fluid ">
 
         <?= Breadcrumbs::widget(
             [

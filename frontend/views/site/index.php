@@ -2,21 +2,21 @@
 
 /* @var $this yii\web\View */
 
-/* @var $dataProvider  \frontend\controllers\SiteController */
+/* @var $dataProvider  SiteController */
 
-/* @var $searchModel  \frontend\controllers\SiteController */
+/* @var $searchModel  SiteController */
 
-use common\models\User;
 use common\widgets\newsList\NewsList;
-use yii\grid\GridView;
-use yii\helpers\Html;
+use frontend\controllers\SiteController;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
 
 ?>
 
 <?php
-Pjax::begin(); ?>
+Pjax::begin([
+    'enablePushState' => false,
+]); ?>
 
     <div class="site-index">
         <div class="body-content">
@@ -38,7 +38,7 @@ Pjax::begin(); ?>
                             ],
                             'layout' => "{pager}\n{items}\n{summary}", //TODO исправить шаблон отображения
                             'itemOptions' => ['tag' => null],
-                            'itemView' => function ($model, $key, $index, $widget) {
+                            'itemView' => function ($model, $key, $index) {
 
                                 return $this->render('_post_item',
                                     [
@@ -50,11 +50,19 @@ Pjax::begin(); ?>
                                 // or just do some echo
                                 // return $model->title . ' posted by ' . $model->author;
                             },
+                            'emptyText' => 'Увы, но статей пока нет.',
+                            'emptyTextOptions' => [
+                                'tag' => 'div',
+                                'class' => 'col-12 col-lg-6 mb-3 text-info text-center'
+                            ],
+                            'summary' => 'Показаны записи {count} из {totalCount}',
+                            'summaryOptions' => [
+                                'tag' => 'div',
+                                'class' => 'col-12 text-secondary'
+                            ]
                         ]);
                         ?>
-
                     </div>
-
                 </div>
                 <div class="d-none d-xl-block col-xl-2">
                     <?php
