@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'options' => [
                         'tag' => false,
                     ],
-                    'layout' => "{pager}\n{items}\n{summary}", //TODO исправить шаблон отображения
+                    'layout' => "{pager}\n{items}",
                     'itemOptions' => ['tag' => null],
                     'itemView' => function ($model, $key, $index) {
 
@@ -34,21 +34,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'index' => $index,
                                 'key' => $key
                             ]);
-
-                        // or just do some echo
-                        // return $model->title . ' posted by ' . $model->author;
                     },
                     'emptyText' => 'У вас нет сотрудников.',
                     'emptyTextOptions' => [
                         'tag' => 'div',
                         'class' => 'col-12 col-lg-6 mb-3 text-info text-center'
                     ],
-                    'summary' => false,
-                    #'summary' => 'Показаны записи {count} из {totalCount}',
-                    'summaryOptions' => [
-                        'tag' => 'div',
-                        'class' => 'col-12 text-secondary'
-                    ]
                 ]);
                 ?>
 			</div>

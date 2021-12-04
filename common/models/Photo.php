@@ -170,7 +170,6 @@ class Photo extends ActiveRecord
     /**
      * The total number of photos from the master
      *
-     * @param $column_name
      * @param $masterIds
      *
      * @return array
