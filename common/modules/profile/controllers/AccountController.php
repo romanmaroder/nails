@@ -67,7 +67,6 @@ class AccountController extends Controller
      */
     public function actionIndex()
     {
-
         $userId = Yii::$app->user->getId();
 
         $user = User::findIdentity($userId);
@@ -107,12 +106,17 @@ class AccountController extends Controller
         }
 
         if ($setting->load(Yii::$app->request->post())) {
-            if ($setting->themeColor){
-              $setting->SetCookies();
+            if ($setting->checkbox == 1) {
+                $setting->setCookies();
+                return $this->refresh();
+
+            }
+            if ($setting->checkbox == 0){
+               $setting->deleteCookies();
+                return $this->refresh();
             }
 
         }
-
 
         if ($modelPhoto->load(Yii::$app->request->post())) {
             $modelPhoto->picture = UploadedFile::getInstance($modelPhoto, 'picture');
@@ -152,7 +156,7 @@ class AccountController extends Controller
                 'user' => $user,
                 'profile' => $profile,
                 'setting' => $setting,
-                'cookies'=>$cookies,
+                'cookies' => $cookies,
                 'modelAvatar' => $modelAvatar,
                 'model' => $model,
                 'modelCertificate' => $modelCertificate,

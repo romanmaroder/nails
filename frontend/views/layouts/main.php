@@ -27,7 +27,7 @@ $this->beginPage() ?>
     <?php
     $this->head() ?>
 </head>
-<body>
+<body class="<?php if(Yii::$app->request->cookies->has('theme')){echo Yii::$app->request->cookies->getValue('theme','');};?>">
 <?php
 $this->beginBody() ?>
 

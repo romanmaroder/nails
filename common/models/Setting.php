@@ -9,7 +9,7 @@ use yii\base\Model;
 
 class Setting extends Model
 {
-    public $themeColor;
+    public $checkbox = 0;
 
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class Setting extends Model
     public function rules(): array
     {
         return [
-            [['themeColor'], 'safe'],
+            [['checkbox'], 'safe'],
         ];
     }
 
@@ -33,11 +33,23 @@ class Setting extends Model
     }
 
 
-    public function SetCookies(){
+    public function setCookies(){
+
         $cookies = Yii::$app->response->cookies;
+
         $cookies->add(new \yii\web\Cookie([
             'name' => 'theme',
-            'value' => 'dark',
+            'value' => 'dark-mode',
+            'expire' =>Yii::$app->getFormatter()->asTimestamp(date('Y-m-d H:i:s')) + 86400 * 365,
+            #'expire' =>time()+(60*60*24*30),
         ]));
+    }
+
+    public function deleteCookies(){
+
+        $cookies = Yii::$app->response->cookies;
+        $cookies->remove('theme');
+
+
     }
 }

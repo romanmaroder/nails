@@ -1,15 +1,4 @@
-$(document).ready(function () {
-    if ($('#wrap-background').hasClass('site-login') || $('#wrap-background').hasClass('site-signup')) {
-        $('.wrap').addClass('wrap-background');
-    }
-
-    $('.post__author--link').click(function (e) {
-        e.preventDefault()
-    });
-
-
-
-
+$( document ).ready(function() {
     if ($('body').hasClass('dark-mode')){
         $("#checkTheme").attr('checked','checked');
 
@@ -25,5 +14,4 @@ $(document).ready(function () {
     }else{
 
     }
-
 });
