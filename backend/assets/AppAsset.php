@@ -16,6 +16,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/tooltip.js',
+        'js/main.js'
     ];
     public $depends = [
         'common\assets\AdminLteAsset',

@@ -313,7 +313,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'user' => $user,
                                     'profile' => $profile,
                                     'setting' => $setting,
-                                    'cookies'=>$cookies,
                                     'modelAvatar' => $modelAvatar
                                 ]
                             ) ?>

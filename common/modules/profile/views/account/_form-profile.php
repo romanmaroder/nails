@@ -21,48 +21,29 @@ use yii\widgets\MaskedInput;
 
 PluginAsset::register($this)->add(['sweetalert2']);
 ?>
-    <p class="text-muted">Редактировать данные аккаунта</p>
+<p class="text-muted">Редактировать данные аккаунта</p>
 
 
-<?php
+<?php $theme = ActiveForm::begin(['layout' => 'horizontal']); ?>
 
-$js = <<<JS
-    $("#checkTheme").on('change',function(){
-
-        // to submit only if the checkbox is checked otherwise 
-        // you can remove the check and just use the submit statement
-        if($(this).is(':checked')){
-            $(this).closest('form').submit();
-        }
-
-    });
-JS;
-
-$this->registerJs($js, \yii\web\View::POS_READY);
-?>
-
-
-<?php
-
-$theme = ActiveForm::begin(
+<?= $theme->field($setting, 'checkbox')->checkbox(
     [
-        'layout' => 'horizontal',
-    ]
-); ?>
-<?= $theme->field($setting, 'themeColor')->checkbox([
-    'id' => 'checkTheme',
-    'class' => 'check-theme-input',
-    'template' => '<div class="col-sm-2 text-bold">Темная тема</div><div class="col-sm-10 text-right"><label class="check-theme">{input}
+        'id' => 'checkTheme',
+        'class' => 'check-theme-input',
+        'template' => '<div class="col-6 col-sm-2 text-bold">Светлая/Темная</div><div class="col-6 col-sm-10 text-right"><label class="check-theme">{input}
 <span class="check-theme-span"></span><i class="check-theme-indicator"></i></label></div>',
-]) ?>
-<?php
-ActiveForm::end(); ?>
+    ]
+) ?>
+
+
+
+<?php ActiveForm::end(); ?>
+
+
 
 
 <?php $form = ActiveForm::begin(
-    [
-        'layout' => 'horizontal',
-    ]
+    ['layout' => 'horizontal',]
 ); ?>
 
 
@@ -116,18 +97,18 @@ if ($user->getPicture() !== User::DEFAULT_IMAGE) : ?>
 endif; ?>
 
 
-    <div class="form-group row">
-        <?= Html::label('Аватар', 'avatar', ['class' => 'col-sm-2 col-form-label']) ?>
-        <div class="col-sm-10">
-            <?= FileUpload::widget(
-                [
-                    'model' => $modelAvatar,
-                    'attribute' => 'avatar',
-                    'url' => ['/profile/account/upload-avatar'],
-                    // your url, this is just for demo purposes,
-                    'options' => ['accept' => 'image/*'],
-                    'clientEvents' => [
-                        'fileuploaddone' => 'function(e, data) {
+<div class="form-group row">
+    <?= Html::label('Аватар', 'avatar', ['class' => 'col-sm-2 col-form-label']) ?>
+    <div class="col-sm-10">
+        <?= FileUpload::widget(
+            [
+                'model' => $modelAvatar,
+                'attribute' => 'avatar',
+                'url' => ['/profile/account/upload-avatar'],
+                // your url, this is just for demo purposes,
+                'options' => ['accept' => 'image/*'],
+                'clientEvents' => [
+                    'fileuploaddone' => 'function(e, data) {
                               					if (data.result.success) {
 													$("#profile-picture, #profile-picture-form, .elevation-2").attr("src", data.result.pictureUri);
 													$(function() {
@@ -157,16 +138,16 @@ endif; ?>
 													  })
 												}
                             				}',
-                    ],
-                ]
-            ); ?>
-        </div>
+                ],
+            ]
+        ); ?>
     </div>
-    <div class="form-group row">
-        <div class="offset-sm-2 col-sm-10">
-            <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
-        </div>
+</div>
+<div class="form-group row">
+    <div class="offset-sm-2 col-sm-10">
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
+</div>
 
 <?php
 ActiveForm::end(); ?>
@@ -202,9 +183,32 @@ $('#delete-link').on('click',function (e){
      	    alert(error);
     	}
     })
-})
+});
+
+$("#checkTheme").on('change',function(){
+
+    
+        if($(this).is(':checked')){
+           
+            $(this).closest('form').submit();
+        }
+        if ($(this).is(':not(:checked)')){
+            $("#checkTheme").removeAttr('checked');
+            $(this).closest('form').submit();
+        }
+
+    });
+
+if ( $('body').hasClass('dark-mode') ){
+        $("#checkTheme").attr('checked','checked');
+       
+};
+    
+
+
 
 JS;
 
 $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
 ?>
+
