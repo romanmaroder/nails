@@ -5,6 +5,7 @@ namespace common\modules\profile\controllers;
 use common\models\Certificate;
 use common\models\Event;
 use common\models\Profile;
+use common\models\Setting;
 use common\models\User;
 use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
@@ -66,13 +67,14 @@ class AccountController extends Controller
      */
     public function actionIndex()
     {
-        $userId = Yii::$app->user->getId();
 
+        $userId = Yii::$app->user->getId();
 
         $user = User::findIdentity($userId);
 
         $profile = Profile::getUserProfileInfo($userId);
 
+        $setting = new Setting();
 
         $modelAvatar = new AvatarForm($user);
 
@@ -102,6 +104,13 @@ class AccountController extends Controller
                 $profile->save(false);
                 return $this->redirect(['index']);
             }
+        }
+
+        if ($setting->load(Yii::$app->request->post())) {
+            if ($setting->themeColor){
+              $setting->SetCookies();
+            }
+
         }
 
 
@@ -142,6 +151,8 @@ class AccountController extends Controller
                 'dataProvider' => $dataProvider,
                 'user' => $user,
                 'profile' => $profile,
+                'setting' => $setting,
+                'cookies'=>$cookies,
                 'modelAvatar' => $modelAvatar,
                 'model' => $model,
                 'modelCertificate' => $modelCertificate,
