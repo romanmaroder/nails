@@ -25,7 +25,7 @@ $countEventTotal = \common\models\Event::countEventTotal(Yii::$app->authManager-
     <?php $this->head() ?>
 </head>
 <body class="hold-transition sidebar-mini sidebar-collapse layout-navbar-fixed layout-fixed
-<?php if(Yii::$app->request->cookies->has('theme')){echo Yii::$app->request->cookies->getValue('theme','');};?>">
+<?php if(Yii::$app->request->cookies->has('theme')){echo Yii::$app->request->cookies->getValue('theme','');};?>" >
 <?php $this->beginBody() ?>
 
 <div class="wrapper">
