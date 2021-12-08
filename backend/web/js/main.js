@@ -7,10 +7,8 @@ $( document ).ready(function() {
             $(data).addClass('bg-dark');
         });
 
-        $('#modal, #event-form,.select2-container--krajee-bs4 .select2-selection').each(function(index,data) {
-            $(data).css('background-color','#343a40');
-
-        });
+        $('.navbar').removeClass('navbar-white');
+        $('.navbar').addClass('navbar-dark');
     }else{
 
     }

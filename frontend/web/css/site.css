@@ -905,3 +905,11 @@ a.desc:after {
     inset 0 -4px 4px rgba(0,0,0,0.1);
 
 }
+
+
+@media (min-width: 768px){
+    body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer {
+        margin-left: 0;
+
+    }
+}
