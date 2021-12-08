@@ -8,19 +8,23 @@ $(document).ready(function () {
     });
 
 
+    if ($('body').hasClass('dark-mode')) {
 
 
-    if ($('body').hasClass('dark-mode')){
-        $("#checkTheme").attr('checked','checked');
+        $("#checkTheme").attr('checked', 'checked');
 
-        $('.card').each(function(index,data) {
+        // Switching the color scheme of customer cards
+        $('.card').each(function (index, data) {
             $(data).removeClass('bg-light');
             $(data).addClass('bg-dark');
         });
 
-
-    }else{
+        // Switching the color scheme of the button up
+        $('#btn-back-to-top').removeClass('btn-dark');
+        $('#btn-back-to-top').addClass('btn-light');
 
     }
 
 });
+
+
