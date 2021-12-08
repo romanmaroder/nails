@@ -412,9 +412,9 @@ a.desc:after {
     z-index: 0;
 }
 
-.blog-card a {
+/*.blog-card a {
     color: inherit;
-}
+}*/
 
 .blog-card a:hover {
     color: #5AD67D;
@@ -637,9 +637,9 @@ a.desc:after {
         z-index: 0;
     }
 
-    .list-unstyled .blog-card a {
+    /*.list-unstyled .blog-card a {
         color: inherit;
-    }
+    }*/
 
     .list-unstyled .blog-card a:hover {
         color: #5AD67D;
