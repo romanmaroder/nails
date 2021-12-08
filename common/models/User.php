@@ -20,6 +20,7 @@ use yii\web\IdentityInterface;
  * @property string $email
  * @property int $status
  * @property string $color
+ * @property string $avatar
  * @property-read \yii\db\ActiveQuery $userPhoto
  * @property-read string[] $rolesDropdown
  * @property-read \yii\db\ActiveQuery $certificate
@@ -513,7 +514,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getPicture(): string
     {
-        if ($this->avatar) {
+        if ($this->avatar && Yii::$app->storage->checkFileExist($this->avatar)) {
+
             return Yii::$app->storage->getFile($this->avatar);
         }
         return self::DEFAULT_IMAGE;
