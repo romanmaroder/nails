@@ -27,7 +27,7 @@ $this->beginPage() ?>
     <?php
     $this->head() ?>
 </head>
-<body>
+<body class="<?php if(Yii::$app->request->cookies->has('theme')){echo Yii::$app->request->cookies->getValue('theme','');};?>">
 <?php
 $this->beginBody() ?>
 
@@ -88,7 +88,7 @@ $this->beginBody() ?>
     NavBar::end();
     ?>
 
-	<div class="container-fluid bg-light">
+	<div class="container-fluid ">
 
         <?= Breadcrumbs::widget(
             [
@@ -105,9 +105,14 @@ $this->beginBody() ?>
 	</div>
 </div>
 
-<footer class="footer">
+<footer class="main-footer">
 	<div class="container-fluid">
-		<p class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
+        <div class="row">
+            <div class="col-12">
+                <span class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></span>
+            </div>
+        </div>
+
 
 		<!--<p class="pull-right"><?/*= Yii::powered() */?></p>-->
 	</div>

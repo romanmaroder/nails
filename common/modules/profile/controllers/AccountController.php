@@ -5,6 +5,7 @@ namespace common\modules\profile\controllers;
 use common\models\Certificate;
 use common\models\Event;
 use common\models\Profile;
+use common\models\Setting;
 use common\models\User;
 use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
@@ -68,11 +69,11 @@ class AccountController extends Controller
     {
         $userId = Yii::$app->user->getId();
 
-
         $user = User::findIdentity($userId);
 
         $profile = Profile::getUserProfileInfo($userId);
 
+        $setting = new Setting();
 
         $modelAvatar = new AvatarForm($user);
 
@@ -104,6 +105,18 @@ class AccountController extends Controller
             }
         }
 
+        if ($setting->load(Yii::$app->request->post())) {
+            if ($setting->checkbox == 1) {
+                $setting->setCookies();
+                return $this->refresh();
+
+            }
+            if ($setting->checkbox == 0){
+               $setting->deleteCookies();
+                return $this->refresh();
+            }
+
+        }
 
         if ($modelPhoto->load(Yii::$app->request->post())) {
             $modelPhoto->picture = UploadedFile::getInstance($modelPhoto, 'picture');
@@ -142,6 +155,7 @@ class AccountController extends Controller
                 'dataProvider' => $dataProvider,
                 'user' => $user,
                 'profile' => $profile,
+                'setting' => $setting,
                 'modelAvatar' => $modelAvatar,
                 'model' => $model,
                 'modelCertificate' => $modelCertificate,

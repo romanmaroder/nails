@@ -11,7 +11,6 @@ class AdminLteAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/adminlte.min.css',
-        'css/site.css',
         '//fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;1,100;1,300;1,400;1,700&display=swap',
         '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css'
     ];

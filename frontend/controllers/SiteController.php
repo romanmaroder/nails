@@ -13,6 +13,7 @@ use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\data\ActiveDataProvider;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -195,11 +196,18 @@ class SiteController extends Controller
     {
         $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
-        $master = User::find()->with('certificate')->where(['id' => $masterIds])->all();
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query' =>  User::find()->with('certificate')->where(['id' => $masterIds]),
+                'pagination' => [
+                    'pageSize' => 10,
+                ],
+            ]
+        );
 
         $path = Photo::getBackgroundCard();
 
-        return $this->render('about', ['master' => $master, 'path' => $path]);
+        return $this->render('about', ['path' => $path,'dataProvider'=>$dataProvider]);
     }
 
 

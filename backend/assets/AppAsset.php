@@ -12,10 +12,11 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-
+        'css/site.css',
     ];
     public $js = [
         'js/tooltip.js',
+        'js/main.js'
     ];
     public $depends = [
         'common\assets\AdminLteAsset',

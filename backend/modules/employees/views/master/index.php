@@ -1,8 +1,6 @@
 <?php
 
-use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\Url;
+use yii\widgets\ListView;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -10,7 +8,6 @@ use yii\widgets\Pjax;
 
 $this->title                   = 'Мастера';
 $this->params['breadcrumbs'][] = $this->title;
-//$assetDir                      = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 
 ?>
 
@@ -20,82 +17,31 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class="card card-solid">
 		<div class="card-body pb-0">
 			<div class="row">
-                <?php
-                foreach ($dataProvider->getModels() as $item) : ?>
 
-					<div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
-						<div class="card bg-light d-flex flex-fill">
-							<div class="card-header text-muted border-bottom-0">
-                                <?php
-                                echo $item->getStatusUser($item->status); ?>
+                <?=
+                ListView::widget([
+                    'dataProvider' => $dataProvider,
+                    'options' => [
+                        'tag' => false,
+                    ],
+                    'layout' => "{pager}\n{items}",
+                    'itemOptions' => ['tag' => null],
+                    'itemView' => function ($model, $key, $index) {
 
-							</div>
-							<div class="card-body pt-0">
-								<div class="row">
-									<div class="col-7">
-										<h2 class="lead"><b> <?php
-                                                echo $item->username; ?></b></h2>
-                                        <?php
-                                        echo $item->getRoles('description') ?
-                                            '<p class="font-weight-light">('.implode(
-                                                ', ',
-                                                $item->getRoles('description')
-                                            ).')</p>' : '' ?>
-										<!--<p class="text-muted text-sm"><b>Обо мне: </b> <?php
-/*                                            echo $item->description; */?></p>-->
-										<ul class="ml-4 mb-0 fa-ul text-muted">
-											<li class="small mb-3"><span class="fa-li"><i class="fas fa-lg
-										fa-building"></i></span> <?php
-                                                echo $item->address ? $item->address : 'бомж'; ?></li>
-											<li class="small mb-3"><span class="fa-li"><i class="fas fa-lg
-										fa-phone"></i></span> <?php
-                                                echo $item->phone ? Html::a(
-                                                    $item->phone,
-                                                    'tel:'.$item->phone
-                                                ) : 'нет номера'; ?></li>
-											<li class="small mb-3"><span class="fa-li"><i class="fas
-										fa-birthday-cake"></i></span>
-                                                <?php
-                                                echo $item->birthday
-                                                    ? Yii::$app->formatter->asDate(
-                                                        $item->birthday,
-                                                        'php:d-m-Y'
-                                                    ) : 'еще не родился'; ?>
-											</li>
-											<li class="small"><span class="fa-li"><i
-															class="fas fa-paint-brush"></i></span>
-                                                <?php
-                                                $option = [
-                                                    'style' => [
-                                                        'width'            => '20px',
-                                                        'height'           => '20px',
-                                                        'border-radius'    => '20px',
-                                                        'background-color' => $item->color
-                                                    ]
-                                                ];
-                                                echo Html::tag('div', '', $option); ?>
-											</li>
-										</ul>
-									</div>
-									<div class="col-5 text-center">
-										<!--<img src="<?/*= $assetDir */?>/img/avatar2.png" alt="user-avatar"
-											 class="img-circle img-fluid"-->
-										<img src="<?php
-                                        echo $item->getPicture(); ?>" alt="user-avatar"
-											 class="img-circle img-fluid">
-									</div>
-								</div>
-							</div>
-							<div class="card-footer">
-								<div class="text-right">
-                                    <?= Html::a('<i class="fas fa-user"></i> Подробнее...',
-                                                ['view', 'id' =>$item->id], ['class' => 'btn btn-sm btn-primary']) ?>
-								</div>
-							</div>
-						</div>
-					</div>
-                <?php
-                endforeach;; ?>
+                        return $this->render('_master_item',
+                            [
+                                'model' => $model,
+                                'index' => $index,
+                                'key' => $key
+                            ]);
+                    },
+                    'emptyText' => 'У вас нет сотрудников.',
+                    'emptyTextOptions' => [
+                        'tag' => 'div',
+                        'class' => 'col-12 col-lg-6 mb-3 text-info text-center'
+                    ],
+                ]);
+                ?>
 			</div>
 		</div>
 		<!-- /.card-body -->

@@ -1,10 +1,12 @@
 <?php
 
-/* @var $count  \backend\controllers\SiteController */
+/* @var $count  SiteController */
 
-/* @var $portfolioCount  \backend\controllers\SiteController */
-/* @var $workCount  \backend\controllers\SiteController */
-/* @var $clientPhotoCount  \backend\controllers\SiteController */
+/* @var $portfolioCount  SiteController */
+/* @var $workCount  SiteController */
+/* @var $clientPhotoCount  SiteController */
+
+use backend\controllers\SiteController;
 
 $this->title                 = 'Статистика';
 $this->params['breadcrumbs'] = [['label' => $this->title]];

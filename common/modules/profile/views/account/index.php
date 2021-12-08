@@ -1,6 +1,8 @@
 <?php
 
 use common\models\User;
+use common\modules\profile\controllers\AccountController;
+use common\modules\profile\models\AvatarForm;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -12,13 +14,14 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap4\ActiveForm */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $profile \common\modules\profile\controllers\AccountController */
-/* @var $user \common\modules\profile\controllers\AccountController */
-/* @var $modelAvatar\common\modules\profile\models\AvatarForm */
-/* @var $modelPhoto \common\modules\profile\controllers\AccountController */
-/* @var $model\common\modules\profile\controllers\AccountController */
-/* @var $modelCertificate\common\modules\profile\controllers\AccountController */
-/* @var $certificateList\common\modules\profile\controllers\AccountController */
+/* @var $profile AccountController */
+/* @var $setting AccountController */
+/* @var $user AccountController */
+/* @var $modelAvatar AvatarForm */
+/* @var $modelPhoto AccountController */
+/* @var $model AccountController */
+/* @var $modelCertificate AccountController */
+/* @var $certificateList AccountController */
 
 
 //FontAwesomeAsset::register($this);
@@ -309,6 +312,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 [
                                     'user' => $user,
                                     'profile' => $profile,
+                                    'setting' => $setting,
                                     'modelAvatar' => $modelAvatar
                                 ]
                             ) ?>
