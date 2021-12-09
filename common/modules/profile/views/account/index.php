@@ -3,6 +3,7 @@
 use common\models\User;
 use common\modules\profile\controllers\AccountController;
 use common\modules\profile\models\AvatarForm;
+use common\widgets\todoList\TodoList;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -211,6 +212,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             </li>
                         <?php
                         endif; ?>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               href="#todo"
+                               data-toggle="tab">Заметки
+                            </a>
+                        </li>
                     </ul>
 
                 </div><!-- /.card-header -->
@@ -247,7 +254,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'value' => function ($client) {
                                                     return Html::a(
                                                         $client['client']['username'],
-                                                        ['/client/client/view', 'id' => $client['client']['id']],
+                                                        ['/client/client/view', 'id' => $client['client']['id']]
 
                                                     );
                                                 }
@@ -381,6 +388,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     --><?php
                         /*                        endif; */ ?>
                         <!-- /.tab-pane -->
+                        <div class="tab-pane" id="todo">
+                                <?= TodoList::widget() ?>
+                        </div>
                     </div>
                 </div>
                 <!-- /.tab-content -->

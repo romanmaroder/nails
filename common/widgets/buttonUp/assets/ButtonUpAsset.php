@@ -1,7 +1,7 @@
 <?php
 
 
-namespace frontend\assets;
+namespace common\widgets\buttonUp\assets;
 
 
 use yii\web\AssetBundle;

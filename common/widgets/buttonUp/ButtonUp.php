@@ -1,7 +1,7 @@
 <?php
 namespace common\widgets\buttonUp;
+use common\widgets\buttonUp\assets\ButtonUpAsset;
 use yii\base\Widget;
-use frontend\assets\ButtonUpAsset;
 class ButtonUp extends Widget
 {
     public function run() {

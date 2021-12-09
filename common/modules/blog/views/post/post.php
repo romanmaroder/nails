@@ -1,7 +1,9 @@
 <?php
 
-/* @var $post \common\modules\blog\controllers\PostController */
+/* @var $post PostController */
 
+use common\modules\blog\controllers\PostController;
+use common\widgets\buttonUp\ButtonUp;
 use common\widgets\newsList\NewsList;
 use yii\helpers\Html;
 use yii\bootstrap4\Progress;
@@ -158,7 +160,7 @@ $this->title = $post->title;
         </div>
 	</div>
 
-
+<?php echo ButtonUp::widget() ;?>
 <?php
 $progressBar = <<< JS
 $(function () {

@@ -1,6 +1,7 @@
 <?php
-/* @var $list \common\widgets\newsList\NewsList */
+/* @var $list NewsList */
 
+use common\widgets\newsList\NewsList;
 use yii\helpers\Html;
 
 ?>

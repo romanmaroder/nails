@@ -7,6 +7,8 @@ window.onscroll = function () {
 };
 
 function scrollFunction() {
+
+
     if (
         document.body.scrollTop > 20 ||
         document.documentElement.scrollTop > 20
@@ -14,12 +16,19 @@ function scrollFunction() {
         mybutton.style.display = "block";
         mybutton.classList.remove('no-animate');
         mybutton.classList.add('animate');
-    } else if(document.body.scrollTop === 0 ||
+    } else if (document.body.scrollTop === 0 ||
         document.documentElement.scrollTop === 0) {
         mybutton.classList.remove('animate');
         mybutton.classList.add('no-animate');
     }
+
+    if (document.body.classList.contains('dark-mode')) {
+        mybutton.classList.remove('btn-dark');
+        mybutton.classList.add('btn-light');
+    }
+
 }
+
 // When the user clicks on the button, scroll to the top of the document
 mybutton.addEventListener("click", backToTop);
 
@@ -28,3 +37,4 @@ function backToTop() {
         scrollTop: $('body').offset().top
     }, 800);
 }
+

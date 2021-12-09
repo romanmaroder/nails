@@ -6,6 +6,7 @@
 
 /* @var $searchModel  SiteController */
 
+use common\widgets\buttonUp\ButtonUp;
 use common\widgets\newsList\NewsList;
 use frontend\controllers\SiteController;
 use yii\widgets\ListView;
@@ -74,3 +75,4 @@ Pjax::begin([
     </div>
 <?php
 Pjax::end(); ?>
+<?php echo ButtonUp::widget() ;?>

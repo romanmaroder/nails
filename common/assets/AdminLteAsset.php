@@ -25,7 +25,7 @@ class AdminLteAsset extends AssetBundle
         'yii\web\YiiAsset',
         'yii\bootstrap4\BootstrapAsset',
         'yii\bootstrap4\BootstrapPluginAsset',
-//        'hail812\adminlte3\assets\BaseAsset',
+       //'hail812\adminlte3\assets\BaseAsset',
         'hail812\adminlte3\assets\PluginAsset',
     ];
 }
