@@ -117,9 +117,8 @@ class Storage extends Component implements StorageInterface
 
     /**
      * @param string $filename
-     * @return bool
      */
-    public function checkFileExist(string $filename):bool {
+    public function checkFileExist(string $filename) {
 
         $file = $this->getStoragePath().$filename;
 
