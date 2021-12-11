@@ -3,10 +3,10 @@
 use common\models\User;
 use common\modules\profile\controllers\AccountController;
 use common\modules\profile\models\AvatarForm;
-use common\widgets\todoList\TodoList;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\bootstrap4\Tabs;use yii\helpers\Url;
 
 //use hail812\adminlte3\assets\FontAwesomeAsset;
 //use common\assets\AdminLteAsset;
@@ -20,6 +20,7 @@ use yii\grid\GridView;
 /* @var $user AccountController */
 /* @var $modelAvatar AvatarForm */
 /* @var $modelPhoto AccountController */
+/* @var $modelTodo AccountController */
 /* @var $model AccountController */
 /* @var $modelCertificate AccountController */
 /* @var $certificateList AccountController */
@@ -148,249 +149,106 @@ $this->params['breadcrumbs'][] = $this->title;
                                     class="fas fa-minus"></i>
                         </button>
                     </div>
-                    <ul class="nav nav-pills">
-                        <li class="nav-item">
-                            <a class="nav-link active"
-                               href="#events"
-                               data-toggle="tab">Записи
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               href="#settings"
-                               data-toggle="tab">Настройки
-                            </a>
-                        </li>
-                        <?php
-                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                   href="#upload"
-                                   data-toggle="tab">Добавить фото
-                                </a>
-                            </li>
-                        <?php
-                        endif; ?>
-                        <?php
-                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                   href="#certificate"
-                                   data-toggle="tab">Добавить сертификат
-                                </a>
-                            </li>
-                        <?php
-                        endif; ?>
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               href="#design"
-                               data-toggle="tab">Дизайн
-                            </a>
-                        </li>
-                        <?php
-                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                   href="#certificateList"
-                                   data-toggle="tab">Сертификаты
-                                </a>
-                            </li>
-                        <?php
-                        endif; ?>
-                        <?php
-                        if (Yii::$app->user->can('perm_create-post')) : ?>
-                            <li class="nav-item">
-                                <?php
-                                echo Html::a(
-                                    'Статьи',
-                                    ['/blog/post/index'],
-                                    [
-                                        'class' => 'nav-link',
-                                        'data-toggle' => ''
-                                    ]
-                                ); ?>
-                            </li>
-                        <?php
-                        endif; ?>
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               href="#todo"
-                               data-toggle="tab">Заметки
-                            </a>
-                        </li>
-                    </ul>
+
+
 
                 </div><!-- /.card-header -->
                 <div class="card-body">
                     <div class="tab-content">
-                        <div class="active tab-pane" id="events">
-
-                            <!-- /.card-header -->
-                            <?php
-
-                            if ($dataProvider->getCount() === 0) {
-                                echo 'У вас нет записей';
-                            } else {
-                                echo GridView::widget(
+                        <?php
+                        echo Tabs::widget(
+                            [
+                                'options' => ['class' => 'mb-3'],
+                                'items' => [
                                     [
-                                        'dataProvider' => $dataProvider,
-                                        'summary' => "",
-                                        #'filterModel'  => null,
+                                        'label' => 'Записи',
+                                        'content' => $this->render('_event-list', ['dataProvider' => $dataProvider]),
+                                        'active' => true, // указывает на активность вкладки
+                                        'options' => ['id' => 'events'],
 
-                                        'tableOptions' => [
-                                            'class' => 'table table-bordered table-hover',
-                                            'style' => 'width:100%',
-                                            'id' => 'eventsList',
-                                        ],
-                                        'options' => [
-                                            #'class' => 'table-responsive',
-                                        ],
-                                        'columns' => [
-                                            //['class' => 'yii\grid\SerialColumn'],
+                                    ],
+                                    [
+                                        'label' => 'Настройки',
+                                        'content' => $this->render(
+                                            '_form-profile',
                                             [
-                                                'attribute' => 'client_id',
-                                                'format' => 'raw',
-                                                'visible' => Yii::$app->user->can('perm_view-calendar'),
-                                                'value' => function ($client) {
-                                                    return Html::a(
-                                                        $client['client']['username'],
-                                                        ['/client/client/view', 'id' => $client['client']['id']]
+                                                'user' => $user,
+                                                'profile' => $profile,
+                                                'setting' => $setting,
+                                                'modelAvatar' => $modelAvatar
+                                            ]
+                                        ),
+                                        'options' => ['id' => 'settings'],
+//                                        'headerOptions' => [
+//                                            'id' => ''
+//                                        ]
+                                    ],
+                                    [
+                                        'label' => 'Добавить фото',
+                                        'content' => $this->render(
+                                            '_create-photo-form',
+                                            [
+                                                'modelPhoto' => $modelPhoto,
+                                            ]
+                                        ),
+                                        'options' => ['id' => 'upload'],
+                                        'visible' => Yii::$app->user->can('perm_view-calendar'),
+                                    ],
+                                    [
+                                        'label' => 'Добавить сертификат',
+                                        'content' => $this->render(
+                                            '_create-certificate',
+                                            [
+                                                'modelCertificate' => $modelCertificate,
+                                            ]
+                                        ),
+                                        'options' => ['id' => 'certificate'],
+                                        'visible' => Yii::$app->user->can('perm_view-calendar'),
+                                    ],
+                                    [
+                                        'label' => 'Дизайн',
+                                        'content' => $this->render(
+                                            '_gallery-tab',
+                                            [
+                                                'model' => $model,
+                                            ]
+                                        ),
+                                        'options' => ['id' => 'design'],
+                                        'visible' => true,
+                                    ],
+                                    [
+                                        'label' => 'Сертификаты',
+                                        'content' => $this->render(
+                                            '_view-certificate',
+                                            [
+                                                'certificateList' => $certificateList,
+                                            ]
+                                        ),
+                                        'options' => ['id' => 'certificateList'],
+                                        'visible' => Yii::$app->user->can('perm_view-calendar'),
+                                    ],
+                                    [
+                                        'label' => 'Статьи',
+                                        'url' => Url::toRoute(['/blog/post/index']),
+                                        'options' => ['id' => 'post'],
+                                        'visible' => Yii::$app->user->can('perm_create-post'),
+                                    ],
+                                    [
+                                        'label' => 'Заметки',
+                                        'content' => $this->render(
+                                            '_todo',
+                                            [
+                                                'modelTodo' => $modelTodo
+                                            ]
+                                        ),
+                                        'options' => ['id' => 'todo'],
+                                        'visible' => true,
+                                    ],
 
-                                                    );
-                                                }
-                                            ],
-
-                                            [
-                                                'attribute' => 'event_time_start',
-                                                'contentOptions' => ['style' => 'white-space: nowrap;'],
-                                                'label' => 'Дата',
-                                                'format' => ['date', 'php:d-m-Y'],
-                                            ],
-                                            [
-                                                'attribute' => 'event_time_start',
-                                                'label' => 'Время',
-                                                'format' => ['date', 'php:H:i'],
-                                            ],
-                                            [
-                                                'attribute' => 'master_id',
-                                                'format' => 'raw',
-                                                'visible' => Yii::$app->user->can('user'),
-                                                'value' => function ($master) {
-                                                    return $master['master']['username'];
-                                                }
-                                            ],
-                                            [
-                                                'attribute' => 'description',
-                                                'contentOptions' => ['style' => 'white-space: nowrap;'],
-                                            ],
-                                            //'notice',
-                                            [
-                                                'class' => 'yii\grid\ActionColumn',
-                                                'template' => "{view}\n\n\n{sms}",
-                                                'visibleButtons' => [
-                                                    'sms' => function ($model) {
-                                                        return Yii::$app->user->can('manager');
-                                                    }
-                                                ],
-                                                'buttons' => [
-                                                    'sms' => function ($url, $model, $key) {
-
-                                                        return  $model['client']['phone'] ?
-                                                         Html::a(
-                                                            '<i class="far fa-envelope"></i>',
-                                                            'sms:' . $model['client']['phone'] . Yii::$app->smsSender->checkOperatingSystem(
-                                                            ) . Yii::$app->smsSender->messageText(
-                                                                $model['event_time_start']
-                                                            )
-                                                        ): '';
-                                                    },
-                                                ],
-                                            ],
-                                        ],
-                                    ]
-                                );
-                            } ?>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="settings">
-                            <?= $this->render(
-                                '_form-profile',
-                                [
-                                    'user' => $user,
-                                    'profile' => $profile,
-                                    'setting' => $setting,
-                                    'modelAvatar' => $modelAvatar
                                 ]
-                            ) ?>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <?php
-                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
-                            <div class="tab-pane" id="upload">
-
-                                <?= $this->render(
-                                    '_create-photo-form',
-                                    [
-                                        'modelPhoto' => $modelPhoto,
-                                    ]
-                                ) ?>
-                                <!-- /.card-body -->
-                            </div>
-                        <?php
-                        endif; ?>
-                        <!-- /.tab-pane -->
-                        <?php
-                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
-                            <div class="tab-pane" id="certificate">
-
-                                <?= $this->render(
-                                    '_create-certificate',
-                                    [
-                                        'modelCertificate' => $modelCertificate,
-                                    ]
-                                ) ?>
-                                <!-- /.card-body -->
-                            </div>
-                        <?php
-                        endif; ?>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="design">
-                            <?= $this->render(
-                                '_gallery-tab',
-                                [
-                                    'model' => $model,
-                                ]
-                            ) ?>
-                        </div>
-                        <!-- /.tab-pane -->
-                        <?php
-                        if (Yii::$app->user->can('perm_view-calendar')) : ?>
-                            <div class="tab-pane" id="certificateList">
-
-                                <?= $this->render(
-                                    '_view-certificate',
-                                    [
-                                        'certificateList' => $certificateList,
-                                    ]
-                                ) ?>
-                                <!-- /.card-body -->
-                            </div>
-                        <?php
-                        endif; ?>
-                        <!-- /.tab-pane -->
-                        <?php
-                        /*                        if (Yii::$app->user->can('perm_create-post')) : */ ?><!--
-							<div class="tab-pane" id="post">-->
-
-                        <!-- /.card-body -->
-                        <!--</div>
-                    --><?php
-                        /*                        endif; */ ?>
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="todo">
-                                <?= TodoList::widget() ?>
-                        </div>
+                            ]
+                        );
+                        ?>
                     </div>
                 </div>
                 <!-- /.tab-content -->
@@ -403,48 +261,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <!-- /.content -->
 
-<?php
-$js = <<< JS
-$(function () {
-    $("#eventsList").DataTable({
-    "responsive": true,
-   "pageLength": 10,
-    "paging": true,
-    "searching": true,
-    "ordering": false,
-    "info": false,
-    "autoWidth": false,
-    "bStateSave": true,
-    "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
-    "fnStateSave": function (oSettings, oData) {
-        localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-    },
-    "fnStateLoad": function () {
-        var data = localStorage.getItem('DataTables_' + window.location.pathname);
-        return JSON.parse(data);
-    },
-       "language": {
-       "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
-      '<option value="10">10</option>'+
-      '<option value="20">20</option>'+
-      '<option value="50">50</option>'+
-      '<option value="-1">Все</option>'+
-      '</select>',
-           "search": "Поиск:",
-           "zeroRecords": "Совпадений не найдено",
-    	  	"emptyTable": "В таблице отсутствуют данные",
-           "paginate": {
-                    "first": "Первая",
-                    "previous": '<i class="fas fa-backward"></i>',
-                    "last": "Последняя",
-                    "next": '<i class="fas fa-forward"></i>'
-                }
-       }
-    }).buttons().container().appendTo('#eventsList_wrapper .col-md-6:eq(0)');
-  });
-JS;
-
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
-?>
 
 

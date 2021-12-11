@@ -6,6 +6,7 @@ use common\models\Certificate;
 use common\models\Event;
 use common\models\Profile;
 use common\models\Setting;
+use common\models\Todo;
 use common\models\User;
 use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
@@ -85,6 +86,8 @@ class AccountController extends Controller
 
         $certificate = new Certificate();
 
+        $modelTodo = new Todo();
+
         $dataProvider = Event::getEventDataProvider($userId);
 
 
@@ -109,13 +112,11 @@ class AccountController extends Controller
             if ($setting->checkbox == 1) {
                 $setting->setCookies();
                 return $this->refresh();
-
             }
-            if ($setting->checkbox == 0){
-               $setting->deleteCookies();
+            if ($setting->checkbox == 0) {
+                $setting->deleteCookies();
                 return $this->refresh();
             }
-
         }
 
         if ($modelPhoto->load(Yii::$app->request->post())) {
@@ -160,7 +161,8 @@ class AccountController extends Controller
                 'model' => $model,
                 'modelCertificate' => $modelCertificate,
                 'certificateList' => $certificateList,
-                'modelPhoto' => $modelPhoto
+                'modelPhoto' => $modelPhoto,
+                'modelTodo'=>$modelTodo
             ]
         );
     }
@@ -312,6 +314,39 @@ class AccountController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+
+    public function actionAddTodo()
+    {
+        // Создаём экземпляр модели.
+        $modelTodo = new Todo();
+        // Устанавливаем формат ответа JSON
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        // Если пришёл AJAX запрос
+        if (Yii::$app->request->isAjax) {
+            $data = Yii::$app->request->post();
+            // Получаем данные модели из запроса
+            if ($modelTodo->load($data)) {
+                //Если всё успешно, отправляем ответ с данными
+                return [
+                    "data" => $modelTodo,
+                    "error" => null
+                ];
+            } else {
+                // Если нет, отправляем ответ с сообщением об ошибке
+                return [
+                    "data" => null,
+                    "error" => "error1"
+                ];
+            }
+        } else {
+            // Если это не AJAX запрос, отправляем ответ с сообщением об ошибке
+            return [
+                "data" => null,
+                "error" => "error2"
+            ];
+        }
     }
 
 

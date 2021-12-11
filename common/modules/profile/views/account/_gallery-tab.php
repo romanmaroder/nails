@@ -1,20 +1,18 @@
 <?php
 /* @var $this yii\web\View */
 
-/* @var $model \common\modules\profile\controllers\AccountController */
+/* @var $model AccountController */
 
-/* @var $models \common\models\Photo */
+/* @var $models Photo */
 
 use common\models\Photo;
+use common\modules\profile\controllers\AccountController;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 
 PluginAsset::register($this)->add(
     ['ekko-lightbox']
 );
-
-$models = new Photo();
-$class = get_class($models);
 
 ?>
 
@@ -49,7 +47,8 @@ $class = get_class($models);
 							<?php
                             echo Html::a(
                                 '<i class="fas fa-trash"></i>',
-                                ['/profile/account/delete-photo', 'id' => $item['id'], 'class' => $class],
+                                ['/profile/account/delete-photo', 'id' => $item['id'], 'class' =>
+                                    get_class(new Photo())],
                                 ['id' => 'delete-photo']
                             ); ?>
 						</span>
@@ -84,7 +83,7 @@ $this->registerJs($gallery, $position = yii\web\View::POS_READY, $key = null); ?
 <?php
 
 $js = <<< JS
-$('body').on('click','#delete-photo',function (e){
+$('#delete-photo').on('click',function (e){
     e.preventDefault();
     var path = $(this).attr('href');
     var image= $(this).closest('.filtr-item')

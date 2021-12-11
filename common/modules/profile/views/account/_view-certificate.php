@@ -1,10 +1,11 @@
 <?php
 /* @var $this yii\web\View */
 
-/* @var $certificateList \common\modules\profile\controllers\AccountController */
-/* @var $models \common\models\Certificate */
+/* @var $certificateList AccountController */
+/* @var $models Certificate */
 
 use common\models\Certificate;
+use common\modules\profile\controllers\AccountController;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 
@@ -12,14 +13,9 @@ PluginAsset::register($this)->add(
     ['ekko-lightbox']
 );
 
-$models = new Certificate();
-$class = get_class($models);
+
 ?>
 
-<?php /*echo '<pre>';
-var_dump($certificateList);
-die();
-*/?>
 
 <div class=" p-0 row">
 	<?php if ($certificateList) :?>
@@ -49,8 +45,8 @@ die();
 							<?php
                             echo Html::a(
                                 '<i class="fas fa-trash"></i>',
-                                ['/profile/account/delete-photo', 'id' => $item['id'],'class'=>$class],
-                                ['id' => 'delete-photo']
+                                ['/profile/account/delete-photo', 'id' => $item['id'],'class'=> get_class(new Certificate())],
+                                ['id' => 'delete-certificate']
                             ); ?>
 						</span>
                     <?php endif ;?>
@@ -82,7 +78,7 @@ $this->registerJs($gallery, $position = yii\web\View::POS_READY, $key = null); ?
 <?php
 
 $js = <<< JS
-$('body').on('click','#delete-photo',function (e){
+$('#delete-certificate').on('click',function (e){
     e.preventDefault();
     var path = $(this).attr('href');
    var image= $(this).closest('.filtr-item')
