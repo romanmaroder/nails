@@ -5,7 +5,6 @@ use common\modules\profile\controllers\AccountController;
 use common\modules\profile\models\AvatarForm;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\bootstrap4\Tabs;use yii\helpers\Url;
 
 //use hail812\adminlte3\assets\FontAwesomeAsset;
@@ -145,12 +144,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="card card-outline card-primary ">
                 <div class="card-header ">
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-minus"></i>
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
                         </button>
                     </div>
-
-
 
                 </div><!-- /.card-header -->
                 <div class="card-body">
@@ -162,7 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'items' => [
                                     [
                                         'label' => 'Записи',
-                                        'content' => $this->render('_event-list', ['dataProvider' => $dataProvider]),
+                                        'content' => $this->render('_event-list-tab', ['dataProvider' => $dataProvider]),
                                         'active' => true, // указывает на активность вкладки
                                         'options' => ['id' => 'events'],
 
@@ -170,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'label' => 'Настройки',
                                         'content' => $this->render(
-                                            '_form-profile',
+                                            '_form-profile-tab',
                                             [
                                                 'user' => $user,
                                                 'profile' => $profile,
@@ -186,7 +183,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'label' => 'Добавить фото',
                                         'content' => $this->render(
-                                            '_create-photo-form',
+                                            '_create-photo-form-tab',
                                             [
                                                 'modelPhoto' => $modelPhoto,
                                             ]
@@ -197,7 +194,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'label' => 'Добавить сертификат',
                                         'content' => $this->render(
-                                            '_create-certificate',
+                                            '_create-certificate-tab',
                                             [
                                                 'modelCertificate' => $modelCertificate,
                                             ]
@@ -219,7 +216,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'label' => 'Сертификаты',
                                         'content' => $this->render(
-                                            '_view-certificate',
+                                            '_view-certificate-tab',
                                             [
                                                 'certificateList' => $certificateList,
                                             ]
@@ -236,7 +233,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'label' => 'Заметки',
                                         'content' => $this->render(
-                                            '_todo',
+                                            '_todo-tab',
                                             [
                                                 'modelTodo' => $modelTodo
                                             ]

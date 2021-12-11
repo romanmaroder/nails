@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\data\ActiveDataProvider;
 
 /**
  * This is the model class for table "certificate".
@@ -31,7 +32,13 @@ class Certificate extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'integer'],
             [['certificate'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 
@@ -75,12 +82,15 @@ class Certificate extends \yii\db\ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    public  function getCertificates($id): array
+    public function getCertificates($id): ActiveDataProvider
     {
-        return Certificate::find()
-            ->with('user')
-            ->where(['user_id' => $id])
-            ->asArray()
-            ->all();
+        return new ActiveDataProvider(
+            [
+                'query' => Certificate::find()
+                    ->with('user')
+                    ->where(['user_id' => $id])
+
+            ]
+        );
     }
 }

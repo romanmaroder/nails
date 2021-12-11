@@ -2,10 +2,8 @@
 
 namespace frontend\controllers;
 
-use common\models\Category;
 use common\models\Certificate;
 use common\models\Photo;
-use common\models\Post;
 use common\models\PostSearch;
 use common\models\Profile;
 use common\models\User;
@@ -90,6 +88,7 @@ class SiteController extends Controller
      * Displays homepage.
      *
      * @return mixed
+     * @throws InvalidArgumentException
      */
     public function actionIndex()
     {
@@ -149,6 +148,7 @@ class SiteController extends Controller
      * Displays contact page.
      *
      * @return mixed
+     * @throws InvalidArgumentException
      */
     public function actionContact()
     {

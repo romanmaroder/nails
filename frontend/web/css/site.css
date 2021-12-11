@@ -257,6 +257,7 @@ a.desc:after {
     z-index: -1;
     transition: width 2s, height 4s;
     -webkit-transition: width 2s, height 4s;
+    overflow:hidden;
 }
 
 .slide-button:hover .slide-button-info {
