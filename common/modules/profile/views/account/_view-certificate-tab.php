@@ -37,8 +37,7 @@ PluginAsset::register($this)->add(
                 $layout = '';
                 $layout .= '<div class="filtr-item col-sm-2 " id="' . $model['id'] . '">
                             <a href="' . Yii::$app->storage->getFile($model['certificate'], 'php:d/m/Y') . '"
-                               data-toggle="lightbox"
-                               data-gallery="mixedgallery" >
+                               data-toggle="lightbox">
                                 <div class="position-relative">
                                     <img class="img-fluid mb-2"
                                          alt="' . $model['certificate'] . '"
@@ -80,6 +79,7 @@ PluginAsset::register($this)->add(
 
 
 <?php
+
 
 $js = <<< JS
 $('.delete-certificate').on('click',function (e){

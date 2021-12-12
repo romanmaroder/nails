@@ -5,7 +5,8 @@ use common\modules\profile\controllers\AccountController;
 use common\modules\profile\models\AvatarForm;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
-use yii\bootstrap4\Tabs;use yii\helpers\Url;
+use yii\bootstrap4\Tabs;
+use yii\helpers\Url;
 
 //use hail812\adminlte3\assets\FontAwesomeAsset;
 //use common\assets\AdminLteAsset;
@@ -106,7 +107,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php
                     if ($user->address) : ?>
 
-
                         <strong><i class="fas fa-map-marker-alt mr-1"></i> Место проживание</strong>
 
                         <p class="text-muted"><?php
@@ -148,9 +148,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             <i class="fas fa-minus"></i>
                         </button>
                     </div>
-
-                </div><!-- /.card-header -->
+                </div>
+                <!-- /.card-header -->
                 <div class="card-body">
+
+                    <?php if( Yii::$app->session->hasFlash('success') ): ?>
+                        <div class="alert alert-success alert-dismissible mt-3" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <?php echo Yii::$app->session->getFlash('success'); ?>
+                        </div>
+                    <?php endif;?>
+
+
+
                     <div class="tab-content">
                         <?php
                         echo Tabs::widget(
@@ -249,7 +259,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 <!-- /.tab-content -->
-            </div><!-- /.card-body -->
+            </div>
+            <!-- /.card-body -->
         </div>
         <!-- /.card -->
     </div>

@@ -123,7 +123,7 @@ class AccountController extends Controller
 
             if ($modelPhoto->save()) {
                 Yii::$app->session->setFlash('success', 'Изображение добавлено!');
-                return $this->goHome();
+                return $this->refresh();
             } else {
                 $modelPhoto->getErrors();
             }

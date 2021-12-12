@@ -36,7 +36,6 @@ PluginAsset::register($this)->add(
                 $layout .= '<div class="filtr-item col-sm-2 " id="' . $model['id'] . '">
                             <a href="' . Yii::$app->storage->getFile($model['image'], 'php:d/m/Y') . '"
                                 data-toggle="lightbox"
-                                data-gallery="mixedgallery"
                                 data-footer="' . Yii::$app->formatter->asDatetime($model['created_at'], 'php:d/m/Y') . '">
                             <div class="position-relative">
                                 <img class="img-fluid mb-2"

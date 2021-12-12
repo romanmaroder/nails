@@ -29,6 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
 						</div>
 						<!-- /.card-header -->
 						<div class="card-body">
+
+                            <?php if( Yii::$app->session->hasFlash('info') ): ?>
+                                <div class="alert alert-info alert-dismissible mt-3" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <?php echo Yii::$app->session->getFlash('info'); ?>
+                                </div>
+                            <?php endif;?>
+
+
                             <?php
                             if (Yii::$app->id =='app-frontend') : ?>
                                 <?= GridView::widget(
