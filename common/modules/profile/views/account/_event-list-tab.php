@@ -6,9 +6,7 @@ use yii\helpers\Html;
 
 /* @var $dataProvider */
 
-if ($dataProvider->getCount() === 0) {
-    echo 'У вас нет записей';
-} else {
+
     echo GridView::widget(
         [
             'dataProvider' => $dataProvider,
@@ -22,6 +20,11 @@ if ($dataProvider->getCount() === 0) {
             ],
             'options' => [
                 #'class' => 'table-responsive',
+            ],
+            'emptyText' => 'У Вас нет записей',
+            'emptyTextOptions' => [
+                'tag' => 'div',
+                'class' => 'col-12 col-lg-6 mb-3 text-info'
             ],
             'columns' => [
                 //['class' => 'yii\grid\SerialColumn'],
@@ -86,7 +89,7 @@ if ($dataProvider->getCount() === 0) {
             ],
         ]
     );
-}
+
 
 
 $js = <<< JS
