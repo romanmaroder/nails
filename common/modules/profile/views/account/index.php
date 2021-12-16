@@ -170,7 +170,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'label' => 'Записи',
                                         'content' => $this->render('_event-list-tab', ['dataProvider' => $dataProvider]),
-                                        'active' => true, // указывает на активность вкладки
+                                        //'active' => true, // указывает на активность вкладки
                                         'options' => ['id' => 'events'],
 
                                     ],
@@ -245,11 +245,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'content' => $this->render(
                                             '_todo-tab',
                                             [
-                                                'modelTodo' => $modelTodo
+                                                'modelTodo' => $modelTodo,
+                                                'eventsTodoList'=>$eventsTodoList
                                             ]
                                         ),
                                         'options' => ['id' => 'todo'],
                                         'visible' => true,
+                                        'active' => true,
                                     ],
 
                                 ]

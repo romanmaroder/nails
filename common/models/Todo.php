@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 
 /**
@@ -55,8 +56,15 @@ class Todo extends ActiveRecord
         return [
             [['user_id'], 'integer'],
             [['title'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
-            [['created_at', 'updated_at','status'],'safe']
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' =>
+                    ['user_id' => 'id']
+            ],
+            [['created_at', 'updated_at', 'status'], 'safe']
         ];
     }
 
@@ -82,4 +90,16 @@ class Todo extends ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
+
+    public static function getEventsTodo($user_id)
+    {
+        /*return new ActiveDataProvider(
+            [
+                'query' => Todo::find()->where(['user_id' => $user_id])
+            ]
+        );*/
+        return  Todo::find()->where(['user_id' => $user_id])->asArray()->all();
+    }
+
 }

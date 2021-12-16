@@ -87,6 +87,8 @@ class AccountController extends Controller
 
         $modelTodo = new Todo();
 
+        $eventsTodoList = Todo::getEventsTodo($userId);
+
         $dataProvider = Event::getEventDataProvider($userId);
 
 
@@ -161,7 +163,8 @@ class AccountController extends Controller
                 'modelCertificate' => $modelCertificate,
                 'certificateList' => $certificateList,
                 'modelPhoto' => $modelPhoto,
-                'modelTodo'=>$modelTodo
+                'modelTodo'=>$modelTodo,
+                'eventsTodoList'=>$eventsTodoList
             ]
         );
     }
@@ -319,23 +322,25 @@ class AccountController extends Controller
     public function actionAddTodo()
     {
         // Создаём экземпляр модели.
-        $modelTodo = new Todo();
+        $model = new Todo();
         // Устанавливаем формат ответа JSON
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         // Если пришёл AJAX запрос
         if (Yii::$app->request->isAjax) {
             $data = Yii::$app->request->post();
             // Получаем данные модели из запроса
-            if ($modelTodo->load($data)) {
+            if ($model->load($data) && $model->save()) {
                 //Если всё успешно, отправляем ответ с данными
+
+                $events = Todo::getEventsTodo(Yii::$app->user->getId());
                 return [
-                    "data" => $modelTodo,
+                    "data" => $events,
                     "error" => null
                 ];
             } else {
                 // Если нет, отправляем ответ с сообщением об ошибке
                 return [
-                    "data" => null,
+                    "data" => $model->errors,
                     "error" => "error1"
                 ];
             }
@@ -346,6 +351,7 @@ class AccountController extends Controller
                 "error" => "error2"
             ];
         }
+
     }
 
 
