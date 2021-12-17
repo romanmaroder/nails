@@ -6,7 +6,6 @@ use common\models\Certificate;
 use common\models\Event;
 use common\models\Profile;
 use common\models\Setting;
-use common\models\Todo;
 use common\models\User;
 use common\modules\profile\models\AddCertificate;
 use common\modules\profile\models\AddPhotoForm;
@@ -85,10 +84,6 @@ class AccountController extends Controller
 
         $certificate = new Certificate();
 
-        $modelTodo = new Todo();
-
-        $eventsTodoList = Todo::getEventsTodo($userId);
-
         $dataProvider = Event::getEventDataProvider($userId);
 
 
@@ -131,7 +126,6 @@ class AccountController extends Controller
             }
         }
 
-
         if ($modelCertificate->load(Yii::$app->request->post())) {
             $modelCertificate->image = UploadedFile::getInstance($modelCertificate, 'image');
 
@@ -142,6 +136,8 @@ class AccountController extends Controller
                 $modelCertificate->getErrors();
             }
         }
+
+
 
         $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
@@ -163,8 +159,7 @@ class AccountController extends Controller
                 'modelCertificate' => $modelCertificate,
                 'certificateList' => $certificateList,
                 'modelPhoto' => $modelPhoto,
-                'modelTodo'=>$modelTodo,
-                'eventsTodoList'=>$eventsTodoList
+
             ]
         );
     }
@@ -319,40 +314,6 @@ class AccountController extends Controller
     }
 
 
-    public function actionAddTodo()
-    {
-        // Создаём экземпляр модели.
-        $model = new Todo();
-        // Устанавливаем формат ответа JSON
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        // Если пришёл AJAX запрос
-        if (Yii::$app->request->isAjax) {
-            $data = Yii::$app->request->post();
-            // Получаем данные модели из запроса
-            if ($model->load($data) && $model->save()) {
-                //Если всё успешно, отправляем ответ с данными
-
-                $events = Todo::getEventsTodo(Yii::$app->user->getId());
-                return [
-                    "data" => $events,
-                    "error" => null
-                ];
-            } else {
-                // Если нет, отправляем ответ с сообщением об ошибке
-                return [
-                    "data" => $model->errors,
-                    "error" => "error1"
-                ];
-            }
-        } else {
-            // Если это не AJAX запрос, отправляем ответ с сообщением об ошибке
-            return [
-                "data" => null,
-                "error" => "error2"
-            ];
-        }
-
-    }
 
 
 }

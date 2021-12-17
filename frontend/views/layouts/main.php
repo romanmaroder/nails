@@ -104,7 +104,7 @@ $this->beginBody() ?>
 	</div>
 </div>
 
-<footer class="main-footer">
+<footer class="footer">
 	<div class="container-fluid">
         <div class="row">
             <div class="col-12">

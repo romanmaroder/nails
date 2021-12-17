@@ -21,10 +21,6 @@ PluginAsset::register($this)->add(
         <?/*= Html::a('Новая статья', ['create'], ['class' => 'btn btn-outline-success']) */?>
 	</p>-->
 
-<?php
-Pjax::begin(); ?>
-<?php
- //echo $this->render('_search', ['model' => $searchModel]); ?>
 
 <?php
 if ($dataProvider->getCount() === 0) {
@@ -38,7 +34,8 @@ if ($dataProvider->getCount() === 0) {
             'filterModel'  => null,
             'tableOptions' => [
                 'class' => 'table table-striped table-bordered',
-                'id'    => 'post'
+                'id'    => 'post',
+                'data-pjax'=>0
             ],
             'columns'      => [
                 // ['class' => 'yii\grid\SerialColumn'],
@@ -91,8 +88,6 @@ if ($dataProvider->getCount() === 0) {
         ]
     );} ?>
 
-    <?php
-    Pjax::end(); ?>
 
 	</div>
     <?php

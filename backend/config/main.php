@@ -69,6 +69,7 @@ return [
                 'post'           => '/blog/post/index',
                 'post/new'        => '/blog/post/create',
                 'post/<id:\d+>'   => '/blog/post/view',
+                #'todo'           => '/todo/default/index',
             ],
         ],
     ],
