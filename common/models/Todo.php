@@ -56,6 +56,7 @@ class Todo extends ActiveRecord
         return [
             [['user_id'], 'integer'],
             [['title'], 'string', 'max' => 255],
+            [['title'], 'required'],
             [
                 ['user_id'],
                 'exist',
@@ -94,12 +95,12 @@ class Todo extends ActiveRecord
 
     public static function getEventsTodo($user_id)
     {
-        /*return new ActiveDataProvider(
+        return new ActiveDataProvider(
             [
                 'query' => Todo::find()->where(['user_id' => $user_id])
             ]
-        );*/
-        return  Todo::find()->where(['user_id' => $user_id])->asArray()->all();
+        );
+        #return  Todo::find()->where(['user_id' => $user_id])->asArray()->all();
     }
 
 }

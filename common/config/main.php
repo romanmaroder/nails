@@ -20,6 +20,9 @@ return [
         'calendar' => [
             'class' => 'common\modules\calendar\Module',
         ],
+        'todo' => [
+            'class' => 'common\modules\todo\Module',
+        ],
     ],
     'components' => [
         'formatter' => [
@@ -47,6 +50,7 @@ return [
             'appendTimestamp' => true,
             #'linkAssets' => true,
             'bundles' => [
+                'yii\bootstrap\BootstrapPluginAsset' => false,
                 'yii\bootstrap\BootstrapAsset' => false,
             ],
         ],

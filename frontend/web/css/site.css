@@ -31,6 +31,11 @@ body {
     position:relative;
     z-index:1;
 }
+.dark-mode .footer {
+    color:rgba(255,255,255,.75);
+    background-color: #343a40;
+    border-color: #4b545c;
+}
 
 .jumbotron {
     text-align: center;

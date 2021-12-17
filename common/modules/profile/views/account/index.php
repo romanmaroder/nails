@@ -7,6 +7,7 @@ use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\bootstrap4\Tabs;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 //use hail812\adminlte3\assets\FontAwesomeAsset;
 //use common\assets\AdminLteAsset;
@@ -40,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <!-- Main content -->
-
+<section class="content">
 <div class="container-fluid">
     <div class="row justify-content-end">
         <div class="col-md-3">
@@ -162,6 +163,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                     <div class="tab-content">
+                        <?php /*Pjax::begin(['options'=>['class'=>'tab-content']]); */?>
                         <?php
                         echo Tabs::widget(
                             [
@@ -238,19 +240,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'label' => 'Статьи',
                                         'url' => Url::toRoute(['/blog/post/index']),
                                         'options' => ['id' => 'post'],
+                                        'headerOptions' => [
+                                            'data-pjax'=>'0'
+            ],
                                         'visible' => Yii::$app->user->can('perm_create-post'),
                                     ],
                                     [
                                         'label' => 'Заметки',
-                                        'content' => $this->render(
-                                            '_todo-tab',
-                                            [
-                                                'modelTodo' => $modelTodo,
-                                                'eventsTodoList'=>$eventsTodoList
-                                            ]
-                                        ),
+                                        /*'content' => $this->renderAjax(
+                                            '@app/modules/todo/views/todo/_form'
+                                        ),*/
                                         'options' => ['id' => 'todo'],
-                                        'visible' => true,
+                                        'visible' => false,
                                         'active' => true,
                                     ],
 
@@ -258,6 +259,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         );
                         ?>
+                        <?php /*Pjax::end(); */?>
                     </div>
                 </div>
                 <!-- /.tab-content -->
@@ -268,7 +270,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <!-- /.col -->
 </div>
-
+</section>
 <!-- /.content -->
 
 
