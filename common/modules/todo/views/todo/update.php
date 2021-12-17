@@ -4,6 +4,8 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Todo */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
 
 $this->title = 'Update Todo: ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Todos', 'url' => ['index']];
@@ -16,6 +18,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'dataProvider' => $dataProvider,
     ]) ?>
 
 </div>

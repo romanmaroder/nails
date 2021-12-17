@@ -23,20 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
 #Регистрация переменных для использования в js коде
 
 Yii::$app->view->registerJs(
-    "app=".Json::encode(Yii::$app->id)."; basePath=".Json::encode(Yii::$app->request->baseUrl).";",
+    "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
     View::POS_HEAD
 ); ?>
 <section class="content">
     <div class="todo-index">
-
-        <!--<h1><? /*= Html::encode($this->title) */ ?></h1>-->
-
-        <!--<p>
-        <? /*= Html::a('Create Todo', ['create'], ['class' => 'btn btn-success']) */ ?>
-    </p>-->
-
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
         <!-- Render create form -->
         <?= $this->render(
@@ -50,29 +41,12 @@ Yii::$app->view->registerJs(
 
         <?php Pjax::begin(['id' => 'todo-list', 'options' => ['class' => 'row']]); ?>
 
-        <? /*= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'user_id',
-            'title',
-            'status',
-            'created_at',
-            //'updated_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); */ ?>
         <div class="col-12">
             <?php $form = ActiveForm::begin(
                 [
                     'options' => ['data-pjax' => true],
-                    'id'=>'index-todo-form',
+                    'id' => 'index-todo-form',
                     'method' => 'post',
-                    #'action'=> Url::base().'/todo/todo/',
                     'fieldConfig' => [
                         'options' => [
                             'tag' => false,
@@ -91,7 +65,7 @@ Yii::$app->view->registerJs(
                     ],
                     'layout' => "{items}",
                     'itemOptions' => ['tag' => 'li'],
-                    'itemView' => function ($model, $key, $index) use($form)  {
+                    'itemView' => function ($model, $key, $index) use ($form) {
                         return "<!-- drag handle -->
                                             <span class='handle ui-sortable-handle'>
                                               <i class='fas fa-ellipsis-v'></i>
@@ -99,12 +73,15 @@ Yii::$app->view->registerJs(
                                             </span>
                                             <!-- checkbox -->
                                             <div class='icheck-primary d-inline ml-2'>
+                                           
+                                            
                                            {$form->field($model, 'status')->checkbox(
                                                                             [
                                                                             'class' => '',
                                                                             'id' => $model->id,
-                                                                            'uncheck' => null,
+                                                                            'uncheck' => $model->status ? '0' : null,
                                                                             'checked' => $model->status ? true : false,
+                                                                            'value'=>$model->status ? '0' : '1',
                                                                             'template' => '{input}{label}'
                                                                             ]
                                                     )->label(" ", ['class' => ''])}
@@ -115,7 +92,7 @@ Yii::$app->view->registerJs(
                                             <!-- Emphasis label -->
                                             <small class='badge badge-danger'>
                                             <i class='far fa-clock'></i>
-                                            {" . Yii::$app->formatter->asRelativeTime($model->created_at) . "}</small>
+                                            " . Yii::$app->formatter->asRelativeTime($model->created_at) . "</small>
                                             <!-- General tools such as edit or delete-->
                                             <div class='tools'>
                                                 <i class='fas fa-edit'></i>
@@ -144,26 +121,32 @@ Yii::$app->view->registerJs(
 
     </div>
     </div>
+    </div>
 </section>
 <?php
 
 $this->registerJs(
-    '$("document").ready(function(){ 
-		/*$("#new_todo").on("pjax:end", function() {
-			$.pjax.reload({container:"#todo-list"});  //Reload GridView
-		});
-		$("#pager").on("pjax:end", function() {
-			$.pjax.reload({container:"#todo-list"});  //Reload GridView
-		});*/
-		/* $("input:checkbox:checked").each(function(){
-	            console.log($(this).attr("id"));
-        });*/
-        
-       //console.log($(".card").find("input:checkbox"));
-        
-       
-   
-		
-    });'
-);
+    "
+		   $('.card').on('click',' input:checkbox', function(e){
+                         let form = $('.card').find('#index-todo-form');
+                         let id = $(this).attr('id')
+                         console.log( $(this) )  
+                           $.ajax({
+                                url: basePath + '/todo/todo/' + 'update?id=' + id,
+                                method: form.attr('method'),
+                                data: {'Todo[status]': $(this).val()},
+                                success: function(data){
+                                
+                                   /* $(document).on(' pjax:success', function(event) {
+                                                console.log(data)
+                                              $.pjax.reload({container:'#todo-list'}); 
+                                            });*/
+                                    }
+                            });
+                           
+               })"
+    ,yii\web\View::POS_LOAD);
 ?>
+
+<
+

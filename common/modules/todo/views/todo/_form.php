@@ -15,34 +15,19 @@ use yii\widgets\Pjax;
 <?php
 
 $this->registerJs(
-    '$("document").ready(function(){ 
+    '
+    
 		$("#new_todo").on("pjax:end", function() {
-			$.pjax.reload({container:"#todo-list"});  //Reload GridView
-			init();
+			$.pjax.reload({container:"#todo-list"});  //Reload ListdView
+			
+		});
+		$("#pager").on("pjax:success", function() {
+			 $.pjax.reload({container:"#todo-list"}); 
+			
 		});
 		
-		
-		function init(){
-		 $(".card").find("input:checkbox").click(function(){
-                 let form = $(".card").find("#index-todo-form");
-                 
-            if ($(this).is(":checked")) {
-              console.log($(".card").find("input:checkbox"));
-              console.log($(this));
-                    
-                   $.ajax({
-                        url: basePath + "/todo/todo/" + "update?id=" + $(this).attr("id"),
-                        method: form.attr("method"),
-                        data: form.serialize(),
-                        success: function(data){
-		                   
-                        }
-                    });
-                }
-        })
-        }
-    });'
-);
+		'
+    ,yii\web\View::POS_LOAD);
 ?>
 <div class="card">
     <div class="card-header ui-sortable-handle" style="cursor: move;">
@@ -52,6 +37,7 @@ $this->registerJs(
         </h3>
 
         <div class="card-tools">
+            <?php Pjax::begin(['id' => 'pager', 'options' => ['class' => '']]); ?>
             <?=
                 ListView::widget(
                 [
@@ -80,6 +66,7 @@ $this->registerJs(
                 ]
             );
             ?>
+            <?php Pjax::end(); ?>
         </div>
 
     </div>
@@ -115,7 +102,7 @@ $this->registerJs(
     <div class="col-12 col-sm-3 text-right">
         <?= Html::submitButton('<i class="fas fa-plus"></i> Добавить', ['class' => 'btn btn btn-primary','form' => 'todo-form']) ?>
     </div>
-            <?php  Pjax::end();?>
+<?php  Pjax::end();?>
 
 
 

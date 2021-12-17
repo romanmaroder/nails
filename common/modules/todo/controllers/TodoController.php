@@ -94,25 +94,28 @@ class TodoController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new TodoSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if (Yii::$app->request->isAjax) {
-            if($model->load(Yii::$app->request->post()) &&  $model->save()){
-                $searchModel = new TodoSearch();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-                return $this->render('index', [
+            if($model->load(Yii::$app->request->post()) &&  $model->save()){
+
+                /*return $this->render('index', [
                     'model' => $model,
                     'dataProvider' => $dataProvider,
-                ]);
+                ]);*/
+                return true;
             }
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id,'dataProvider' => $dataProvider]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
