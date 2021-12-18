@@ -919,3 +919,24 @@ a.desc:after {
 
     }
 }
+
+
+.todo-list>li .text input[type="text"] {
+    border: none;
+    padding-left: 10px;
+}
+
+.todo-list>li .no-input-style{
+    border:none;
+    background:none;
+    outline:none;
+    padding:0;
+    pointer-events:none;
+}
+
+.todo-list>li .text input[type="text"]:focus {
+    border-radius: 0.25rem;
+    border: none;
+    padding-left: 10px;
+    background: #ecf0f1;
+}

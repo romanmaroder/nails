@@ -89,15 +89,22 @@ Yii::$app->view->registerJs(
                                           
                                             </div>
                                             <!-- todo text -->
-                                            <span class='text'>{$model->title}</span>
+                                            <span class='text'>
+                                            {$form->field($model, 'title')->textInput(
+                                                                            [
+                                                                            'class' => 'text no-input-style',
+                                                                            'id' => $model->id,
+                                                                            ]
+                                                    )->label(false)}
+                                            </span>
                                             <!-- Emphasis label -->
                                             <small class='badge badge-danger'>
-                                            <i class='far fa-clock'></i>
+                                            <i class='far fa-clock' ></i>
                                             " . Yii::$app->formatter->asRelativeTime($model->created_at) . "</small>
                                             <!-- General tools such as edit or delete-->
                                             <div class='tools'>
-                                                <i class='fas fa-edit'></i>
-                                                <i class='fas fa-trash'></i>
+                                                <i class='fas fa-edit' data-id=' $model->id'></i>
+                                                <i class='fas fa-trash' data-id=' $model->id'></i>
                                             </div>";
 
                         // or just do some echo
@@ -132,7 +139,7 @@ $this->registerJs(
 		   $('.card').on('click',' input:checkbox', function(e){
                          let form = $('.card').find('#index-todo-form');
                          let id = $(this).attr('id')
-                         console.log( $(this) )  
+                        
                            $.ajax({
                                 url: basePath + '/todo/todo/' + 'update?id=' + id,
                                 method: form.attr('method'),
@@ -141,12 +148,56 @@ $this->registerJs(
                                     $.pjax.reload({container:'#todo-list'});
                                     }
                             });
-               })
+               });
                
+               $('.card').on('click','.fa-trash',function(){
+                        let form = $('.card').find('#index-todo-form');
+                        
+                       let dataId = $(this).attr('data-id')
+                            $.ajax({
+                                url: basePath + '/todo/todo/' + 'delete?id=' + dataId,
+                                method: form.attr('method'),
+                                success: function(data){
+                                    $.pjax.reload({container:'#todo-list'});
+                                    }
+                            });
+                       });
+                       
+                $('.card').on('click','.fa-edit',function(e){
+                       let attr = $(this).attr('data-id');
+                       
+                       let input =$('.card').find( 'input[type=text][id='+ attr +'] ');
+                       
+                       input.removeClass('no-input-style');
+                       
+                       let id = input.attr('id');
+                       let title = input.attr('value');
+                       
+                    
+                       
+                                   
+                       input.blur( function() {
+                         $('input:not(.changed)').attr('disabled', 'disabled');
+                           let form = $('.card').find('#index-todo-form');
+                           $.ajax({
+                                url: basePath + '/todo/todo/' + 'update?id=' + id ,
+                                method: form.attr('method'),
+                                data:form.serialize(),
+                                success: function(data){
+                                    $.pjax.reload({container:'#todo-list'});
+                                    }
+                            });
+                            
+                            
+                       });
+                       
+                       
+                
+                });
               
                "
-    ,yii\web\View::POS_LOAD);
- ?>
+    , yii\web\View::POS_LOAD);
+?>
 
 
 

@@ -101,7 +101,10 @@ class TodoController extends Controller
 
             if($model->load(Yii::$app->request->post()) &&  $model->save()){
 
-                return true;
+                return $this->render('update', [
+                    'model' => $model,
+                    'dataProvider' => $dataProvider,
+                ]);
             }
         }
 
@@ -124,15 +127,17 @@ class TodoController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+
+        $this->findModel($id)->delete();
+        return Yii::$app->getResponse()->redirect(['todo/todo/index'], 302, false);
+        #return $this->redirect(['index']);
     }
 
     /**
      * Finds the Todo model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param int $id
      * @return Todo the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
