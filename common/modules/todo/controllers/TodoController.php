@@ -101,10 +101,6 @@ class TodoController extends Controller
 
             if($model->load(Yii::$app->request->post()) &&  $model->save()){
 
-                /*return $this->render('index', [
-                    'model' => $model,
-                    'dataProvider' => $dataProvider,
-                ]);*/
                 return true;
             }
         }

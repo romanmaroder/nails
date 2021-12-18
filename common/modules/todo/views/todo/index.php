@@ -61,7 +61,7 @@ Yii::$app->view->registerJs(
                         'tag' => 'ul',
                         'class' => 'todo-list ui-sortable col-12',
                         'data-widget' => 'todo-list',
-                        'id' => ''
+                        'id' => 'my-todo-list'
                     ],
                     'layout' => "{items}",
                     'itemOptions' => ['tag' => 'li'],
@@ -79,7 +79,8 @@ Yii::$app->view->registerJs(
                                                                             [
                                                                             'class' => '',
                                                                             'id' => $model->id,
-                                                                            'uncheck' => $model->status ? '0' : null,
+                                                                            #'uncheck' => $model->status ? '0' : null,
+                                                                            'uncheck' => null,
                                                                             'checked' => $model->status ? true : false,
                                                                             'value'=>$model->status ? '0' : '1',
                                                                             'template' => '{input}{label}'
@@ -123,6 +124,7 @@ Yii::$app->view->registerJs(
     </div>
     </div>
 </section>
+
 <?php
 
 $this->registerJs(
@@ -136,17 +138,16 @@ $this->registerJs(
                                 method: form.attr('method'),
                                 data: {'Todo[status]': $(this).val()},
                                 success: function(data){
-                                
-                                   /* $(document).on(' pjax:success', function(event) {
-                                                console.log(data)
-                                              $.pjax.reload({container:'#todo-list'}); 
-                                            });*/
+                                    $.pjax.reload({container:'#todo-list'});
                                     }
                             });
-                           
-               })"
+               })
+               
+              
+               "
     ,yii\web\View::POS_LOAD);
-?>
+ ?>
 
-<
+
+
 

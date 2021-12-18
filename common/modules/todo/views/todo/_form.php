@@ -18,13 +18,15 @@ $this->registerJs(
     '
     
 		$("#new_todo").on("pjax:end", function() {
-			$.pjax.reload({container:"#todo-list"});  //Reload ListdView
-			
+			$.pjax.reload({container:"#todo-list"});  
 		});
-		$("#pager").on("pjax:success", function() {
+		$("#pager").on("pjax:end", function() {
 			 $.pjax.reload({container:"#todo-list"}); 
 			
 		});
+		$(document).on("ready pjax:end", function(event) {
+                $(event.target).TodoList();
+            })
 		
 		'
     ,yii\web\View::POS_LOAD);
@@ -37,7 +39,7 @@ $this->registerJs(
         </h3>
 
         <div class="card-tools">
-            <?php Pjax::begin(['id' => 'pager', 'options' => ['class' => '']]); ?>
+            <?php Pjax::begin(['id' => 'pager','enableReplaceState'=>true, 'options' => ['class' => '']]); ?>
             <?=
                 ListView::widget(
                 [
