@@ -92,15 +92,4 @@ class Todo extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-
-    public static function getEventsTodo($user_id)
-    {
-        return new ActiveDataProvider(
-            [
-                'query' => Todo::find()->where(['user_id' => $user_id])
-            ]
-        );
-        #return  Todo::find()->where(['user_id' => $user_id])->asArray()->all();
-    }
-
 }

@@ -42,7 +42,7 @@ class AccountController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['login', 'logout', 'index'],
+                //'only' => ['login', 'logout', 'index'],
                 'rules' => [
                     [
                         'allow' => true,

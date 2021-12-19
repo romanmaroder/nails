@@ -940,3 +940,6 @@ a.desc:after {
     padding-left: 10px;
     background: #ecf0f1;
 }
+.dark-mode  .todo-list>li .no-input-style{
+    color:#fff;
+}

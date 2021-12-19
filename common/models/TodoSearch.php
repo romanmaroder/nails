@@ -40,7 +40,7 @@ class TodoSearch extends Todo
      */
     public function search($params)
     {
-        $query = Todo::find();
+        $query = Todo::find()->where(['user_id' => \Yii::$app->user->getId()]);
 
         // add conditions that should always apply here
 

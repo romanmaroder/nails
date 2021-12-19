@@ -5,6 +5,7 @@ namespace common\modules\todo\controllers;
 use Yii;
 use common\models\Todo;
 use common\models\TodoSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -17,13 +18,27 @@ class TodoController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST','GET'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['login'],
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -105,6 +120,7 @@ class TodoController extends Controller
                     'model' => $model,
                     'dataProvider' => $dataProvider,
                 ]);
+
             }
         }
 
@@ -130,8 +146,7 @@ class TodoController extends Controller
 
 
         $this->findModel($id)->delete();
-        return Yii::$app->getResponse()->redirect(['todo/todo/index'], 302, false);
-        #return $this->redirect(['index']);
+        return Yii::$app->getResponse()->redirect(['todo/todo/index'], 302, `false`);
     }
 
     /**

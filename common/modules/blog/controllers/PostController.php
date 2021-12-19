@@ -10,6 +10,7 @@ use common\modules\blog\models\AddPost;
 use Yii;
 use common\models\Post;
 use common\models\PostSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -37,6 +38,21 @@ class PostController extends Controller
                 'class'     => DeleteCacheBehavior::class,
                 'cache_key' => ['events_list'],
                 'actions'   => ['create', 'update', 'delete'],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                //'only'  => ['login', 'logout', 'index'],
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions' => ['login'],
+                        'roles'   => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
             ],
 
         ];

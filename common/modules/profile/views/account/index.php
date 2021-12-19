@@ -163,7 +163,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                     <div class="tab-content">
-                        <?php /*Pjax::begin(['options'=>['class'=>'tab-content']]); */?>
                         <?php
                         echo Tabs::widget(
                             [
@@ -242,24 +241,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'options' => ['id' => 'post'],
                                         'headerOptions' => [
                                             'data-pjax'=>'0'
-            ],
+                                    ],
                                         'visible' => Yii::$app->user->can('perm_create-post'),
                                     ],
                                     [
                                         'label' => 'Заметки',
-                                        /*'content' => $this->renderAjax(
-                                            '@app/modules/todo/views/todo/_form'
-                                        ),*/
+                                        'url' => Url::toRoute(['/todo/todo/index']),
                                         'options' => ['id' => 'todo'],
-                                        'visible' => false,
-                                        'active' => true,
+                                        'visible' => Yii::$app->id === 'app-frontend' ?? false,
                                     ],
-
                                 ]
                             ]
                         );
                         ?>
-                        <?php /*Pjax::end(); */?>
                     </div>
                 </div>
                 <!-- /.tab-content -->

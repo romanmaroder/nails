@@ -1,8 +1,9 @@
 <?php
 
 use common\modules\todo\controllers\TodoController;
+use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
 
@@ -13,24 +14,14 @@ use yii\widgets\Pjax;
 ?>
 
 <?php
+//Подключение скриптов для отправки, редактирования, удаления записей
+$this->registerJsFile(
+    '@web/js/todo.js',
+    ['depends' => [\yii\web\JqueryAsset::class]]
+);
 
-$this->registerJs(
-    '
-    
-		$("#new_todo").on("pjax:end", function() {
-			$.pjax.reload({container:"#todo-list"});  
-		});
-		$("#pager").on("pjax:end", function() {
-			 $.pjax.reload({container:"#todo-list"}); 
-			
-		});
-		$(document).on("ready pjax:end", function(event) {
-                $(event.target).TodoList();
-            })
-		
-		'
-    ,yii\web\View::POS_LOAD);
-?>
+
+;?>
 <div class="card">
     <div class="card-header ui-sortable-handle" style="cursor: move;">
         <h3 class="card-title">
@@ -39,9 +30,15 @@ $this->registerJs(
         </h3>
 
         <div class="card-tools">
-            <?php Pjax::begin(['id' => 'pager','enableReplaceState'=>true, 'options' => ['class' => '']]); ?>
-            <?=
-                ListView::widget(
+                <?php Pjax::begin(['id' => 'pager',
+                    'enableReplaceState'=>true,
+                    'options' => ['class' => ''],
+                    'enablePushState' => false, // to disable push state
+                    //'enableReplaceState' => false, // to disable replace state,
+                    'timeout'=> 1000,
+                    'clientOptions' => ['method' => 'POST']]); ?>
+                <!--Пагинация-->
+            <?= ListView::widget(
                 [
                     'dataProvider' => $dataProvider,
                     'options' => [
@@ -63,7 +60,12 @@ $this->registerJs(
                             'class' => 'page-item'
                         ],
                         'disabledListItemSubTagOptions' => ['tag' => 'a', 'class' => 'page-link'],
-                        'linkOptions' => ['class' => 'page-link'],
+                        'linkOptions' => ['class' => 'page-link','data-pjax'=>1],
+                    ],
+                    'emptyText' => '',
+                    'emptyTextOptions' => [
+                        'tag' => 'div',
+                        'class' => 'col-12 col-lg-6 mb-3 text-info '
                     ],
                 ]
             );
@@ -76,8 +78,8 @@ $this->registerJs(
 
     <div class="card-body">
 
-<?php  Pjax::begin(['id' => 'new_todo','options' => ['class'=>'row mb-3']])?>
-        <div class="col-12 col-sm-9 mb-2 mb-sm-0">
+<?php  Pjax::begin(['id' => 'new_todo', 'enablePushState'=>false,'options' => ['class'=>'row mb-3'],'clientOptions' => ['method' => 'POST']])?>
+        <div class="col-12 col-sm-10 mb-2 mb-sm-0">
     <?php $form = ActiveForm::begin( ['options' => ['data-pjax' => true ],
                                          'id'=>'todo-form',
                                          'method' => 'post',
@@ -97,11 +99,11 @@ $this->registerJs(
                                                      'placeholder' => 'Добавить заметку',
                                                  ])->label(false) ?>
 
-    <?= $form->field($model, 'status')->checkbox(['class' => 'd-none', 'label' => null, 'uncheckValue' =>  0]) ?>
+    <?= $form->field($model, 'status')->checkbox(['class' => 'd-none', 'uncheckValue' =>  0])->label(false) ?>
             <?php ActiveForm::end(); ?>
 
         </div>
-    <div class="col-12 col-sm-3 text-right">
+    <div class="col-12 col-sm-2 text-right">
         <?= Html::submitButton('<i class="fas fa-plus"></i> Добавить', ['class' => 'btn btn btn-primary','form' => 'todo-form']) ?>
     </div>
 <?php  Pjax::end();?>
