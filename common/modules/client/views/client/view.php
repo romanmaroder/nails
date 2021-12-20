@@ -37,7 +37,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
 									<ul class="ml-4 mb-0 fa-ul ">
 										<li class="small mb-3">
 											<span class="fa-li"><i class="fas fa-lg fa-building"></i></span>
-                                            <?php echo $model->address ? $model->address : 'бомж';?>
+                                            <?php echo $model->address ? $model->address : 'не указан';?>
 										</li>
 										<li class="small mb-3">
 											<span class="fa-li"><i class="fas fa-lg fa-phone"></i></span>

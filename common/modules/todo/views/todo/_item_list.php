@@ -56,6 +56,7 @@ $form = ActiveForm::begin(
         ]
     )->label(false); ?>
 </span>
+        <span class="text text-title"  id ="<?=$model->id?>"><?= $model->title?></span>
     <!-- Emphasis label -->
     <small class='badge badge-danger'>
         <i class='far fa-clock'></i>

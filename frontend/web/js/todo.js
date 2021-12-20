@@ -17,16 +17,19 @@ $(document).on("ready pjax:end", function(event) {
 // Loading spinner (AdminLte3)
 $('#overlay').hide();
 
+// Declaring constants
+const card = $('.card');
+
 // Get the form
 let getForm = function(id) {
-    return $('.card').find( 'form[id='+ id +'] ');
-}
 
+    return card.find( 'form[id='+ id +'] ');
+}
 
 // Request to change the status when selecting a checkbox
 
 let toggleCheckbox = function(){
-    $('.card').on('click',' input:checkbox', function(e){
+    card.on('click',' input:checkbox', function(e){
 
         let id = $(this).attr('id')
         let name = $(this).attr('name')
@@ -44,12 +47,13 @@ let toggleCheckbox = function(){
         });
     });
 }
+
 toggleCheckbox();
 
 // Request to delete a record by clicking on an icon
 
 let deleteItemTodo = function (){
-    $('.card').on('click','.fa-trash',function(){
+    card.on('click','.fa-trash',function(){
 
         let id = $(this).attr('data-id');
 
@@ -72,14 +76,16 @@ deleteItemTodo();
 // Request to edit an entry by clicking on the icon
 
 let updateItemTodo = function () {
-    $('.card').on('click','.fa-edit',function(e){
+    card.on('click','.fa-edit',function(e){
 
         let id = $(this).attr('data-id');
 
-        let input = $('.card').find('input[type=text][id='+ id +'] ');
+        let input = card.find('input[type=text][id='+ id +'] ');
+        let textBlock = card.find('span[id='+ id +']');
 
         if( input.hasClass('no-input-style') ){
             input.removeClass('no-input-style');
+            textBlock.css({'display':'none'})
             input.focus();
         }else {
             input.addClass('no-input-style');

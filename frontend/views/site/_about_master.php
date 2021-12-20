@@ -27,7 +27,7 @@ use frontend\controllers\SiteController;
         </div>
         <?php
         echo Html::a(
-            '<img class="img-circle" src="'.$model->getPicture().'" alt="User Avatar">',
+            '<img class="img-circle" src="'.$model->getPicture().'" alt="User Avatar" title="User Avatar">',
             ['/site/view', 'id' => $model->id],
             ['class' => 'widget-user-image']
         ); ?>

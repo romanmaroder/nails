@@ -3,6 +3,9 @@
 use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -262,11 +265,19 @@ $this->params['breadcrumbs'][] = $this->title;
 	<!-- /.content -->
 
 <?php
+#Регистрация переменных для использования в js коде
+
+Yii::$app->view->registerJs(
+    "create=".Json::encode(Url::to(['/client/client/create'])).";
+     ",
+    View::POS_HEAD
+); ?>
+
+<?php
 
 if (Yii::$app->id == 'app-backend') {
     $js = <<< JS
  $(function () {
-     
    $("#example2").DataTable({
       "responsive": true,
       "lengthChange":true,
@@ -280,7 +291,7 @@ if (Yii::$app->id == 'app-backend') {
 				"className":"btn btn-success",
 				"tag":"a",
 				"attr":{
-				"href":"/admin/client/client/create"
+				"href":create
 				},
 				"action": function ( e, dt, node, config ) {
 				  $(location).attr('href',config.attr.href);

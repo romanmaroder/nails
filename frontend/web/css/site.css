@@ -162,9 +162,24 @@ a.desc:after {
     margin-bottom: 5px;
 }
 
-/*.event-render {*/
-/*    margin-bottom: 3px;*/
-/*}*/
+.free-time{
+    animation-name: free;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+@keyframes free {
+    0% {
+        color: #ffffff;
+    }
+    50% {
+        color:#ecf0f1;
+    }
+    100% {
+        color: #3d3d3d;
+    }
+}
 
 @media screen and (min-width: 540px) {
     .fc-header-toolbar {
@@ -932,6 +947,7 @@ a.desc:after {
     outline:none;
     padding:0;
     pointer-events:none;
+    display:none;
 }
 
 .todo-list>li .text input[type="text"]:focus {
@@ -942,4 +958,7 @@ a.desc:after {
 }
 .dark-mode  .todo-list>li .no-input-style{
     color:#fff;
+}
+.dark-mode .popover-header {
+    color:#000000;
 }

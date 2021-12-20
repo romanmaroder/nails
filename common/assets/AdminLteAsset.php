@@ -17,7 +17,6 @@ class AdminLteAsset extends AssetBundle
 
     public $js = [
         'js/adminlte.min.js',
-        'js/yii.confirm.overrides.js'
 
     ];
 

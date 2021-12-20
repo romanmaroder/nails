@@ -5,6 +5,7 @@
 use common\models\User;
 use hail812\adminlte\widgets\Menu;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -30,8 +31,8 @@ use yii\helpers\Html;
                                                 Image']) ;?>
 			</div>
 			<div class="info">
-                <?php echo Html::a( $user->username . ' (<span>'. Yii::$app->user->identity->role->description
-                .'</span>)',['/profile/account'],['class'=>'d-block']) ;?>
+                <?php echo Html::a($user->username . ' (<span>'. Yii::$app->user->identity->role->description
+                .'</span>)',Url::to(['/profile/account/index']), ['class'=>'d-block']) ;?>
 			</div>
 		</div>
 

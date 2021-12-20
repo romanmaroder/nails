@@ -1,18 +1,18 @@
 <?php
 
 $params = array_merge(
-    require __DIR__.'/../../common/config/params.php',
-    require __DIR__.'/../../common/config/params-local.php',
-    require __DIR__.'/params.php',
-    require __DIR__.'/params-local.php'
+    require __DIR__ . '/../../common/config/params.php',
+    require __DIR__ . '/../../common/config/params-local.php',
+    require __DIR__ . '/params.php',
+    require __DIR__ . '/params-local.php'
 );
 
 return [
-    'id'                  => 'app-backend',
-    'basePath'            => dirname(__DIR__),
+    'id' => 'app-backend',
+    'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap'           => ['log'],
-    'modules'             => [
+    'bootstrap' => ['log'],
+    'modules' => [
         'employees' => [
             'class' => 'backend\modules\employees\Module',
         ],
@@ -23,27 +23,27 @@ return [
             'class' => 'backend\modules\viber\Module',
         ],
     ],
-    'name'                => 'NAILS-ADMIN',
-    'components'          => [
-        'request'      => [
+    'name' => 'NAILS-ADMIN',
+    'components' => [
+        'request' => [
             'csrfParam' => '_csrf-backend',
-            'baseUrl'   => '/admin',
+            'baseUrl' => '/admin',
         ],
-        'user'         => [
-            'identityClass'   => 'common\models\User',
+        'user' => [
+            'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie'  => ['name' => '_identity-backend', 'httpOnly' => true],
+            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
 
         ],
-        'session'      => [
+        'session' => [
             // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
         ],
-        'log'          => [
+        'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets'    => [
+            'targets' => [
                 [
-                    'class'  => 'yii\log\FileTarget',
+                    'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -51,27 +51,35 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'urlManager'   => [
+        'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName'  => false,
-            'rules'           => [
-                ''                => 'site/index',
-                'login'           => 'site/login',
-                'event'           => '/calendar/event/index',
-                'master'          => 'employees/master/index',
-                'client'          => 'client/client/index',
-                'client/new'      => 'client/client/create',
+            'showScriptName' => false,
+            'rules' => [
+                '' => 'site/index',
+                //'login'           => 'site/login',
+                'event' => '/calendar/event/index',
+                'master' => 'employees/master/index',
+                'client' => 'client/client/index',
+                'client/new' => 'client/client/create',
                 'client/<id:\d+>' => '/client/client/view',
                 'client/update/<id:\d+>' => '/client/client/update',
                 'client/delete/<id:\d+>' => '/client/client/delete',
-                'category'        => 'category/index',
-                'category/new'    => 'category/create',
-                'post'           => '/blog/post/index',
-                'post/new'        => '/blog/post/create',
-                'post/<id:\d+>'   => '/blog/post/view',
-                #'todo'           => '/todo/default/index',
+                'category' => 'category/index',
+                'category/new' => 'category/create',
+                'post' => '/blog/post/index',
+                'post/new' => '/blog/post/create',
+                'post/<id:\d+>' => '/blog/post/view',
+                'todo' => '/todo/todo/index',
+                'account' => '/profile/account/index',
+                '<action:\w+ >' => 'site/<action>',
+                [
+                    'pattern' => '<action:about|login>',
+                    'route' => 'site/<action>',
+                    //'suffix' => '.html',
+                ],
+
             ],
         ],
     ],
-    'params'              => $params,
+    'params' => $params,
 ];

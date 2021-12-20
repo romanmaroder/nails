@@ -45,7 +45,7 @@ class PostController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['login'],
+                        'actions' => ['login','post'],
                         'roles'   => ['?'],
                     ],
                     [
@@ -348,8 +348,8 @@ class PostController extends Controller
      */
     protected function setMeta($title = null, $keywords = null, $description = null)
     {
-        $this->view->title = $title;
+        $this->view->title = mb_substr($title,0,60);
         $this->view->registerMetaTag(['name' => 'keywords', 'content' => strip_tags("$keywords")]);
-        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags("$description")]);
+        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags(mb_substr($description,0,160))]);
     }
 }
