@@ -122,6 +122,7 @@ class PostController extends Controller
             $post->subtitle,
             $post->description
         );
+
         if ($post == null) {
             throw new NotFoundHttpException('Запрошенная страница не существует.');
         }
@@ -180,6 +181,8 @@ class PostController extends Controller
             return [
                 'success' => true,
                 'uri'     => Yii::$app->storage->getFile($model->image),
+                'alt'=>'Post image',
+                'title'=>'Post image',
                 'message' => 'Фото загружено'
             ];
         }
