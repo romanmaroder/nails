@@ -16,10 +16,6 @@ use yii\base\InvalidConfigException;
  */
 class SmsSender extends Component implements SmsSenderInterface
 {
-
-
-
-
     protected const MORNING = "Доброе утро".PHP_EOL;
     protected const DAY = "Добрый день".PHP_EOL;
     protected const EVENING = "Добрый вечер".PHP_EOL;
@@ -53,6 +49,7 @@ class SmsSender extends Component implements SmsSenderInterface
     /**
      * Checking the time of day for the greeting
      * @return string
+     * @throws InvalidConfigException
      */
    final public function checkTimeOfDay(): string
     {

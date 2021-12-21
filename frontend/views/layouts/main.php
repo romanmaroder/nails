@@ -4,12 +4,15 @@
 
 /* @var $content string */
 
+use common\widgets\metric\Counter;
 use yii\helpers\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 use yii\bootstrap4\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
+use yii\helpers\Url;
+
 AppAsset::register($this);
 ?>
 <?php
@@ -20,11 +23,9 @@ $this->beginPage() ?>
 	<meta charset="<?= Yii::$app->charset ?>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <?php
-    $this->registerCsrfMetaTags() ?>
+    <?php $this->registerCsrfMetaTags() ?>
 	<title><?= Html::encode($this->title) ?></title>
-    <?php
-    $this->head() ?>
+    <?php $this->head() ?>
 </head>
 <body class="<?php if(Yii::$app->request->cookies->has('theme')){echo Yii::$app->request->cookies->getValue('theme','');};?>">
 <?php
@@ -116,6 +117,9 @@ $this->beginBody() ?>
 		<!--<p class="pull-right"><?/*= Yii::powered() */?></p>-->
 	</div>
 </footer>
+<!-- Metrika counter -->
+<?php echo Counter::widget();?>
+<!-- /Yandex.Metrika counter -->
 
 <?php
 $this->endBody() ?>

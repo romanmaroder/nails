@@ -123,6 +123,7 @@ class PostController extends Controller
             $post->description
         );
 
+
         if ($post == null) {
             throw new NotFoundHttpException('Запрошенная страница не существует.');
         }
@@ -353,6 +354,6 @@ class PostController extends Controller
     {
         $this->view->title = mb_substr($title,0,60);
         $this->view->registerMetaTag(['name' => 'keywords', 'content' => strip_tags("$keywords")]);
-        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags(mb_substr($description,0,160))]);
+        $this->view->registerMetaTag(['name' => 'description', 'content' => mb_substr(strip_tags($description),0,160)]);
     }
 }
