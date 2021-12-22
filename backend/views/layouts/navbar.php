@@ -71,6 +71,15 @@ use yii\widgets\Menu;
                     'url' => ['/blog/post/index'],
                 ],
                 [
+                    'label' => '<i class="fa fa-list-ul" aria-hidden="true"></i>',
+                    'options' => ['class' => 'd-none d-sm-inline-block',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'tooltip',
+                        'title' =>'Заметки'
+                    ],
+                    'url' => ['/todo/todo/index'],
+                ],
+                [
                     'label' => 'Меню',
                     'url' => '#',
                     'options' => ['class' => 'nav-item dropdown d-sm-none'],
@@ -98,6 +107,11 @@ use yii\widgets\Menu;
                         [
                             'label' => 'Блог',
                             'url' => ['/blog/post/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
+                            'label' => 'Заметки',
+                            'url' => ['/todo/todo/index'],
                             'options' => ['class' => 'nav-item'],
                         ],
                         [

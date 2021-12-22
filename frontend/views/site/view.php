@@ -28,7 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
 							<img class="profile-user-img img-fluid img-circle"
 								 src="<?php
                                  echo $master->user->getPicture(); ?>"
-								 alt="User profile picture">
+								 alt="User profile picture"
+                                 title="User profile picture">
 						</div>
 
 						<h3 class="profile-username text-center"><?php

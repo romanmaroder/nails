@@ -41,6 +41,13 @@ body.blank .wrap > div {
     padding-top: 20px;
 }
 
+.dark-mode .footer {
+    color: rgba(255, 255, 255, .75);
+    background-color: #343a40;
+    border-color: #4b545c;
+}
+
+
 .jumbotron {
     text-align: center;
     background-color: transparent;
@@ -163,6 +170,25 @@ a.desc:after {
     height: auto;
 }
 
+.free-time{
+    animation-name: free;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+@keyframes free {
+    0% {
+        color: #ffffff;
+    }
+    50% {
+        color:#ecf0f1;
+    }
+    100% {
+        color: #3d3d3d;
+    }
+}
+
 .fc-header-toolbar {
     display: flex;
     flex-direction: column;
@@ -171,8 +197,9 @@ a.desc:after {
 .fc-header-toolbar .fc-left {
     margin-bottom: 5px;
 }
+
 .fc-toolbar .fc-right {
-    order:1;
+    order: 1;
 }
 
 @media screen and (min-width: 540px) {
@@ -189,9 +216,11 @@ a.desc:after {
     .event-render {
         padding: 2.5px;
     }
-    tr:first-child > td > .fc-basic_day{
+
+    tr:first-child > td > .fc-basic_day {
         margin-top: 15px;
     }
+
     .fc-basic_day {
         width: calc(100% - 5%);
         margin: 0 auto 15px auto;
@@ -267,15 +296,18 @@ a.desc:after {
     z-index: -1;
     transition: width 2s, height 4s;
     -webkit-transition: width 2s, height 4s;
+    overflow: hidden;
 }
 
 .slide-button:hover .slide-button-info {
     width: 105px;
 }
+
 .fc-today {
     background: #fdcb6e !important;
 
 }
+
 #addphotoform-client ~ .select2-container {
     display: none;
 }
@@ -290,6 +322,7 @@ a.desc:after {
     margin: 5px 0;
     cursor: pointer;
 }
+
 .check-theme .check-theme-span {
     position: relative;
     display: block;
@@ -298,41 +331,74 @@ a.desc:after {
     border-radius: 40px;
     transition: 0.5s;
     background: #fff;
-    box-shadow: inset 0 2px 30px rgba(0,0,0,0.1),
-    inset 0 2px 8px rgba(0,0,0,0.1),
-    inset 0 -4px 4px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 30px rgba(0, 0, 0, 0.1),
+    inset 0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 -4px 4px rgba(0, 0, 0, 0.05);
 }
-.check-theme  .check-theme-input {
+
+.check-theme .check-theme-input {
     appearance: none;
     display: none;
 }
+
 .check-theme .check-theme-indicator {
     position: absolute;
     top: 0;
     left: 0;
-    transform:scale(0.9);
+    transform: scale(0.9);
     width: 20px;
     height: 20px;
     cursor: pointer;
     border-radius: 50%;
-    background: linear-gradient(to bottom,#eaeaea,#f9f9f9);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1),
-    inset 0 4px 4px rgba(255,255,255,1),
-    inset 0 -4px 4px rgba(255,255,255,1);
+    background: linear-gradient(to bottom, #eaeaea, #f9f9f9);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1),
+    inset 0 4px 4px rgba(255, 255, 255, 1),
+    inset 0 -4px 4px rgba(255, 255, 255, 1);
     transition: 0.5s;
 }
+
 .check-theme input:checked ~ .check-theme-indicator {
     left: 20px;
-    background: linear-gradient(to bottom,#444,#222);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5),
-    inset 0 4px 4px rgba(255,255,255,0.2),
-    inset 0 -4px 4px rgba(255,255,255,0.2);
+    background: linear-gradient(to bottom, #444, #222);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5),
+    inset 0 4px 4px rgba(255, 255, 255, 0.2),
+    inset 0 -4px 4px rgba(255, 255, 255, 0.2);
 
 }
-.check-theme input:checked ~ .check-theme-span{
+
+.check-theme input:checked ~ .check-theme-span {
     background: #222;
     box-shadow: inset 0 8px 30px rgba(0, 0, 0, 0.1),
     inset 0 8px 8px rgba(0, 0, 0, 0.1),
-    inset 0 -4px 4px rgba(0,0,0,0.1);
+    inset 0 -4px 4px rgba(0, 0, 0, 0.1);
 
+}
+
+.todo-list > li .text input[type="text"] {
+    border: none;
+    padding-left: 10px;
+}
+
+.todo-list > li .no-input-style {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 0;
+    pointer-events: none;
+    display: none;
+}
+
+.todo-list > li .text input[type="text"]:focus {
+    border-radius: 0.25rem;
+    border: none;
+    padding-left: 10px;
+    background: #ecf0f1;
+}
+
+.dark-mode .todo-list > li .no-input-style {
+    color: #fff;
+}
+
+.dark-mode .popover-header {
+    color:#000000;
 }

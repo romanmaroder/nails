@@ -15,6 +15,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
     ];
     public $js = [
+        'js/yii.confirm.overrides.js',
         'js/tooltip.js',
         'js/main.js'
     ];

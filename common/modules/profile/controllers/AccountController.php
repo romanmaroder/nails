@@ -13,7 +13,6 @@ use common\models\Photo;
 use Throwable;
 use Yii;
 use yii\base\Exception;
-use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -43,7 +42,7 @@ class AccountController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['login', 'logout', 'index'],
+                //'only' => ['login', 'logout', 'index'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -109,13 +108,11 @@ class AccountController extends Controller
             if ($setting->checkbox == 1) {
                 $setting->setCookies();
                 return $this->refresh();
-
             }
-            if ($setting->checkbox == 0){
-               $setting->deleteCookies();
+            if ($setting->checkbox == 0) {
+                $setting->deleteCookies();
                 return $this->refresh();
             }
-
         }
 
         if ($modelPhoto->load(Yii::$app->request->post())) {
@@ -123,12 +120,11 @@ class AccountController extends Controller
 
             if ($modelPhoto->save()) {
                 Yii::$app->session->setFlash('success', 'Изображение добавлено!');
-                return $this->goHome();
+                return $this->refresh();
             } else {
                 $modelPhoto->getErrors();
             }
         }
-
 
         if ($modelCertificate->load(Yii::$app->request->post())) {
             $modelCertificate->image = UploadedFile::getInstance($modelCertificate, 'image');
@@ -140,6 +136,8 @@ class AccountController extends Controller
                 $modelCertificate->getErrors();
             }
         }
+
+
 
         $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
@@ -160,7 +158,8 @@ class AccountController extends Controller
                 'model' => $model,
                 'modelCertificate' => $modelCertificate,
                 'certificateList' => $certificateList,
-                'modelPhoto' => $modelPhoto
+                'modelPhoto' => $modelPhoto,
+
             ]
         );
     }
@@ -313,6 +312,8 @@ class AccountController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+
 
 
 }

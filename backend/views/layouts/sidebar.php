@@ -1,9 +1,11 @@
 <?php
 /* @var $countEventTotal string */
+/* @var $user  */
 
 use common\models\User;
 use hail812\adminlte\widgets\Menu;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -23,13 +25,14 @@ use yii\helpers\Html;
 		<!-- Sidebar user panel (optional) -->
 		<div class="user-panel mt-3 pb-3 mb-3 d-flex">
 			<div class="image">
-				<?php echo Html::img($user->getPicture(),['class'=>'img-circle
-				elevation-2','alt'=>'User
-				Image']) ;?>
+				<?php
+                echo Html::img($user->getPicture(),['class'=>'img-circle
+                                                elevation-2','alt'=>'User
+                                                Image']) ;?>
 			</div>
 			<div class="info">
-                <?php echo Html::a( $user->username . ' (<span>'. Yii::$app->user->identity->role->description
-                .'</span>)',['/profile/account'],['class'=>'d-block']) ;?>
+                <?php echo Html::a($user->username . ' (<span>'. Yii::$app->user->identity->role->description
+                .'</span>)',Url::to(['/profile/account/index']), ['class'=>'d-block']) ;?>
 			</div>
 		</div>
 
@@ -118,7 +121,7 @@ use yii\helpers\Html;
                                 ['label' => 'Level2', 'iconStyle' => 'far']*/
                             ]
                         ],
-                        ['label' => 'Мастера', 'icon' => 'fas fa-user-tag', 'url' => ['/employees/master/index'],'iconClassAdded' =>	'text-info'],
+                        ['label' => 'Мастера', 'icon' => 'fas fa-user-tag', 'url' => ['/employees/master/index'],'iconClassAdded' =>'text-info'],
                         [
                             'label' => 'Блог',
                             'icon'  => 'far fa-newspaper',
@@ -170,6 +173,8 @@ use yii\helpers\Html;
                                 ['label' => 'Level2', 'iconStyle' => 'far']*/
                             ]
                         ],
+                        ['label' => 'Заметки', 'icon' => 'fa fa-list-ul', 'url' => ['/todo/todo/index'],'iconClassAdded' =>'text-info'],
+
 
                         /*['label' => 'LABELS', 'header' => true],
                         ['label' => 'Important', 'iconStyle' => 'far', 'iconClassAdded' => 'text-danger'],

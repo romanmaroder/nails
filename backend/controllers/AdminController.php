@@ -51,7 +51,7 @@ class AdminController extends Controller
                     ],
                     [
                         'actions'      => ['index'],
-                        'controllers'  => ['site', 'event', 'client','master'],
+                        'controllers'  => ['site', 'event', 'client','master','todo'],
                         'allow'        => false,
                         'roles'        => ['@'],
                         'denyCallback' => function ($rule, $action) {

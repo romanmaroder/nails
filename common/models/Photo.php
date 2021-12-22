@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -17,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property-read \yii\db\ActiveQuery $master
  * @property-read \yii\db\ActiveQuery $user
  * @property int|null $master_work
+
  */
 class Photo extends ActiveRecord
 {
@@ -28,7 +30,7 @@ class Photo extends ActiveRecord
     {
         return [
             [
-                'class'      => TimestampBehavior::class,
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -62,10 +64,10 @@ class Photo extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'          => 'ID',
-            'user_id'     => 'User ID',
-            'portfolio'   => 'Portfolio',
-            'client_id'   => 'Client ID',
+            'id' => 'ID',
+            'user_id' => 'User ID',
+            'portfolio' => 'Portfolio',
+            'client_id' => 'Client ID',
             'master_work' => 'Master Work',
         ];
     }
@@ -97,20 +99,22 @@ class Photo extends ActiveRecord
      * @param $id
      * @param $masterIds
      *
-     * @return array|\common\models\Photo[]|\yii\db\ActiveRecord[]
+     * @return ActiveDataProvider
      */
-    public function getPhotoList($id, $masterIds): array
+    public function getPhotoList($id, $masterIds): ActiveDataProvider
     {
         if (in_array($id, $masterIds)) {
             $column_name = 'user_id';
         } else {
             $column_name = 'client_id';
         }
-        return Photo::find()
-            ->with('user', 'master')
-            ->where([$column_name => $id])
-            ->asArray()
-            ->all();
+        return new ActiveDataProvider(
+            [
+                'query' => Photo::find()
+                    ->with('user', 'master')
+                    ->where([$column_name => $id])
+            ]
+        );
     }
 
     /**
@@ -155,7 +159,7 @@ class Photo extends ActiveRecord
     public static function getBackgroundCard(): string
     {
         $images = scandir(self::DEFAULT_BG);
-        $arr    = [];
+        $arr = [];
         foreach ($images as $image) {
             if ($image == '.' || $image == '..') {
                 continue;
@@ -164,7 +168,7 @@ class Photo extends ActiveRecord
         }
 
         $img = rand(0, sizeof($arr) - 1);
-        return $path = "/".self::DEFAULT_BG.$arr[$img];
+        return $path = "/" . self::DEFAULT_BG . $arr[$img];
     }
 
     /**
@@ -178,16 +182,16 @@ class Photo extends ActiveRecord
     {
         return Photo::find()->select(['COUNT(client_id) AS totalCount', 'user_id'])
             ->where(['user_id' => $masterIds])
-            ->andWhere(['IS NOT','client_id',NULL])
+            ->andWhere(['IS NOT', 'client_id', null])
             ->groupBy('user_id')
             ->all();
     }
-    
+
     public function getTotalPortfolioPhotoCount($masterIds): array
     {
         return Photo::find()->select(['COUNT(master_work) AS totalCount', 'user_id'])
             ->where(['user_id' => $masterIds])
-            ->andWhere(['!=','portfolio',0])
+            ->andWhere(['!=', 'portfolio', 0])
             ->groupBy('user_id')
             ->all();
     }
@@ -196,7 +200,7 @@ class Photo extends ActiveRecord
     {
         return Photo::find()->select(['COUNT(master_work) AS totalCount', 'user_id'])
             ->where(['user_id' => $masterIds])
-            ->andWhere(['!=','master_work',0])
+            ->andWhere(['!=', 'master_work', 0])
             ->groupBy('user_id')
             ->all();
     }

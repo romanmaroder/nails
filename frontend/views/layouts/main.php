@@ -4,13 +4,15 @@
 
 /* @var $content string */
 
+use common\widgets\metric\Counter;
 use yii\helpers\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
 use yii\bootstrap4\Breadcrumbs;
 use frontend\assets\AppAsset;
 use common\widgets\Alert;
-use common\widgets\buttonUp\ButtonUp;
+use yii\helpers\Url;
+
 AppAsset::register($this);
 ?>
 <?php
@@ -21,11 +23,23 @@ $this->beginPage() ?>
 	<meta charset="<?= Yii::$app->charset ?>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <?php
-    $this->registerCsrfMetaTags() ?>
+    <?php $this->registerCsrfMetaTags() ?>
 	<title><?= Html::encode($this->title) ?></title>
-    <?php
-    $this->head() ?>
+    <?php $this->registerLinkTag(['rel' => 'apple-touch-icon', 'size' => '180x180', 'href' => Url::to(['/favicon/apple-touch-icon.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '32x32', 'href' => Url::to(['/favicon/favicon-32x32.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '16x16', 'href' => Url::to(['/favicon/favicon-16x16.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '192x192', 'href' => Url::to(['/favicon/android-chrome-192x192.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '512x512', 'href' => Url::to(['/favicon/android-chrome-512x512.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'manifest', 'href' => Url::to(['/favicon/site.webmanifest'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'mask-icon','color'=>'#5bbad5', 'href' => Url::to(['/favicon/safari-pinned-tab.svg'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon','size' => '120x120','type' => 'image/svg+xml', 'href' => Url::to(['/favicon/favicon-120x120.svg'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'shortcut icon', 'href' => Url::to(['/favicon/favicon.ico'])]);?>
+    <?php $this->registerLinkTag(['name' => 'msapplication-TileColor','content'=>'#2d89ef']);?>
+    <?php $this->registerLinkTag(['name' => 'msapplication-TileImage','content'=>'/favicon/mstile-144x144.png']);?>
+    <?php $this->registerLinkTag(['name' => 'msapplication-config','content'=>'/favicon/browserconfig.xml']);?>
+    <?php $this->registerLinkTag(['name' => 'theme-color','content'=>'#ffffff']);?>
+    <?php $this->head() ?>
+
 </head>
 <body class="<?php if(Yii::$app->request->cookies->has('theme')){echo Yii::$app->request->cookies->getValue('theme','');};?>">
 <?php
@@ -105,7 +119,7 @@ $this->beginBody() ?>
 	</div>
 </div>
 
-<footer class="main-footer">
+<footer class="footer">
 	<div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -117,7 +131,10 @@ $this->beginBody() ?>
 		<!--<p class="pull-right"><?/*= Yii::powered() */?></p>-->
 	</div>
 </footer>
-<?php echo ButtonUp::widget() ;?>
+<!-- Metrika counter -->
+<?php echo Counter::widget();?>
+<!-- /Yandex.Metrika counter -->
+
 <?php
 $this->endBody() ?>
 

@@ -20,11 +20,10 @@ $(document).ready(function () {
         });
 
         // Switching the color scheme of the button up
-        $('#btn-back-to-top').removeClass('btn-dark');
-        $('#btn-back-to-top').addClass('btn-light');
+        // $('#btn-back-to-top').removeClass('btn-dark');
+        // $('#btn-back-to-top').addClass('btn-light');
 
     }
 
 });
-
 

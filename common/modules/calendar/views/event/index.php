@@ -327,6 +327,11 @@ $this->params['breadcrumbs'][] = $this->title;
                   					element.addClass('fc-basic_month');
                   					element.find('.fc-content').prepend(element.find('.fc-time'));
                   					
+                  					if(event.title === 'Свободное время'){
+                  					    element.find('.fc-title').addClass('free-time');
+                  					    element.find('.fc-time').addClass('free-time');
+                  					}
+                  					
                   					element.find('.fc-content').find('.fc-time').css({'white-space':'break-spaces'});
                   					element.find('.fc-content').find('.fc-title').addClass('d-none d-sm-block').css({'float':'none'});
                   					
@@ -346,20 +351,26 @@ $this->params['breadcrumbs'][] = $this->title;
 									}); 
                   				 }
                   				 if ( view.name == 'basicWeek' ){ 
-                                     element.popover({
+                                    let pop =  element.popover({
 											placement: 'top',
 											html: true,
 											image: true,
 											trigger : 'hover',
 											title: event.title + ' ' + event.start.format('HH:mm'),
 											content: event.nonstandard.description,
-											container:'body'
+											container:'body',
+											
 									}); 
+									if(event.title === 'Свободное время'){
+                  					    element.find('.fc-title').addClass('free-time');
+                  					}
+									
                                  }
                   				 
                   				 
                   				 if ( view.name == 'listWeek' ) { 
                   				  	element.find('.fc-list-item-marker ').append(' (' + event.nonstandard.master_name + ') '); 
+                  				  
                                  }
                                  
                                   if (view.name == 'agendaWeek' || view.name == 'agendaDay' ) {

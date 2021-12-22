@@ -2,10 +2,8 @@
 
 namespace frontend\controllers;
 
-use common\models\Category;
 use common\models\Certificate;
 use common\models\Photo;
-use common\models\Post;
 use common\models\PostSearch;
 use common\models\Profile;
 use common\models\User;
@@ -40,7 +38,7 @@ class SiteController extends Controller
                 'only'  => ['logout', 'signup','view'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['signup',],
                         'allow'   => true,
                         'roles'   => ['?'],
                     ],
@@ -90,13 +88,15 @@ class SiteController extends Controller
      * Displays homepage.
      *
      * @return mixed
+     * @throws InvalidArgumentException
      */
     public function actionIndex()
     {
         $this->setMeta(
-           'Nails - красота и уход за вашими ногтями',
+           'Nails - блог об уходе за ноготочками, дизайны, советы, статьи. ',
            'Маникюр, коррекция, дизайн, лак-гель, гель, кутикула, обрезной маникюр, топ, база, пилочки для ногтей, баф, фрезер, фреза, ноготь, лампа, вытяжка, масло, лечебный лак, восстанавливающий лак',
-           'Блог о ногтевом сервисе, примеры дизайна ногтей. Оказание услуг в сфере ногтевого сервиса'
+           'Блог о ногтевом сервисе. Полезные статьи об уходе за ногтями, подборе инструментов и материалов. Советы мастеров
+                        ногтевого сервиса. Примеры дизайнерских работ.'
         );
         $searchModel  = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -149,6 +149,7 @@ class SiteController extends Controller
      * Displays contact page.
      *
      * @return mixed
+     * @throws InvalidArgumentException
      */
     public function actionContact()
     {
@@ -194,6 +195,11 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
+        $this->setMeta(
+            'Наши мастера маникюра и педикюра. Краткая информация о мастерах, количестве их работ и сертификатов ',
+            'Мастер маникюра, мастер педикюра, бровист, сертификаты повывшения квалификации',
+            'Краткая информация о наших мастерах.Узнайте немного больше о мастерах и их достижениях, перейдя в их профиль.'
+        );
         $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
         $dataProvider = new ActiveDataProvider(
@@ -394,8 +400,8 @@ class SiteController extends Controller
      */
     protected function setMeta($title = null, $keywords = null, $description = null)
     {
-        $this->view->title = $title;
+        $this->view->title = mb_substr($title,0,60);
         $this->view->registerMetaTag(['name' => 'keywords', 'content' => strip_tags("$keywords")]);
-        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags("$description")]);
+        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags(mb_substr($description,0,160))]);
     }
 }

@@ -10,6 +10,7 @@ use common\modules\blog\models\AddPost;
 use Yii;
 use common\models\Post;
 use common\models\PostSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -37,6 +38,21 @@ class PostController extends Controller
                 'class'     => DeleteCacheBehavior::class,
                 'cache_key' => ['events_list'],
                 'actions'   => ['create', 'update', 'delete'],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                //'only'  => ['login', 'logout', 'index'],
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions' => ['login','post'],
+                        'roles'   => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
             ],
 
         ];
@@ -106,6 +122,8 @@ class PostController extends Controller
             $post->subtitle,
             $post->description
         );
+
+
         if ($post == null) {
             throw new NotFoundHttpException('Запрошенная страница не существует.');
         }
@@ -164,6 +182,8 @@ class PostController extends Controller
             return [
                 'success' => true,
                 'uri'     => Yii::$app->storage->getFile($model->image),
+                'alt'=>'Post image',
+                'title'=>'Post image',
                 'message' => 'Фото загружено'
             ];
         }
@@ -332,8 +352,8 @@ class PostController extends Controller
      */
     protected function setMeta($title = null, $keywords = null, $description = null)
     {
-        $this->view->title = $title;
+        $this->view->title = mb_substr($title,0,60);
         $this->view->registerMetaTag(['name' => 'keywords', 'content' => strip_tags("$keywords")]);
-        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags("$description")]);
+        $this->view->registerMetaTag(['name' => 'description', 'content' => mb_substr(strip_tags($description),0,160)]);
     }
 }

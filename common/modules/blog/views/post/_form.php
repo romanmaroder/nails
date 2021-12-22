@@ -143,7 +143,7 @@ $(function () {
       contentType: false,
       processData: false,
       success: function(responce) {
-          var image = $('<img>').attr({src:responce.uri,class:"img"});
+          var image = $('<img>').attr({src:responce.uri,"class":"post-img","alt":responce.alt,"title":responce.title});
            var block = $('<span ></span>').prepend(function (indx, val){
                return $('<span >'+val+'</span>').prepend(image);
            });

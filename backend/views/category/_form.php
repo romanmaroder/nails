@@ -8,7 +8,6 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-
 <!-- Main content -->
 <section class="content">
 	<div class="container-fluid">

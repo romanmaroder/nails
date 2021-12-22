@@ -1,12 +1,13 @@
 <?php
 
 use common\models\User;
+use common\modules\profile\models\AddPhotoForm;
 use kartik\select2\Select2;
 use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $modelPhoto \common\modules\profile\models\AddPhotoForm */
+/* @var $modelPhoto AddPhotoForm */
 ?>
 <div class="post-default-index">
 
