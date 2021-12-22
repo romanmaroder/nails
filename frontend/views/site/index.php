@@ -34,8 +34,6 @@ Pjax::begin([
                             'dataProvider' => $dataProvider,
                             'options' => [
                                 'tag' => false,
-                                #'class' => 'col-12 col-lg-6 mb-3 list-wrapper',
-                                #'#id' => 'list-wrapper',
                             ],
                             'layout' => "{pager}\n{items}\n{summary}",
                             'itemOptions' => ['tag' => null],
