@@ -25,7 +25,21 @@ $this->beginPage() ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
 	<title><?= Html::encode($this->title) ?></title>
+    <?php $this->registerLinkTag(['rel' => 'apple-touch-icon', 'size' => '180x180', 'href' => Url::to(['/favicon/apple-touch-icon.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '32x32', 'href' => Url::to(['/favicon/favicon-32x32.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '16x16', 'href' => Url::to(['/favicon/favicon-16x16.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '192x192', 'href' => Url::to(['/favicon/android-chrome-192x192.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png','size' => '512x512', 'href' => Url::to(['/favicon/android-chrome-512x512.png'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'manifest', 'href' => Url::to(['/favicon/site.webmanifest'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'mask-icon','color'=>'#5bbad5', 'href' => Url::to(['/favicon/safari-pinned-tab.svg'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'icon','size' => '120x120','type' => 'image/svg+xml', 'href' => Url::to(['/favicon/favicon-120x120.svg'])]);?>
+    <?php $this->registerLinkTag(['rel' => 'shortcut icon', 'href' => Url::to(['/favicon/favicon.ico'])]);?>
+    <?php $this->registerLinkTag(['name' => 'msapplication-TileColor','content'=>'#2d89ef']);?>
+    <?php $this->registerLinkTag(['name' => 'msapplication-TileImage','content'=>'/favicon/mstile-144x144.png']);?>
+    <?php $this->registerLinkTag(['name' => 'msapplication-config','content'=>'/favicon/browserconfig.xml']);?>
+    <?php $this->registerLinkTag(['name' => 'theme-color','content'=>'#ffffff']);?>
     <?php $this->head() ?>
+
 </head>
 <body class="<?php if(Yii::$app->request->cookies->has('theme')){echo Yii::$app->request->cookies->getValue('theme','');};?>">
 <?php

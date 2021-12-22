@@ -7,6 +7,8 @@
 use backend\assets\AppAsset;
 
 use yii\helpers\Html;
+use yii\helpers\Url;
+
 AppAsset::register($this);
 
 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
