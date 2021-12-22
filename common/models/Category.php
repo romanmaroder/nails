@@ -63,6 +63,7 @@ class Category extends ActiveRecord
         return [
             'id'            => 'ID',
             'category_name' => 'Название категории',
+            'slug'=>'Транскрипция'
         ];
     }
 
