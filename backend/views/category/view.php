@@ -35,6 +35,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
         'attributes' => [
            //'id',
             'category_name',
+            'slug',
         ],
     ]) ?>
 

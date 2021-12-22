@@ -37,7 +37,7 @@ Pjax::begin([
                                 #'class' => 'col-12 col-lg-6 mb-3 list-wrapper',
                                 #'#id' => 'list-wrapper',
                             ],
-                            'layout' => "{pager}\n{items}\n{summary}", //TODO исправить шаблон отображения
+                            'layout' => "{pager}\n{items}\n{summary}",
                             'itemOptions' => ['tag' => null],
                             'itemView' => function ($model, $key, $index) {
 

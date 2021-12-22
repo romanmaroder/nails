@@ -2,6 +2,7 @@
 
 use frontend\controllers\SiteController;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $model SiteController */
 /* @var $key SiteController */
@@ -15,7 +16,6 @@ if ($index % 2 !== 0) {
 } else {
     $class = '';
 } ?>
-
 
     <div class="col-12 col-lg-6 mb-3">
         <div class="blog-card mx-auto <?php echo $class; ?>"
@@ -45,7 +45,7 @@ if ($index % 2 !== 0) {
             </div>
             <div class="description">
                 <h1><?php
-                    echo Html::a($model->title, ['/blog/post/post', 'slug' => $model->slug]);
+                    echo Html::a($model->title, [Url::to(['/blog/post/post','slug'=>$model->slug,'category'=>$model->category->slug])]);
                     ?></h1>
                 <h2><?php
                     echo $model->subtitle; ?></h2>

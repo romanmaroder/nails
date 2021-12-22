@@ -51,11 +51,11 @@ return [
                 'master/<id:\d+>' => '/site/view',
                 'post' => 'blog/post/index',
                 'post/<id:\d+>' => '/blog/post/post',
-                'post/<slug:>' => '/blog/post/post',
+                'post/<category:[\w_-]+>/<slug:>' => '/blog/post/post',
                 'todo' => '/todo/todo/index',
                 '<action:\w+ >' => 'site/<action>',
                 [
-                    'pattern'=>'<action:about|portfolio|contact|login|signup>',
+                    'pattern' => '<action:about|portfolio|contact|login|signup>',
                     'route' => 'site/<action>',
                     //'suffix' => '.html',
                 ],
