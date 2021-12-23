@@ -27,7 +27,7 @@ Pjax::begin([
                     echo $this->render('@common/modules/blog/views/post/_search', ['model' => $searchModel]);
                     ?>
                 </div>
-                <div class="col-xl-8" id="pjax-container">
+                <div class="col-xl-8" >
                     <div class="row ">
                         <?=
                         ListView::widget([
@@ -74,3 +74,17 @@ Pjax::begin([
 <?php
 Pjax::end(); ?>
 <?php echo ButtonUp::widget() ;?>
+<?php
+
+$js = <<< JS
+
+ $(function () {
+     $(document).on('change','#filterPost', function(event) {
+     $('form[pjax-container]').submit();
+    
+    });
+   
+ })
+
+JS;
+$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);?>

@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
                 'action' => ['index'],
                 'method' => 'get',
                 'options' => [
-                    'data-pjax' => 1,
+                    'data-pjax' => 0,
                     'class' => 'row mt-2',
                     'pjax-container'=>'pjax-container'
                 ],
@@ -64,17 +64,3 @@ use yii\widgets\ActiveForm;
 
     </div>
 
-<?php
-
-$js = <<< JS
-
- $(function () {
-     $(document).on('change','#filterPost', function(event) {
-     $('form[pjax-container]').submit();
-    
-    });
-   
- })
-
-JS;
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
