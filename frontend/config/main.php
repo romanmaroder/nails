@@ -56,6 +56,7 @@ return [
                 'post/<id:\d+>' => '/blog/post/post',
                 'post/<category:[\w_-]+>/<slug:>' => '/blog/post/post',
                 'todo' => '/todo/todo/index',
+                'logout'=>'/site/logout',
                 '<action:\w+ >' => 'site/<action>',
                 [
                     'pattern' => '<action:about|portfolio|contact|login|signup>',
