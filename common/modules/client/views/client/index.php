@@ -105,7 +105,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     return '<div class="image" style="width:100px">
 														<img class="img-circle"
 															 style="width: 100%;height: auto"
-															 src="'.$model->getPicture().'" alt="">
+															 src="'.$model->getPicture().'"
+															 alt="'.$model->username.'"
+															 title = "'.$model->username.'">
 														</div>';
                                                 },
                                             ],
@@ -212,7 +214,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     return '<div class="image" style="width:100px">
 														<img class="img-circle"
 															 style="width: 100%;height: auto"
-															 src="'.$model->getPicture().'" alt="">
+															 src="'.$model->getPicture().'" 
+															 alt="'.$model->username.'"
+															 title = "'.$model->username.'">
 														</div>';
                                                 },
                                             ],

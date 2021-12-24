@@ -108,7 +108,7 @@ $this->beginBody() ?>
             [
                 'itemTemplate'       => "\n\t<li class=\"breadcrumb-item\">{link}</li>\n",
                 // template for all links
-                'activeItemTemplate' => "\t<li class=\"breadcrumb-item active\">{link}</li>\n",
+                'activeItemTemplate'=>"<!--noindex--><li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n<!--/noindex-->",
                 // template for the active link
                 'links'              => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 'homeLink'           => ['label' => 'Главная', 'url' => ['/site/index']],

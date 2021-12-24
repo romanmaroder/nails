@@ -46,6 +46,9 @@ return [
         'smsSender'=>[
             'class'=>'common\components\sms\SmsSender'
         ],
+        'seo' => [
+            'class' => 'common\components\seo\SeoComponent',
+            ],
         'assetManager' => [
             'appendTimestamp' => true,
             #'linkAssets' => true,

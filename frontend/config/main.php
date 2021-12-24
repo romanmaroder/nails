@@ -1,5 +1,7 @@
 <?php
 
+use yii\web\UrlNormalizer;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -42,6 +44,7 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
                 '' => 'site/index',
                 'event' => '/calendar/event/index',
@@ -57,7 +60,7 @@ return [
                 [
                     'pattern' => '<action:about|portfolio|contact|login|signup>',
                     'route' => 'site/<action>',
-                    //'suffix' => '.html',
+                   //'suffix' => '.html',
                 ],
             ],
         ],

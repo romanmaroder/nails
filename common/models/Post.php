@@ -21,6 +21,9 @@ use yii\helpers\ArrayHelper;
  * @property-read \yii\db\ActiveQuery $user
  * @property-read \yii\db\ActiveQuery $category
  * @property int|null $updated_at
+ * @property mixed|null preview
+ * @property int|null status
+ * @property string|null slug
  */
 class Post extends ActiveRecord
 {
@@ -68,7 +71,7 @@ class Post extends ActiveRecord
             [['title'], 'required', 'message' => 'Придумайте заголовок'],
             [['subtitle'], 'required', 'message' => 'Придумайте подзаголовок'],
             [['user_id', 'category_id', 'status'], 'integer', 'message' => 'Выберите {attribute}'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['preview','created_at', 'updated_at'], 'safe'],
         ];
     }
 

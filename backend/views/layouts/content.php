@@ -14,9 +14,10 @@ use yii\bootstrap4\Breadcrumbs;
                     echo Breadcrumbs::widget(
                         [
                             'links' => $this->params['breadcrumbs'] ?? [],
+                            'activeItemTemplate'=>"<!--noindex--><li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n<!--/noindex-->",
                             'options' => [
-                                'class' => 'breadcrumb float-sm-right'
-                            ]
+                                'class' => 'breadcrumb float-md-right'
+                            ],
                         ]
                     );
                     ?>

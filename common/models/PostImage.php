@@ -11,7 +11,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int|null $post_id
- *
+ * @property string|null $image
  * @property Post $post
  */
 class PostImage extends ActiveRecord
