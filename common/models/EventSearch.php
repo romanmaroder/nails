@@ -109,10 +109,13 @@ class EventSearch extends Event
             ->andFilterWhere(['like', 'master_id', $this->master_id])
             ->andFilterWhere(['>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null])
             ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null])
-            ->andFilterWhere(['in', 'service.id', $this->service])
+            //->andFilterWhere(['in', 'service.id', $this->service])
             ->andFilterWhere(['=', 'service.cost', $this->salary])
             ->andFilterWhere(['=', 'cost', $this->salary]);
 
+        $query->joinWith(['services' => function ($q) {
+            $q->andFilterWhere(['in', 'service.id', $this->service]);
+        }]);
 
         return $dataProvider;
     }
