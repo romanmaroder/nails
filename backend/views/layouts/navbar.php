@@ -8,6 +8,7 @@ use yii\widgets\Menu;
 ?>
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+
 	<!-- Left navbar links -->
 
     <?= Menu::widget(
@@ -71,6 +72,15 @@ use yii\widgets\Menu;
                     'url' => ['/blog/post/index'],
                 ],
                 [
+                    'label' => '<i class="fas fa-wrench" aria-hidden="true"></i>',
+                    'options' => ['class' => 'd-none d-sm-inline-block',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'tooltip',
+                        'title' =>'Услуги'
+                    ],
+                    'url' => ['/service/index'],
+                ],
+                [
                     'label' => '<i class="fa fa-list-ul" aria-hidden="true"></i>',
                     'options' => ['class' => 'd-none d-sm-inline-block',
                         'data-toggle' => 'tooltip',
@@ -110,6 +120,10 @@ use yii\widgets\Menu;
                             'options' => ['class' => 'nav-item'],
                         ],
                         [
+                            'label' => 'Услуги',
+                            'url' => ['/service/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],[
                             'label' => 'Заметки',
                             'url' => ['/todo/todo/index'],
                             'options' => ['class' => 'nav-item'],

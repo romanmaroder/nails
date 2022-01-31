@@ -173,6 +173,24 @@ use yii\helpers\Url;
                                 ['label' => 'Level2', 'iconStyle' => 'far']*/
                             ]
                         ],
+                        [
+                            'label' => 'Услуги',
+                            'icon'  => 'fas fa-wrench',
+                            'iconClassAdded' => 'text-danger',
+                            'items' => [
+                                [
+                                    'label' => 'Список услуг',
+                                    'icon'  => 'fas fa-list',
+                                    'url'
+                                            => ['/service/index'],
+                                ],
+                                [
+                                    'label' => 'Новая услуга',
+                                    'icon'  => 'far fa-plus-square',
+                                    'url'   => ['/service/create'],
+                                ],
+                            ]
+                        ],
                         ['label' => 'Заметки', 'icon' => 'fa fa-list-ul', 'url' => ['/todo/todo/index'],'iconClassAdded' =>'text-info'],
 
 
