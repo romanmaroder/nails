@@ -1,7 +1,6 @@
 <?php
 
 use common\modules\calendar\controllers\EventController;
-use common\widgets\xmas\Xmas;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\bootstrap4\Modal;
 use yii\web\JsExpression;
@@ -24,12 +23,6 @@ PluginAsset::register($this)->add(['sweetalert2']);
 $this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<!--Блок с картинкой-->
-<!--<div class="row">
-    <div class="col-12 text-center">
-        <?/*= Xmas::widget(['src'=>'/img/new_year.png']);*/?>
-    </div>
-</div>-->
 <div class="event-index">
 
     <?php
@@ -39,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
         "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
         View::POS_HEAD
     ); ?>
-
 
     <?php
     Modal::begin(
@@ -103,6 +95,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     if (Yii::$app->user->can('manager')) {
         $editable = true;
+    } else {
+        $right    = 'month,basicDay,basicWeek,listWeek';
+        $editable = false;
     }
     if (Yii::$app->user->can('admin')) {
         $right         = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
@@ -116,19 +111,6 @@ $this->params['breadcrumbs'][] = $this->title;
    						}
         	}"
         );
-        $eventAfterAllRender= new JsExpression(
-            "
-                	function(view){
-						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
-						if ($(window).width() < 540 ){
-							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
-						}
-					}
-                "
-        );
-    }else{
-        $editable = false;
-        $right    = 'month,basicDay,basicWeek,listWeek';
     }
 
     /**
@@ -405,7 +387,16 @@ $this->params['breadcrumbs'][] = $this->title;
                   				 
                 	}"
                 ),
-                'eventAfterAllRender' => $eventAfterAllRender,
+                'eventAfterAllRender' => new JsExpression(
+                    "
+                	function(view){
+						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						if ($(window).width() < 540 ){
+							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+						}
+					}
+                "
+                ),
                 'viewRender'          => new JsExpression(
                     "function (view,event, element){
 								localStorage.setItem('fcDefaultView', view.name);

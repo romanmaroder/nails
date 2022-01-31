@@ -13,6 +13,7 @@ class EventSearch extends Event
 {
 
     public $service;
+    public $cost;
     public $salary;
     public $date_from;
     public $date_to;
@@ -30,6 +31,7 @@ class EventSearch extends Event
                     'master_id',
                     'client_id',
                     'service',
+                    'cost',
                     'salary',
                     'description',
                     'notice',
@@ -61,9 +63,7 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
-        $query->joinWith(['services','eventService','master']);
-
-
+        $query->joinWith(['services', 'eventService', 'master']);
 
 
         // add conditions that should always apply here
@@ -72,6 +72,15 @@ class EventSearch extends Event
             [
                 'query'      => $query,
                 'pagination' => false,
+                'sort'       => [
+                    'attributes' => [
+                        'cost' => [
+                            'asc'  => ['cost' => SORT_ASC],
+                            'desc' => ['cost' => SORT_DESC],
+                        ]
+                    ]
+
+                ]
             ]
         );
 
@@ -79,7 +88,7 @@ class EventSearch extends Event
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-           // $query->where('0=1');
+            // $query->where('0=1');
             return $dataProvider;
         }
 
@@ -95,16 +104,14 @@ class EventSearch extends Event
         );
 
 
-
         $query->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'notice', $this->notice])
             ->andFilterWhere(['like', 'master_id', $this->master_id])
-            ->andFilterWhere([ '>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null] )
+            ->andFilterWhere(['>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null])
             ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null])
             ->andFilterWhere(['in', 'service.id', $this->service])
-            ->andFilterWhere(['=', 'service.cost', $this->salary]);
-
-
+            ->andFilterWhere(['=', 'service.cost', $this->salary])
+            ->andFilterWhere(['=', 'cost', $this->salary]);
 
 
         return $dataProvider;
