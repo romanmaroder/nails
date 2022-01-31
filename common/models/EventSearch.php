@@ -2,23 +2,43 @@
 
 namespace common\models;
 
+use common\models\Event;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Event;
 
 /**
  * EventSearch represents the model behind the search form of `app\models\Event`.
  */
 class EventSearch extends Event
 {
+
+    public $service;
+    public $salary;
+    public $date_from;
+    public $date_to;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [[ 'description', 'notice', 'created_date'], 'safe'],
+            [['id', 'updated_at'], 'integer'],
+            [['date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
+            [
+                [
+                    'master_id',
+                    'client_id',
+                    'service',
+                    'salary',
+                    'description',
+                    'notice',
+                    'event_time_start',
+                    'event_time_end',
+                    'created_at'
+                ],
+                'safe'
+            ],
         ];
     }
 
@@ -41,31 +61,51 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
+        $query->joinWith(['services','eventService','master']);
+
+
+
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query'      => $query,
+                'pagination' => false,
+            ]
+        );
 
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+           // $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'created_date' => $this->created_date,
-        ]);
+        $query->andFilterWhere(
+            [
+                'id' => $this->id,
+                //'client_id' => $this->client_id,
+                // 'master_id' => $this->master_id,
+                // 'created_at' => $this->created_at,
+                //'updated_at' => $this->updated_at,
+            ]
+        );
 
-        $query->andFilterWhere(['like', 'client_id', $this->client_id])
+
+
+        $query->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'notice', $this->notice])
             ->andFilterWhere(['like', 'master_id', $this->master_id])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'notice', $this->notice]);
+            ->andFilterWhere([ '>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null] )
+            ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null])
+            ->andFilterWhere(['in', 'service.id', $this->service])
+            ->andFilterWhere(['=', 'service.cost', $this->salary]);
+
+
+
 
         return $dataProvider;
     }

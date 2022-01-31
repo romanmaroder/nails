@@ -11,7 +11,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $model TodoController */
 
-$this->title = 'Заметки';
+$this->title                   = 'Заметки';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -23,68 +23,71 @@ Yii::$app->view->registerJs(
     View::POS_HEAD
 ); ?>
 <section class="content">
-        <div class="row">
+    <div class="row">
+        <div class="col-12">
+            <!-- Render create form -->
+            <?= $this->render(
+                '_form',
+                [
+                    'model'        => $model,
+                    'dataProvider' => $dataProvider,
+                ]
+            ) ?>
+
+
+            <?php
+            Pjax::begin(['id' => 'todo-list', 'options' => ['class' => 'row']]); ?>
+
             <div class="col-12">
-                <!-- Render create form -->
-                <?= $this->render(
-                    '_form',
+
+                <?= ListView::widget(
                     [
-                        'model' => $model,
-                        'dataProvider' => $dataProvider,
+                        'dataProvider'     => $dataProvider,
+                        'options'          => [
+                            'tag'         => 'ul',
+                            'class'       => 'todo-list ui-sortable col-12',
+                            'data-widget' => 'todo-list',
+                            'id'          => 'my-todo-list'
+                        ],
+                        'layout'           => "{items}",
+                        'itemOptions'      => ['tag' => 'li'],
+                        'itemView'         => function ($model, $key, $index) {
+                            return $this->render(
+                                '_item_list',
+                                [
+                                    'model' => $model,
+                                    'index' => $index,
+                                    'key'   => $key
+                                ]
+                            );
+
+                            // or just do some echo
+                            // return $model->title . ' posted by ' . $model->author;
+                        },
+                        'emptyText'        => 'Добавьте заметки',
+                        'emptyTextOptions' => [
+                            'tag'   => 'div',
+                            'class' => 'col-12 col-lg-6 mb-3 text-info '
+                        ],
+
                     ]
-                ) ?>
-
-
-                <?php Pjax::begin(['id' => 'todo-list', 'options' => ['class' => 'row']]); ?>
-
-                <div class="col-12">
-
-                    <?= ListView::widget(
-                        [
-                            'dataProvider' => $dataProvider,
-                            'options' => [
-                                'tag' => 'ul',
-                                'class' => 'todo-list ui-sortable col-12',
-                                'data-widget' => 'todo-list',
-                                'id' => 'my-todo-list'
-                            ],
-                            'layout' => "{items}",
-                            'itemOptions' => ['tag' => 'li'],
-                            'itemView' => function ($model, $key, $index) {
-                                return  $this->render('_item_list',
-                                    [
-                                        'model' => $model,
-                                        'index' => $index,
-                                        'key' => $key
-                                    ]);
-
-                                // or just do some echo
-                                // return $model->title . ' posted by ' . $model->author;
-                            },
-                            'emptyText' => 'Добавьте заметки',
-                            'emptyTextOptions' => [
-                                'tag' => 'div',
-                                'class' => 'col-12 col-lg-6 mb-3 text-info '
-                            ],
-
-                        ]
-                    );
-                    ?>
-                </div>
-
-                <?php Pjax::end(); ?>
+                );
+                ?>
             </div>
-            <!-- /.card-body -->
-            <div class="card-footer clearfix">
 
-            </div>
-            <div class="overlay dark " id="overlay">
-                <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-            </div>
+            <?php
+            Pjax::end(); ?>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer clearfix">
+
+        </div>
+        <div class="overlay dark " id="overlay">
+            <i class="fas fa-2x fa-sync-alt fa-spin"></i>
         </div>
     </div>
-        </div>
-
+    </div>
+    </div>
 
 
 </section>

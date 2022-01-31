@@ -67,9 +67,12 @@ use yii\helpers\Html;
                 //'notice',
                 [
                     'class' => 'yii\grid\ActionColumn',
-                    'template' => "{view}\n\n\n{sms}",
+                    'template' => "{view}\n\n\n{sms}\n\n\n{location}",
                     'visibleButtons' => [
                         'sms' => function ($model) {
+                            return Yii::$app->user->can('manager');
+                        },
+                        'location' => function ($model) {
                             return Yii::$app->user->can('manager');
                         }
                     ],
@@ -82,6 +85,14 @@ use yii\helpers\Html;
                                     ) . Yii::$app->smsSender->messageText(
                                         $model['event_time_start']
                                     )
+                                ) : '';
+                        },
+                        'location' => function ($url, $model, $key) {
+                            return $model['client']['phone'] ?
+                                Html::a(
+                                    '<i class="fas fa-map-marker-alt"></i>',
+                                    'sms:' . $model['client']['phone'] . Yii::$app->smsSender->checkOperatingSystem(
+                                    ) . Yii::$app->smsSender->messageAddress()
                                 ) : '';
                         },
                     ],

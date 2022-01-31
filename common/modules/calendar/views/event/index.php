@@ -1,6 +1,7 @@
 <?php
 
 use common\modules\calendar\controllers\EventController;
+use common\widgets\xmas\Xmas;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\bootstrap4\Modal;
 use yii\web\JsExpression;
@@ -23,15 +24,22 @@ PluginAsset::register($this)->add(['sweetalert2']);
 $this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<!--Блок с картинкой-->
+<!--<div class="row">
+    <div class="col-12 text-center">
+        <?/*= Xmas::widget(['src'=>'/img/new_year.png']);*/?>
+    </div>
+</div>-->
 <div class="event-index">
 
     <?php
     #Регистрация переменных для использования в js коде
 
     Yii::$app->view->registerJs(
-        "app=".Json::encode(Yii::$app->id)."; basePath=".Json::encode(Yii::$app->request->baseUrl).";",
+        "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
         View::POS_HEAD
     ); ?>
+
 
     <?php
     Modal::begin(
@@ -82,7 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
 							});
 							Toast.fire({
 									icon: 'success',
-									title: '".Yii::$app->session->getFlash('msg')."'
+									title: '" . Yii::$app->session->getFlash('msg') . "'
 							});	  
 				})
 		";
@@ -95,12 +103,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     if (Yii::$app->user->can('manager')) {
         $editable = true;
-    } else {
-        $right    = 'month,basicDay,basicWeek,listWeek';
-        $editable = false;
     }
     if (Yii::$app->user->can('admin')) {
         $right         = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
+        $initialView   = 'basicDay';
+        $nowIndicator  = true;
         $window_resize = new JsExpression(
             "function(view){
 						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
@@ -109,6 +116,19 @@ $this->params['breadcrumbs'][] = $this->title;
    						}
         	}"
         );
+        $eventAfterAllRender= new JsExpression(
+            "
+                	function(view){
+						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+						if ($(window).width() < 540 ){
+							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+						}
+					}
+                "
+        );
+    }else{
+        $editable = false;
+        $right    = 'month,basicDay,basicWeek,listWeek';
     }
 
     /**
@@ -281,6 +301,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'editable'             => $editable,
                 'eventResize'          => $eventResize,
                 'eventDrop'            => $eventDrop,
+                'initialView'          => $initialView,
+                'nowIndicator'         => $nowIndicator,
                 'defaultDate'          => new JsExpression(
                     "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
@@ -288,7 +310,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ),
                 'windowResize'         => $window_resize,
 
-                'eventClick'  => new JsExpression(
+                'eventClick'          => new JsExpression(
                     "function(event) {
                    
                      if(app == 'app-backend'){
@@ -305,11 +327,11 @@ $this->params['breadcrumbs'][] = $this->title;
                       $('#view').modal('show');
                     }"
                 ),
-                'dayRender'   => new JsExpression(
+                'dayRender'           => new JsExpression(
                     "function(cell,date){
                     } "
                 ),
-                'eventRender' => new JsExpression(
+                'eventRender'         => new JsExpression(
                     "function (event, element, view, popover){
 								$('.popover').remove();
 								element.addClass('event-render');
@@ -383,15 +405,8 @@ $this->params['breadcrumbs'][] = $this->title;
                   				 
                 	}"
                 ),
-                'eventAfterAllRender'=>new JsExpression("
-                	function(view){
-						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
-						if ($(window).width() < 540 ){
-							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
-						}
-					}
-                "),
-                'viewRender'  => new JsExpression(
+                'eventAfterAllRender' => $eventAfterAllRender,
+                'viewRender'          => new JsExpression(
                     "function (view,event, element){
 								localStorage.setItem('fcDefaultView', view.name);
 								var date = $('#calendar').fullCalendar('getDate');

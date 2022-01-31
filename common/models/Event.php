@@ -3,6 +3,7 @@
 namespace common\models;
 
 use backend\modules\telegram\models\Telegram;
+use common\modules\calendar\controllers\EventController;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\caching\DbDependency;
@@ -10,6 +11,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "event".
@@ -25,6 +27,8 @@ class Event extends ActiveRecord
 
     public $totalEvent;
     public $checkEvent;
+    public $service_array;
+
 
     /**
      *
@@ -34,7 +38,7 @@ class Event extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::class,
+                'class'      => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -60,9 +64,9 @@ class Event extends ActiveRecord
         return [
             [['master_id'], 'required', 'message' => 'Выберите мастера'],
             [['client_id'], 'required', 'message' => 'Выберите клиента'],
+            [['service_array'], 'required', 'message' => 'Выберите услуги'],
             ['master_id', 'filter', 'filter' => 'intval'],
             ['client_id', 'filter', 'filter' => 'intval'],
-            [['description'], 'string'],
             [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent'], 'safe'],
             [['notice'], 'string', 'max' => 255],
             ['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
@@ -78,7 +82,7 @@ class Event extends ActiveRecord
             ->where(
                 [
                     'event_time_start' => $this->event_time_start,
-                    'master_id' => $this->master_id
+                    'master_id'        => $this->master_id
                 ]
             )
             ->asArray()
@@ -127,13 +131,15 @@ class Event extends ActiveRecord
     function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'client_id' => 'Клиент',
-            'master_id' => 'Мастер',
-            'description' => 'Что делаем',
-            'notice' => 'Пожелания',
+            'id'               => 'ID',
+            'client_id'        => 'Клиент',
+            'master_id'        => 'Мастер',
+            'description'      => 'Услуги',
+            'service_array'    => 'Услуги',
+            'cost'             => 'Цена',
+            'notice'           => 'Пожелания',
             'event_time_start' => 'Время начала',
-            'event_time_end' => 'Время окончания',
+            'event_time_end'   => 'Время окончания',
         ];
     }
 
@@ -170,6 +176,57 @@ class Event extends ActiveRecord
         return $this->hasOne(Telegram::class, ['user_id' => 'client_id']);
     }
 
+
+    public function getEventService(): ActiveQuery
+    {
+        return $this->hasMany(EventService::class, ['event_id' => 'id']);
+    }
+
+
+    public function getServices(): ActiveQuery
+    {
+        return $this->hasMany(Service::class, ['id' => 'service_id'])->via('eventService');
+    }
+
+    /*public function beforeDelete(): bool
+    {
+        if (parent::beforeDelete()) {
+            EventService::deleteAll(['event_id' => $this->id]);
+            return true;
+        } else {
+            return false;
+        }
+    }*/
+
+    public function afterFind()
+    {
+        $this->service_array = $this->services;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        //$arr = array_keys($this->services);
+        $arr = ArrayHelper::map($this->services, 'id', 'id');
+
+        if ($this->service_array) {
+            foreach ($this->service_array as $one) {
+                if (!in_array($one, $arr)) {
+                    $model             = new EventService();
+                    $model->event_id   = $this->id;
+                    $model->service_id = $one;
+                    $model->save();
+                }
+                if (isset($arr[$one])) {
+                    unset($arr[$one]);
+                }
+            }
+            EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
+        }
+        EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
+    }
+
     /**
      * Getting records for masters
      *
@@ -199,10 +256,10 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );*/
-        return Event::find()->with(['master', 'client'])
+        return Event::find()->with(['master', 'client', 'services'])
             ->where(['master_id' => $id])
             ->andWhere('event_time_start >= DATE(NOW())')
-            ->orderBy( ['event_time_start' => SORT_ASC])
+            ->orderBy(['event_time_start' => SORT_ASC])
             ->asArray();
     }
 
@@ -235,7 +292,7 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        return Event::find()->with(['master', 'client'])
+        return Event::find()->with(['master', 'client', 'services'])
             ->where('event_time_start >= DATE(NOW())')
             ->orderBy(
                 [
@@ -296,13 +353,13 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public static function findNextClientEvents( $user_id ): array
+    public static function findNextClientEvents($user_id): array
     {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])
             ->andWhere(['>', 'event_time_start', new Expression('CURDATE()')])
-            ->orderBy(['event_time_start'=>SORT_ASC])
+            ->orderBy(['event_time_start' => SORT_ASC])
             ->asArray()
             ->all();
     }
@@ -340,8 +397,8 @@ class Event extends ActiveRecord
     ) {
         $dependency = Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
@@ -369,8 +426,8 @@ class Event extends ActiveRecord
     ): array {
         $dependency = Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(updated_at) FROM event',
                 'reusable' => true
             ]
         );
@@ -414,19 +471,19 @@ class Event extends ActiveRecord
             $query = Event::findClientEvents($userId);
         }
 
-        $dataProvider = new ActiveDataProvider(
+        $dataProvider    = new ActiveDataProvider(
             [
-                'query' => $query,
+                'query'      => $query,
                 'pagination' => false,
             ]
         );
-        $eventDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM event']);
-        $userDependency= new DbDependency(['sql'=>'SELECT MAX(updated_at) FROM user']);
-        $dependency = Yii::createObject(
+        $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
+        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency      = Yii::createObject(
             [
-                'class' => 'yii\caching\ChainedDependency',
-                'dependOnAll'=>true,
-                'dependencies'=>[
+                'class'        => 'yii\caching\ChainedDependency',
+                'dependOnAll'  => true,
+                'dependencies' => [
                     $eventDependency,
                     $userDependency
                 ],
@@ -442,5 +499,41 @@ class Event extends ActiveRecord
         );
 
         return $dataProvider;
+    }
+
+    public static function getServiceString($data): string
+    {
+        $services_name = '';
+
+        foreach ($data as $service) {
+            $services_name .= $service['name'] . PHP_EOL;
+        }
+
+        return $services_name;
+    }
+
+    public static function getTotal($dataProvider)
+    {
+        $total = 0;
+        foreach ($dataProvider->models as $model) {
+            foreach ($model->service_array as $cost) {
+                $total = $total + $cost->cost;
+            }
+        }
+
+        return $total;
+    }
+
+    public static function getSalary($dataProvider)
+    {
+        $total = 0;
+        foreach ($dataProvider as $model) {
+            foreach ($model->services as $item) {
+                if (!Yii::$app->authManager->getRolesByUser($model->master->id)['manager']) {
+                    $total += $item->cost / 2;
+                }
+            }
+        }
+        return $total;
     }
 }

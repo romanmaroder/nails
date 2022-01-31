@@ -73,6 +73,20 @@ PluginAsset::register($this)->add(['sweetalert2']);
         }
         echo Html::tag('a', '<i class="far fa-envelope"></i>', $options);
         ?>
+        <?php
+
+        $options = ['class' => 'btn btn-info btn-sm d-none',
+                    'href'=>'sms:' . $model->client->phone . Yii::$app->smsSender->checkOperatingSystem(
+                        ) . Yii::$app->smsSender->messageAddress(),
+                    'title'          => 'Отправить адрес',
+        ];
+
+        if ($model->client->phone ) {
+            Html::removeCssClass($options, 'd-none');
+            Html::addCssClass($options, 'd-in;ine-block');
+        }
+        echo Html::tag('a', '<i class="fas fa-map-marker-alt"></i>', $options);
+        ?>
 
         <?= Html::a(
             Yii::t('app', 'Удалить'),
@@ -89,3 +103,5 @@ PluginAsset::register($this)->add(['sweetalert2']);
 	</p>
         <?php endif;?>
 </div>
+
+

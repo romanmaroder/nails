@@ -37,6 +37,10 @@ return [
     ],
     'hail812/yii2-adminlte3' => [
         'pluginMap' => [
+            /*'chart'=>[
+                'css'=>'chart.js/Chart.css',
+                'js'=>'chart.js/Chart.js'
+            ],*/
             'datatables'                    => [
                 'js' => 'datatables/jquery.dataTables.min.js'
             ],

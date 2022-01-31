@@ -16,17 +16,17 @@ use yii\base\InvalidConfigException;
  */
 class SmsSender extends Component implements SmsSenderInterface
 {
-    protected const MORNING = "Доброе утро".PHP_EOL;
-    protected const DAY = "Добрый день".PHP_EOL;
-    protected const EVENING = "Добрый вечер".PHP_EOL;
-    protected const NIGHT = "Доброй ночи".PHP_EOL;
+    protected const MORNING = "Доброе утро" . PHP_EOL;
+    protected const DAY     = "Добрый день" . PHP_EOL;
+    protected const EVENING = "Добрый вечер" . PHP_EOL;
+    protected const NIGHT   = "Доброй ночи" . PHP_EOL;
 
     /**
      * Checking what operating system the user is using
-     * @property $params
      * @return  string
+     * @property $params
      */
-   final public function checkOperatingSystem(): string
+    final public function checkOperatingSystem(): string
     {
         preg_match("/iPhone|Android|iPad|iPod|webOS/", $_SERVER['HTTP_USER_AGENT'], $matches);
         $os = current($matches);
@@ -51,10 +51,10 @@ class SmsSender extends Component implements SmsSenderInterface
      * @return string
      * @throws InvalidConfigException
      */
-   final public function checkTimeOfDay(): string
+    final public function checkTimeOfDay(): string
     {
         $greeting = '';
-        $hour = Yii::$app->formatter->asTime(date("H:i"));
+        $hour     = Yii::$app->formatter->asTime(date("H:i"));
 
 
         if ($hour >= 04) {
@@ -81,20 +81,32 @@ class SmsSender extends Component implements SmsSenderInterface
      * @return string
      * @throws InvalidConfigException
      */
-    final public function messageText(string $dataEvent, string $greeting = null ): string
+    final public function messageText(string $dataEvent, string $greeting = null): string
     {
         $greeting = self::checkTimeOfDay();
-        $data = Yii::$app->formatter->asDatetime($dataEvent,'php:d M Y на H:i');
+        $data     = Yii::$app->formatter->asDatetime($dataEvent, 'php:d M Y на H:i');
 
-        $launchDate = new DateTime(Yii::$app->formatter->asDate($dataEvent,'php:d-m-Y'));
-        $today = new DateTime();
+        $launchDate   = new DateTime(Yii::$app->formatter->asDate($dataEvent, 'php:d-m-Y'));
+        $today        = new DateTime();
         $daysToLaunch = $today->diff($launchDate, false)->days;
 
 
         if ($daysToLaunch >= 1) {
-            return $greeting.'. У Вас следующая запись '.$data.'.';
+            return $greeting . '. У Вас следующая запись ' . $data . '.';
         }
 
-        return $greeting.'. У Вас запись '.$data .'. Вы будете?';
+        return $greeting . '. У Вас запись ' . $data . '. Вы будете?';
+    }
+
+    /**
+     * @param string|null $greeting
+     * @return string
+     * @throws InvalidConfigException
+     */
+    final public function messageAddress(string $greeting = null): string
+    {
+        $greeting = self::checkTimeOfDay();
+
+        return $greeting . '. Наш адрес: ул.Раздольная д.11, подъезд 4, кв.142, этаж 9.';
     }
 }
