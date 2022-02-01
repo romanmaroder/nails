@@ -61,9 +61,24 @@ use yii\helpers\Html;
                     }
                 ],
                 [
+                    'attribute' => 'services.name',
+                    'format'    => 'raw',
+                    'value'     => function ($model) {
+                        $service_name = '';
+                        foreach ($model['services'] as $services) {
+                            $service_name .= $services['name'] . " </br>";
+                            // echo '<pre>';
+                            //var_dump($model);
+                            //var_dump($services->name);
+                        }
+
+                        return $service_name ? $service_name : $model['description'];
+                    },
+                ],
+                /*[
                     'attribute' => 'description',
                     'contentOptions' => ['style' => 'white-space: nowrap;'],
-                ],
+                ],*/
                 //'notice',
                 [
                     'class' => 'yii\grid\ActionColumn',

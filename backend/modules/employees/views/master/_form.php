@@ -26,12 +26,7 @@ use yii\widgets\ActiveForm;
                     <?php $form = ActiveForm::begin(); ?>
 					<div class="card-body">
                         <?= $form->field($model, 'status')->dropDownList($model->getStatus()) ?>
-                        <?= $form->field(
-                            $model,
-                            'color',
-                            [
-                                'template' => "{input}"
-                            ]
+                        <?= $form->field($model,'color', [ 'template' => "{input}" ]
                         )->input('color', ['class' => "form-control"]) ?>
 
                         <?= $form->field($model, 'roles')->checkboxList($model->getRolesDropdown()) ?>

@@ -137,6 +137,7 @@ class Event extends ActiveRecord
             'description'      => 'Услуги',
             'service_array'    => 'Услуги',
             'cost'             => 'Цена',
+            'salary'             => 'Вознаграждение',
             'notice'           => 'Пожелания',
             'event_time_start' => 'Время начала',
             'event_time_end'   => 'Время окончания',
@@ -292,7 +293,7 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        return Event::find()->with(['master', 'client', 'services'])
+        return Event::find()->with(['master', 'client', 'services','eventService'])
             ->where('event_time_start >= DATE(NOW())')
             ->orderBy(
                 [
@@ -521,7 +522,7 @@ class Event extends ActiveRecord
             }
         }
 
-        return $total;
+        return Yii::$app->formatter->asCurrency($total);
     }
 
     public static function getSalary($dataProvider)
@@ -534,6 +535,6 @@ class Event extends ActiveRecord
                 }
             }
         }
-        return $total;
+        return Yii::$app->formatter->asCurrency($total);
     }
 }
