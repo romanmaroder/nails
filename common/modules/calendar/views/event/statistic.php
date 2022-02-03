@@ -58,7 +58,7 @@ die();*/
                 ->all();*/
 
 
-            $name   = [];
+            $name = [];
             $amount = [];
             foreach ($dataProvider->models as $model) {
                 foreach ($model->services as $key => $item) {
@@ -89,39 +89,34 @@ die();*/
              die();*/
             echo GridView::widget(
                 [
-                    'dataProvider'     => $dataProvider,
+                    'dataProvider' => $dataProvider,
                     //'filterModel'  => $service1,
-                    'showFooter'       => true,
-                    'tableOptions'     => [
+                    'showFooter' => true,
+                    'tableOptions' => [
                         'class' => 'table table-striped table-bordered',
-                        'id'    => 'statistic_table'
+                        'id' => 'statistic_table'
                     ],
-                    'emptyText'        => 'Ничего не найдено',
+                    'emptyText' => 'Ничего не найдено',
                     'emptyTextOptions' => [
-                        'tag'   => 'div',
+                        'tag' => 'div',
                         'class' => 'col-12 col-lg-6 mb-3 text-info'
                     ],
 
+
                     'columns' => [
 
-                        [
-                            'attribute' => 'client_id',
-                            'format'    => 'raw',
-                            'value'     => function ($model) {
-                                return $model->client->username;
-                            },
-                        ],
+
                         [
                             'attribute' => 'master_id',
-                            'format'    => 'raw',
-                            'value'     => function ($model) {
+                            'format' => 'raw',
+                            'value' => function ($model) {
                                 return $model->master->username;
                             },
                         ],
                         [
                             'attribute' => 'services.name',
-                            'format'    => 'raw',
-                            'value'     => function ($model) {
+                            'format' => 'raw',
+                            'value' => function ($model) {
                                 $service_name = '';
                                 foreach ($model->services as $services) {
                                     $service_name .= $services->name . " </br>";
@@ -135,22 +130,23 @@ die();*/
                         ],
                         [
                             'attribute' => 'cost',
-                            'format'    => 'raw',
-                            'value'     => function ($model) {
-                                $service_one   = '';
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                $service_one = '';
                                 $service_total = 0;
                                 foreach ($model->services as $item) {
-                                    $service_one   .= $item->cost . " </br>";
+                                    $service_one .= $item->cost . " </br>";
                                     $service_total += $item->cost;
                                 }
                                 return $service_one . '<hr>' . Yii::$app->formatter->asCurrency($service_total);
                             },
-                            'footer'    => \common\models\Event::getTotal($dataProvider),
+                            'footer' => \common\models\Event::getTotal($dataProvider),
                         ],
                         [
                             'attribute' => 'salary',
-                            'format'    => 'raw',
-                            'value'     => function ($model) {
+                            'format' => 'raw',
+
+                            'value' => function ($model) {
                                 $salary = 0;
 
                                 foreach ($model->services as $item) {
@@ -162,13 +158,21 @@ die();*/
                                 }
                                 return $salary;
                             },
-                            'footer'    => \common\models\Event::getSalary($dataProvider->models),
+                            'footer' => \common\models\Event::getSalary($dataProvider->models),
 
                         ],
                         [
-                            'attribute' => 'event_time_start',
-                            'format'    => ['date', 'php:Y-m-d'],
+                            'attribute' => 'client_id',
+                            'format' => 'raw',
+                            'value' => function ($model) {
+                                return $model->client->username;
+                            },
                         ],
+                        [
+                            'attribute' => 'event_time_start',
+                            'format' => ['date', 'php:Y-m-d'],
+                        ],
+
                     ],
                 ]
             );
@@ -180,100 +184,250 @@ die();*/
         <div class="row">
             <div class="col-12">
 
+                <!--                --><? //= ChartJs::widget(
+                //                    [
+                //                        'type'          => 'doughnut',
+                //                        'id'            => 'structurePie',
+                //                        'options'       => [
+                //                            'height' => 200,
+                //                            'width'  => 400,
+                //                        ],
+                //                        'data'          => [
+                //
+                //                            'labels'   => $name, // Your labels
+                //                            'datasets' => [
+                //                                [
+                //                                    'data'             => array_values($amount), // Your dataset
+                //                                    'label'            => $name,
+                //                                    'backgroundColor'  => [
+                //                                        '#ADC3FF',
+                //                                        '#FF9A9A',
+                //                                        'rgba(190, 124, 145, 0.8)',
+                //                                        'rgba(190, 124, 145, 0.8)',
+                //                                        'rgba(190, 124, 145, 0.8)',
+                //                                    ],
+                //                                    'borderColor'      => [
+                //                                        '#fff'
+                //                                    ],
+                //                                    'borderWidth'      => 1,
+                //                                    'hoverBorderColor' => ["#999"],
+                //                                ]
+                //                            ]
+                //                        ],
+                //                        'clientOptions' => [
+                //                            'legend'              => [
+                //                                'display'  => false,
+                //                                'position' => 'bottom',
+                //                                'labels'   => [
+                //                                    'fontSize'  => 14,
+                //                                    'fontColor' => "#9da3ab",
+                //                                ],
+                //                            ],
+                //                            'tooltips'            => [
+                //                                'enabled'   => true,
+                //                                'intersect' => true
+                //                            ],
+                //                            'hover'               => [
+                //                                'mode' => 'single',
+                //                            ],
+                //                            'maintainAspectRatio' => false,
+                //                            'animation'           => [
+                //                                'duration'   => 500,
+                //                                'easing'     => "easeOutQuart",
+                //                                /*'onComplete' =>
+                //                                    new \yii\web\JsExpression(
+                //                                        '
+                //                                        function () {
+                //      var ctx = this.chart.ctx;
+                //      ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, "normal", Chart.defaults.global.defaultFontFamily);
+                //      ctx.textAlign = "center";
+                //      ctx.textBaseline = "bottom";
+                //
+                //      this.data.datasets.forEach(function (dataset) {
+                //
+                //        for (var i = 0; i < dataset.data.length; i++) {
+                //          var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
+                //              total = dataset._meta[Object.keys(dataset._meta)[0]].total,
+                //              mid_radius = model.innerRadius + (model.outerRadius - model.innerRadius)/2,
+                //              start_angle = model.startAngle,
+                //              end_angle = model.endAngle,
+                //              mid_angle = start_angle + (end_angle - start_angle)/2;
+                //
+                //          var x = mid_radius * Math.cos(mid_angle);
+                //          var y = mid_radius * Math.sin(mid_angle);
+                //
+                //          ctx.fillStyle = "#000";
+                //          if (i == 3){ // Darker text color for lighter background
+                //            ctx.fillStyle = "#444";
+                //          }
+                //
+                //
+                //          var percent = String(Math.round(dataset.data[i]/total*100)) + "%";
+                //          ctx.fillText(dataset.data[i], model.x + x, model.y + y);
+                //          // Display percent in another line, line break doesn\'t work for fillText
+                //          ctx.fillText(percent, model.x + x, model.y + y + 15);
+                //        }
+                //      });
+                //    }')*/
+                //                            ],
+                //
+                //                        ],
+                //                        /*'plugins'       =>
+                //                            new \yii\web\JsExpression(
+                //                                '
+                //        [{
+                //            afterDatasetsDraw: function(chart, easing) {
+                //                var ctx = chart.ctx;
+                //                chart.data.datasets.forEach(function (dataset, i) {
+                //                    var meta = chart.getDatasetMeta(i);
+                //
+                //                    if (!meta.hidden) {
+                //                        meta.data.forEach(function(element, index) {
+                //                            // Draw the text in black, with the specified font
+                //                            ctx.fillStyle = "rgb(0, 0, 0)";
+                //
+                //                            var fontSize = 16;
+                //                            var fontStyle = "normal";
+                //                            var fontFamily = "Helvetica";
+                //                            ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+                //
+                //                            // Just naively convert to string for now
+                //                            //var dataString = dataset.data[index].toString()+"%";
+                //                            var dataString = dataset.data[index].toString();
+                //
+                //                            // Make sure alignment settings are correct
+                //                            ctx.textAlign = "center";
+                //                            ctx.textBaseline = "center";
+                //
+                //                            var padding = 5;
+                //                            var position = element.tooltipPosition();
+                //
+                //
+                //                            ctx.fillText(dataString, position.x, position.y );
+                //
+                //                        });
+                //                    }
+                //                });
+                //            }
+                //        }]'
+                //                            )*/
+                //                    ]
+                //                )
+                //                ?>
+
                 <?= ChartJs::widget(
                     [
-                        'type'          => 'doughnut',
-                        'id'            => 'structurePie',
-                        'options'       => [
-                            'height' => 200,
-                            'width'  => 400,
-                        ],
-                        'data'          => [
+                        'type' => 'bar',
+                        'id' => 'structurePie',
+                        'options' => [
 
-                            'labels'   => $name, // Your labels
+                            'legend' => [
+                                'display' => false,
+                                'title' => [
+                                    'display' => true,
+                                    'text' => ''
+                                ]
+                            ],
+
+                        ],
+                        'data' => [
+
+                            'labels' => $name, // Your labels
                             'datasets' => [
                                 [
-                                    'data'             => array_values($amount), // Your dataset
-                                    'label'            => $name,
-                                    'backgroundColor'  => [
+                                    'data' => array_values($amount), // Your dataset
+                                    'backgroundColor' => [
                                         '#ADC3FF',
                                         '#FF9A9A',
                                         'rgba(190, 124, 145, 0.8)',
                                         'rgba(190, 124, 145, 0.8)',
                                         'rgba(190, 124, 145, 0.8)',
                                     ],
-                                    'borderColor'      => [
+                                    'borderColor' => [
                                         '#fff'
                                     ],
-                                    'borderWidth'      => 1,
+                                    'borderWidth' => 1,
                                     'hoverBorderColor' => ["#999"],
+
                                 ]
                             ]
                         ],
                         'clientOptions' => [
-                            'legend'              => [
-                                'display'  => true,
+                            'legend' => [
+                                'display' => false,
                                 'position' => 'bottom',
-                                'labels'   => [
-                                    'fontSize'  => 14,
-                                    'fontColor' => "#9da3ab",
+                                'labels' => [
+                                    'fontSize' => 14,
+                                    'fontColor' => "#7f8c8d",
                                 ],
                             ],
-                            'tooltips'            => [
-                                'enabled'   => true,
+                            'tooltips' => [
+                                'enabled' => true,
                                 'intersect' => true
                             ],
-                            'hover'               => [
+                            'hover' => [
                                 'mode' => 'single',
                             ],
-                            'maintainAspectRatio' => false,
-                            'animation'           => [
-                                'duration'   => 500,
-                                'easing'     => "easeOutQuart",
-                                'onComplete' =>
-                                    new \yii\web\JsExpression(
-                                        '
-                                        function () {
-      var ctx = this.chart.ctx;
-      ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, "normal", Chart.defaults.global.defaultFontFamily);
-      ctx.textAlign = "center";
-      ctx.textBaseline = "bottom";
-
-      this.data.datasets.forEach(function (dataset) {
-
-        for (var i = 0; i < dataset.data.length; i++) {
-          var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
-              total = dataset._meta[Object.keys(dataset._meta)[0]].total,
-              mid_radius = model.innerRadius + (model.outerRadius - model.innerRadius)/2,
-              start_angle = model.startAngle,
-              end_angle = model.endAngle,
-              mid_angle = start_angle + (end_angle - start_angle)/2;
-
-          var x = mid_radius * Math.cos(mid_angle);
-          var y = mid_radius * Math.sin(mid_angle);
-
-          ctx.fillStyle = "#000";
-          if (i == 3){ // Darker text color for lighter background
-            ctx.fillStyle = "#444";
-          }
-          
-          
-          var percent = String(Math.round(dataset.data[i]/total*100)) + "%";
-          
-          
-          
-          ctx.fillText(dataset.data[i], model.x + x, model.y + y);
-          // Display percent in another line, line break doesn\'t work for fillText
-          ctx.fillText(percent, model.x + x, model.y + y + 15);
-        }
-      });               
-    }
-  
-                                        '
-                                    )
-                            ],
-
-                        ],
+                            'height' => 100,
+                            'width' => 200,
+                            'scales' => [
+                                'xAxes' => [
+                                    [
+                                        'stacked' => true,
+                                    ]
+                                ],
+                                'yAxes' => [
+                                    [
+                                        'ticks' => [
+                                            'beginAtZero' => true,
+                                            'stacked' => true,
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+//                            'maintainAspectRatio' => false,
+//                            'animation'           => [
+//                                'duration'   => 500,
+//                                'easing'     => "easeOutQuart",
+//                                /*'onComplete' =>
+//                                    new \yii\web\JsExpression(
+//                                        '
+//                                        function () {
+//      var ctx = this.chart.ctx;
+//      ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, "normal", Chart.defaults.global.defaultFontFamily);
+//      ctx.textAlign = "center";
+//      ctx.textBaseline = "bottom";
+//
+//      this.data.datasets.forEach(function (dataset) {
+//
+//        for (var i = 0; i < dataset.data.length; i++) {
+//          var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
+//              total = dataset._meta[Object.keys(dataset._meta)[0]].total,
+//              mid_radius = model.innerRadius + (model.outerRadius - model.innerRadius)/2,
+//              start_angle = model.startAngle,
+//              end_angle = model.endAngle,
+//              mid_angle = start_angle + (end_angle - start_angle)/2;
+//
+//          var x = mid_radius * Math.cos(mid_angle);
+//          var y = mid_radius * Math.sin(mid_angle);
+//
+//          ctx.fillStyle = "#000";
+//          if (i == 3){ // Darker text color for lighter background
+//            ctx.fillStyle = "#444";
+//          }
+//
+//
+//          var percent = String(Math.round(dataset.data[i]/total*100)) + "%";
+//          ctx.fillText(dataset.data[i], model.x + x, model.y + y);
+//          // Display percent in another line, line break doesn\'t work for fillText
+//          ctx.fillText(percent, model.x + x, model.y + y + 15);
+//        }
+//      });
+//    }')*/
+//                            ],
+//
+//                        ],
                         /*'plugins'       =>
                             new \yii\web\JsExpression(
                                 '
@@ -282,7 +436,7 @@ die();*/
                 var ctx = chart.ctx;
                 chart.data.datasets.forEach(function (dataset, i) {
                     var meta = chart.getDatasetMeta(i);
-                 
+
                     if (!meta.hidden) {
                         meta.data.forEach(function(element, index) {
                             // Draw the text in black, with the specified font
@@ -296,17 +450,17 @@ die();*/
                             // Just naively convert to string for now
                             //var dataString = dataset.data[index].toString()+"%";
                             var dataString = dataset.data[index].toString();
- 
+
                             // Make sure alignment settings are correct
                             ctx.textAlign = "center";
                             ctx.textBaseline = "center";
 
                             var padding = 5;
                             var position = element.tooltipPosition();
-                            
-                           
+
+
                             ctx.fillText(dataString, position.x, position.y );
-                            
+
                         });
                     }
                 });
@@ -328,7 +482,7 @@ $(function () {
 $("#statistic_table").DataTable({
 "responsive": true,
 "pageLength": 10,
-"paging": true,
+"paging": false,
 "searching": false,
 "ordering": false,
 "info": false,
