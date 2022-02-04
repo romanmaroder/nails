@@ -5,21 +5,21 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\ExpensesSearch */
+/* @var $searchModel common\models\ExpenseslistSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Расходы';
+$this->title = 'Затраты';
 $this->params['breadcrumbs'][] = $this->title;
 PluginAsset::register($this)->add(
     ['sweetalert2']
 );
 ?>
-<div class="expenses-index">
+<div class="expenseslist-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+        <?= Html::a('Добавить затраты', ['create'], ['class' => 'btn btn-sm btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -32,9 +32,17 @@ PluginAsset::register($this)->add(
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            'title',
-            //'created_at',
-           // 'updated_at',
+            [
+                'attribute' => 'expenses_id',
+                'value'     => function ($model) {
+                    return $model->expenses->title;
+                }
+            ],
+            'price',
+            [
+                'attribute' => 'created_at',
+                'format'    => ['date', 'php: d-m-Y']
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

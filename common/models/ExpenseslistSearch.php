@@ -4,12 +4,12 @@ namespace common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Expenses;
+use common\models\Expenseslist;
 
 /**
- * ExpensesSearch represents the model behind the search form of `common\models\Expenses`.
+ * ExpenseslistSearch represents the model behind the search form of `common\models\Expenseslist`.
  */
-class ExpensesSearch extends Expenses
+class ExpenseslistSearch extends Expenseslist
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,7 @@ class ExpensesSearch extends Expenses
     public function rules()
     {
         return [
-            [['id', 'created_at', 'updated_at'], 'integer'],
-            [['title'], 'safe'],
+            [['id', 'expenses_id', 'price', 'created_at', 'updated_at'], 'integer'],
         ];
     }
 
@@ -40,7 +39,7 @@ class ExpensesSearch extends Expenses
      */
     public function search($params)
     {
-        $query = Expenses::find();
+        $query = Expenseslist::find();
 
         // add conditions that should always apply here
 
@@ -59,11 +58,11 @@ class ExpensesSearch extends Expenses
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'expenses_id' => $this->expenses_id,
+            'price' => $this->price,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
-
-        $query->andFilterWhere(['like', 'title', $this->title]);
 
         return $dataProvider;
     }

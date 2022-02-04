@@ -5,17 +5,19 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "expenses".
+ * This is the model class for table "expenseslist".
  *
  * @property int $id
- * @property string|null $title
+ * @property int|null $expenses_id
+ * @property int|null $price
  * @property int|null $created_at
  * @property int|null $updated_at
+ *
+ * @property Expenses $expenses
  */
-class Expenses extends \yii\db\ActiveRecord
+class Expenseslist extends \yii\db\ActiveRecord
 {
 
     /**
@@ -34,13 +36,12 @@ class Expenses extends \yii\db\ActiveRecord
             ],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'expenses';
+        return 'expenseslist';
     }
 
     /**
@@ -49,8 +50,8 @@ class Expenses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [[ 'created_at', 'updated_at'], 'integer'],
-            [['title'], 'string', 'max' => 255],
+            [['expenses_id', 'price', 'created_at', 'updated_at'], 'integer'],
+            [['expenses_id'], 'exist', 'skipOnError' => true, 'targetClass' => Expenses::class, 'targetAttribute' => ['expenses_id' => 'id']],
         ];
     }
 
@@ -61,21 +62,20 @@ class Expenses extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Расходы',
+            'expenses_id' => 'Категория расходов',
+            'price' => 'Цена',
             'created_at' => 'Дата',
-            'updated_at' => 'Updated At',
+            'updated_at' => 'Дата редактирования',
         ];
     }
 
     /**
-     * @return array
+     * Gets query for [[Expenses]].
+     *
+     * @return \yii\db\ActiveQuery
      */
-    public static function getTitle(): array
+    public function getExpenses()
     {
-        $expenses =  Expenses::find()->all();
-
-        return ArrayHelper::map($expenses,'id','title');
+        return $this->hasOne(Expenses::class, ['id' => 'expenses_id']);
     }
-
-
 }

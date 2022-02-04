@@ -81,6 +81,15 @@ use yii\widgets\Menu;
                     'url' => ['/service/index'],
                 ],
                 [
+                    'label' => '<i class="fas fa-dollar-sign"></i>',
+                    'options' => ['class' => 'd-none d-sm-inline-block',
+                                  'data-toggle' => 'tooltip',
+                                  'data-placement' => 'tooltip',
+                                  'title' =>'Расходы'
+                    ],
+                    'url' => ['/expenses/index'],
+                ],
+                [
                     'label' => '<i class="fa fa-list-ul" aria-hidden="true"></i>',
                     'options' => ['class' => 'd-none d-sm-inline-block',
                         'data-toggle' => 'tooltip',
@@ -123,7 +132,13 @@ use yii\widgets\Menu;
                             'label' => 'Услуги',
                             'url' => ['/service/index'],
                             'options' => ['class' => 'nav-item'],
-                        ],[
+                        ],
+                        [
+                            'label' => 'Расходы',
+                            'url' => ['/expenses/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
                             'label' => 'Заметки',
                             'url' => ['/todo/todo/index'],
                             'options' => ['class' => 'nav-item'],

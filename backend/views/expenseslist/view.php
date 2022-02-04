@@ -2,30 +2,29 @@
 
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
-use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Expenses */
+/* @var $model common\models\Expenseslist */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Расходы', 'url' => ['index']];
+$this->title = $model->expenses->title;
+$this->params['breadcrumbs'][] = ['label' => 'Затраты', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-YiiAsset::register($this);
+\yii\web\YiiAsset::register($this);
 PluginAsset::register($this)->add(
     ['sweetalert2']
 );
 ?>
-<div class="expenses-view">
+<div class="expenseslist-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary btn-sm']) ?>
+        <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-sm btn-primary']) ?>
         <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger btn-sm',
+            'class' => 'btn btn-sm btn-danger',
             'data' => [
-                'confirm' => 'Удалить эту статью расходов?',
+                'confirm' => 'Удалить эти затраты?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -35,7 +34,14 @@ PluginAsset::register($this)->add(
         'model' => $model,
         'attributes' => [
             //'id',
-            'title',
+            //'expenses_id',
+            [
+                'attribute' => 'expenses_id',
+                'value'     => function ($model) {
+                    return $model->expenses->title;
+                }
+            ],
+            'price',
             [
                 'attribute' => 'created_at',
                 'format'    => ['date', 'php: d-m-Y']

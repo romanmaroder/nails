@@ -191,6 +191,24 @@ use yii\helpers\Url;
                                 ],
                             ]
                         ],
+                        [
+                            'label' => 'Расходы',
+                            'icon'  => 'fas fa-dollar-sign',
+                            'iconClassAdded' => 'text-danger',
+                            'items' => [
+                                [
+                                    'label' => 'Категории расходов',
+                                    'icon'  => 'fas fa-list',
+                                    'url'
+                                            => ['/expenses/index'],
+                                ],
+                                [
+                                    'label' => 'Добавить категорию',
+                                    'icon'  => 'far fa-plus-square',
+                                    'url'   => ['/expenses/create'],
+                                ],
+                            ]
+                        ],
                         ['label' => 'Заметки', 'icon' => 'fa fa-list-ul', 'url' => ['/todo/todo/index'],'iconClassAdded' =>'text-info'],
 
 
