@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Service;
+use common\models\User;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
 use yii\helpers\Html;
@@ -21,14 +22,10 @@ use yii\widgets\ActiveForm;
                                         ],
                                     ]); ?>
 
-    <?/*= $form->field($model, 'id') */?>
+    <?= $form->field($model, 'master_id')->dropDownList(
+        User::getMasterList(),
+        ['prompt' => 'Выберите мастера...','class'=>'form-control form-control-sm']) ?>
 
-    <?/*= $form->field($model, 'client_id') */?>
-
-    <?= $form->field($model, 'master_id')->dropDownList(\common\models\User::getMasterList(),
-                                                        ['prompt' => 'Выберите мастера...',['class'=>'form-control form-control-sm']]) ?>
-
-    <?/*= $form->field($model, 'service') */?>
     <?= $form->field($model, 'service')->widget(
         Select2::class,
         [
@@ -75,7 +72,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
-        <?/*= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) */?>
+
     </div>
 
     <?php ActiveForm::end(); ?>

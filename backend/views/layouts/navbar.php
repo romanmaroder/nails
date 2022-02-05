@@ -139,6 +139,11 @@ use yii\widgets\Menu;
                             'options' => ['class' => 'nav-item'],
                         ],
                         [
+                            'label' => 'Затраты',
+                            'url' => ['/expenseslist/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
                             'label' => 'Заметки',
                             'url' => ['/todo/todo/index'],
                             'options' => ['class' => 'nav-item'],

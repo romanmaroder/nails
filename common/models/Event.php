@@ -5,6 +5,7 @@ namespace common\models;
 use backend\modules\telegram\models\Telegram;
 use common\modules\calendar\controllers\EventController;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
@@ -458,7 +459,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\data\ActiveDataProvider
      * @throws \Throwable
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public
     static function getEventDataProvider(
@@ -502,6 +503,11 @@ class Event extends ActiveRecord
         return $dataProvider;
     }
 
+    /**
+     * Getting the name of the service
+     * @param $data
+     * @return string
+     */
     public static function getServiceString($data): string
     {
         $services_name = '';
@@ -513,7 +519,13 @@ class Event extends ActiveRecord
         return $services_name;
     }
 
-    public static function getTotal($dataProvider)
+    /**
+     * Total amount for services
+     * @param $dataProvider
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public static function getTotal($dataProvider): string
     {
         $total = 0;
         foreach ($dataProvider->models as $model) {
@@ -525,7 +537,13 @@ class Event extends ActiveRecord
         return Yii::$app->formatter->asCurrency($total);
     }
 
-    public static function getSalary($dataProvider)
+    /**
+     * Employee remuneration
+     * @param $dataProvider
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public static function getSalary($dataProvider): string
     {
         $total = 0;
         foreach ($dataProvider as $model) {
@@ -536,5 +554,35 @@ class Event extends ActiveRecord
             }
         }
         return Yii::$app->formatter->asCurrency($total);
+    }
+
+    public static function getlabelsCharts($dataProvider): array
+    {
+        $labels = [];
+
+        foreach ($dataProvider->models as $model) {
+            foreach ($model->services as $key => $item) {
+                if (!in_array($item->name, $labels)) {
+                    $labels[] = $item->name;
+                }
+            }
+        }
+        return $labels;
+    }
+
+    public static function getDataCharts($dataProvider): array
+    {
+
+        $amount = [];
+        foreach ($dataProvider->models as $model) {
+            foreach ($model->services as $key => $item) {
+
+                if (!in_array($item->name, $amount)) {
+                   $amount[$item->name] += $item->cost;
+                }
+            }
+        }
+        return array_values($amount);
+
     }
 }
