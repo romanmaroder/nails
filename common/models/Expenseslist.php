@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "expenseslist".
@@ -78,4 +79,64 @@ class Expenseslist extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Expenses::class, ['id' => 'expenses_id']);
     }
+
+
+    /**
+     * The total amount of expenses
+     * @param  $dataProvider
+     * @return string
+     * @throws \yii\base\InvalidArgumentException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getTotalExpenses($dataProvider): string
+    {
+        $total = 0;
+
+
+        foreach ($dataProvider as $model) {
+
+
+           $total += $model->price;
+
+
+        }
+        return Yii::$app->formatter->asCurrency($total);
+    }
+
+
+    /**
+     * @param $dataProvider
+     * @return array
+     */
+    public static function getlabelsCharts($dataProvider): array
+    {
+        $labels = [];
+
+        foreach ($dataProvider as $model) {
+
+                if (!in_array($model->expenses->title, $labels)) {
+                    $labels[] = $model->expenses->title;
+                }
+        }
+
+
+        return $labels;
+    }
+
+    public static function getDataCharts($dataProvider): array
+    {
+
+        $amount = [];
+        foreach ($dataProvider->models as $model) {
+
+                if (!in_array($model->price, $amount)) {
+                    $amount[$model->expenses->id] += $model->price;
+                }
+        }
+
+        return array_values($amount);
+
+    }
+
+
 }

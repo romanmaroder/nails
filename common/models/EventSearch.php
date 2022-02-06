@@ -63,7 +63,7 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
-        $query->joinWith(['services', 'eventService', 'master']);
+        $query->joinWith(['services', 'eventService', 'master','client']);
 
 
         // add conditions that should always apply here

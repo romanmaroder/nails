@@ -11,6 +11,9 @@ use common\models\Expenseslist;
  */
 class ExpenseslistSearch extends Expenseslist
 {
+
+    public $date_from;
+    public $date_to;
     /**
      * {@inheritdoc}
      */
@@ -18,6 +21,7 @@ class ExpenseslistSearch extends Expenseslist
     {
         return [
             [['id', 'expenses_id', 'price', 'created_at', 'updated_at'], 'integer'],
+            [['date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
         ];
     }
 
@@ -40,6 +44,7 @@ class ExpenseslistSearch extends Expenseslist
     public function search($params)
     {
         $query = Expenseslist::find();
+        $query->joinWith(['expenses']);
 
         // add conditions that should always apply here
 
@@ -60,9 +65,14 @@ class ExpenseslistSearch extends Expenseslist
             'id' => $this->id,
             'expenses_id' => $this->expenses_id,
             'price' => $this->price,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
+        ])
+            ->andFilterWhere(['like', 'expenses_id', $this->expenses_id])
+            ->andFilterWhere(['>=', 'expenseslist.created_at', $this->date_from ? strtotime( $this->date_from . ' 00:00:00') :
+                null])
+            ->andFilterWhere(['<=', 'expenseslist.created_at', $this->date_to ? strtotime($this->date_to . ' 23:59:59') : null]);
+        $query->joinWith(['expenses' => function ($q) {
+            $q->andFilterWhere(['in', 'expenses.id', $this->id]);
+        }]);
 
         return $dataProvider;
     }

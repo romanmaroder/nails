@@ -75,7 +75,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         'mode' => 'single',
                     ],
                     'height'   => 100,
-                    'width'    => 200,
+                    'widthUser'    => 200,
                     'scales'   => [
                         'xAxes' => [
                             [
@@ -180,7 +180,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     ],
                     [
                         'attribute' => 'event_time_start',
-                        'format'    => ['date', 'php:Y-m-d'],
+                        'format'    => ['date', 'php:d M Y'],
                     ],
 
                 ],

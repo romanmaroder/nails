@@ -1,11 +1,14 @@
 <?php
 
 
-use hail812\adminlte3\assets\PluginAsset;
+use common\models\EventSearch;
+use common\modules\calendar\controllers\EventController;
 use yii\bootstrap4\Tabs;
 
-/* @var $dataProvider \common\modules\calendar\controllers\EventController */
-/* @var $searchModel \common\models\EventSearch */
+/* @var $dataProvider EventController */
+/* @var $searchModel EventSearch */
+/* @var $dataProviderExpenseslist EventController */
+/* @var $searchModelExpenseslist EventSearch */
 
 ?>
 <div class="row">
@@ -15,23 +18,30 @@ use yii\bootstrap4\Tabs;
             echo Tabs::widget(
                 [
                     'options' => ['class' => 'mb-3'],
-                    'items'   => [
+                    'items' => [
                         [
-                            'label'   => 'Мастера - Услуги',
+                            'label' => 'Мастера - Услуги',
                             'content' => $this->render(
                                 '_event-master-and-service',
                                 [
                                     'dataProvider' => $dataProvider,
-                                    'searchModel'  => $searchModel
+                                    'searchModel' => $searchModel
                                 ]
                             ),
-                            'active'  => true, // указывает на активность вкладки
+                            //'active'  => true, // указывает на активность вкладки
                             'options' => ['id' => 'events'],
 
                         ],
                         [
-                            'label'   => 'Расходы',
-                            'content' => $this->render('_expenseslist'),
+                            'label' => 'Расходы',
+                            'content' => $this->render(
+                                '_expenseslist',
+                                [
+                                    'dataProviderExpenseslist' => $dataProviderExpenseslist,
+                                    'searchModelExpenseslist' => $searchModelExpenseslist
+                                ]
+                            ),
+                            'active' => true, // указывает на активность вкладки
                             'options' => ['id' => 'expenseslist'],
 
                         ],

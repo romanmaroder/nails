@@ -9,6 +9,7 @@ use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
 use common\models\EventSearch;
 use common\models\EventService;
+use common\models\ExpenseslistSearch;
 use common\models\ServiceEvent;
 use Viber\Api\Sender;
 use Yii;
@@ -410,9 +411,17 @@ class EventController extends Controller
         $searchModel = new EventSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+
+        $searchModelExpenseslist = new ExpenseslistSearch();
+        $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
+
+
+
         return $this->render('statistic', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'dataProviderExpenseslist' => $dataProviderExpenseslist,
+            'searchModelExpenseslist' => $searchModelExpenseslist,
         ]);
 
     }
