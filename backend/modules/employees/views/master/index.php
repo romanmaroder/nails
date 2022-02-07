@@ -16,6 +16,13 @@ $this->params['breadcrumbs'][] = $this->title;
 	<!-- Default box -->
 	<div class="card card-solid">
 		<div class="card-body pb-0">
+            <?php if( Yii::$app->session->hasFlash('danger') ): ?>
+                <div class="alert alert-danger alert-dismissible mt-3" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <?php echo Yii::$app->session->getFlash('danger'); ?>
+                </div>
+            <?php endif;?>
+
 			<div class="row">
 
                 <?=

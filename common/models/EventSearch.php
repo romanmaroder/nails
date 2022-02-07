@@ -78,10 +78,10 @@ class EventSearch extends Event
                             'asc'  => ['cost' => SORT_ASC],
                             'desc' => ['cost' => SORT_DESC],
                         ],
-                        'salary' => [
+                        /*'salary' => [
                             'asc'  => ['salary' => SORT_ASC],
                             'desc' => ['salary' => SORT_DESC],
-                        ]
+                        ]*/
 
                     ]
 
@@ -101,14 +101,11 @@ class EventSearch extends Event
         $query->andFilterWhere(
             [
                 'id' => $this->id,
+                'master_id'=>$this->master_id,
             ]
         );
 
-
-        $query->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'notice', $this->notice])
-            ->andFilterWhere(['like', 'master_id', $this->master_id])
-            ->andFilterWhere(['>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null])
+            $query->andFilterWhere(['>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null])
             ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null])
             ->andFilterWhere(['=', 'service.cost', $this->salary]);
 

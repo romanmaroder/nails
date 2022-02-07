@@ -41,8 +41,19 @@ use yii\bootstrap4\Tabs;
                                         'searchModelExpenseslist'  => $searchModelExpenseslist
                                     ]
                                 ),
-                                //'active' => true, // указывает на активность вкладки
                                 'options' => ['id' => 'expenseslist'],
+
+                            ],
+                            [
+                                'label'   => 'Чистая',
+                                'content' => $this->render(
+                                    '_profit',
+                                    [
+                                        'dataProvider' => $dataProvider,
+                                        'searchModel'  => $searchModel
+                                    ]
+                                ),
+                                'options' => ['id' => 'profit'],
 
                             ],
                         ]

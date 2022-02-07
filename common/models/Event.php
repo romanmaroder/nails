@@ -138,7 +138,7 @@ class Event extends ActiveRecord
             'description'      => 'Услуги',
             'service_array'    => 'Услуги',
             'cost'             => 'Цена',
-            'salary'             => 'Вознаграждение',
+            'salary'           => 'Вознаграждение',
             'notice'           => 'Пожелания',
             'event_time_start' => 'Время начала',
             'event_time_end'   => 'Время окончания',
@@ -190,15 +190,6 @@ class Event extends ActiveRecord
         return $this->hasMany(Service::class, ['id' => 'service_id'])->via('eventService');
     }
 
-    /*public function beforeDelete(): bool
-    {
-        if (parent::beforeDelete()) {
-            EventService::deleteAll(['event_id' => $this->id]);
-            return true;
-        } else {
-            return false;
-        }
-    }*/
 
     public function afterFind()
     {
@@ -294,7 +285,7 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        return Event::find()->with(['master', 'client', 'services','eventService'])
+        return Event::find()->with(['master', 'client', 'services', 'eventService'])
             ->where('event_time_start >= DATE(NOW())')
             ->orderBy(
                 [
@@ -548,11 +539,12 @@ class Event extends ActiveRecord
         $total = 0;
         foreach ($dataProvider as $model) {
             foreach ($model->services as $item) {
-                if (!Yii::$app->authManager->getRolesByUser($model->master->id)['manager']) {
-                    $total += $item->cost / 2;
+                if ($model->master->rate < 100) {
+                    $total += $item->cost * ($model->master->rate / 100);
                 }
             }
         }
+
         return Yii::$app->formatter->asCurrency($total);
     }
 
@@ -572,17 +564,16 @@ class Event extends ActiveRecord
 
     public static function getDataCharts($dataProvider): array
     {
-
         $amount = [];
-        foreach ($dataProvider->models as $model) {
-            foreach ($model->services as $key => $item) {
 
+        foreach ($dataProvider->models as $model) {
+
+            foreach ($model->services as $key => $item) {
                 if (!in_array($item->name, $amount)) {
-                   $amount[$item->name] += $item->cost;
+                        $amount[$item->name] += $item->cost * ($model->master->rate / 100);
                 }
             }
         }
         return array_values($amount);
-
     }
 }

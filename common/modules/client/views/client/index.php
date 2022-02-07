@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     return $model->getStatusUser($model->status);
                                                 },
                                             ],
-                                            [
+                                           /* [
                                                 'attribute' => 'color',
                                                 'format'    => 'raw',
                                                 //'visible'   => Yii::$app->user->can('perm_view-calendar'),
@@ -97,7 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         $option
                                                     );
                                                 },
-                                            ],
+                                            ],*/
                                             [
                                                 'attribute' => 'avatar',
                                                 'format'    => 'raw',
@@ -186,7 +186,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     return $model->getStatusUser($model->status);
                                                 },
                                             ],
-                                            [
+                                          /*  [
                                                 'attribute' => 'color',
                                                 'format'    => 'raw',
                                                 //'visible'   => Yii::$app->user->can('perm_view-calendar'),
@@ -206,7 +206,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         $option
                                                     );
                                                 },
-                                            ],
+                                            ],*/
                                             [
                                                 'attribute' => 'avatar',
                                                 'format'    => 'raw',

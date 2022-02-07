@@ -11,6 +11,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider EventController */
 /* @var $searchModel EventSearch */
 
+
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
 ?>
@@ -24,7 +25,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
         <?= ChartJs::widget(
             [
                 'type'          => 'bar',
-                'id'            => 'structureBar',
+                'id'            => 'profit',
                 'options'       => [
 
                     'legend' => [
@@ -108,7 +109,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                 'showFooter'       => true,
                 'tableOptions'     => [
                     'class' => 'table table-striped table-bordered',
-                    'id'    => 'statistic_table'
+                    'id'    => 'profit_table'
                 ],
                 'emptyText'        => 'Ничего не найдено',
                 'emptyTextOptions' => [
@@ -120,7 +121,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                 'columns' => [
 
 
-                    [
+                   /* [
                         'attribute' => 'master_id',
                         'format'    => 'raw',
                         'value'     => function ($model) {
@@ -166,7 +167,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                                 }
                                 return $salary_one . '<hr>' . Yii::$app->formatter->asCurrency($salary);
                             } else {
-                               return false;
+                                return false;
                             }
 
                         },
@@ -184,7 +185,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     [
                         'attribute' => 'event_time_start',
                         'format'    => ['date', 'php:d M Y'],
-                    ],
+                    ],*/
 
                 ],
             ]
@@ -199,7 +200,7 @@ Pjax::end() ?>
 <?php
 $js = <<< JS
 $(function () {
-$("#statistic_table").DataTable({
+$("#profit_table").DataTable({
 "responsive": true,
 "pageLength": 10,
 "paging": false,

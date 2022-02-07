@@ -90,7 +90,7 @@ $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/admi
                                     ]
                                 ) ?>
                                 <?= Html::a('<i class="fas fa-user"></i> Редактировать',
-                                            ['update', 'id' =>$model->id], ['class' => 'btn btn-sm btn-primary']) ?>
+                                            ['/client/client/update', 'id' =>$model->id], ['class' => 'btn btn-sm btn-primary']) ?>
 							</div>
 						</div>
 					</div>
