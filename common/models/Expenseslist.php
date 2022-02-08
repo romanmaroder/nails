@@ -100,7 +100,8 @@ class Expenseslist extends \yii\db\ActiveRecord
 
 
         }
-        return Yii::$app->formatter->asCurrency($total);
+
+        return $total;
     }
 
 

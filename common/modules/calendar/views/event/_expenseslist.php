@@ -10,6 +10,9 @@ use yii\widgets\Pjax;
 
 /* @var $dataProviderExpenseslist EventController */
 /* @var $searchModelExpenseslist EventSearch */
+/* @var $totalExpenses EventController */
+/* @var $chartExpensesLabels EventController */
+/* @var $chartExpensesData EventController */
 
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
@@ -41,14 +44,10 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                 ],
                 'data'          => [
 
-                    'labels'   => \common\models\Expenseslist::getlabelsCharts($dataProviderExpenseslist->models), //
-                    // Your
-                    // labels
+                    'labels'   => $chartExpensesLabels,
                     'datasets' => [
                         [
-                            'data'             => \common\models\Expenseslist::getDataCharts
-                            ($dataProviderExpenseslist),
-                            // Your dataset
+                            'data'             => $chartExpensesData,
                             'backgroundColor'  => [
                                 '#ADC3FF',
                                 '#FF9A9A',
@@ -141,8 +140,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         'value'     => function ($model) {
                             return $model->price;
                         },
-                        'footer' =>\common\models\Expenseslist::getTotalExpenses(
-                        $dataProviderExpenseslist->models),
+                        'footer' => Yii::$app->formatter->asCurrency($totalExpenses),
                     ],
                     [
                         'attribute' => 'created_at',

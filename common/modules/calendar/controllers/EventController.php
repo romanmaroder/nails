@@ -9,12 +9,16 @@ use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
 use common\models\EventSearch;
 use common\models\EventService;
+use common\models\Expenses;
+use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
+use common\models\ExpensesSearch;
 use common\models\ServiceEvent;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
 use yii\caching\DbDependency;
+use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -88,19 +92,20 @@ class EventController extends Controller
         $events          = $cache->getOrSet(
             $key,
             function () {
-                return Event::find()->with(['master', 'client','services'])->all();
+                return Event::find()->with(['master', 'client', 'services'])->all();
             },
             3600,
             $dependency
         );
 
         foreach ($events as $item) {
-            $event        = new \yii2fullcalendar\models\Event();
-            $event->id    = $item->id;
-            $event->title = $item->client->username;
+            $event                  = new \yii2fullcalendar\models\Event();
+            $event->id              = $item->id;
+            $event->title           = $item->client->username;
             $event->nonstandard     = [
                 'description' => Event::getServiceString($item->services) ? Event::getServiceString(
-                    $item->services) : $item->description,
+                    $item->services
+                ) : $item->description,
                 'notice'      => $item->notice,
                 'master_name' => $item->master->username,
             ];
@@ -109,7 +114,6 @@ class EventController extends Controller
             $event->end             = $item->event_time_end;
 
             $events[] = $event;
-
         }
 
         return $this->render(
@@ -158,9 +162,6 @@ class EventController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
-
-
-
                 $model->save(false);
 
 
@@ -252,8 +253,6 @@ class EventController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($events);
             } else {
-
-
                 $events->save(false);
 
                 /*$chat    = Telegram::find()->where(['user_id' => $events->client_id])->asArray()->one();
@@ -407,22 +406,36 @@ class EventController extends Controller
 
     public function actionStatistic(): string
     {
+        $searchModel      = new EventSearch();
+        $dataProvider     = $searchModel->search(Yii::$app->request->queryParams);
+        $totalEvent       = Event::getTotal($dataProvider);
+        $totalSalary      = Event::getSalary($dataProvider->models);
+        $chartEventLabels = Event::getlabelsCharts($dataProvider);
+        $chartEventData   = Event::getDataCharts($dataProvider);
 
-        $searchModel = new EventSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-
-        $searchModelExpenseslist = new ExpenseslistSearch();
+        $searchModelExpenseslist  = new ExpenseslistSearch();
         $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
+        $totalExpenses            = Expenseslist::getTotalExpenses($dataProviderExpenseslist->models);
+        $chartExpensesLabels      = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
+        $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
 
 
-
-        return $this->render('statistic', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'dataProviderExpenseslist' => $dataProviderExpenseslist,
-            'searchModelExpenseslist' => $searchModelExpenseslist,
-        ]);
-
+        return $this->render(
+            'statistic',
+            [
+                'searchModel'              => $searchModel,
+                'dataProvider'             => $dataProvider,
+                'totalEvent'               => $totalEvent,
+                'totalSalary'              => $totalSalary,
+                'chartEventLabels'         => $chartEventLabels,
+                'chartEventData'           => $chartEventData,
+                'dataProviderExpenseslist' => $dataProviderExpenseslist,
+                'searchModelExpenseslist'  => $searchModelExpenseslist,
+                'totalExpenses'            => $totalExpenses,
+                'chartExpensesLabels'      => $chartExpensesLabels,
+                'chartExpensesData'        => $chartExpensesData,
+            ]
+        );
     }
 }

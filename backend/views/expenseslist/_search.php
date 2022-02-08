@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Expenses;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -20,11 +21,9 @@ use yii\widgets\ActiveForm;
     ]); ?>
 
 
-    <?= $form->field($model, 'expenses_id')->dropDownList(
-        \common\models\Expenses::getTitle(),
+    <?= $form->field($model, 'expenses_id')->dropDownList(Expenses::getTitle(),
         ['prompt' => 'Выберите статью расходов..','class'=>'form-control form-control-sm']) ?>
 
-    <?/*= $form->field($model, 'price') */?>
 
     <?= $form->field($model, 'date_from')->widget(
         DatePicker::class,
@@ -52,7 +51,6 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
-        <?/*= Html::resetButton('Reset', ['class' => 'btn btn-sm btn-outline-secondary']) */?>
     </div>
 
     <?php ActiveForm::end(); ?>

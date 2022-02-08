@@ -109,6 +109,7 @@ class EventSearch extends Event
             ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null])
             ->andFilterWhere(['=', 'service.cost', $this->salary]);
 
+
         $query->joinWith(['services' => function ($q) {
             $q->andFilterWhere(['in', 'service.id', $this->service]);
         }]);

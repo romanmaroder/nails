@@ -10,8 +10,13 @@ use yii\widgets\Pjax;
 
 /* @var $dataProvider EventController */
 /* @var $searchModel EventSearch */
+/* @var $totalEvent EventController */
+/* @var $totalSalary EventController */
+/* @var $chartEventLabels EventController */
+/* @var $chartEventData EventController */
 
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
+
 
 ?>
 
@@ -38,11 +43,10 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                 ],
                 'data'          => [
 
-                    'labels'   => \common\models\Event::getlabelsCharts($dataProvider), // Your labels
+                    'labels'   => $chartEventLabels,
                     'datasets' => [
                         [
-                            'data'             => \common\models\Event::getDataCharts($dataProvider),
-                            // Your dataset
+                            'data'            =>$chartEventData,
                             'backgroundColor'  => [
                                 '#ADC3FF',
                                 '#FF9A9A',
@@ -151,7 +155,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                             }
                             return $service_one . '<hr>' . Yii::$app->formatter->asCurrency($service_total);
                         },
-                        'footer'    => \common\models\Event::getTotal($dataProvider),
+                        'footer'    => Yii::$app->formatter->asCurrency($totalEvent),
                     ],
                     [
                         'attribute' => 'salary',
@@ -171,7 +175,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 
                         },
 
-                        'footer' => \common\models\Event::getSalary($dataProvider->models),
+                        'footer' => Yii::$app->formatter->asCurrency($totalSalary),
 
                     ],
                     [

@@ -525,7 +525,7 @@ class Event extends ActiveRecord
             }
         }
 
-        return Yii::$app->formatter->asCurrency($total);
+        return $total;
     }
 
     /**
@@ -545,7 +545,7 @@ class Event extends ActiveRecord
             }
         }
 
-        return Yii::$app->formatter->asCurrency($total);
+        return $total;
     }
 
     public static function getlabelsCharts($dataProvider): array

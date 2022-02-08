@@ -7,8 +7,18 @@ use yii\bootstrap4\Tabs;
 
 /* @var $dataProvider EventController */
 /* @var $searchModel EventSearch */
+/* @var $totalEvent EventController */
+/* @var $totalSalary EventController */
+/* @var $chartEventLabels EventController */
+/* @var $chartEventData EventController */
+
+
 /* @var $dataProviderExpenseslist EventController */
 /* @var $searchModelExpenseslist EventSearch */
+/* @var $totalExpenses EventController */
+/* @var $chartExpensesLabels EventController */
+/* @var $chartExpensesData EventController */
+
 
 ?>
     <div class="row">
@@ -24,8 +34,12 @@ use yii\bootstrap4\Tabs;
                                 'content' => $this->render(
                                     '_event-master-and-service',
                                     [
-                                        'dataProvider' => $dataProvider,
-                                        'searchModel'  => $searchModel
+                                        'dataProvider'     => $dataProvider,
+                                        'searchModel'      => $searchModel,
+                                        'totalEvent'       => $totalEvent,
+                                        'totalSalary'      => $totalSalary,
+                                        'chartEventLabels' => $chartEventLabels,
+                                        'chartEventData'   => $chartEventData,
                                     ]
                                 ),
                                 //'active'  => true, // указывает на активность вкладки
@@ -38,7 +52,10 @@ use yii\bootstrap4\Tabs;
                                     '_expenseslist',
                                     [
                                         'dataProviderExpenseslist' => $dataProviderExpenseslist,
-                                        'searchModelExpenseslist'  => $searchModelExpenseslist
+                                        'searchModelExpenseslist'  => $searchModelExpenseslist,
+                                        'totalExpenses'            => $totalExpenses,
+                                        'chartExpensesLabels'      => $chartExpensesLabels,
+                                        'chartExpensesData'        => $chartExpensesData,
                                     ]
                                 ),
                                 'options' => ['id' => 'expenseslist'],
@@ -49,8 +66,7 @@ use yii\bootstrap4\Tabs;
                                 'content' => $this->render(
                                     '_profit',
                                     [
-                                        'dataProvider' => $dataProvider,
-                                        'searchModel'  => $searchModel
+                                        'dataProviderExpenseslist' => $dataProviderExpenseslist,
                                     ]
                                 ),
                                 'options' => ['id' => 'profit'],

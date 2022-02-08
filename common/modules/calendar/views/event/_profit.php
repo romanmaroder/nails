@@ -6,13 +6,63 @@ use common\modules\calendar\controllers\EventController;
 use dosamigos\chartjs\ChartJs;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
 use yii\widgets\Pjax;
 
-/* @var $dataProvider EventController */
+/* @var $profit EventController */
 /* @var $searchModel EventSearch */
-
+/* @var $dataProviderExpenseslist \common\models\ExpenseslistSearch */
 
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
+
+$event = \common\models\Event::find()
+    ->select('DATE(event_time_start) as event_time_start, SUM(service.cost) as amountEvent')
+    ->joinWith(['services'])
+    ->groupBy(['DATE(event_time_start)'])
+    ->orderBy(['DATE(event_time_start)'=>SORT_ASC])
+    ->asArray()
+    ->all();
+
+$expenses = \common\models\Expenseslist::find()->select(
+    'DATE(FROM_UNIXTIME(expenseslist.created_at)) as event_time_start , SUM(price) as amountExpenses'
+)
+    ->joinWith(['expenses'])
+    ->groupBy(['DATE(FROM_UNIXTIME(created_at))'])
+    ->orderBy(['DATE(FROM_UNIXTIME(created_at))'=>SORT_ASC])
+    ->asArray()
+    ->all();
+
+
+$eventTotal = \common\models\Event::find()
+    ->select('SUM(service.cost) as total')
+    ->joinWith(['services'])
+    ->asArray()
+    ->one();
+
+$expensesTotal = \common\models\Expenseslist::find()->select(
+    ' SUM(price) as total'
+)->asArray()->one();
+
+$profit = $eventTotal['total'] - $expensesTotal['total'];
+
+$merge        = array_merge($event, $expenses);
+
+$dataProvider = new \yii\data\ArrayDataProvider(
+    [
+        'allModels' => $merge,
+        'sort' => [
+            'attributes' => [
+                'event_time_start'=>[
+                    'asc' => ['event_time_start' => SORT_ASC],
+                    'desc' => ['event_time_start' => SORT_DESC],
+                    'defaultOrder' => ['event_time_start' => SORT_ASC]
+                ],
+
+            ],
+        ],
+    ]
+);
+
 
 ?>
 
@@ -20,83 +70,18 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 <div class="row">
     <div class="col-12 col-md-4">
         <?php
-        echo $this->render('_search', ['model' => $searchModel]); ?>
+        //echo '<pre>';
+        //var_dump($expensesTotal['total']);
 
-        <?= ChartJs::widget(
-            [
-                'type'          => 'bar',
-                'id'            => 'profit',
-                'options'       => [
-
-                    'legend' => [
-                        'display' => false,
-                        'title'   => [
-                            'display' => true,
-                            'text'    => ''
-                        ]
-                    ],
-
-                ],
-                'data'          => [
-
-                    'labels'   => \common\models\Event::getlabelsCharts($dataProvider), // Your labels
-                    'datasets' => [
-                        [
-                            'data'             => \common\models\Event::getDataCharts($dataProvider),
-                            // Your dataset
-                            'backgroundColor'  => [
-                                '#ADC3FF',
-                                '#FF9A9A',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                            ],
-                            'borderColor'      => [
-                                '#fff'
-                            ],
-                            'borderWidth'      => 1,
-                            'hoverBorderColor' => ["#999"],
-
-                        ]
-                    ]
-                ],
-                'clientOptions' => [
-                    'legend'    => [
-                        'display'  => false,
-                        'position' => 'bottom',
-                        'labels'   => [
-                            'fontSize'  => 14,
-                            'fontColor' => "#7f8c8d",
-                        ],
-                    ],
-                    'tooltips'  => [
-                        'enabled'   => true,
-                        'intersect' => true
-                    ],
-                    'hover'     => [
-                        'mode' => 'single',
-                    ],
-                    'height'    => 100,
-                    'widthUser' => 200,
-                    'scales'    => [
-                        'xAxes' => [
-                            [
-                                'stacked' => true,
-                            ]
-                        ],
-                        'yAxes' => [
-                            [
-                                'ticks' => [
-                                    'beginAtZero' => true,
-                                    'stacked'     => true,
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        )
+        // var_dump($dataProvider);
+       /*  die();*/
+        /* echo \Yii::$app->view->renderFile(
+                   '@backend/views/expenseslist/_search.php',
+                   ['model' => $searchModelExpenseslist]
+               );
+               */
         ?>
+
     </div>
 
     <div class="col-12 col-md-8">
@@ -109,7 +94,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                 'showFooter'       => true,
                 'tableOptions'     => [
                     'class' => 'table table-striped table-bordered',
-                    'id'    => 'profit_table'
+                    'id'    => 'expenseslist_table'
                 ],
                 'emptyText'        => 'Ничего не найдено',
                 'emptyTextOptions' => [
@@ -119,79 +104,41 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 
 
                 'columns' => [
-
-
-                   /* [
-                        'attribute' => 'master_id',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
-                            return $model->master->username;
-                        },
-                    ],
-                    [
-                        'attribute' => 'services.name',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
-                            $service_name = '';
-                            foreach ($model->services as $services) {
-                                $service_name .= $services->name . " </br>";
-                            }
-
-                            return $service_name;
-                        },
-                    ],
-                    [
-                        'attribute' => 'cost',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
-                            $service_one   = '';
-                            $service_total = 0;
-                            foreach ($model->services as $item) {
-                                $service_one   .= $item->cost . " </br>";
-                                $service_total += $item->cost;
-                            }
-                            return $service_one . '<hr>' . Yii::$app->formatter->asCurrency($service_total);
-                        },
-                        'footer'    => \common\models\Event::getTotal($dataProvider),
-                    ],
-                    [
-                        'attribute' => 'salary',
-                        'format'    => 'raw',
-                        'value' => function ($model) {
-                            $salary     = 0;
-                            $salary_one = '';
-                            if (($model->master->rate < 100)) {
-                                foreach ($model->services as $item) {
-                                    $salary_one .= $item->cost * ($model->master->rate / 100) . '<br>';
-                                    $salary     += $item->cost * ($model->master->rate / 100);
-                                }
-                                return $salary_one . '<hr>' . Yii::$app->formatter->asCurrency($salary);
-                            } else {
-                                return false;
-                            }
-
-                        },
-
-                        'footer' => \common\models\Event::getSalary($dataProvider->models),
-
-                    ],
-                    [
-                        'attribute' => 'client_id',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
-                            return $model->client->username;
-                        },
-                    ],
+                    ['class' => 'yii\grid\SerialColumn'],
+                    //'event_time_start',
                     [
                         'attribute' => 'event_time_start',
-                        'format'    => ['date', 'php:d M Y'],
-                    ],*/
+                        'format'    => ['date', 'php:d-m-Y'],
+                        /*'value'     => function ($model) {
+                            return $model->event_time_start;
+                        },*/
+                    ],
+
+
+                    [
+                        'attribute' => 'Прибыль',
+                        'format'    => 'raw',
+                        'value'=>'amountEvent',
+                        'footer'=>$eventTotal['total']
+                    ],
+                    [
+                        'attribute' => 'Затраты',
+                        'format'    => 'raw',
+                        'value'=>'amountExpenses',
+                        'footer'=>$expensesTotal['total'],
+                    ],
+                    [
+                        'attribute' => 'Итог',
+                        'format'    => 'raw',
+                        'footer'=>$profit,
+                    ],
+
+
 
                 ],
             ]
         );
         ?>
-
     </div>
 
 </div>
