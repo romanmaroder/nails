@@ -94,6 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
 
     if (Yii::$app->user->can('manager')) {
+        $right    = 'month,basicDay,basicWeek,listWeek';
         $editable = true;
     } else {
         $right    = 'month,basicDay,basicWeek,listWeek';

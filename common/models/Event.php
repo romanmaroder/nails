@@ -326,7 +326,7 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );*/
-        return Event::find()->with(['master', 'client'])
+        return Event::find()->with(['master', 'client', 'services', 'eventService'])
             ->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
             ->where(['client_id' => $id])
             ->andWhere('event_time_start >= DATE(NOW())')
@@ -555,11 +555,11 @@ class Event extends ActiveRecord
         foreach ($dataProvider->models as $model) {
             foreach ($model->services as $key => $item) {
                 if (!in_array($item->name, $labels)) {
-                    $labels[] = $item->name;
+                    $labels[$item->name] .= $item->name;
                 }
             }
         }
-        return $labels;
+        return array_values($labels);
     }
 
     public static function getDataCharts($dataProvider): array

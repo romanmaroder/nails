@@ -72,7 +72,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['roles', 'safe'],
             ['color', 'safe'],
-            ['rate', 'safe'],
+            [['rate'], 'number','min'=>0,'max'=>100,'message'=>'{attribute} не может быть меньше 0 и  больше 100'],
             ['username', 'required'],
             ['avatar', 'safe'],
             ['description', 'safe'],
@@ -125,7 +125,7 @@ class User extends ActiveRecord implements IdentityInterface
             'birthday'    => 'День рождения',
             'phone'       => 'Телефон',
             'address'     => 'Адрес',
-            'rate'        => 'Процент',
+            'rate'        => 'Ставка',
             'color'       => 'Цвет',
             'password'    => 'Пароль',
             'created_at'  => 'Создан'

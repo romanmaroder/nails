@@ -9,6 +9,7 @@ use yii\widgets\Pjax;
 $this->title                   = 'Мастера';
 $this->params['breadcrumbs'][] = $this->title;
 
+
 ?>
 
 <!-- Main content -->

@@ -87,11 +87,11 @@ class AccountController extends Controller
         $dataProvider = Event::getEventDataProvider($userId);
 
 
-        if (!isset($user, $profile)) {
+        if (!isset($user)) {
             throw new NotFoundHttpException("Пользователь не найден.");
         }
 
-        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+        if ( $user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())  ) {
             if ($user->password) {
                 $user->setPassword($user->password);
             }
