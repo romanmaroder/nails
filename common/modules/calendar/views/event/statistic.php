@@ -61,17 +61,7 @@ use yii\bootstrap4\Tabs;
                                 'options' => ['id' => 'expenseslist'],
 
                             ],
-                            [
-                                'label'   => 'Чистая',
-                                'content' => $this->render(
-                                    '_profit',
-                                    [
-                                        'dataProviderExpenseslist' => $dataProviderExpenseslist,
-                                    ]
-                                ),
-                                'options' => ['id' => 'profit'],
 
-                            ],
                         ]
                     ]
                 );

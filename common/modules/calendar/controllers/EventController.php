@@ -8,19 +8,13 @@ use backend\modules\viber\api\ViberBot;
 use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
 use common\models\EventSearch;
-use common\models\EventService;
-use common\models\Expenses;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
-use common\models\ExpensesSearch;
-use common\models\ServiceEvent;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
 use yii\caching\DbDependency;
-use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
-use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -394,9 +388,7 @@ class EventController extends Controller
      */
     protected function findModel(int $id)
     {
-        /*if (($model = Event::findOne($id)) !== null) {
-            return $model;
-        }*/
+
         if (($model = Event::find()->with('services')->andwhere(['id' => $id])->one()) !== null) {
             return $model;
         }
@@ -421,6 +413,8 @@ class EventController extends Controller
         $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
 
 
+
+
         return $this->render(
             'statistic',
             [
@@ -435,6 +429,7 @@ class EventController extends Controller
                 'totalExpenses'            => $totalExpenses,
                 'chartExpensesLabels'      => $chartExpensesLabels,
                 'chartExpensesData'        => $chartExpensesData,
+
             ]
         );
     }

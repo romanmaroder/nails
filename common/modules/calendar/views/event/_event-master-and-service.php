@@ -130,6 +130,8 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         'value'     => function ($model) {
                             return $model->master->username;
                         },
+                        'footerOptions' => ['class' => 'bg-success'],
+                        'footer'=> Yii::$app->formatter->asCurrency($totalEvent - $totalSalary)  ,
                     ],
                     [
                         'attribute' => 'services.name',
@@ -142,6 +144,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 
                             return $service_name;
                         },
+
                     ],
                     [
                         'attribute' => 'cost',
