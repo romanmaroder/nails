@@ -90,19 +90,26 @@ class AccountController extends Controller
         if (!isset($user)) {
             throw new NotFoundHttpException("Пользователь не найден.");
         }
-
-        if ( $user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())  ) {
+        if($profile){
+            if( $profile->load(Yii::$app->request->post()) ){
+                $isValid = $profile->validate();
+                if ($isValid) {
+                    $profile->save(false);
+                }
+            }
+        }
+        if ( $user->load(Yii::$app->request->post())   ) {
             if ($user->password) {
                 $user->setPassword($user->password);
             }
             $isValid = $user->validate();
-            $isValid = $profile->validate() && $isValid;
             if ($isValid) {
                 $user->save(false);
-                $profile->save(false);
                 return $this->redirect(['index']);
             }
         }
+        
+
 
         if ($setting->load(Yii::$app->request->post())) {
             if ($setting->checkbox == 1) {
@@ -173,7 +180,7 @@ class AccountController extends Controller
         $userId = Yii::$app->user->getId();
 
         $user = User::findIdentity($userId);
-//
+
         $model = new AvatarForm($user);
         $model->avatar = UploadedFile::getInstance($model, 'avatar');
 

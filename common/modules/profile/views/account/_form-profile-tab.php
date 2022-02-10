@@ -50,12 +50,12 @@ PluginAsset::register($this)->add(['sweetalert2']);
 
 <?= $form->field($user, 'username')->textInput(['maxlength' => true]) ?>
 
-<?php /*if (Yii::$app->user->can('master')):*/?><!--
+<?php if (Yii::$app->user->can('master')):?>
 
-<?/*= $form->field($profile, 'notes')->textarea(['rows' => 4]) */?>
-<?/*= $form->field($profile, 'education')->textarea(['rows' => 4]) */?>
-<?/*= $form->field($profile, 'skill')->textarea(['rows' => 4]) */?>
---><?php /*endif;*/?>
+<?= $form->field($profile, 'notes')->textarea(['rows' => 4]) ?>
+<?= $form->field($profile, 'education')->textarea(['rows' => 4]) ?>
+<?= $form->field($profile, 'skill')->textarea(['rows' => 4]) ?>
+<?php endif;?>
 
 <?= $form->field($user, 'phone')->widget(
     MaskedInput::class,

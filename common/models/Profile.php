@@ -34,8 +34,8 @@ class Profile extends ActiveRecord
     public function rules()
     {
         return [
-//            [['education', 'notes', 'skill'], 'string'],
-            ['color', 'safe','education', 'notes', 'skill'],
+            [['education', 'notes', 'skill'], 'string'],
+            ['color', 'safe'],
             [['user_id','rate', 'certificate_id'], 'integer'],
 
         ];

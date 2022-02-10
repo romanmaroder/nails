@@ -63,26 +63,22 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
-        $query->joinWith(['services', 'eventService', 'master','client']);
-
+        $query->joinWith(['services', 'eventService', 'master', 'client']);
+        $query->andWhere(' YEAR(event_time_start) = YEAR(NOW())');
+        $query->orderBy(['event_time_start'=>SORT_ASC]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider(
             [
-                'query'      => $query,
+                'query' => $query,
                 'pagination' => false,
-                'sort'       => [
+                'sort' => [
                     'attributes' => [
-                        'cost' => [
-                            'asc'  => ['cost' => SORT_ASC],
-                            'desc' => ['cost' => SORT_DESC],
+                        'event_time_start' => [
+                            'asc' => ['event_time_start' => SORT_ASC],
+                            'desc' => ['event_time_start' => SORT_DESC],
                         ],
-                        /*'salary' => [
-                            'asc'  => ['salary' => SORT_ASC],
-                            'desc' => ['salary' => SORT_DESC],
-                        ]*/
-
                     ]
 
                 ]
@@ -101,18 +97,22 @@ class EventSearch extends Event
         $query->andFilterWhere(
             [
                 'id' => $this->id,
-                'master_id'=>$this->master_id,
+                'master_id' => $this->master_id,
             ]
         );
 
-            $query->andFilterWhere(['>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null])
+        $query->andFilterWhere(['>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null])
             ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null])
             ->andFilterWhere(['=', 'service.cost', $this->salary]);
 
 
-        $query->joinWith(['services' => function ($q) {
-            $q->andFilterWhere(['in', 'service.id', $this->service]);
-        }]);
+        $query->joinWith(
+            [
+                'services' => function ($q) {
+                    $q->andFilterWhere(['in', 'service.id', $this->service]);
+                }
+            ]
+        );
 
         return $dataProvider;
     }

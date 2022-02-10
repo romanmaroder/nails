@@ -209,7 +209,7 @@ $(function () {
 $("#statistic_table").DataTable({
 "responsive": true,
 "pageLength": 10,
-"paging": false,
+"paging": true,
 "searching": false,
 "ordering": false,
 "info": false,
