@@ -46,6 +46,7 @@ class ServiceSearch extends Service
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => false
         ]);
 
         $this->load($params);

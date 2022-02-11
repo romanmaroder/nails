@@ -31,7 +31,12 @@ PluginAsset::register($this)->add(['sweetalert2']);
         'model' => $model,
         'attributes' => [
             'name',
-            'cost',
+            [
+                'attribute' => 'cost',
+                'value' => function ($model) {
+                    return Yii::$app->formatter->asCurrency($model->cost);
+                },
+            ],
             [
                 'attribute' => 'created_at',
                 'format'    => ['date', 'php: d-m-Y']

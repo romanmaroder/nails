@@ -12,7 +12,7 @@ class m220209_204027_add_color_column_to_profile_table extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('{{%profile}}','rate',$this->string()->after('user_id'));
+        $this->addColumn('{{%profile}}','rate',$this->integer()->after('user_id'));
         $this->addColumn('{{%profile}}','color',$this->string()->after('rate'));
     }
 
