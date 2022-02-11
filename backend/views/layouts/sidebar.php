@@ -173,9 +173,55 @@ use yii\helpers\Url;
                                 ['label' => 'Level2', 'iconStyle' => 'far']*/
                             ]
                         ],
+                        [
+                            'label' => 'Услуги',
+                            'icon'  => 'fas fa-wrench',
+                            'iconClassAdded' => 'text-danger',
+                            'items' => [
+                                [
+                                    'label' => 'Список услуг',
+                                    'icon'  => 'fas fa-list',
+                                    'url'
+                                            => ['/service/index'],
+                                ],
+                                [
+                                    'label' => 'Новая услуга',
+                                    'icon'  => 'far fa-plus-square',
+                                    'url'   => ['/service/create'],
+                                ],
+                            ]
+                        ],
+                        [
+                            'label' => 'Расходы',
+                            'icon'  => 'fas fa-dollar-sign',
+                            'iconClassAdded' => 'text-success',
+                            'items' => [
+                                [
+                                    'label' => 'Категории расходов',
+                                    'icon'  => 'fas fa-list',
+                                    'url'
+                                            => ['/expenses/index'],
+                                ],
+                                [
+                                    'label' => 'Добавить категорию',
+                                    'icon'  => 'far fa-plus-square',
+                                    'url'   => ['/expenses/create'],
+                                ],
+                                [
+                                    'label' => 'Список затрат',
+                                    'icon'  => 'fas fa-list',
+                                    'url'
+                                            => ['/expenseslist/index'],
+                                ],
+                                [
+                                    'label' => 'Добавить затраты',
+                                    'icon'  => 'far fa-plus-square',
+                                    'url'   => ['/expenseslist/create'],
+                                ],
+                            ]
+                        ],
+                        ['label' => 'Статистика', 'icon' => 'fas fa-chart-pie', 'url' => ['/statistic'],'iconClassAdded' =>'text-info'],
                         ['label' => 'Заметки', 'icon' => 'fa fa-list-ul', 'url' => ['/todo/todo/index'],'iconClassAdded' =>'text-info'],
-
-
                         /*['label' => 'LABELS', 'header' => true],
                         ['label' => 'Important', 'iconStyle' => 'far', 'iconClassAdded' => 'text-danger'],
                         ['label' => 'Warning', 'iconClass' => 'nav-icon far fa-circle text-warning'],

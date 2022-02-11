@@ -113,6 +113,8 @@ class ClientController extends Controller
         $profile = new Profile();
 
         if ($model->load(Yii::$app->request->post())) {
+
+
             $model->email = 'user' . rand(1, 5000) . self::DEFAULT_EMAIL;
 
             $model->setPassword(self::DEFAULT_PASSWORD);
@@ -120,12 +122,20 @@ class ClientController extends Controller
             $model->generateEmailVerificationToken();
 
             if ($model->save()) {
-                $profile->user_id = $model->id;
-                $model->saveRoles();
-                $profile->save();
+
+                if ($model->roles){
+                    $profile->user_id = $model->id;
+                    $profile->color = $model->color;
+                    $profile->rate = $model->rate;
+
+                    $model->saveRoles();
+                    $profile->save();
+                }
+
+
                 Yii::$app->session->setFlash('info', 'Клиент <b>'.$model->username . '</b> сохранен. ');
 
-                return $this->redirect('index');
+                return $this->redirect('client/index');
             }
             Yii::$app->session->setFlash('danger', 'Сохраните клиента еще раз. ');
         }
@@ -150,8 +160,23 @@ class ClientController extends Controller
     public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
+        $profile= Profile::find()->where(['user_id'=>$id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if(!empty($profile)){
+                $profile->color = $model->color;
+                $profile->rate = $model->rate;
+                $profile->save();
+            }elseif ($model->roles){
+                    $profile = new Profile();
+                    $profile->user_id = $model->id;
+                    $profile->color = $model->color;
+                    $profile->rate = $model->rate;
+
+                    //$model->saveRoles();
+                    $profile->save();
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -159,6 +184,7 @@ class ClientController extends Controller
             'update',
             [
                 'model' => $model,
+
             ]
         );
     }
@@ -191,9 +217,11 @@ class ClientController extends Controller
      */
     protected function findModel(int $id): User
     {
-        if (($model = User::findOne($id)) !== null) {
+
+        if ( ( $model = User::find()->with('profile')->where(['id'=>$id])->one() ) !== null) {
             return $model;
         }
+
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }

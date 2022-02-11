@@ -8,6 +8,7 @@ use yii\widgets\Menu;
 ?>
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+
 	<!-- Left navbar links -->
 
     <?= Menu::widget(
@@ -71,6 +72,24 @@ use yii\widgets\Menu;
                     'url' => ['/blog/post/index'],
                 ],
                 [
+                    'label' => '<i class="fas fa-wrench" aria-hidden="true"></i>',
+                    'options' => ['class' => 'd-none d-sm-inline-block',
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'tooltip',
+                        'title' =>'Услуги'
+                    ],
+                    'url' => ['/service/index'],
+                ],
+                [
+                    'label' => '<i class="fas fa-dollar-sign"></i>',
+                    'options' => ['class' => 'd-none d-sm-inline-block',
+                                  'data-toggle' => 'tooltip',
+                                  'data-placement' => 'tooltip',
+                                  'title' =>'Расходы'
+                    ],
+                    'url' => ['/expenses/index'],
+                ],
+                [
                     'label' => '<i class="fa fa-list-ul" aria-hidden="true"></i>',
                     'options' => ['class' => 'd-none d-sm-inline-block',
                         'data-toggle' => 'tooltip',
@@ -107,6 +126,21 @@ use yii\widgets\Menu;
                         [
                             'label' => 'Блог',
                             'url' => ['/blog/post/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
+                            'label' => 'Услуги',
+                            'url' => ['/service/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
+                            'label' => 'Расходы',
+                            'url' => ['/expenses/index'],
+                            'options' => ['class' => 'nav-item'],
+                        ],
+                        [
+                            'label' => 'Затраты',
+                            'url' => ['/expenseslist/index'],
                             'options' => ['class' => 'nav-item'],
                         ],
                         [

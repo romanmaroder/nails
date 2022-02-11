@@ -68,7 +68,6 @@ Pjax::begin([
                     echo NewsList::widget(['showLimit' => 3]); ?>
                 </div>
             </div>
-
         </div>
     </div>
 <?php

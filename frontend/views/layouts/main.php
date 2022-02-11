@@ -5,6 +5,7 @@
 /* @var $content string */
 
 use common\widgets\metric\Counter;
+use common\widgets\xmas\Xmas;
 use yii\helpers\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;

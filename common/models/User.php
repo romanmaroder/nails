@@ -9,6 +9,7 @@ use yii\data\ActiveDataProvider;
 use Yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\rbac\Role;
 use yii\web\IdentityInterface;
 
@@ -19,7 +20,6 @@ use yii\web\IdentityInterface;
  * @property string $username
  * @property string $email
  * @property int $status
- * @property string $color
  * @property string $avatar
  * @property-read \yii\db\ActiveQuery $userPhoto
  * @property-read string[] $rolesDropdown
@@ -27,21 +27,24 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    public const STATUS_DELETED = 0;
+    public const STATUS_DELETED  = 0;
     public const STATUS_INACTIVE = 9;
-    public const STATUS_ACTIVE = 10;
+    public const STATUS_ACTIVE   = 10;
 
 
-    public const ROLE_ADMIN = 'admin';
+    public const ROLE_ADMIN   = 'admin';
     public const ROLE_MANAGER = 'manager';
-    public const ROLE_MASTER = 'master';
-    public const ROLE_AUTHOR = 'author';
+    public const ROLE_MASTER  = 'master';
+    public const ROLE_AUTHOR  = 'author';
 
     public const DEFAULT_IMAGE = '/img/avatar.jpg';
 
 
     public $roles;
     public $password;
+    public $color;
+    public $rate;
+
 
     /**
      * {@inheritdoc}
@@ -69,6 +72,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['roles', 'safe'],
             ['color', 'safe'],
+            [['rate'], 'number','min'=>0,'max'=>100,'message'=>'{attribute} не может быть меньше 0 и  больше 100'],
             ['username', 'required'],
             ['avatar', 'safe'],
             ['description', 'safe'],
@@ -79,6 +83,32 @@ class User extends ActiveRecord implements IdentityInterface
             ['password', 'safe'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [
+                ['roles'],
+                'required',
+                'when'       => function ($model) {
+                        return $model->roles;
+
+                },
+                'whenClient' => "function(attribute,value){
+                
+                $('#user-roles input:checkbox').click(function(){
+                               if($(this).is(':checked')){
+                                  $('#user-color').css({'display':'block'});
+                                  $('label[for=user-color]').removeClass('d-none');
+                                  $('#user-rate').css({'display':'block'});
+                                  $('label[for=user-rate]').removeClass('d-none');
+                                 return true;
+                               }else{
+                                  $('#user-color').css({'display':'none'});
+                                   $('label[for=user-color]').addClass('d-none');
+                                   $('#user-rate').css({'display':'none'});
+                                   $('label[for=user-rate]').addClass('d-none');
+                                  //return true;
+                               }
+                              })
+      }"
+            ]
         ];
     }
 
@@ -88,7 +118,6 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'id'          => 'ID',
             'username'    => 'Имя',
-            'color'       => 'Цвет',
             'roles'       => 'Роль',
             'status'      => 'Доступ',
             'avatar'      => 'Аватарка',
@@ -96,6 +125,8 @@ class User extends ActiveRecord implements IdentityInterface
             'birthday'    => 'День рождения',
             'phone'       => 'Телефон',
             'address'     => 'Адрес',
+            'rate'        => 'Ставка',
+            'color'       => 'Цвет',
             'password'    => 'Пароль',
             'created_at'  => 'Создан'
         ];
@@ -134,7 +165,12 @@ class User extends ActiveRecord implements IdentityInterface
     public function afterFind()
     {
         $this->roles = $this->getRoles('name');
+        $this->color = $this->profile['color'];
+        $this->rate = $this->profile['rate'];
+
     }
+
+
 
     /**
      * Get user roles from RBAC
@@ -180,7 +216,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds user by username
      *
-     * @param  string  $username
+     * @param string $username
      *
      * @return static|null
      */
@@ -192,7 +228,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds user by phone
      *
-     * @param  string  $phone
+     * @param string $phone
      *
      * @return User
      */
@@ -209,8 +245,8 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds user by phone
      *
-     * @param  string  $name
-     * @param  string  $phone
+     * @param string $name
+     * @param string $phone
      *
      * @return User|false
      */
@@ -231,7 +267,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds user by password reset token
      *
-     * @param  string  $token  password reset token
+     * @param string $token password reset token
      *
      * @return static|null
      */
@@ -252,7 +288,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds user by verification email token
      *
-     * @param  string  $token  verify email token
+     * @param string $token verify email token
      *
      * @return static|null
      */
@@ -269,7 +305,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds out if password reset token is valid
      *
-     * @param  string  $token  password reset token
+     * @param string $token password reset token
      *
      * @return bool
      */
@@ -311,7 +347,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Validates password
      *
-     * @param  string  $password  password to validate
+     * @param string $password password to validate
      *
      * @return bool if password provided is valid for current user
      */
@@ -323,7 +359,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Generates password hash from password and sets it to the model
      *
-     * @param  string  $password
+     * @param string $password
      *
      * @throws \yii\base\Exception
      */
@@ -349,7 +385,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->password_reset_token = Yii::$app->security->generateRandomString().'_'.time();
+        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
@@ -359,7 +395,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateEmailVerificationToken()
     {
-        $this->verification_token = Yii::$app->security->generateRandomString().'_'.time();
+        $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
@@ -436,7 +472,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getClientList(): array
     {
         $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
-        $clients   = User::find()->where(['id' => $clientIds])->orderBy(['username'=>SORT_ASC])->asArray()->all();
+        $clients   = User::find()->where(['id' => $clientIds])->orderBy(['username' => SORT_ASC])->asArray()->all();
         return ArrayHelper::map($clients, 'id', 'username');
     }
 
@@ -515,7 +551,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getPicture(): string
     {
         if ($this->avatar && Yii::$app->storage->checkFileExist($this->avatar)) {
-
             return Yii::$app->storage->getFile($this->avatar);
         }
         return self::DEFAULT_IMAGE;
@@ -592,9 +627,9 @@ class User extends ActiveRecord implements IdentityInterface
         );
         $dependency   = \Yii::createObject(
             [
-                'class' => 'yii\caching\DbDependency',
-                'sql'   => 'SELECT MAX(updated_at) FROM user',
-                'reusable'=>true
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(updated_at) FROM user',
+                'reusable' => true
             ]
         );
         Yii::$app->db->cache(

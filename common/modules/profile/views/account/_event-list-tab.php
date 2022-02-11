@@ -61,15 +61,33 @@ use yii\helpers\Html;
                     }
                 ],
                 [
+                    'attribute' => 'services.name',
+                    'format'    => 'raw',
+                    'value'     => function ($model) {
+                        $service_name = '';
+                        foreach ($model['services'] as $services) {
+                            $service_name .= $services['name'] . " </br>";
+                            // echo '<pre>';
+                            //var_dump($model);
+                            //var_dump($services->name);
+                        }
+
+                        return $service_name ? $service_name : $model['description'];
+                    },
+                ],
+                /*[
                     'attribute' => 'description',
                     'contentOptions' => ['style' => 'white-space: nowrap;'],
-                ],
+                ],*/
                 //'notice',
                 [
                     'class' => 'yii\grid\ActionColumn',
-                    'template' => "{view}\n\n\n{sms}",
+                    'template' => "{view}\n\n\n{sms}\n\n\n{location}",
                     'visibleButtons' => [
                         'sms' => function ($model) {
+                            return Yii::$app->user->can('manager');
+                        },
+                        'location' => function ($model) {
                             return Yii::$app->user->can('manager');
                         }
                     ],
@@ -82,6 +100,14 @@ use yii\helpers\Html;
                                     ) . Yii::$app->smsSender->messageText(
                                         $model['event_time_start']
                                     )
+                                ) : '';
+                        },
+                        'location' => function ($url, $model, $key) {
+                            return $model['client']['phone'] ?
+                                Html::a(
+                                    '<i class="fas fa-map-marker-alt"></i>',
+                                    'sms:' . $model['client']['phone'] . Yii::$app->smsSender->checkOperatingSystem(
+                                    ) . Yii::$app->smsSender->messageAddress()
                                 ) : '';
                         },
                     ],

@@ -17,9 +17,11 @@ class m210607_093904_create_profile_table extends Migration
 
                 'id' => $this->primaryKey(),
                 'user_id'=>$this->integer(),
+                'rate'=>$this->integer(),
                 'education'=>$this->text(),
                 'notes'=>$this->text(),
                 'skill'=>$this->text(),
+                'color'=>$this->string()->defaultValue(null),
                 'certificate_id'=>$this->smallInteger(),
         ]);
         $this->createIndex(

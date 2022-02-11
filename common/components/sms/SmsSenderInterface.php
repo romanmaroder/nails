@@ -17,4 +17,6 @@ interface SmsSenderInterface
 
     public function messageText(string $dataEvent, string $greeting ):string;
 
+    public function messageAddress(string $greeting ):string;
+
 }

@@ -2,6 +2,8 @@
 
 //use common\models\Client;
 //use common\models\Master;
+use common\models\Event;
+use common\models\Service;
 use common\models\User;
 use kartik\datetime\DateTimePicker;
 use kartik\select2\Select2;
@@ -24,7 +26,7 @@ use yii\bootstrap4\ActiveForm;
             'enableAjaxValidation'   => false,
             'enableClientValidation' => true,
             'validateOnChange'       => true,
-            'validateOnBlur'         =>  false
+            'validateOnBlur'         => false
         ]
     ); ?>
 
@@ -106,15 +108,34 @@ use yii\bootstrap4\ActiveForm;
         ]
     ); ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 3]) ?>
+    <?= $form->field($model, 'service_array')->widget(
+        Select2::class,
+        [
+            'name'     => 'service_array[]',
+            'language' => 'ru',
+            'data'          => Service::getServiceList(),
+            'theme'         => Select2::THEME_MATERIAL,
+            'options'       => [
+                'placeholder'  => 'Выберите услугу ...',
+                'multiple'     => true,
+                'autocomplete' => 'off',
+            ],
+            'pluginOptions' => [
+                'tags'            =>  true,
+                'allowClear'      => true,
+            ],
+        ]
+    ) ?>
+    <?
+    /*= $form->field($model, 'description')->textarea(['rows' => 3]) */ ?>
 
     <?= $form->field($model, 'notice')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'checkEvent', ['enableAjaxValidation' => true])->label(false)
         ->hiddenInput() ?>
 
-	<div class="form-group">
+    <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-sm']) ?>
-	</div>
+    </div>
     <?php
     ActiveForm::end(); ?>
 

@@ -25,7 +25,7 @@ class MasterController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['POST','GET'],
                 ],
             ],
             'access' => [
@@ -67,7 +67,7 @@ class MasterController extends Controller
 
     /**
      * Displays a single User model.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -99,7 +99,7 @@ class MasterController extends Controller
     /**
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -119,16 +119,16 @@ class MasterController extends Controller
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param  int  $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
 
-        if (Event::find()->andWhere(['user_id' => $id])->exists()) {
+        if (Event::find()->andWhere(['master_id' => $id])->exists()) {
             Yii::$app->session->setFlash('danger', 'У мастера есть записи');
-            return $this->redirect(['index']);
+            return  $this->redirect(['index']);
         } else {
             $this->findModel($id)->delete();
             return $this->redirect(['index']);

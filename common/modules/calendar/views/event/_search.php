@@ -1,5 +1,9 @@
 <?php
 
+use common\models\Service;
+use common\models\User;
+use kartik\date\DatePicker;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -11,28 +15,64 @@ use yii\widgets\ActiveForm;
 <div class="event-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
-        'options' => [
-            'data-pjax' => 1
-        ],
-    ]); ?>
+                                        'action' => [''],
+                                        'method' => 'get',
+                                        'options' => [
+                                            'data-pjax' => 1
+                                        ],
+                                    ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'master_id')->dropDownList(
+        User::getMasterList(),
+        ['prompt' => 'Выберите мастера...','class'=>'form-control form-control-sm']) ?>
 
-    <?= $form->field($model, 'title') ?>
+    <?= $form->field($model, 'service')->widget(
+        Select2::class,
+        [
+            'language' => 'ru',
+            'data'          => Service::getServiceList(),
+            'theme'         => Select2::THEME_MATERIAL,
+            'options'       => [
+                'placeholder'  => 'Выберите услугу ...',
+                'multiple'     => true,
+                'autocomplete' => 'off',
+            ],
+            'pluginOptions' => [
+                'tags'            =>  true,
+                'allowClear'      => true,
+            ],
+        ]
+    )->label('Услуги') ?>
 
-    <?= $form->field($model, 'master_id') ?>
 
-    <?= $form->field($model, 'description') ?>
+    <?= $form->field($model, 'date_from')->widget(
+        DatePicker::class,
+        [
+            'model'         => $model,
+            'attribute'     => 'date_from',
+            'attribute2'    => 'date_to',
+            'type'          => kartik\date\DatePicker::TYPE_RANGE,
+            'size'          => 'sm',
+            'separator'     => 'по',
+            'options'=>[
+                    'autocomplete'=>'off',
+            ],
+            'pluginOptions' => [
+                'todayHighlight' => true,
+                'weekStart'      => 1, //неделя начинается с понедельника
+                'autoclose'      => true,
+                'orientation'    => 'bottom auto',
+                'clearBtn'       => true,
+                'todayBtn'       => 'linked',
+                'format'         => 'yyyy-mm-dd',
+                ]
+        ]
+    )->label('Дата') ?>
 
-    <?= $form->field($model, 'notice') ?>
-
-    <?php // echo $form->field($model, 'created_date') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
+
     </div>
 
     <?php ActiveForm::end(); ?>

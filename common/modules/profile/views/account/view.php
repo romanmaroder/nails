@@ -46,7 +46,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return $master->master->username;
                                     }
                                 ],
-                                'description:ntext',
+                                [
+                                    'attribute' => 'description',
+                                    'format'=>'ntext',
+                                    'visible' => $model->description ?? '',
+                                ],
+                                [
+                                    'attribute' => 'service_array',
+                                    'format'=>'ntext',
+                                    'value' => function ($data) {
+                                        return \common\models\Event::getServiceString($data->services);
+                                    },
+                                    'visible' => $model->services ?? '',
+                                ],
                                 [
                                     'attribute' => 'notice',
                                     'visible'   => Yii::$app->user->can('master'),

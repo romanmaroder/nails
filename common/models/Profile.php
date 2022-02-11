@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "profile".
@@ -34,7 +35,9 @@ class Profile extends ActiveRecord
     {
         return [
             [['education', 'notes', 'skill'], 'string'],
-            [['user_id', 'certificate_id'], 'integer'],
+            ['color', 'safe'],
+            [['user_id','rate', 'certificate_id'], 'integer'],
+
         ];
     }
 
@@ -44,11 +47,13 @@ class Profile extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'              => 'ID',
-            'user_id'         => 'Пользователь',
-            'education'       => 'Образование',
-            'notes'           => 'Обо мне',
-            'skill'           => 'Навыки',
+            'id'             => 'ID',
+            'user_id'        => 'Пользователь',
+            'rate'           => 'Процент',
+            'color'          => 'Цвет',
+            'education'      => 'Образование',
+            'notes'          => 'Обо мне',
+            'skill'          => 'Навыки',
             'certificate_id' => 'Сертификаты',
         ];
     }
@@ -58,10 +63,11 @@ class Profile extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    public static function getUserProfileInfo($userId){
+    public static function getUserProfileInfo($userId)
+    {
         return Profile::find()
             #->select(['education','notes','skill'])
-            ->where(['user_id'=>$userId])
+            ->where(['user_id' => $userId])
             ->one();
     }
 }

@@ -44,10 +44,10 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'rules' => [
                 '' => 'site/index',
-                'event' => '/calendar/event/index',
+               'event' => '/calendar/event/index',
                 'client' => '/client/client/index',
                 'client/<id:\d+>' => '/client/client/view',
                 'account' => '/profile/account',
