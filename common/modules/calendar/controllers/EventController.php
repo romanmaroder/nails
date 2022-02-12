@@ -402,8 +402,8 @@ class EventController extends Controller
         $dataProvider     = $searchModel->search(Yii::$app->request->queryParams);
         $totalEvent       = Event::getTotal($dataProvider);
         $totalSalary      = Event::getSalary($dataProvider->models);
-        $chartEventLabels = Event::getlabelsCharts($dataProvider);
-        $chartEventData   = Event::getDataCharts($dataProvider);
+        //$chartEventLabels = Event::getlabelsCharts($dataProvider);
+        //$chartEventData   = Event::getDataCharts($dataProvider);
 
 
         $searchModelExpenseslist  = new ExpenseslistSearch();
@@ -422,8 +422,8 @@ class EventController extends Controller
                 'dataProvider'             => $dataProvider,
                 'totalEvent'               => $totalEvent,
                 'totalSalary'              => $totalSalary,
-                'chartEventLabels'         => $chartEventLabels,
-                'chartEventData'           => $chartEventData,
+               /* 'chartEventLabels'         => $chartEventLabels,
+                'chartEventData'           => $chartEventData,*/
                 'dataProviderExpenseslist' => $dataProviderExpenseslist,
                 'searchModelExpenseslist'  => $searchModelExpenseslist,
                 'totalExpenses'            => $totalExpenses,

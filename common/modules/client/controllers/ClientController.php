@@ -127,11 +127,9 @@ class ClientController extends Controller
                     $profile->user_id = $model->id;
                     $profile->color = $model->color;
                     $profile->rate = $model->rate;
-
-                    $model->saveRoles();
                     $profile->save();
                 }
-
+                $model->saveRoles();
 
                 Yii::$app->session->setFlash('info', 'Клиент <b>'.$model->username . '</b> сохранен. ');
 

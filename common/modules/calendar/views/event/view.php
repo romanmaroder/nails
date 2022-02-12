@@ -45,7 +45,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
                 //'serviceString',
                 [
                     'attribute' => 'service_array',
-                    'format'=>'ntext',
+                    'format'=>'raw',
                     'value' => function ($data) {
                         return \common\models\Event::getServiceString($data->services);
                     },

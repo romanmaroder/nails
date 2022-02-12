@@ -177,6 +177,7 @@ class Event extends ActiveRecord
     {
         return $this->hasOne(Telegram::class, ['user_id' => 'client_id']);
     }
+
     /**
      * Relationship with [[event_service]] table
      *
@@ -204,10 +205,10 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getRates(): ActiveQuery
-    {
-        return $this->hasMany(ServiceUser::class, ['user_id' => 'master_id']);
-    }
+    /* public function getRates(): ActiveQuery
+     {
+         return $this->hasMany(ServiceUser::class, ['user_id' => 'master_id']);
+     }*/
 
     /**
      * Relationship with [[service]] table
@@ -235,8 +236,8 @@ class Event extends ActiveRecord
         if ($this->service_array) {
             foreach ($this->service_array as $one) {
                 if (!in_array($one, $arr)) {
-                    $model             = new EventService();
-                    $model->event_id   = $this->id;
+                    $model = new EventService();
+                    $model->event_id = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
@@ -493,15 +494,15 @@ class Event extends ActiveRecord
             $query = Event::findClientEvents($userId);
         }
 
-        $dataProvider    = new ActiveDataProvider(
+        $dataProvider = new ActiveDataProvider(
             [
                 'query'      => $query,
                 'pagination' => false,
             ]
         );
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency      = Yii::createObject(
+        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -533,7 +534,7 @@ class Event extends ActiveRecord
         $services_name = '';
 
         foreach ($data as $service) {
-            $services_name .= $service['name'] . PHP_EOL;
+            $services_name .= $service['name'].'</br>';
         }
 
         return $services_name;
@@ -565,18 +566,18 @@ class Event extends ActiveRecord
      */
     public static function getSalary($dataProvider): string
     {
-
-
         $total = 0;
+
         foreach ($dataProvider as $model) {
+            foreach ($model->master->rates as $master) {
 
+                foreach ($model->services as $service) {
 
+                     if (  $master->service_id == $service->id && $master->rate < 100){
 
+                         $total += $service->cost * ($master->rate / 100);
 
-            foreach ($model->services as $item) {
-
-                if ($model->master->rate < 100) {
-                    $total += $item->cost * ($model->master->rate / 100);
+                    }
                 }
             }
         }
@@ -584,32 +585,56 @@ class Event extends ActiveRecord
         return $total;
     }
 
-    public static function getlabelsCharts($dataProvider): array
-    {
-        $labels = [];
 
-        foreach ($dataProvider->models as $model) {
-            foreach ($model->services as $key => $item) {
-                if (!in_array($item->name, $labels)) {
-                    $labels[$item->name] .= $item->name;
-                }
-            }
+
+    /* public static function getlabelsCharts($dataProvider): array
+     {
+         $labels = [];
+
+         foreach ($dataProvider->models as $model) {
+             foreach ($model->services as $key => $item) {
+                 if (!in_array($item->name, $labels)) {
+                     $labels[$item->name] .= $item->name;
+                 }
+             }
+         }
+         return array_values($labels);
+     }
+
+     public static function getDataCharts($dataProvider): array
+     {
+         $amount = [];
+
+         foreach ($dataProvider->models as $model) {
+
+             foreach ($model->services as $key => $item) {
+                 if (!in_array($item->name, $amount)) {
+                         $amount[$item->name] += $item->cost * ($model->master->rate / 100);
+                 }
+             }
+         }
+         return array_values($amount);
+     }*/
+
+
+
+    public static function getUserEventService()
+    {
+        $events = self::find()->joinWith('eventService')->asArray()->all();
+
+        $events = ArrayHelper::getColumn($events,'eventService');
+
+        $a=[];
+        foreach ($events as $event){
+            $a[] .= $event->service_id;
+            $a[] .= $event->event_id;
+            $a[] .= $event->id;
         }
-        return array_values($labels);
+        return $a;
+        return ArrayHelper::map($a,'service_id','service_id','event_id');
+
+        //return $events;
     }
 
-    public static function getDataCharts($dataProvider): array
-    {
-        $amount = [];
 
-        foreach ($dataProvider->models as $model) {
-
-            foreach ($model->services as $key => $item) {
-                if (!in_array($item->name, $amount)) {
-                        $amount[$item->name] += $item->cost * ($model->master->rate / 100);
-                }
-            }
-        }
-        return array_values($amount);
-    }
 }

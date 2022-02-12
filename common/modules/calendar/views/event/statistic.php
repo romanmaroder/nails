@@ -34,12 +34,13 @@ use yii\bootstrap4\Tabs;
                                 'content' => $this->render(
                                     '_event-master-and-service',
                                     [
-                                        'dataProvider'     => $dataProvider,
-                                        'searchModel'      => $searchModel,
-                                        'totalEvent'       => $totalEvent,
-                                        'totalSalary'      => $totalSalary,
-                                        'chartEventLabels' => $chartEventLabels,
-                                        'chartEventData'   => $chartEventData,
+                                        'dataProvider' => $dataProvider,
+                                        'searchModel'  => $searchModel,
+                                        'totalEvent'   => $totalEvent,
+                                        'totalSalary'  => $totalSalary,
+
+                                        /*'chartEventLabels' => $chartEventLabels,
+                                        'chartEventData'   => $chartEventData,*/
                                     ]
                                 ),
                                 //'active'  => true, // указывает на активность вкладки

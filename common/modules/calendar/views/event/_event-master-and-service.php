@@ -17,7 +17,10 @@ use yii\widgets\Pjax;
 
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
-
+echo'<pre>';
+//var_dump(\common\models\ServiceUser::getUserServices());
+var_dump(\common\models\Event::getUserEventService());
+die();
 ?>
 
 
@@ -164,18 +167,23 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         'attribute' => 'salary',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-
                             $salary = 0;
                             $salary_one = '';
-                            if (($model->master->rate < 100)) {
-                                foreach ($model->services as $item) {
-                                    $salary_one .= $item->cost * ($model->master->rate / 100) . '<br>';
-                                    $salary += $item->cost * ($model->master->rate / 100);
+
+                            foreach ($model->master->rates as $master) {
+
+                                foreach ($model->services as $service) {
+                                    if ($master->rate < 100 && $master->service_id == $service->id) {
+                                        $salary_one .= $service->cost * ($master->rate / 100) . '<br> ';
+                                        $salary += $service->cost * ($master->rate / 100);
+                                    }
+
+
                                 }
-                                return $salary_one . '<hr>' . Yii::$app->formatter->asCurrency($salary);
-                            } else {
-                                return false;
+
                             }
+
+                            return $salary_one . '<hr>' . Yii::$app->formatter->asCurrency( $salary );
                         },
 
                         'footer' => Yii::$app->formatter->asCurrency($totalSalary),

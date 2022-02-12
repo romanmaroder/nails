@@ -166,7 +166,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->roles = $this->getRoles('name');
         $this->color = $this->profile['color'];
-        $this->rate = $this->profile['rate'];
+        $this->rate = $this->rates['rate'];
 
     }
 
@@ -609,11 +609,15 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getRate(): ActiveQuery
+    /*public function getRates(): ActiveQuery
+    {
+        return $this->hasMany(Service::class, ['id' => 'service_id'])->viaTable('service_user',['user_id'=>'id']);
+    }*/
+
+    public function getRates(): ActiveQuery
     {
         return $this->hasMany(ServiceUser::class, ['user_id' => 'id']);
     }
-
 
     /**
      * Return client list dataProvider

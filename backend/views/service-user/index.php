@@ -36,7 +36,7 @@ PluginAsset::register($this)->add(
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-           // 'id',
+            'service.id',
             'service.name',
             'user.username',
             'rate',

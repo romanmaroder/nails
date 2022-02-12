@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "service_user".
@@ -113,5 +114,12 @@ class ServiceUser extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+
+    public static function getUserServices(){
+
+        $services = self::find()->asArray()->all();
+        return ArrayHelper::map($services,'service_id','service_id','user_id');
     }
 }
