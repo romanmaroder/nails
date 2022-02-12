@@ -177,18 +177,47 @@ class Event extends ActiveRecord
     {
         return $this->hasOne(Telegram::class, ['user_id' => 'client_id']);
     }
-
+    /**
+     * Relationship with [[event_service]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
 
     public function getEventService(): ActiveQuery
     {
         return $this->hasMany(EventService::class, ['event_id' => 'id']);
     }
 
-
+    /**
+     * Relationship with [[Service]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
     public function getServices(): ActiveQuery
     {
         return $this->hasMany(Service::class, ['id' => 'service_id'])->via('eventService');
     }
+
+
+    /**
+     * Relationship with [[ServiceUser]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRates(): ActiveQuery
+    {
+        return $this->hasMany(ServiceUser::class, ['user_id' => 'master_id']);
+    }
+
+    /**
+     * Relationship with [[service]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    /*public function getRate(): ActiveQuery
+    {
+        return $this->hasMany(Service::class, ['id' => 'service_id'])->via('rates');
+    }*/
 
 
     public function afterFind()
@@ -536,9 +565,16 @@ class Event extends ActiveRecord
      */
     public static function getSalary($dataProvider): string
     {
+
+
         $total = 0;
         foreach ($dataProvider as $model) {
+
+
+
+
             foreach ($model->services as $item) {
+
                 if ($model->master->rate < 100) {
                     $total += $item->cost * ($model->master->rate / 100);
                 }

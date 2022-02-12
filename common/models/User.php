@@ -604,6 +604,15 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasOne(Profile::class, ['user_id' => 'id']);
     }
+    /**
+     * Relationship with [[ServiceUser]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRate(): ActiveQuery
+    {
+        return $this->hasMany(ServiceUser::class, ['user_id' => 'id']);
+    }
 
 
     /**

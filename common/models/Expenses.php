@@ -50,6 +50,7 @@ class Expenses extends \yii\db\ActiveRecord
     {
         return [
             [[ 'created_at', 'updated_at'], 'integer'],
+            [['title'], 'required'],
             [['title'], 'string', 'max' => 255],
         ];
     }

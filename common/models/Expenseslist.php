@@ -51,6 +51,7 @@ class Expenseslist extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['expenses_id', 'price'], 'required'],
             [['expenses_id', 'price', 'created_at', 'updated_at'], 'integer'],
             [['expenses_id'], 'exist', 'skipOnError' => true, 'targetClass' => Expenses::class, 'targetAttribute' => ['expenses_id' => 'id']],
         ];

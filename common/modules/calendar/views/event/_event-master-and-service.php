@@ -46,7 +46,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     'labels'   => $chartEventLabels,
                     'datasets' => [
                         [
-                            'data'            =>$chartEventData,
+                            'data'             => $chartEventData,
                             'backgroundColor'  => [
                                 '#ADC3FF',
                                 '#FF9A9A',
@@ -125,13 +125,13 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 
 
                     [
-                        'attribute' => 'master_id',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
+                        'attribute'     => 'master_id',
+                        'format'        => 'raw',
+                        'value'         => function ($model) {
                             return $model->master->username;
                         },
                         'footerOptions' => ['class' => 'bg-success'],
-                        'footer'=> Yii::$app->formatter->asCurrency($totalEvent - $totalSalary)  ,
+                        'footer'        => Yii::$app->formatter->asCurrency($totalEvent - $totalSalary),
                     ],
                     [
                         'attribute' => 'services.name',
@@ -150,10 +150,10 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         'attribute' => 'cost',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $service_one   = '';
+                            $service_one = '';
                             $service_total = 0;
                             foreach ($model->services as $item) {
-                                $service_one   .= $item->cost . " </br>";
+                                $service_one .= $item->cost . " </br>";
                                 $service_total += $item->cost;
                             }
                             return $service_one . '<hr>' . Yii::$app->formatter->asCurrency($service_total);
@@ -163,19 +163,19 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     [
                         'attribute' => 'salary',
                         'format'    => 'raw',
-                        'value' => function ($model) {
-                            $salary     = 0;
+                        'value'     => function ($model) {
+
+                            $salary = 0;
                             $salary_one = '';
                             if (($model->master->rate < 100)) {
                                 foreach ($model->services as $item) {
                                     $salary_one .= $item->cost * ($model->master->rate / 100) . '<br>';
-                                    $salary     += $item->cost * ($model->master->rate / 100);
+                                    $salary += $item->cost * ($model->master->rate / 100);
                                 }
                                 return $salary_one . '<hr>' . Yii::$app->formatter->asCurrency($salary);
                             } else {
-                               return false;
+                                return false;
                             }
-
                         },
 
                         'footer' => Yii::$app->formatter->asCurrency($totalSalary),
