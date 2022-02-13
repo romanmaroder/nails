@@ -19,7 +19,8 @@ use yii\bootstrap4\Tabs;
 /* @var $chartExpensesLabels EventController */
 /* @var $chartExpensesData EventController */
 
-
+$this->title = 'Статистика';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="row">
         <div class="col-12">
@@ -38,9 +39,8 @@ use yii\bootstrap4\Tabs;
                                         'searchModel'  => $searchModel,
                                         'totalEvent'   => $totalEvent,
                                         'totalSalary'  => $totalSalary,
-
-                                        /*'chartEventLabels' => $chartEventLabels,
-                                        'chartEventData'   => $chartEventData,*/
+                                        'chartEventLabels' => $chartEventLabels,
+                                        'chartEventData'   => $chartEventData,
                                     ]
                                 ),
                                 //'active'  => true, // указывает на активность вкладки

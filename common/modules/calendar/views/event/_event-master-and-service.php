@@ -17,10 +17,10 @@ use yii\widgets\Pjax;
 
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
-echo'<pre>';
+/*echo'<pre>';
 //var_dump(\common\models\ServiceUser::getUserServices());
-var_dump(\common\models\Event::getUserEventService());
-die();
+var_dump(\common\models\Event::getUserEventService('2','1678'));
+die();*/
 ?>
 
 
@@ -32,7 +32,7 @@ die();
         <?= ChartJs::widget(
             [
                 'type'          => 'bar',
-                'id'            => 'structureBar',
+                'id'            => 'structureEvent',
                 'options'       => [
 
                     'legend' => [
@@ -53,6 +53,12 @@ die();
                             'backgroundColor'  => [
                                 '#ADC3FF',
                                 '#FF9A9A',
+                                'rgba(190, 124, 145, 0.8)',
+                                'rgba(190, 124, 145, 0.8)',
+                                'rgba(190, 124, 145, 0.8)',
+                                'rgba(190, 124, 145, 0.8)',
+                                'rgba(190, 124, 145, 0.8)',
+                                'rgba(190, 124, 145, 0.8)',
                                 'rgba(190, 124, 145, 0.8)',
                                 'rgba(190, 124, 145, 0.8)',
                                 'rgba(190, 124, 145, 0.8)',
@@ -153,13 +159,27 @@ die();
                         'attribute' => 'cost',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $service_one = '';
+                            $service_one   = '';
                             $service_total = 0;
-                            foreach ($model->services as $item) {
-                                $service_one .= $item->cost . " </br>";
-                                $service_total += $item->cost;
+                            $service_none  = '';
+                            foreach ($model->master->rates as $master) {
+                                foreach ($model->services as $item) {
+                                    if ($master->service_id == $item->id) {
+                                        $service_one   .= $item->cost . " </br>";
+                                        $service_total += $item->cost;
+                                    }
+                                    if ($master->service_id != $item->id) {
+                                        $service_none = \common\models\Event::getUserEventService(
+                                            $model->master->id,
+                                            $model->id
+                                        );
+                                    }
+                                }
                             }
-                            return $service_one . '<hr>' . Yii::$app->formatter->asCurrency($service_total);
+
+                            return $service_one . $service_none . '<hr>' . Yii::$app->formatter->asCurrency(
+                                    $service_total
+                                );
                         },
                         'footer'    => Yii::$app->formatter->asCurrency($totalEvent),
                     ],
@@ -167,23 +187,27 @@ die();
                         'attribute' => 'salary',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $salary = 0;
-                            $salary_one = '';
-
+                            $salary      = 0;
+                            $salary_one  = '';
+                            $salary_none = '';
                             foreach ($model->master->rates as $master) {
-
                                 foreach ($model->services as $service) {
                                     if ($master->rate < 100 && $master->service_id == $service->id) {
                                         $salary_one .= $service->cost * ($master->rate / 100) . '<br> ';
-                                        $salary += $service->cost * ($master->rate / 100);
+                                        $salary     += $service->cost * ($master->rate / 100);
                                     }
-
-
+                                    if ($master->rate < 100 && $master->service_id != $service->id) {
+                                        $salary_none = \common\models\Event::getUserEventService(
+                                            $model->master->id,
+                                            $model->id
+                                        );
+                                    }
                                 }
-
                             }
-
-                            return $salary_one . '<hr>' . Yii::$app->formatter->asCurrency( $salary );
+                            if ($salary > 0) {
+                                $amount = '<hr>' . Yii::$app->formatter->asCurrency($salary);
+                            }
+                            return $salary_one . $salary_none .  $amount;
                         },
 
                         'footer' => Yii::$app->formatter->asCurrency($totalSalary),

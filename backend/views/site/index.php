@@ -8,7 +8,7 @@
 
 use backend\controllers\SiteController;
 
-$this->title                 = 'Статистика';
+$this->title                 = 'Главная';
 $this->params['breadcrumbs'] = [['label' => $this->title]];
 ?>
 

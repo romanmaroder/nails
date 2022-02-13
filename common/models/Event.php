@@ -65,7 +65,8 @@ class Event extends ActiveRecord
         return [
             [['master_id'], 'required', 'message' => 'Выберите мастера'],
             [['client_id'], 'required', 'message' => 'Выберите клиента'],
-            [['service_array'], 'required', 'message' => 'Выберите услуги'],
+            //[['service_array'], 'required', 'message' => 'Выберите услуги'],
+            [['service_array'], 'safe'],
             ['master_id', 'filter', 'filter' => 'intval'],
             ['client_id', 'filter', 'filter' => 'intval'],
             [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent'], 'safe'],
@@ -236,8 +237,8 @@ class Event extends ActiveRecord
         if ($this->service_array) {
             foreach ($this->service_array as $one) {
                 if (!in_array($one, $arr)) {
-                    $model = new EventService();
-                    $model->event_id = $this->id;
+                    $model             = new EventService();
+                    $model->event_id   = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
@@ -494,15 +495,15 @@ class Event extends ActiveRecord
             $query = Event::findClientEvents($userId);
         }
 
-        $dataProvider = new ActiveDataProvider(
+        $dataProvider    = new ActiveDataProvider(
             [
                 'query'      => $query,
                 'pagination' => false,
             ]
         );
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency = Yii::createObject(
+        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency      = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -534,7 +535,10 @@ class Event extends ActiveRecord
         $services_name = '';
 
         foreach ($data as $service) {
-            $services_name .= $service['name'].'</br>';
+            $services_name .= $service['name'] . '</br>';
+        }
+        if ($services_name == null) {
+            $services_name = 'Услуга не указана'; // TODO вынести в параметры
         }
 
         return $services_name;
@@ -570,13 +574,9 @@ class Event extends ActiveRecord
 
         foreach ($dataProvider as $model) {
             foreach ($model->master->rates as $master) {
-
                 foreach ($model->services as $service) {
-
-                     if (  $master->service_id == $service->id && $master->rate < 100){
-
-                         $total += $service->cost * ($master->rate / 100);
-
+                    if ($master->service_id == $service->id && $master->rate < 100) {
+                        $total += $service->cost * ($master->rate / 100);
                     }
                 }
             }
@@ -586,54 +586,98 @@ class Event extends ActiveRecord
     }
 
 
-
-    /* public static function getlabelsCharts($dataProvider): array
-     {
-         $labels = [];
-
-         foreach ($dataProvider->models as $model) {
-             foreach ($model->services as $key => $item) {
-                 if (!in_array($item->name, $labels)) {
-                     $labels[$item->name] .= $item->name;
-                 }
-             }
-         }
-         return array_values($labels);
-     }
-
-     public static function getDataCharts($dataProvider): array
-     {
-         $amount = [];
-
-         foreach ($dataProvider->models as $model) {
-
-             foreach ($model->services as $key => $item) {
-                 if (!in_array($item->name, $amount)) {
-                         $amount[$item->name] += $item->cost * ($model->master->rate / 100);
-                 }
-             }
-         }
-         return array_values($amount);
-     }*/
-
-
-
-    public static function getUserEventService()
+    public static function getlabelsCharts($dataProvider): array
     {
-        $events = self::find()->joinWith('eventService')->asArray()->all();
+        $labels = [];
 
-        $events = ArrayHelper::getColumn($events,'eventService');
-
-        $a=[];
-        foreach ($events as $event){
-            $a[] .= $event->service_id;
-            $a[] .= $event->event_id;
-            $a[] .= $event->id;
+        foreach ($dataProvider->models as $model) {
+            foreach ($model->services as $key => $item) {
+                if (!in_array($item->name, $labels)) {
+                    $labels[$item->name] .= $item->name;
+                }
+            }
         }
-        return $a;
-        return ArrayHelper::map($a,'service_id','service_id','event_id');
 
-        //return $events;
+        return array_values($labels);
+    }
+
+    public static function getDataCharts($dataProvider): array
+    {
+        $amount = [];
+
+        foreach ($dataProvider->models as $model) {
+            foreach ($model->master->rates as $rate) {
+                foreach ($model->services as $item) {
+                    if (!in_array($item->name, $amount)) {
+                        //if ($rate->rate < 100){
+                        $amount[$item->name] += $item->cost * $rate->rate / 100;
+                        //}
+                    }
+                }
+            }
+        }
+
+        /*echo '<pre>';
+        var_dump($model->eventService);
+        die();*/
+        return array_values($amount);
+    }
+
+
+    public static function getUserEventService($userid, $id)
+    {
+        $events = self::find()->joinWith(['eventService', 'services', 'master.rates'])->where(
+            ['master_id' => $userid, 'event.id' => $id]
+        )->asArray()->all();
+
+        $event        = ArrayHelper::getColumn($events, 'eventService');
+        $events_ids   = ArrayHelper::getColumn($events, 'id');
+        $services     = ArrayHelper::getColumn($events, 'services');
+        $master_rates = ArrayHelper::getColumn($events, 'master.rates');
+
+        $service_ids = [];
+        foreach ($services as $key => $value) {
+            foreach ($value as $item) {
+                $service_ids[$key] = $item['id'];
+            }
+        }
+
+        $event_service_ids = [];
+        $event_ids         = [];
+        foreach ($event as $key => $value) {
+            foreach ($value as $item) {
+                $event_service_ids[] = $item['service_id'];
+                $event_ids[]         = $item['event_id'];
+            }
+        }
+
+
+        $master_rates_service_ids = [];
+        foreach ($master_rates as $value) {
+            foreach ($value as $key => $item) {
+                $master_rates_service_ids[$key] = $item['service_id'];
+            }
+        }
+
+        $no_set_rate = array_diff($event_service_ids, $master_rates_service_ids);
+
+        if (!in_array($no_set_rate, $service_ids)) {
+            $no_set_rate_ids = '';
+            foreach ($services as $service_arr) {
+                foreach ($no_set_rate as $rate) {
+                    foreach ($service_arr as $service) {
+                        foreach ($event_ids as $item) {
+                            foreach ($events_ids as $event_id) {
+                                if ($rate == $service['id'] && $item == $event_id) {
+                                    $no_set_rate_ids = '<span class="text-danger">Ставка 0%</span>';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return $no_set_rate_ids;
+        }
     }
 
 
