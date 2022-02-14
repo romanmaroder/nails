@@ -351,7 +351,7 @@ $this->params['breadcrumbs'][] = $this->title;
 											image: true,
 											trigger : 'hover',
 											title: event.title,
-											content: event.nonstandard.description,
+											content: event.nonstandard.description ? event.nonstandard.description : '',
 											container:'body'
 									}); 
                   				 }
@@ -362,7 +362,7 @@ $this->params['breadcrumbs'][] = $this->title;
 											image: true,
 											trigger : 'hover',
 											title: event.title + ' ' + event.start.format('HH:mm'),
-											content: event.nonstandard.description,
+											content: event.nonstandard.description ? event.nonstandard.description : '',
 											container:'body',
 											
 									}); 

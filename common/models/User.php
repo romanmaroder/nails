@@ -471,8 +471,9 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getClientList(): array
     {
-        $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
-        $clients   = User::find()->where(['id' => $clientIds])->orderBy(['username' => SORT_ASC])->asArray()->all();
+       // $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
+        //$clients   = User::find()->where(['id' => $clientIds])->orderBy(['username' => SORT_ASC])->asArray()->all();
+        $clients   = User::find()->orderBy(['username' => SORT_ASC])->asArray()->all();
         return ArrayHelper::map($clients, 'id', 'username');
     }
 

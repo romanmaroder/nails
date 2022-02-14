@@ -39,7 +39,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
                 ],
                 [
                     'attribute' => 'description',
-                    'format'=>'ntext',
+                    'format'=>'raw',
                     'visible' => $model->description ?? '',
                 ],
                 //'serviceString',

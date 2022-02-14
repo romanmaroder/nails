@@ -237,8 +237,8 @@ class Event extends ActiveRecord
         if ($this->service_array) {
             foreach ($this->service_array as $one) {
                 if (!in_array($one, $arr)) {
-                    $model             = new EventService();
-                    $model->event_id   = $this->id;
+                    $model = new EventService();
+                    $model->event_id = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
@@ -495,15 +495,15 @@ class Event extends ActiveRecord
             $query = Event::findClientEvents($userId);
         }
 
-        $dataProvider    = new ActiveDataProvider(
+        $dataProvider = new ActiveDataProvider(
             [
                 'query'      => $query,
                 'pagination' => false,
             ]
         );
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency      = Yii::createObject(
+        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -554,9 +554,12 @@ class Event extends ActiveRecord
     {
         $total = 0;
         foreach ($dataProvider->models as $model) {
-            foreach ($model->service_array as $cost) {
-                $total = $total + $cost->cost;
-            }
+
+
+                    foreach ($model->service_array as $cost) {
+
+                            $total += $cost->cost;
+                    }
         }
 
         return $total;
@@ -630,9 +633,9 @@ class Event extends ActiveRecord
             ['master_id' => $userid, 'event.id' => $id]
         )->asArray()->all();
 
-        $event        = ArrayHelper::getColumn($events, 'eventService');
-        $events_ids   = ArrayHelper::getColumn($events, 'id');
-        $services     = ArrayHelper::getColumn($events, 'services');
+        $event = ArrayHelper::getColumn($events, 'eventService');
+        $events_ids = ArrayHelper::getColumn($events, 'id');
+        $services = ArrayHelper::getColumn($events, 'services');
         $master_rates = ArrayHelper::getColumn($events, 'master.rates');
 
         $service_ids = [];
@@ -643,11 +646,11 @@ class Event extends ActiveRecord
         }
 
         $event_service_ids = [];
-        $event_ids         = [];
+        $event_ids = [];
         foreach ($event as $key => $value) {
             foreach ($value as $item) {
                 $event_service_ids[] = $item['service_id'];
-                $event_ids[]         = $item['event_id'];
+                $event_ids[] = $item['event_id'];
             }
         }
 

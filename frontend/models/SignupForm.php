@@ -31,7 +31,8 @@ class SignupForm extends Model
                 'targetClass' => '\common\models\User',
                 'message'     => 'This username has already been taken.'
             ],*/
-            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['username', 'string', 'min' => 2, 'max' => 50],
+            ['username', 'match', 'pattern' => '/^[A-zА-я\s]+$/u'],
 
             [
                 'email',

@@ -159,13 +159,13 @@ die();*/
                         'attribute' => 'cost',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $service_one   = '';
+                            $service_one = '';
                             $service_total = 0;
-                            $service_none  = '';
-                            foreach ($model->master->rates as $master) {
-                                foreach ($model->services as $item) {
+                            $service_none = '';
+                            foreach ($model->services as $item) {
+                                foreach ($model->master->rates as $master) {
                                     if ($master->service_id == $item->id) {
-                                        $service_one   .= $item->cost . " </br>";
+                                        $service_one .= $item->cost  . "</br>";
                                         $service_total += $item->cost;
                                     }
                                     if ($master->service_id != $item->id) {
@@ -187,14 +187,15 @@ die();*/
                         'attribute' => 'salary',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $salary      = 0;
-                            $salary_one  = '';
+                            $salary = 0;
+                            $salary_one = '';
                             $salary_none = '';
-                            foreach ($model->master->rates as $master) {
+                            $amount = 0;
                                 foreach ($model->services as $service) {
+                            foreach ($model->master->rates as $master) {
                                     if ($master->rate < 100 && $master->service_id == $service->id) {
-                                        $salary_one .= $service->cost * ($master->rate / 100) . '<br> ';
-                                        $salary     += $service->cost * ($master->rate / 100);
+                                        $salary_one .= ($service->cost * $master->rate) / 100 . '<br> ';
+                                        $salary += ($service->cost * $master->rate) / 100;
                                     }
                                     if ($master->rate < 100 && $master->service_id != $service->id) {
                                         $salary_none = \common\models\Event::getUserEventService(
@@ -207,7 +208,7 @@ die();*/
                             if ($salary > 0) {
                                 $amount = '<hr>' . Yii::$app->formatter->asCurrency($salary);
                             }
-                            return $salary_one . $salary_none .  $amount;
+                            return $salary_one . $salary_none . $amount;
                         },
 
                         'footer' => Yii::$app->formatter->asCurrency($totalSalary),
