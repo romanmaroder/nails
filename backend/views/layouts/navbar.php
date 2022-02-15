@@ -61,7 +61,8 @@ use yii\widgets\Menu;
                                'data-placement' => 'tooltip',
                                'title' =>'Мастера'
                  ],
-                 'url' => ['/employees/master/index']],
+                 'url' => ['/employees/master/index']
+                ],
                 ['label' => '<i class="fas fa-percent"></i>',
                  'options' => ['class' => 'd-none d-sm-inline-block',
                                'data-toggle' => 'tooltip',
@@ -126,6 +127,7 @@ use yii\widgets\Menu;
                             'url' => ['/client/client/index'],
                             'options' => ['class' => 'nav-item'],
                         ],
+
                         ['label' => 'Мастера',
                          'url' => ['/employees/master/index'],
                          'options' => ['class' => 'nav-item'],

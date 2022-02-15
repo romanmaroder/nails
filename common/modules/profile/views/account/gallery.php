@@ -58,7 +58,7 @@ die();*/
 							<div>
 								<div class="filter-container p-0 row">
                                     <?php
-                                    foreach ($model as $item) : ?>
+                                    foreach ($model->models as $item) : ?>
 										<div class="filtr-item col-sm-2 "
 											 data-category="1"
 											 data-sort="white sample">

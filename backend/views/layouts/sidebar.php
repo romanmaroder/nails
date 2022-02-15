@@ -94,19 +94,21 @@ use yii\helpers\Url;
                         ],
                         [
                             'label' => 'Клиенты',
-                            'icon'  => 'fas fa-users',
+                            'icon'  => 'fas fa-address-book',
                             'badge' => '<span class="right badge badge-info">'.User::getUserTotalCount().'</span>',
-                            'iconClassAdded' => 'text-danger',
+                            'iconClassAdded' => 'text-primary',
                             'items' => [
                                 [
                                     'label' => 'Список',
                                     'icon'  => 'fas fa-user-friends',
+                                    'iconClassAdded' => 'text-secondary',
                                     'url'
                                             => ['/client/client/index'],
                                 ],
                                 [
                                     'label' => 'Новый',
                                     'icon'  => 'fas fa-user-plus',
+                                    'iconClassAdded' => 'text-secondary',
                                     'url'   => ['/client/client/create'],
                                 ],
                                 /*[
@@ -121,25 +123,47 @@ use yii\helpers\Url;
                                 ['label' => 'Level2', 'iconStyle' => 'far']*/
                             ]
                         ],
-                        ['label' => 'Мастера', 'icon' => 'fas fa-user-tag', 'url' => ['/employees/master/index'],'iconClassAdded' =>'text-info'],
+                        [
+                            'label' => 'Мастера',
+                            'icon'  => 'fas fa-users',
+                            'iconClassAdded' => 'text-primary',
+                            'items' => [
+                                [
+                                    'label' => 'Список мастеров',
+                                    'icon'  => 'fas fa-user-tag',
+                                    'iconClassAdded' => 'text-secondary',
+                                    'url'
+                                            => ['/employees/master/index'],
+                                ],
+                                [
+                                    'label' => 'Ставка мастера',
+                                    'icon'  => 'fas fa-percent',
+                                    'iconClassAdded' => 'text-secondary',
+                                    'url'   => ['/service-user/index'],
+                                ],
+                            ]
+                        ],
                         [
                             'label' => 'Блог',
                             'icon'  => 'far fa-newspaper',
                             /*'badge' => '<span class="right badge badge-info">'.User::getUserTotalCount().'</span>',*/
-                            'iconClassAdded' => 'text-info',
+                            'iconClassAdded' => 'text-primary',
                             'items' => [
                                 [
                                     'label' => 'Категории',
                                     'icon'  => 'fas fa-stream',
+                                    'iconClassAdded' => 'text-info',
                                     'items' => [
                                         [
                                             'label' => 'Список',
                                             'icon'  => 'fas fa-list-ol',
+                                            'iconClassAdded' => 'text-secondary',
                                             'url' => ['/category/index'],
                                         ],
                                         [
                                             'label' => 'Добавить',
                                             'icon'  => 'far fa-plus-square',
+                                            'iconClassAdded' => 'text-secondary',
                                             'url'   => ['/category/create'],
                                         ],
 									]
@@ -147,15 +171,18 @@ use yii\helpers\Url;
                                 [
                                     'label' => 'Статьи',
                                     'icon'  => 'far fa-newspaper',
+                                    'iconClassAdded' => 'text-info',
                                     'items' => [
                                         [
                                             'label' => 'Список',
                                             'icon'  => 'fas fa-list-ol',
+                                            'iconClassAdded' => 'text-secondary',
                                             'url' => ['/blog/post/index'],
                                         ],
                                         [
                                             'label' => 'Добавить статью',
                                             'icon'  => 'far fa-plus-square',
+                                            'iconClassAdded' => 'text-secondary',
                                             'url'   => ['/blog/post/create'],
                                         ],
                                     ]
@@ -181,12 +208,14 @@ use yii\helpers\Url;
                                 [
                                     'label' => 'Список услуг',
                                     'icon'  => 'fas fa-list',
+                                    'iconClassAdded' => 'text-secondary',
                                     'url'
                                             => ['/service/index'],
                                 ],
                                 [
                                     'label' => 'Новая услуга',
                                     'icon'  => 'far fa-plus-square',
+                                    'iconClassAdded' => 'text-secondary',
                                     'url'   => ['/service/create'],
                                 ],
                             ]
@@ -199,28 +228,32 @@ use yii\helpers\Url;
                                 [
                                     'label' => 'Категории расходов',
                                     'icon'  => 'fas fa-list',
+                                     'iconClassAdded' => 'text-secondary',
                                     'url'
                                             => ['/expenses/index'],
                                 ],
                                 [
                                     'label' => 'Добавить категорию',
                                     'icon'  => 'far fa-plus-square',
+                                     'iconClassAdded' => 'text-secondary',
                                     'url'   => ['/expenses/create'],
                                 ],
                                 [
                                     'label' => 'Список затрат',
                                     'icon'  => 'fas fa-list',
+                                     'iconClassAdded' => 'text-secondary',
                                     'url'
                                             => ['/expenseslist/index'],
                                 ],
                                 [
                                     'label' => 'Добавить затраты',
                                     'icon'  => 'far fa-plus-square',
+                                    'iconClassAdded' => 'text-secondary',
                                     'url'   => ['/expenseslist/create'],
                                 ],
                             ]
                         ],
-                        ['label' => 'Ставки', 'icon' => 'fas fa-percent', 'url' => ['/service-user/index'],'iconClassAdded'=>'text-info'],
+                        //['label' => 'Ставки', 'icon' => 'fas fa-percent', 'url' => ['/service-user/index'],'iconClassAdded'=>'text-info'],
                         ['label' => 'Статистика', 'icon' => 'fas fa-chart-pie', 'url' => ['/statistic'],'iconClassAdded' =>'text-info'],
                         ['label' => 'Заметки', 'icon' => 'fa fa-list-ul', 'url' => ['/todo/todo/index'],'iconClassAdded' =>'text-info'],
                         /*['label' => 'LABELS', 'header' => true],
