@@ -554,12 +554,9 @@ class Event extends ActiveRecord
     {
         $total = 0;
         foreach ($dataProvider->models as $model) {
-
-
-                    foreach ($model->service_array as $cost) {
-
-                            $total += $cost->cost;
-                    }
+            foreach ($model->service_array as $cost) {
+                $total += $cost->cost;
+            }
         }
 
         return $total;
@@ -633,24 +630,22 @@ class Event extends ActiveRecord
             ['master_id' => $userid, 'event.id' => $id]
         )->asArray()->all();
 
+
         $event = ArrayHelper::getColumn($events, 'eventService');
-        $events_ids = ArrayHelper::getColumn($events, 'id');
         $services = ArrayHelper::getColumn($events, 'services');
         $master_rates = ArrayHelper::getColumn($events, 'master.rates');
 
         $service_ids = [];
         foreach ($services as $key => $value) {
             foreach ($value as $item) {
-                $service_ids[$key] = $item['id'];
+                $service_ids[$item['id']] = $item['name'];
             }
         }
 
         $event_service_ids = [];
-        $event_ids = [];
         foreach ($event as $key => $value) {
             foreach ($value as $item) {
                 $event_service_ids[] = $item['service_id'];
-                $event_ids[] = $item['event_id'];
             }
         }
 
@@ -658,16 +653,26 @@ class Event extends ActiveRecord
         $master_rates_service_ids = [];
         foreach ($master_rates as $value) {
             foreach ($value as $key => $item) {
-                $master_rates_service_ids[$key] = $item['service_id'];
+                $master_rates_service_ids[] = $item['service_id'];
             }
         }
 
         $no_set_rate = array_diff($event_service_ids, $master_rates_service_ids);
 
-        if (!in_array($no_set_rate, $service_ids)) {
+
+        $no_set_rate_ids = '';
+        foreach ($service_ids as $key => $service) {
+            foreach ($no_set_rate as $item) {
+                if ($item == $key) {
+                    $no_set_rate_ids .= '<span class="text-danger">' . $service . '</span></br>';
+                }
+            }
+        }
+        return $no_set_rate_ids;
+        /*if (!in_array($no_set_rate, $service_ids)) {
             $no_set_rate_ids = '';
-            foreach ($services as $service_arr) {
-                foreach ($no_set_rate as $rate) {
+            foreach ($no_set_rate as $rate) {
+                foreach ($services as $service_arr) {
                     foreach ($service_arr as $service) {
                         foreach ($event_ids as $item) {
                             foreach ($events_ids as $event_id) {
@@ -679,8 +684,9 @@ class Event extends ActiveRecord
                     }
                 }
             }
+
             return $no_set_rate_ids;
-        }
+        }*/
     }
 
 

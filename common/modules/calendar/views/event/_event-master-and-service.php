@@ -53,15 +53,27 @@ die();*/
                             'backgroundColor'  => [
                                 '#ADC3FF',
                                 '#FF9A9A',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
+                                '#9b59b6',
+                                '#f1c40f',
+                                '#e67e22',
+                                '#16a085',
+                                '#b8e994',
+                                '#1e3799',
+                                '#fa983a',
+                                '#eb2f06',
+                                '#38ada9',
+                                '#b71540',
+                                '#40407a',
+                                '#ccae62',
+                                '#ff6b81',
+                                '#c23616',
+                                '#44bd32',
+                                '#e1b12c',
+                                '#c23616',
+                                '#e84118',
+                                '#10ac84',
+                                '#48dbfb',
+                                '#f368e0',
                             ],
                             'borderColor'      => [
                                 '#fff'
@@ -148,7 +160,7 @@ die();*/
                         'value'     => function ($model) {
                             $service_name = '';
                             foreach ($model->services as $services) {
-                                $service_name .= $services->name . " </br>";
+                                 $service_name .= $services->name . " </br>";
                             }
 
                             return $service_name;
@@ -163,21 +175,27 @@ die();*/
                             $service_total = 0;
                             $service_none = '';
                             foreach ($model->services as $item) {
+
                                 foreach ($model->master->rates as $master) {
+
                                     if ($master->service_id == $item->id) {
-                                        $service_one .= $item->cost  . "</br>";
+                                        $service_one .=  $item->cost . "</br>";
                                         $service_total += $item->cost;
+
                                     }
-                                    if ($master->service_id != $item->id) {
-                                        $service_none = \common\models\Event::getUserEventService(
+                                    if ( $master->service_id !== $item->id  ) {
+                                        $service_one .=  \common\models\Event::getUserEventService(
                                             $model->master->id,
                                             $model->id
                                         );
                                     }
                                 }
+                                /*echo'<pre>';
+                                var_dump( $master->rate);
+                                die();*/
                             }
 
-                            return $service_one . $service_none . '<hr>' . Yii::$app->formatter->asCurrency(
+                            return $service_one .  '<hr>' . Yii::$app->formatter->asCurrency(
                                     $service_total
                                 );
                         },
@@ -191,20 +209,26 @@ die();*/
                             $salary_one = '';
                             $salary_none = '';
                             $amount = 0;
-                                foreach ($model->services as $service) {
-                            foreach ($model->master->rates as $master) {
+                            foreach ($model->services as $service) {
+                                foreach ($model->master->rates as $master) {
                                     if ($master->rate < 100 && $master->service_id == $service->id) {
-                                        $salary_one .= ($service->cost * $master->rate) / 100 . '<br> ';
+                                        $salary_none .= ($service->cost * $master->rate) / 100 . '<br> ';
                                         $salary += ($service->cost * $master->rate) / 100;
+
                                     }
-                                    if ($master->rate < 100 && $master->service_id != $service->id) {
+                                    if ($master->rate < 100 && $service->id != $master->service_id  ) {
                                         $salary_none = \common\models\Event::getUserEventService(
                                             $model->master->id,
                                             $model->id
                                         );
+                                       // echo'<pre>';
+                                       // var_dump($service->cost);
                                     }
+
                                 }
+
                             }
+                            //die();
                             if ($salary > 0) {
                                 $amount = '<hr>' . Yii::$app->formatter->asCurrency($salary);
                             }

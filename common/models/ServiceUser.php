@@ -54,7 +54,7 @@ class ServiceUser extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['service_id', 'user_id'], 'required'],
+            [['service_id', 'user_id','rate'], 'required'],
             [['service_id', 'user_id'], 'integer'],
             [
                 ['service_id'],
@@ -75,7 +75,7 @@ class ServiceUser extends \yii\db\ActiveRecord
                 'number',
                 'min'     => 0,
                 'max'     => 100,
-                'message' => '{attribute} не может быть меньше 0 и  больше 100'
+                'message' => '{attribute} не может быть меньше 0 и больше 100'
             ],
             [['created_at', 'updated_at'], 'safe'],
         ];

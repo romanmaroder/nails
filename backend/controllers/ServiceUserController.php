@@ -66,7 +66,21 @@ class ServiceUserController extends Controller
     {
         $model = new ServiceUser();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+        if ($model->load(Yii::$app->request->post())  ) {
+
+            $user = ServiceUser::find()->where(['user_id'=>$model->user_id,'service_id'=>$model->service_id])
+                ->one();
+
+
+            if ($user->user_id == $model->user_id && $user->service_id == $model->service_id){
+                Yii::$app->session->setFlash('warning',"Услуга '{$model->service->name}'  у мастера  
+                {$model->user->username} уже существует!");
+                return $this->refresh();
+            }
+
+            $model->save();
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

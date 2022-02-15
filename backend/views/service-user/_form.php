@@ -10,7 +10,14 @@ use yii\bootstrap4\ActiveForm;
 /* @var $model common\models\ServiceUser */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
+<?php if( Yii::$app->session->hasFlash('warning') ): ?>
+    <div class="alert alert-warning alert-dismissible mt-3" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <?php echo Yii::$app->session->getFlash('warning') .'<br><small>Выберите другую услугу</small>'; ?>
+    </div>
+<?php endif;?>
 <div class="service-user-form">
 
     <?php $form = ActiveForm::begin(); ?>
