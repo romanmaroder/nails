@@ -65,6 +65,7 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionIndex()
     {
@@ -320,6 +321,14 @@ class EventController extends Controller
     }
 
 
+    /**
+     * Updating the record date by changing the event size
+     * @param $id - user identifier
+     * @param $start - start time
+     * @param $end - end time
+     * @return string|Response
+     * @throws NotFoundHttpException
+     */
     public function actionUpdateResize($id, $start, $end)
     {
         $model                   = $this->findModel($id);
@@ -339,6 +348,14 @@ class EventController extends Controller
         );
     }
 
+    /**
+     * Updating the record date by dragging and dropping an event
+     * @param $id - user identifier
+     * @param $start - start time
+     * @param $end - end time
+     * @return string|Response
+     * @throws NotFoundHttpException
+     */
     public function actionUpdateDrop($id, $start, $end)
     {
         $model                   = $this->findModel($id);
@@ -396,6 +413,11 @@ class EventController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**
+     * Displaying user statistics
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionStatistic(): string
     {
         $searchModel      = new EventSearch();

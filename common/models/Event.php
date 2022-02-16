@@ -237,8 +237,8 @@ class Event extends ActiveRecord
         if ($this->service_array) {
             foreach ($this->service_array as $one) {
                 if (!in_array($one, $arr)) {
-                    $model = new EventService();
-                    $model->event_id = $this->id;
+                    $model             = new EventService();
+                    $model->event_id   = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
@@ -495,15 +495,15 @@ class Event extends ActiveRecord
             $query = Event::findClientEvents($userId);
         }
 
-        $dataProvider = new ActiveDataProvider(
+        $dataProvider    = new ActiveDataProvider(
             [
                 'query'      => $query,
                 'pagination' => false,
             ]
         );
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency = Yii::createObject(
+        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency      = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -586,6 +586,11 @@ class Event extends ActiveRecord
     }
 
 
+    /**
+     * Label data for the chart
+     * @param $dataProvider
+     * @return array
+     */
     public static function getlabelsCharts($dataProvider): array
     {
         $labels = [];
@@ -593,7 +598,7 @@ class Event extends ActiveRecord
         foreach ($dataProvider->models as $model) {
             foreach ($model->services as $key => $item) {
                 if (!in_array($item->name, $labels)) {
-                    $labels[$item->name] .= $item->name;
+                    $labels[$item->id] .= $item->name;
                 }
             }
         }
@@ -601,6 +606,11 @@ class Event extends ActiveRecord
         return array_values($labels);
     }
 
+    /**
+     * Data for the chart
+     * @param $dataProvider
+     * @return array
+     */
     public static function getDataCharts($dataProvider): array
     {
         $amount = [];
@@ -609,105 +619,39 @@ class Event extends ActiveRecord
             foreach ($model->master->rates as $rate) {
                 foreach ($model->services as $item) {
                     if (!in_array($item->name, $amount)) {
-                        //if ($rate->rate < 100){
-                        $amount[$item->name] += $item->cost * $rate->rate / 100;
-                        //}
-                    }
-                }
-            }
-        }
-
-        /*echo '<pre>';
-        var_dump($model->eventService);
-        die();*/
-        return array_values($amount);
-    }
-
-
-    /*public static function getUserEventService($userid, $id)
-    {
-        $events = self::find()->joinWith(['eventService', 'services', 'master.rates'])->where(
-            ['master_id' => $userid, 'event.id' => $id]
-        )->asArray()->all();
-
-
-        $event = ArrayHelper::getColumn($events, 'eventService');
-        $services = ArrayHelper::getColumn($events, 'services');
-        $master_rates = ArrayHelper::getColumn($events, 'master.rates');
-
-        $service_ids = [];
-        foreach ($services as $key => $value) {
-            foreach ($value as $item) {
-                $service_ids[$item['id']] = $item['name'];
-            }
-        }
-
-        $event_service_ids = [];
-        foreach ($event as $key => $value) {
-            foreach ($value as $item) {
-                $event_service_ids[] = $item['service_id'];
-            }
-        }
-
-
-        $master_rates_service_ids = [];
-        foreach ($master_rates as $value) {
-            foreach ($value as $key => $item) {
-                $master_rates_service_ids[] = $item['service_id'];
-            }
-        }
-
-        $no_set_rate = array_diff($event_service_ids, $master_rates_service_ids);
-
-
-        $no_set_rate_ids = '';
-        foreach ($service_ids as $key => $service) {
-            foreach ($no_set_rate as $item) {
-                if ($item == $key) {
-                    $no_set_rate_ids .= '<span class="text-danger">' . $service . '</span></br>';
-                }
-            }
-        }
-        return $no_set_rate_ids;
-        if (!in_array($no_set_rate, $service_ids)) {
-            $no_set_rate_ids = '';
-            foreach ($no_set_rate as $rate) {
-                foreach ($services as $service_arr) {
-                    foreach ($service_arr as $service) {
-                        foreach ($event_ids as $item) {
-                            foreach ($events_ids as $event_id) {
-                                if ($rate == $service['id'] && $item == $event_id) {
-                                    $no_set_rate_ids = '<span class="text-danger">Ставка 0%</span>';
-                                }
-                            }
+                        if ($rate->service_id == $item->id) {
+                            $amount[$item->id] += ($item->cost * $rate->rate) / 100;
                         }
                     }
                 }
             }
-
-            return $no_set_rate_ids;
         }
-    }*/
+        return array_values($amount);
+    }
 
 
-    public static function getUserEventService($model)
+    /**
+     * Forming the list of existing/absent master rates
+     * @param $model - each master's data for each entry
+     * @return string - list of services
+     */
+    public static function MissingMasterRates($model): string
     {
         $rates = ArrayHelper::getColumn($model->master->rates, 'service_id');
 
-        $events = [];
+        $events   = [];
         $event_id = [];
         foreach ($model->services as $item) {
             $events[$item['id']] .= $item['name'];
-            $event_id[] .= $item['id'];
+            $event_id[]          .= $item['id'];
         }
 
 
-        $no_set_rate = array_diff($event_id, $rates);
+        $no_set_rate    = array_diff($event_id, $rates);
         $isset_set_rate = array_intersect($event_id, $rates);
 
 
         $no_rate = [];
-
         foreach ($no_set_rate as $no) {
             foreach ($events as $key => $event) {
                 if ($no == $key) {
