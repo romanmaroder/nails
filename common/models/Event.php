@@ -71,12 +71,12 @@ class Event extends ActiveRecord
             ['client_id', 'filter', 'filter' => 'intval'],
             [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent'], 'safe'],
             [['notice'], 'string', 'max' => 255],
-            ['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
+            //['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
 
         ];
     }
 
-    public function validateEvent()
+    /*public function validateEvent()
     {
         $old_model = Event::find()
             ->with('client', 'master')
@@ -123,7 +123,7 @@ class Event extends ActiveRecord
             }
         }
         return true;
-    }
+    }*/
 
 
     /**
