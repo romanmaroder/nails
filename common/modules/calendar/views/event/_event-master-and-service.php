@@ -158,11 +158,17 @@ die();*/
                         'attribute' => 'services.name',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $service_name = '';
-                            foreach ($model->services as $services) {
-                                 $service_name .= $services->name . " </br>";
-                            }
+                            $service_name = \common\models\Event::getUserEventService($model);
 
+
+                            //$name = '';
+                            /*foreach ($service_name as $name) {
+                                //echo'<pre>';
+                                var_dump( $name);
+                                return $name;
+
+                            }*/
+                           // die();
                             return $service_name;
                         },
 
@@ -175,19 +181,16 @@ die();*/
                             $service_total = 0;
                             $service_none = '';
                             foreach ($model->services as $item) {
-
                                 foreach ($model->master->rates as $master) {
-
                                     if ($master->service_id == $item->id) {
-                                        $service_one .=  $item->cost . "</br>";
+                                        $service_one .= $item->cost . "</br>";
                                         $service_total += $item->cost;
-
                                     }
-                                    if ( $master->service_id !== $item->id  ) {
-                                        $service_one .=  \common\models\Event::getUserEventService(
+                                    if ($master->service_id !== $item->id) {
+                                        /*$service_one .=  \common\models\Event::getUserEventService(
                                             $model->master->id,
                                             $model->id
-                                        );
+                                        );*/
                                     }
                                 }
                                 /*echo'<pre>';
@@ -195,7 +198,7 @@ die();*/
                                 die();*/
                             }
 
-                            return $service_one .  '<hr>' . Yii::$app->formatter->asCurrency(
+                            return $service_one . '<hr>' . Yii::$app->formatter->asCurrency(
                                     $service_total
                                 );
                         },
@@ -214,19 +217,15 @@ die();*/
                                     if ($master->rate < 100 && $master->service_id == $service->id) {
                                         $salary_none .= ($service->cost * $master->rate) / 100 . '<br> ';
                                         $salary += ($service->cost * $master->rate) / 100;
-
                                     }
-                                    if ($master->rate < 100 && $service->id != $master->service_id  ) {
+                                    if ($master->rate < 100 && $service->id != $master->service_id) {
                                         $salary_none = \common\models\Event::getUserEventService(
-                                            $model->master->id,
-                                            $model->id
+                                            $model
                                         );
-                                       // echo'<pre>';
-                                       // var_dump($service->cost);
+                                        // echo'<pre>';
+                                        // var_dump($service->cost);
                                     }
-
                                 }
-
                             }
                             //die();
                             if ($salary > 0) {

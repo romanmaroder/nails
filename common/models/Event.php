@@ -624,7 +624,7 @@ class Event extends ActiveRecord
     }
 
 
-    public static function getUserEventService($userid, $id)
+    /*public static function getUserEventService($userid, $id)
     {
         $events = self::find()->joinWith(['eventService', 'services', 'master.rates'])->where(
             ['master_id' => $userid, 'event.id' => $id]
@@ -669,7 +669,7 @@ class Event extends ActiveRecord
             }
         }
         return $no_set_rate_ids;
-        /*if (!in_array($no_set_rate, $service_ids)) {
+        if (!in_array($no_set_rate, $service_ids)) {
             $no_set_rate_ids = '';
             foreach ($no_set_rate as $rate) {
                 foreach ($services as $service_arr) {
@@ -686,7 +686,51 @@ class Event extends ActiveRecord
             }
 
             return $no_set_rate_ids;
-        }*/
+        }
+    }*/
+
+
+    public static function getUserEventService($model)
+    {
+        $rates = ArrayHelper::getColumn($model->master->rates, 'service_id');
+
+        $events = [];
+        $event_id = [];
+        foreach ($model->services as $item) {
+            $events[$item['id']] .= $item['name'];
+            $event_id[] .= $item['id'];
+        }
+
+
+        $no_set_rate = array_diff($event_id, $rates);
+        $isset_set_rate = array_intersect($event_id, $rates);
+
+
+        $no_rate = [];
+
+        foreach ($no_set_rate as $no) {
+            foreach ($events as $key => $event) {
+                if ($no == $key) {
+                    $no_rate[] .= "<span class='text-danger'>$event</span></br>";
+                }
+            }
+        }
+        $isset_rate = [];
+        foreach ($isset_set_rate as $isset) {
+            foreach ($events as $key => $event) {
+                if ($isset == $key) {
+                    $isset_rate[] .= "<span class='text-green'>$event</span></br>";
+                }
+            }
+        }
+
+        $all_events_names = ArrayHelper::merge($isset_rate, $no_rate);
+
+        $list_all_event_name = '';
+        foreach ($all_events_names as $event_name) {
+            $list_all_event_name .= $event_name;
+        }
+        return $list_all_event_name;
     }
 
 
