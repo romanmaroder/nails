@@ -62,6 +62,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'options' => ['id' => 'expenseslist'],
 
                             ],
+                            /*[
+                                'label'   => 'История',
+                                'content' => $this->render(
+                                    '_history',
+                                    [
+                                        'dataProvider' => $dataProvider,
+                                        'searchModel'  => $searchModel,
+                                    ]
+                                ),
+                                'options' => ['id' => 'expenseslist'],
+
+                            ],*/
 
                         ]
                     ]

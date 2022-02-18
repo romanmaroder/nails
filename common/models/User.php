@@ -164,6 +164,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function afterFind()
     {
+
         $this->roles = $this->getRoles('name');
         $this->color = $this->profile['color'];
         $this->rate = $this->rates['rate'];
@@ -473,7 +474,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
        // $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
         //$clients   = User::find()->where(['id' => $clientIds])->orderBy(['username' => SORT_ASC])->asArray()->all();
-        $clients   = User::find()->orderBy(['username' => SORT_ASC])->asArray()->all();
+        $clients   = User::find()->where(['!=','id',1])->orderBy(['username' => SORT_ASC])->asArray()->all();
         return ArrayHelper::map($clients, 'id', 'username');
     }
 
@@ -617,6 +618,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getRates(): ActiveQuery
     {
+
         return $this->hasMany(ServiceUser::class, ['user_id' => 'id']);
     }
 

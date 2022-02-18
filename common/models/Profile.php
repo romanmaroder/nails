@@ -65,6 +65,8 @@ class Profile extends ActiveRecord
 
     public static function getUserProfileInfo($userId)
     {
+        //$masterIds = Yii::$app->authManager->getUserIdsByRole('master');
+        //$master   = User::find()->where(['id' => $masterIds])->orderBy(['username' => SORT_ASC])->asArray()->all();
         return Profile::find()
             #->select(['education','notes','skill'])
             ->where(['user_id' => $userId])
