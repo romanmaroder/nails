@@ -36,7 +36,7 @@ class Profile extends ActiveRecord
         return [
             [['education', 'notes', 'skill'], 'string'],
             ['color', 'safe'],
-            [['user_id','rate', 'certificate_id'], 'integer'],
+            [['user_id', 'certificate_id'], 'integer'],
 
         ];
     }
@@ -49,7 +49,6 @@ class Profile extends ActiveRecord
         return [
             'id'             => 'ID',
             'user_id'        => 'Пользователь',
-            'rate'           => 'Процент',
             'color'          => 'Цвет',
             'education'      => 'Образование',
             'notes'          => 'Обо мне',
@@ -65,10 +64,7 @@ class Profile extends ActiveRecord
 
     public static function getUserProfileInfo($userId)
     {
-        //$masterIds = Yii::$app->authManager->getUserIdsByRole('master');
-        //$master   = User::find()->where(['id' => $masterIds])->orderBy(['username' => SORT_ASC])->asArray()->all();
-        return Profile::find()
-            #->select(['education','notes','skill'])
+       return Profile::find()
             ->where(['user_id' => $userId])
             ->one();
     }

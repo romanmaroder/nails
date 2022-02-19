@@ -30,6 +30,17 @@ class Event extends ActiveRecord
     public $checkEvent;
     public $service_array;
 
+    public static function getHistory()
+    {
+        $archive = Event::find()
+            //->joinWith(['master','client','services','eventService'])
+            //->select('master_id,client_id')
+            //->where(['like','event_time_start','2022'])
+            //->groupBy('event_time_start')
+            ->all();
+        return $archive;
+    }
+
 
     /**
      *
@@ -199,27 +210,6 @@ class Event extends ActiveRecord
     {
         return $this->hasMany(Service::class, ['id' => 'service_id'])->via('eventService');
     }
-
-
-    /**
-     * Relationship with [[ServiceUser]] table
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    /* public function getRates(): ActiveQuery
-     {
-         return $this->hasMany(ServiceUser::class, ['user_id' => 'master_id']);
-     }*/
-
-    /**
-     * Relationship with [[service]] table
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    /*public function getRate(): ActiveQuery
-    {
-        return $this->hasMany(Service::class, ['id' => 'service_id'])->via('rates');
-    }*/
 
 
     public function afterFind()

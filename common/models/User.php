@@ -9,7 +9,6 @@ use yii\data\ActiveDataProvider;
 use Yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use yii\rbac\Role;
 use yii\web\IdentityInterface;
 
@@ -43,7 +42,6 @@ class User extends ActiveRecord implements IdentityInterface
     public $roles;
     public $password;
     public $color;
-    public $rate;
 
 
     /**
@@ -72,7 +70,6 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['roles', 'safe'],
             ['color', 'safe'],
-            [['rate'], 'number','min'=>0,'max'=>100,'message'=>'{attribute} не может быть меньше 0 и  больше 100'],
             ['username', 'required'],
             ['avatar', 'safe'],
             ['description', 'safe'],
@@ -92,22 +89,15 @@ class User extends ActiveRecord implements IdentityInterface
                 },
                 'whenClient' => "function(attribute,value){
                 
-                $('#user-roles input:checkbox').click(function(){
-                               if($(this).is(':checked')){
-                                  $('#user-color').css({'display':'block'});
-                                  $('label[for=user-color]').removeClass('d-none');
-                                  $('#user-rate').css({'display':'block'});
-                                  $('label[for=user-rate]').removeClass('d-none');
-                                 return true;
-                               }else{
-                                  $('#user-color').css({'display':'none'});
-                                   $('label[for=user-color]').addClass('d-none');
-                                   $('#user-rate').css({'display':'none'});
-                                   $('label[for=user-rate]').addClass('d-none');
-                                  //return true;
-                               }
-                              })
-      }"
+                    if(value){
+                        $('#user-color').css({'display':'block'});
+                        $('label[for=user-color]').removeClass('d-none');
+                        return true;
+                    }
+                        $('label[for=user-color]').addClass('d-none');
+                        $('#user-color').css({'display':'none'});
+                         return  true;
+                }"
             ]
         ];
     }
@@ -125,7 +115,6 @@ class User extends ActiveRecord implements IdentityInterface
             'birthday'    => 'День рождения',
             'phone'       => 'Телефон',
             'address'     => 'Адрес',
-            'rate'        => 'Ставка',
             'color'       => 'Цвет',
             'password'    => 'Пароль',
             'created_at'  => 'Создан'
@@ -166,12 +155,10 @@ class User extends ActiveRecord implements IdentityInterface
     {
 
         $this->roles = $this->getRoles('name');
-        $this->color = $this->profile['color'];
-        $this->rate = $this->rates['rate'];
+
+        $this->color = $this->profile->color;
 
     }
-
-
 
     /**
      * Get user roles from RBAC
@@ -183,6 +170,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getRoles($column_name): array
     {
         $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+
         return ArrayHelper::getColumn($roles, $column_name, true);
     }
 
@@ -641,7 +629,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'pagination' => false,
             ]
         );
-        $dependency   = \Yii::createObject(
+        $dependency   = Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
                 'sql'      => 'SELECT MAX(updated_at) FROM user',

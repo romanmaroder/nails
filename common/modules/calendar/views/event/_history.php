@@ -1,11 +1,17 @@
 <?php
 
 use yii\grid\GridView;
-/* @var $dataProvider EventController */
+/* @var $dataHistory EventController */
+
+
+/*echo '<pre>';
+var_dump($dataHistory);
+die();*/
+
 
 echo GridView::widget(
     [
-        'dataProvider'     => $dataProvider,
+        'dataProvider'     => $dataHistory,
         'showFooter'       => true,
         'tableOptions'     => [
             'class' => 'table table-striped table-bordered',

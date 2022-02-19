@@ -40,7 +40,7 @@ class ServiceUserSearch extends ServiceUser
     public function search($params)
     {
         $query = ServiceUser::find();
-        $query->joinWith(['service','user']);
+        $query->joinWith(['service','user','user.profile']);
 
         // add conditions that should always apply here
 

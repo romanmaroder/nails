@@ -60,15 +60,6 @@ use yii\helpers\Html;
                             </li>
                         <?php endif;?>
 
-                        <?php if ($model->rate):?>
-                            <li class="small mb-3">
-                                <span class="fa-li">
-                                    <i class="fas fa-percent"></i>
-                                </span>
-                                <?=$model->rate ;?>
-                            </li>
-                        <?php endif;?>
-
                         <?php if ($model->color):?>
                             <li class="small mb-3">
                                 <span class="fa-li">

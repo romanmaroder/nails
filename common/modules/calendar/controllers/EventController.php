@@ -405,7 +405,6 @@ class EventController extends Controller
      */
     protected function findModel(int $id)
     {
-
         if (($model = Event::find()->with('services')->andwhere(['id' => $id])->one()) !== null) {
             return $model;
         }
@@ -427,14 +426,14 @@ class EventController extends Controller
         $chartEventLabels = Event::getlabelsCharts($dataProvider);
         $chartEventData   = Event::getDataCharts($dataProvider);
 
+        $dataHistory = Event::getHistory();
+
 
         $searchModelExpenseslist  = new ExpenseslistSearch();
         $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
         $totalExpenses            = Expenseslist::getTotalExpenses($dataProviderExpenseslist->models);
         $chartExpensesLabels      = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
         $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
-
-
 
 
         return $this->render(
@@ -446,6 +445,7 @@ class EventController extends Controller
                 'totalSalary'              => $totalSalary,
                 'chartEventLabels'         => $chartEventLabels,
                 'chartEventData'           => $chartEventData,
+                'dataHistory'              => $dataHistory,
                 'dataProviderExpenseslist' => $dataProviderExpenseslist,
                 'searchModelExpenseslist'  => $searchModelExpenseslist,
                 'totalExpenses'            => $totalExpenses,

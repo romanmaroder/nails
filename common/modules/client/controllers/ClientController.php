@@ -126,7 +126,6 @@ class ClientController extends Controller
                 if ($model->roles){
                     $profile->user_id = $model->id;
                     $profile->color = $model->color;
-                    $profile->rate = $model->rate;
                     $profile->save();
                 }
                 $model->saveRoles();
@@ -163,14 +162,11 @@ class ClientController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             if(!empty($profile)){
                 $profile->color = $model->color;
-                $profile->rate = $model->rate;
                 $profile->save();
             }elseif ($model->roles){
                     $profile = new Profile();
                     $profile->user_id = $model->id;
                     $profile->color = $model->color;
-                    $profile->rate = $model->rate;
-
                     //$model->saveRoles();
                     $profile->save();
             }
