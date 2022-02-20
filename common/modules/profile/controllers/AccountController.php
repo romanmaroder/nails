@@ -90,6 +90,9 @@ class AccountController extends Controller
         if (!isset($user)) {
             throw new NotFoundHttpException("Пользователь не найден.");
         }
+        if (!isset($profile)) {
+            throw new NotFoundHttpException("Данные о пользователе не найдены.");
+        }
         if($profile){
             if( $profile->load(Yii::$app->request->post()) ){
                 $isValid = $profile->validate();

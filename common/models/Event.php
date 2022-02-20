@@ -9,6 +9,7 @@ use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -29,15 +30,44 @@ class Event extends ActiveRecord
     public $totalEvent;
     public $checkEvent;
     public $service_array;
+    public $amount;
 
     public static function getHistory()
     {
-        $archive = Event::find()
-            //->joinWith(['master','client','services','eventService'])
-            //->select('master_id,client_id')
-            //->where(['like','event_time_start','2022'])
-            //->groupBy('event_time_start')
+        $archive = EventService::find()
+            ->select(['event_service.id', 'event_id', 'service_id', 'SUM(service.cost) as amount','event.master_id'])
+            ->joinWith(
+                [
+                    'event' => function ($q) {
+                        $q->select(['event.id', 'master_id','DATE_FORMAT("event_time_start","%d - %m")'])
+                            ->with(['eventService', 'services']);
+                            //->where(['master_id' => 7]);
+                        //->groupBy(['master_id']);
+                    },
+                ]
+            )
+            ->joinWith(
+                [
+                    'service' => function ($q) {
+                        $q->select(['service.id', 'name'])
+                            ->distinct()
+                            ->groupBy(['name']);
+                    },
+                ]
+            )
+            ->joinWith(
+                [
+                    'event.master' => function ($q) {
+                        $q->select(['id', 'username'])
+                         ->with(['rates']);
+                    }
+                ]
+            )
+            ->groupBy(['event.master_id'])
+            ->asArray()
             ->all();
+
+
         return $archive;
     }
 

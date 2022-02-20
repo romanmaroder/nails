@@ -96,7 +96,7 @@ class User extends ActiveRecord implements IdentityInterface
                     }
                         $('label[for=user-color]').addClass('d-none');
                         $('#user-color').css({'display':'none'});
-                         return  true;
+                         //return  true;
                 }"
             ]
         ];

@@ -4,12 +4,24 @@ use yii\grid\GridView;
 /* @var $dataHistory EventController */
 
 
-/*echo '<pre>';
+echo '<pre>';
 var_dump($dataHistory);
-die();*/
+die();
 
+foreach ($dataHistory as $value){
+  foreach ( $value['event']['master']['rates'] as $rate){
+        if( $value['service_id'] == $rate['service_id']){
+            echo $value['event']['master']['username'] . '&nbsp;';
+            echo $value['service']['name'] . '&nbsp;';
+           echo  ($value['amount'] * $rate['rate'] )/ 100 . "</br><hr>";
+        }
+    }
+}
 
-echo GridView::widget(
+/*echo \yii\widgets\ListView::widget([
+                                       'dataProvider'     => $dataHistory,
+                                   ]);*/
+/*echo GridView::widget(
     [
         'dataProvider'     => $dataHistory,
         'showFooter'       => true,
@@ -23,6 +35,10 @@ echo GridView::widget(
             'class' => 'col-12 col-lg-6 mb-3 text-info'
         ],
         'columns'          => [
+            'id',
+            'event.master.username',
+            'event.service.name',
+            'amount'
             [
                 'attribute'     => 'master_id',
                 'format'        => 'raw',
@@ -97,4 +113,4 @@ echo GridView::widget(
             ],
         ],
     ]
-);
+);*/
