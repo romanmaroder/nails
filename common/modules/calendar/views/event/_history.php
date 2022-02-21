@@ -1,26 +1,59 @@
 <?php
 
 use yii\grid\GridView;
+
 /* @var $dataHistory EventController */
 
 
-echo '<pre>';
+/*echo '<pre>';
 var_dump($dataHistory);
-die();
+die();*/
 
-foreach ($dataHistory as $value){
-  foreach ( $value['event']['master']['rates'] as $rate){
-        if( $value['service_id'] == $rate['service_id']){
+foreach ($dataHistory as $value) {
+    foreach ($value['event']['master']['rates'] as $rate) {
+        if ($value['service_id'] == $rate['service_id']) {
             echo $value['event']['master']['username'] . '&nbsp;';
             echo $value['service']['name'] . '&nbsp;';
-           echo  ($value['amount'] * $rate['rate'] )/ 100 . "</br><hr>";
+            echo Yii::$app->formatter->asDate($value['event']['event_time_start'],'php: M Y') . '&nbsp;';
+            echo ($value['amount'] * $rate['rate']) / 100 . "</br><hr>";
         }
     }
 }
 
-/*echo \yii\widgets\ListView::widget([
-                                       'dataProvider'     => $dataHistory,
-                                   ]);*/
+/*echo \yii\widgets\ListView::widget(
+    [
+        'dataProvider' => $dataHistory,
+        'options'      => [
+            'tag'   => 'div',
+            'class' => 'list-wrapper',
+            'id'    => 'list-wrapper',
+        ],
+        'layout'       => "{pager}\n{items}\n{summary}",
+        'itemView'     => function ($model, $key, $index, $widget) {
+
+        foreach ($model->event->master->rates as $rate){
+
+            if($model->service_id == $rate->service_id){
+                echo'<pre>';
+                var_dump( $model);
+
+                die();
+                return $model->event->master->username . '</br>' .
+                    $model->service->name . '</br>' .
+                    $model->event->event_time_start . '</br>' .
+                    $model->event->amount * $rate->rate / 100;
+            }
+
+        }
+
+
+
+
+            // or just do some echo
+            // return $model->title . ' posted by ' . $model->author;
+        },
+    ]
+);*/
 /*echo GridView::widget(
     [
         'dataProvider'     => $dataHistory,

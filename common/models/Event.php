@@ -39,9 +39,9 @@ class Event extends ActiveRecord
             ->joinWith(
                 [
                     'event' => function ($q) {
-                        $q->select(['event.id', 'master_id','DATE_FORMAT("event_time_start","%d - %m")'])
-                            ->with(['eventService', 'services']);
-                            //->where(['master_id' => 7]);
+                        $q->select(['event.id', 'master_id','DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'])
+                            ->with(['eventService', 'services'])
+                            ->where(['master_id' => 2]);
                         //->groupBy(['master_id']);
                     },
                 ]
@@ -49,7 +49,7 @@ class Event extends ActiveRecord
             ->joinWith(
                 [
                     'service' => function ($q) {
-                        $q->select(['service.id', 'name'])
+                        $q->select(['service.id', 'name','cost'])
                             ->distinct()
                             ->groupBy(['name']);
                     },
@@ -67,7 +67,12 @@ class Event extends ActiveRecord
             ->asArray()
             ->all();
 
+        /*$ar = new ActiveDataProvider([
+                                         'query' => $archive,
 
+                                     ]);
+
+        return $ar;*/
         return $archive;
     }
 
