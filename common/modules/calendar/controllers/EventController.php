@@ -7,6 +7,7 @@ use backend\modules\telegram\models\Telegram;
 use backend\modules\viber\api\ViberBot;
 use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
+use common\models\Archive;
 use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
@@ -426,8 +427,30 @@ class EventController extends Controller
         $chartEventLabels = Event::getlabelsCharts($dataProvider);
         $chartEventData   = Event::getDataCharts($dataProvider);
 
-        $dataHistory = Event::getHistory();
 
+        $dataHistory = Event::getHistory(Yii::$app->request->post('from_date'));
+
+
+        if (Yii::$app->request->post('archive')) {
+
+            foreach ($dataHistory as $value) {
+                foreach ($value['event']['master']['rates'] as $rate) {
+                    if ($value['service_id'] == $rate['service_id']) {
+                        $archive             = new Archive();
+                        $archive->user_id    = $value['event']['master_id'];
+                        $archive->service_id = $value['service_id'];
+                        $archive->amount     = $value['amount'] * $rate['rate'] / 100;
+                        $archive->date       = Yii::$app->formatter->asDate(
+                            $value['event']['event_time_start'],
+                            'php: m-Y'
+                        );
+                        if ($archive->validate()) {
+                            $archive->save();
+                        }
+                    }
+                }
+            }
+        }
 
         $searchModelExpenseslist  = new ExpenseslistSearch();
         $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
@@ -445,6 +468,7 @@ class EventController extends Controller
                 'totalSalary'              => $totalSalary,
                 'chartEventLabels'         => $chartEventLabels,
                 'chartEventData'           => $chartEventData,
+//                'searchModelArchive'       => $searchModelArchive,
                 'dataHistory'              => $dataHistory,
                 'dataProviderExpenseslist' => $dataProviderExpenseslist,
                 'searchModelExpenseslist'  => $searchModelExpenseslist,

@@ -69,6 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     '_history',
                                     [
                                         'dataHistory'              => $dataHistory,
+//                                        'searchModelArchive'       => $searchModelArchive,
                                     ]
                                 ),
                                 'options' => ['id' => 'history'],
