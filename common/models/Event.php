@@ -708,8 +708,8 @@ class Event extends ActiveRecord
                 [
                     'event' => function ($q) use($params) {
                         $q->select(['event.id', 'master_id','DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'])
-                            ->with(['eventService', 'services'])
-                            ->andFilterWhere(['=','event_time_start', $params]);
+                            ->with(['eventService', 'services']);
+                            /*->andFilterWhere(['=','event_time_start', $params]);*/
                         //->groupBy(['master_id']);
                     },
                 ]
@@ -732,6 +732,7 @@ class Event extends ActiveRecord
                 ]
             )
             ->groupBy(['event.master_id'])
+            ->andFilterWhere(['like','event_time_start', $params])
             ->asArray()
             ->all();
 

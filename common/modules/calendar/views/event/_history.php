@@ -33,7 +33,7 @@ die();*/
                 'options'=>[
                         'autocomplete'=>'off'
                 ],
-                'dateFormat' => 'MM-yyyy',
+                'dateFormat' => 'yyyy-MM',
             ]
         ); ?>
 
