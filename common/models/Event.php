@@ -32,43 +32,43 @@ class Event extends ActiveRecord
     public $service_array;
     public $amount;
 
-  /*  public static function getHistory()
-    {
-        $archive = EventService::find()
-            ->select(['event_service.id', 'event_id', 'service_id', 'SUM(service.cost) as amount','event.master_id'])
-            ->joinWith(
-                [
-                    'event' => function ($q) {
-                        $q->select(['event.id', 'master_id','DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'])
-                            ->with(['eventService', 'services'])
-                            ->where(['like','event_time_start','2022-02']);
-                        //->groupBy(['master_id']);
-                    },
-                ]
-            )
-            ->joinWith(
-                [
-                    'service' => function ($q) {
-                        $q->select(['service.id', 'name','cost'])
-                            ->distinct()
-                            ->groupBy(['name']);
-                    },
-                ]
-            )
-            ->joinWith(
-                [
-                    'event.master' => function ($q) {
-                        $q->select(['id', 'username'])
-                         ->with(['rates']);
-                    }
-                ]
-            )
-            ->groupBy(['event.master_id'])
-            ->asArray()
-            ->all();
+    /*  public static function getHistory()
+      {
+          $archive = EventService::find()
+              ->select(['event_service.id', 'event_id', 'service_id', 'SUM(service.cost) as amount','event.master_id'])
+              ->joinWith(
+                  [
+                      'event' => function ($q) {
+                          $q->select(['event.id', 'master_id','DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'])
+                              ->with(['eventService', 'services'])
+                              ->where(['like','event_time_start','2022-02']);
+                          //->groupBy(['master_id']);
+                      },
+                  ]
+              )
+              ->joinWith(
+                  [
+                      'service' => function ($q) {
+                          $q->select(['service.id', 'name','cost'])
+                              ->distinct()
+                              ->groupBy(['name']);
+                      },
+                  ]
+              )
+              ->joinWith(
+                  [
+                      'event.master' => function ($q) {
+                          $q->select(['id', 'username'])
+                           ->with(['rates']);
+                      }
+                  ]
+              )
+              ->groupBy(['event.master_id'])
+              ->asArray()
+              ->all();
 
-        return $archive;
-    }*/
+          return $archive;
+      }*/
 
 
     /**
@@ -698,48 +698,103 @@ class Event extends ActiveRecord
 
     public static function getHistory($params)
     {
-      /*  echo '<pre>';
-        var_dump($params);
-        die();*/
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query'      => EventService::find()
+                    ->select(
+                        [
+                            'event_service.id',
+                            'event_id',
+                            'service_id',
+                            'SUM(service.cost) as amount',
+                            'event.master_id',
+                            'event.event_time_start'
+                        ]
+                    )
+                    ->joinWith(
+                        [
+                            'event' => function ($q) use ($params) {
+                                $q->select(
+                                    ['event.id', 'master_id', 'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start']
+                                )
+                                    ->with(['eventService', 'services']);
+                                /*->andFilterWhere(['=','event_time_start', $params]);*/
+                                //->groupBy(['master_id']);
+                            },
+                        ]
+                    )
+                    ->joinWith(
+                        [
+                            'service' => function ($q) {
+                                $q->select(['service.id', 'name', 'cost'])
+                                    ->distinct()
+                                    ->groupBy(['name']);
+                            },
+                        ]
+                    )
+                    ->joinWith(
+                        [
+                            'event.master' => function ($q) {
+                                $q->select(['id', 'username'])
+                                    ->with(['rates']);
+                            }
+                        ]
+                    )
+                    ->groupBy(['event.master_id'])
+                    ->andFilterWhere(['like', 'event_time_start', $params])
+                    ->asArray(),
+            ]
+        );
 
-        $archive = EventService::find()
-            ->select(['event_service.id', 'event_id', 'service_id', 'SUM(service.cost) as amount','event.master_id','event.event_time_start'])
-            ->joinWith(
-                [
-                    'event' => function ($q) use($params) {
-                        $q->select(['event.id', 'master_id','DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'])
-                            ->with(['eventService', 'services']);
-                            /*->andFilterWhere(['=','event_time_start', $params]);*/
-                        //->groupBy(['master_id']);
-                    },
-                ]
-            )
-            ->joinWith(
-                [
-                    'service' => function ($q) {
-                        $q->select(['service.id', 'name','cost'])
-                            ->distinct()
-                            ->groupBy(['name']);
-                    },
-                ]
-            )
-            ->joinWith(
-                [
-                    'event.master' => function ($q) {
-                        $q->select(['id', 'username'])
-                            ->with(['rates']);
-                    }
-                ]
-            )
-            ->groupBy(['event.master_id'])
-            ->andFilterWhere(['like','event_time_start', $params])
-            ->asArray()
-            ->all();
+//        $archive = EventService::find()
+//            ->select(
+//                [
+//                    'event_service.id',
+//                    'event_id',
+//                    'service_id',
+//                    'SUM(service.cost) as amount',
+//                    'event.master_id',
+//                    'event.event_time_start'
+//                ]
+//            )
+//            ->joinWith(
+//                [
+//                    'event' => function ($q) use ($params) {
+//                        $q->select(
+//                            ['event.id', 'master_id', 'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start']
+//                        )
+//                            ->with(['eventService', 'services']);
+//                        /*->andFilterWhere(['=','event_time_start', $params]);*/
+//                        //->groupBy(['master_id']);
+//                    },
+//                ]
+//            )
+//            ->joinWith(
+//                [
+//                    'service' => function ($q) {
+//                        $q->select(['service.id', 'name', 'cost'])
+//                            ->distinct()
+//                            ->groupBy(['name']);
+//                    },
+//                ]
+//            )
+//            ->joinWith(
+//                [
+//                    'event.master' => function ($q) {
+//                        $q->select(['id', 'username'])
+//                            ->with(['rates']);
+//                    }
+//                ]
+//            )
+//            ->groupBy(['event.master_id'])
+//            ->andFilterWhere(['like', 'event_time_start', $params])
+//            ->asArray()
+//            ->all();
 
         /*$ar = new ActiveDataProvider([
                                          'query' => $archive,
                                      ]);
         return $ar;*/
-        return $archive;
+        return $dataProvider;
     }
 }

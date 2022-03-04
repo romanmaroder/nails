@@ -72,6 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                                        'searchModelArchive'       => $searchModelArchive,
                                     ]
                                 ),
+                                'active'  => true, // указывает на активность вкладки
                                 'options' => ['id' => 'history'],
 
                             ],

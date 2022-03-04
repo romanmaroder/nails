@@ -415,10 +415,9 @@ class EventController extends Controller
 
     /**
      * Displaying user statistics
-     * @return string
      * @throws \yii\base\InvalidConfigException
      */
-    public function actionStatistic(): string
+    public function actionStatistic()
     {
         $searchModel      = new EventSearch();
         $dataProvider     = $searchModel->search(Yii::$app->request->queryParams);
@@ -428,11 +427,12 @@ class EventController extends Controller
         $chartEventData   = Event::getDataCharts($dataProvider);
 
 
-        $dataHistory = Event::getHistory(Yii::$app->request->post('from_date'));
+       // $dataHistory = Event::getHistory(Yii::$app->request->get('from_date'));
+        $dataHistory = Event::getHistory(Yii::$app->request->queryParams);
+
 
 
         if (Yii::$app->request->post('archive')) {
-
             foreach ($dataHistory as $value) {
                 foreach ($value['event']['master']['rates'] as $rate) {
                     if ($value['service_id'] == $rate['service_id']) {
@@ -450,6 +450,7 @@ class EventController extends Controller
                     }
                 }
             }
+            return $this->redirect(['/calendar/event/statistic']);
         }
 
         $searchModelExpenseslist  = new ExpenseslistSearch();
@@ -479,4 +480,33 @@ class EventController extends Controller
             ]
         );
     }
+    /*public function actionSave(){
+
+        $dataHistory1 = Event::getHistory(Yii::$app->request->queryParams);
+        //$dataHistory1 = Event::getHistory(Yii::$app->request->getBodyParam('from_date'));
+echo'<pre>';
+var_dump($dataHistory1);
+die();
+       // if (Yii::$app->request->get('archive')) {
+            //die('123');
+            foreach ($dataHistory1 as $value) {
+                foreach ($value['event']['master']['rates'] as $rate) {
+                    if ($value['service_id'] == $rate['service_id']) {
+                        $archive             = new Archive();
+                        $archive->user_id    = $value['event']['master_id'];
+                        $archive->service_id = $value['service_id'];
+                        $archive->amount     = $value['amount'] * $rate['rate'] / 100;
+                        $archive->date       = Yii::$app->formatter->asDate(
+                            $value['event']['event_time_start'],
+                            'php: m-Y'
+                        );
+                        if ($archive->validate()) {
+                            $archive->save();
+                        }
+                    }
+                }
+            }
+        return $this->redirect(['/calendar/event/statistic']);
+        //}
+    }*/
 }

@@ -59,6 +59,7 @@ return [
                 //'login'           => 'site/login',
                 'event'                        => '/calendar/event/index',
                 'statistic'                    => '/calendar/event/statistic',
+                'save'                         => '/calendar/event/save',
                 'expenses'                     => '/expenses/',
                 'expenses/new'                 => '/expenses/create',
                 'expenses/update/<id:\d+>'     => '/expenses/update',
