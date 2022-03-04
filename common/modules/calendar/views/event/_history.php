@@ -133,7 +133,8 @@ die();*/
                         'columns'          => [
                             'service.name',
                             'event.master.username',
-                            'amount'
+                            'amount',
+                            'event_time_start'
                         ],
                     ]
                 );
@@ -150,7 +151,7 @@ $js = <<< JS
    $("#example2").DataTable({
       "responsive": true,
       "lengthChange":true,
-      "pageLength": 10,
+      //"pageLength": 10,
       "autoWidth": false,
       "info": false,
       'sort':false

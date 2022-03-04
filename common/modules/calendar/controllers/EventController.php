@@ -433,7 +433,7 @@ class EventController extends Controller
 
 
         if (Yii::$app->request->post('archive')) {
-            foreach ($dataHistory as $value) {
+            foreach ($dataHistory->models as $value) {
                 foreach ($value['event']['master']['rates'] as $rate) {
                     if ($value['service_id'] == $rate['service_id']) {
                         $archive             = new Archive();
