@@ -16,6 +16,7 @@ use yii\db\ActiveQuery;
  */
 class EventService extends \yii\db\ActiveRecord
 {
+    public $amount;
     /**
      * {@inheritdoc}
      */
@@ -46,6 +47,7 @@ class EventService extends \yii\db\ActiveRecord
         return [
             'event_id' => 'Event ID',
             'service_id' => 'Service ID',
+            'amount'=>'Итого'
         ];
     }
 

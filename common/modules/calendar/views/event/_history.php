@@ -1,12 +1,13 @@
 <?php
 
 use common\modules\calendar\controllers\EventController;
+use kartik\date\DatePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\grid\GridView;
 use yii\helpers\Html;
-use yii\jui\DatePicker;
 
 /* @var $dataHistory EventController */
+/* @var $totalHistoryAmount EventController */
 
 
 /*echo '<pre>';
@@ -15,8 +16,18 @@ var_dump($dataHistory->models);
 die();*/
 
 ?>
+<?php
+if (Yii::$app->session->hasFlash('info')): ?>
+    <div class="alert alert-info alert-dismissible mt-3" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+        <?php
+        echo Yii::$app->session->getFlash('info'); ?>
+    </div>
+<?php
+endif; ?>
     <div class="row">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-3">
 
             <?php
             ActiveForm::begin(
@@ -28,18 +39,30 @@ die();*/
             <?php
             echo DatePicker::widget(
                 [
-                    'name'       => 'from_date',
-                    //'value'  => $value,
-                    //'language' => 'ru',
-                    'options'    => [
-                        'autocomplete' => 'off'
+                    'name'          => 'from_date',
+                    'language'      => 'ru',
+                    'options'       => [
+                        'placeholder'  => 'Выберите месяц ...',
+                        'autocomplete' => 'off',
                     ],
-                    'dateFormat' => 'yyyy-MM',
+                    'size'          => 'sm',
+                    'pluginOptions' => [
+                        'autoclose'        => true,
+                        'immediateUpdates' => true,
+                        'todayHighlight'   => true,
+                        'format'           => 'yyyy-mm',
+                    ]
                 ]
             ); ?>
 
             <div class="form-group my-3">
-                <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary', 'id' => 'btn-search']) ?>
+                <?= Html::submitButton(
+                    'Поиск',
+                    [
+                        'class' => 'btn btn-sm btn-primary',
+                        'id'    => 'btn-search',
+                    ]
+                ) ?>
             </div>
 
             <?php
@@ -59,7 +82,7 @@ die();*/
                         'class' => 'btn btn-sm btn-primary',
                         'id'    => 'btn-save',
                         'name'  => 'archive',
-                        'value' => 'archive'
+                        'value' => 'archive',
                     ]
                 ) ?>
             </div>
@@ -68,77 +91,38 @@ die();*/
 
 
         </div>
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-9">
 
-                <?php
-                /*foreach ($dataHistory->models as $value) {
-                    foreach ($value['event']['master']['rates'] as $rate) {
-                        if ($value['service_id'] == $rate['service_id']) {
-                            echo $value['event']['master']['username'] . '&nbsp;';
-                            echo $value['service']['name'] . '&nbsp;';
-                            echo Yii::$app->formatter->asDate($value['event']['event_time_start'], 'php: M Y') . '&nbsp;';
-                            echo ($value['amount'] * $rate['rate']) / 100 . "</br><hr>";
-                        }
-                    }
-                }*/
-
-
-                /*echo \yii\widgets\ListView::widget(
-                    [
-                        'dataProvider' => $dataHistory,
-                        'options'      => [
-                            'tag'   => 'div',
-                            'class' => 'list-wrapper',
-                            'id'    => 'list-wrapper',
+            <?php
+            echo GridView::widget(
+                [
+                    'dataProvider'     => $dataHistory,
+                    'showFooter'       => true,
+                    'summary'          => '',
+                    'tableOptions'     => [
+                        'class' => 'table table-striped table-bordered',
+                        'id'    => 'historyList'
+                    ],
+                    'emptyText'        => 'Ничего не найдено',
+                    'emptyTextOptions' => [
+                        'tag'   => 'div',
+                        'class' => 'col-12 col-lg-6 mb-3 text-info'
+                    ],
+                    'columns'          => [
+                        'service.name',
+                        'event.master.username',
+                        [
+                            'attribute' => 'amount',
+                            'footer'    => Yii::$app->formatter->asCurrency($totalHistoryAmount),
                         ],
-                        'layout'       => "{pager}\n{items}\n{summary}",
-                        'itemView'     => function ($model, $key, $index, $widget) {
-
-                        foreach ($model->event->master->rates as $rate){
-
-                            if($model->service_id == $rate->service_id){
-                                echo'<pre>';
-                                var_dump( $model);
-
-                                die();
-                                return $model->event->master->username . '</br>' .
-                                    $model->service->name . '</br>' .
-                                    $model->event->event_time_start . '</br>' .
-                                    $model->event->amount * $rate->rate / 100;
-                            }
-
-                        }
-
-
-
-
-                            // or just do some echo
-                            // return $model->title . ' posted by ' . $model->author;
-                        },
-                    ]
-                );*/
-                echo GridView::widget(
-                    [
-                        'dataProvider'     => $dataHistory,
-                        'showFooter'       => true,
-                        'tableOptions'     => [
-                            'class' => 'table table-striped table-bordered',
-                            'id'    => 'example2'
-                        ],
-                        'emptyText'        => 'Ничего не найдено',
-                        'emptyTextOptions' => [
-                            'tag'   => 'div',
-                            'class' => 'col-12 col-lg-6 mb-3 text-info'
-                        ],
-                        'columns'          => [
-                            'service.name',
-                            'event.master.username',
-                            'amount',
-                            'event_time_start'
-                        ],
-                    ]
-                );
-                 ?>
+                        [
+                            'attribute' => 'event.event_time_start',
+                            'format'    => ['date', 'php:Y-M'],
+                        ]
+                    ],
+                ]
+            );
+            ?>
 
         </div>
     </div>
@@ -148,16 +132,41 @@ die();*/
 
 $js = <<< JS
  $(function () {
-   $("#example2").DataTable({
-      "responsive": true,
-      "lengthChange":true,
-      //"pageLength": 10,
-      "autoWidth": false,
-      "info": false,
-      'sort':false
-    
-    })
-    
+    $("#historyList").DataTable({
+    "responsive": true,
+    "pageLength": 10,
+    "paging": true,
+    "searching": false,
+    "ordering": false,
+    "info": false,
+    "autoWidth": false,
+    "bStateSave": true,
+    "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
+    "fnStateSave": function (oSettings, oData) {
+        localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+    },
+    "fnStateLoad": function () {
+        var data = localStorage.getItem('DataTables_' + window.location.pathname);
+        return JSON.parse(data);
+    },
+       "language": {
+       "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
+      '<option value="10">10</option>'+
+      '<option value="20">20</option>'+
+      '<option value="50">50</option>'+
+      '<option value="-1">Все</option>'+
+      '</select>',
+           "search": "Поиск:",
+           "zeroRecords": "Совпадений не найдено",
+    	  	"emptyTable": "В таблице отсутствуют данные",
+           "paginate": {
+                    "first": "Первая",
+                    "previous": '<i class="fas fa-backward"></i>',
+                    "last": "Последняя",
+                    "next": '<i class="fas fa-forward"></i>'
+                }
+       }
+    }).buttons().container().appendTo('#historyList_wrapper .col-md-6:eq(0)');
   });
 JS;
 

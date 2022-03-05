@@ -13,6 +13,7 @@ use yii\bootstrap4\Tabs;
 /* @var $chartEventData EventController */
 
 /* @var $dataHistory EventController */
+/* @var $totalHistoryAmount EventController */
 
 /* @var $dataProviderExpenseslist EventController */
 /* @var $searchModelExpenseslist EventSearch */
@@ -69,6 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     '_history',
                                     [
                                         'dataHistory'              => $dataHistory,
+                                        'totalHistoryAmount'              => $totalHistoryAmount,
 //                                        'searchModelArchive'       => $searchModelArchive,
                                     ]
                                 ),

@@ -30,7 +30,6 @@ class Event extends ActiveRecord
     public $totalEvent;
     public $checkEvent;
     public $service_array;
-    public $amount;
 
     /*  public static function getHistory()
       {
@@ -696,9 +695,14 @@ class Event extends ActiveRecord
         return $list_all_event_name;
     }
 
-    public static function getHistory($params)
+    /**
+     * Sampling of monthly service data
+     * @param $params
+     * @return ActiveDataProvider
+     */
+    public static function getHistory($params): ActiveDataProvider
     {
-        $dataProvider = new ActiveDataProvider(
+        return new ActiveDataProvider(
             [
                 'query'      => EventService::find()
                     ->select(
@@ -715,7 +719,11 @@ class Event extends ActiveRecord
                         [
                             'event' => function ($q) use ($params) {
                                 $q->select(
-                                    ['event.id', 'master_id', 'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start']
+                                    [
+                                        'event.id',
+                                        'master_id',
+                                        'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'
+                                    ]
                                 )
                                     ->with(['eventService', 'services']);
                                 /*->andFilterWhere(['=','event_time_start', $params]);*/
@@ -743,58 +751,23 @@ class Event extends ActiveRecord
                     ->groupBy(['event.master_id'])
                     ->andFilterWhere(['like', 'event_time_start', $params])
                     ->asArray(),
+                'pagination' => false
             ]
         );
+    }
 
-//        $archive = EventService::find()
-//            ->select(
-//                [
-//                    'event_service.id',
-//                    'event_id',
-//                    'service_id',
-//                    'SUM(service.cost) as amount',
-//                    'event.master_id',
-//                    'event.event_time_start'
-//                ]
-//            )
-//            ->joinWith(
-//                [
-//                    'event' => function ($q) use ($params) {
-//                        $q->select(
-//                            ['event.id', 'master_id', 'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start']
-//                        )
-//                            ->with(['eventService', 'services']);
-//                        /*->andFilterWhere(['=','event_time_start', $params]);*/
-//                        //->groupBy(['master_id']);
-//                    },
-//                ]
-//            )
-//            ->joinWith(
-//                [
-//                    'service' => function ($q) {
-//                        $q->select(['service.id', 'name', 'cost'])
-//                            ->distinct()
-//                            ->groupBy(['name']);
-//                    },
-//                ]
-//            )
-//            ->joinWith(
-//                [
-//                    'event.master' => function ($q) {
-//                        $q->select(['id', 'username'])
-//                            ->with(['rates']);
-//                    }
-//                ]
-//            )
-//            ->groupBy(['event.master_id'])
-//            ->andFilterWhere(['like', 'event_time_start', $params])
-//            ->asArray()
-//            ->all();
+    /**
+     * Total amount of services for the month
+     * @param $dataProvider
+     * @return string
+     */
+    public static function getHistoryAmount($dataProvider): string
+    {
+        $total = 0;
+        foreach ($dataProvider->models as $model) {
+            $total += $model['amount'];
+        }
 
-        /*$ar = new ActiveDataProvider([
-                                         'query' => $archive,
-                                     ]);
-        return $ar;*/
-        return $dataProvider;
+        return $total;
     }
 }

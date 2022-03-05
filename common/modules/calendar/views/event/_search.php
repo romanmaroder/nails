@@ -32,6 +32,7 @@ use yii\widgets\ActiveForm;
             'language' => 'ru',
             'data'          => Service::getServiceList(),
             'theme'         => Select2::THEME_MATERIAL,
+            'size'          => Select2::SMALL,
             'options'       => [
                 'placeholder'  => 'Выберите услугу ...',
                 'multiple'     => true,

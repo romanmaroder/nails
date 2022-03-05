@@ -427,8 +427,9 @@ class EventController extends Controller
         $chartEventData   = Event::getDataCharts($dataProvider);
 
 
-       // $dataHistory = Event::getHistory(Yii::$app->request->get('from_date'));
-        $dataHistory = Event::getHistory(Yii::$app->request->queryParams);
+        $dataHistory = Event::getHistory(Yii::$app->request->get('from_date'));
+        $totalHistoryAmount = Event::getHistoryAmount($dataHistory);
+       // $dataHistory = Event::getHistory(Yii::$app->request->queryParams);
 
 
 
@@ -450,6 +451,7 @@ class EventController extends Controller
                     }
                 }
             }
+            Yii::$app->session->setFlash('info','Данные сохранены');
             return $this->redirect(['/calendar/event/statistic']);
         }
 
@@ -471,6 +473,7 @@ class EventController extends Controller
                 'chartEventData'           => $chartEventData,
 //                'searchModelArchive'       => $searchModelArchive,
                 'dataHistory'              => $dataHistory,
+                'totalHistoryAmount'              => $totalHistoryAmount,
                 'dataProviderExpenseslist' => $dataProviderExpenseslist,
                 'searchModelExpenseslist'  => $searchModelExpenseslist,
                 'totalExpenses'            => $totalExpenses,
