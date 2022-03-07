@@ -1,7 +1,7 @@
 <?php
 
 use common\modules\calendar\controllers\EventController;
-use kartik\date\DatePicker;
+use kartik\daterange\DateRangePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -9,12 +9,9 @@ use yii\helpers\Html;
 /* @var $dataHistory EventController */
 /* @var $totalHistoryAmount EventController */
 
-
 /*echo '<pre>';
 var_dump($dataHistory->models);
-//\common\models\Archive::getHistory();
 die();*/
-
 ?>
 <?php
 if (Yii::$app->session->hasFlash('info')): ?>
@@ -36,24 +33,28 @@ endif; ?>
                     'method' => 'GET'
                 ]
             ); ?>
+
             <?php
-            echo DatePicker::widget(
+
+            echo DateRangePicker::widget(
                 [
-                    'name'          => 'from_date',
-                    'language'      => 'ru',
-                    'options'       => [
-                        'placeholder'  => 'Выберите месяц ...',
-                        'autocomplete' => 'off',
+                    'name'           => 'archive',
+                    'value'          => '',
+                    'useWithAddon'   => false,
+                    'convertFormat'  => true,
+                    'startAttribute' => 'from_date',
+                    'endAttribute'   => 'to_date',
+                    'initRangeExpr'  => false,
+                    'pluginOptions'  => [
+                        'locale'          => [
+                            'format' => 'Y-m-d',
+                            '' => true,
+                        ],
                     ],
-                    'size'          => 'sm',
-                    'pluginOptions' => [
-                        'autoclose'        => true,
-                        'immediateUpdates' => true,
-                        'todayHighlight'   => true,
-                        'format'           => 'yyyy-mm',
-                    ]
+                    'hideInput'      => true,
+
                 ]
-            ); ?>
+            );; ?>
 
             <div class="form-group my-3">
                 <?= Html::submitButton(
@@ -109,11 +110,21 @@ endif; ?>
                         'class' => 'col-12 col-lg-6 mb-3 text-info'
                     ],
                     'columns'          => [
+                        ['class' => 'yii\grid\SerialColumn'],
                         'service.name',
                         'event.master.username',
                         [
-                            'attribute' => 'amount',
-                            'footer'    => Yii::$app->formatter->asCurrency($totalHistoryAmount),
+                            'attribute'     => 'amount',
+                            'footerOptions' => ['class' => 'bg-success'],
+                            'footer'        => Yii::$app->formatter->asCurrency($totalHistoryAmount),
+                        ],
+                        [
+                            'attribute' => 'З/П',
+                            'value'     => function ($model) {
+                                foreach ($model['event']['master']['rates'] as $rate) {
+                                    return $model['amount'] * $rate['rate'] / 100;
+                                }
+                            }
                         ],
                         [
                             'attribute' => 'event.event_time_start',
@@ -136,7 +147,7 @@ $js = <<< JS
     "responsive": true,
     "pageLength": 10,
     "paging": true,
-    "searching": false,
+    "searching": true,
     "ordering": false,
     "info": false,
     "autoWidth": false,

@@ -17,6 +17,7 @@ class m220222_104212_create_archive_table extends Migration
             'user_id'=>$this->integer(),
             'service_id'=>$this->integer(),
             'amount'=>$this->integer(),
+            'salary'=>$this->integer(),
             'date'=>$this->string(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),

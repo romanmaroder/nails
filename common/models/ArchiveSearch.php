@@ -11,14 +11,17 @@ use common\models\Archive;
  */
 class ArchiveSearch extends Archive
 {
+
+    public $service_name;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'user_id', 'service_id', 'amount', 'created_at', 'updated_at'], 'integer'],
-            [['date'], 'safe'],
+            [['id', 'created_at', 'updated_at'], 'integer'],
+            [['date', 'service_name', 'user_name', 'service_id', 'user_id'], 'safe'],
         ];
     }
 
@@ -41,30 +44,52 @@ class ArchiveSearch extends Archive
     public function search($params)
     {
         $query = Archive::find();
+        $query->joinWith(['service', 'user']);
+
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query'      => $query,
+                'pagination' => false,
+            ]
+        );
+
+        /* $dataProvider->setSort(
+             [
+                 'attributes' => [
+                     'service_name' => [
+                         'asc'   => ['service.name' => SORT_ASC],
+                         'desc'  => ['service.name' => SORT_DESC],
+                         'label' => 'Country Name'
+                     ]
+                 ]
+             ]
+         );*/
+
 
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
+
             return $dataProvider;
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'service_id' => $this->service_id,
-            'amount' => $this->amount,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
+        $query->andFilterWhere(
+            [
+                'id'         => $this->id,
+                'user_id'    => $this->user_id,
+                'service_id'    => $this->service_id,
+                'amount'     => $this->amount,
+                'salary'     => $this->salary,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+            ]
+        );
 
         $query->andFilterWhere(['like', 'date', $this->date]);
 

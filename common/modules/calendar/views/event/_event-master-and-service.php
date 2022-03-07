@@ -144,6 +144,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     'class' => 'col-12 col-lg-6 mb-3 text-info'
                 ],
                 'columns'          => [
+                    ['class' => 'yii\grid\SerialColumn'],
                     [
                         'attribute'     => 'master_id',
                         'format'        => 'raw',

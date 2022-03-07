@@ -427,32 +427,23 @@ class EventController extends Controller
         $chartEventData   = Event::getDataCharts($dataProvider);
 
 
-        $dataHistory = Event::getHistory(Yii::$app->request->get('from_date'));
-        $totalHistoryAmount = Event::getHistoryAmount($dataHistory);
-       // $dataHistory = Event::getHistory(Yii::$app->request->queryParams);
-
+        //$dataHistory        = Event::getHistory(Yii::$app->request->get('from_date'));
+         $dataHistory = Event::getHistory(Yii::$app->request->queryParams);
+         $totalHistoryAmount = Event::getHistoryAmount($dataHistory);
 
 
         if (Yii::$app->request->post('archive')) {
-            foreach ($dataHistory->models as $value) {
-                foreach ($value['event']['master']['rates'] as $rate) {
-                    if ($value['service_id'] == $rate['service_id']) {
-                        $archive             = new Archive();
-                        $archive->user_id    = $value['event']['master_id'];
-                        $archive->service_id = $value['service_id'];
-                        $archive->amount     = $value['amount'] * $rate['rate'] / 100;
-                        $archive->date       = Yii::$app->formatter->asDate(
-                            $value['event']['event_time_start'],
-                            'php: m-Y'
-                        );
-                        if ($archive->validate()) {
-                            $archive->save();
-                        }
-                    }
+            if(!empty(Yii::$app->request->queryParams)){
+                $saveHistory = Event::saveHistory($dataHistory);
+                if ($saveHistory) {
+                    Yii::$app->session->setFlash('info', 'Данные сохранены');
+                    return $this->redirect(['/calendar/event/statistic']);
                 }
+                Yii::$app->session->setFlash('info', 'Произошла ошибка');
+                return $this->redirect(['/calendar/event/statistic']);
             }
-            Yii::$app->session->setFlash('info','Данные сохранены');
-            return $this->redirect(['/calendar/event/statistic']);
+            Yii::$app->session->setFlash('info', 'Не выбран промежуток дат');
+
         }
 
         $searchModelExpenseslist  = new ExpenseslistSearch();
@@ -473,7 +464,7 @@ class EventController extends Controller
                 'chartEventData'           => $chartEventData,
 //                'searchModelArchive'       => $searchModelArchive,
                 'dataHistory'              => $dataHistory,
-                'totalHistoryAmount'              => $totalHistoryAmount,
+                'totalHistoryAmount'       => $totalHistoryAmount,
                 'dataProviderExpenseslist' => $dataProviderExpenseslist,
                 'searchModelExpenseslist'  => $searchModelExpenseslist,
                 'totalExpenses'            => $totalExpenses,

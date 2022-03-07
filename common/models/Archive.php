@@ -53,20 +53,20 @@ class Archive extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'service_id', 'amount', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'service_id', 'amount','salary', 'created_at', 'updated_at'], 'integer'],
             [['date'], 'string', 'max' => 255],
             [
                 ['service_id'],
                 'exist',
                 'skipOnError'     => true,
-                'targetClass'     => Service::className(),
+                'targetClass'     => Service::class,
                 'targetAttribute' => ['service_id' => 'id']
             ],
             [
                 ['user_id'],
                 'exist',
                 'skipOnError'     => true,
-                'targetClass'     => User::className(),
+                'targetClass'     => User::class,
                 'targetAttribute' => ['user_id' => 'id']
             ],
         ];
@@ -82,6 +82,7 @@ class Archive extends \yii\db\ActiveRecord
             'user_id'    => 'Мастер',
             'service_id' => 'Услуга',
             'amount'     => 'Итого',
+            'salary'     => 'Зарплата',
             'date'       => 'Дата',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -107,4 +108,19 @@ class Archive extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
+    public static function getTotal($provider, $fieldName)
+    {
+
+        $total = 0;
+
+        foreach ($provider as $item) {
+            $total += $item[$fieldName];
+
+        }
+
+        return $total;
+    }
+
+
 }

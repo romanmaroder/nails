@@ -1,7 +1,10 @@
 <?php
 
+use common\models\Service;
+use common\models\User;
+use kartik\select2\Select2;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap4\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\ArchiveSearch */
@@ -16,25 +19,39 @@ use yii\widgets\ActiveForm;
         'options' => [
             'data-pjax' => 1
         ],
+
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'user_id')->dropDownList(
+        User::getMasterList(),
+        ['prompt' => 'Выберите мастера...','class'=>'form-control form-control-sm']) ?>
 
-    <?= $form->field($model, 'user_id') ?>
+    <?= $form->field($model, 'service_id')->widget(
+        Select2::class,
+        [
+            'language' => 'ru',
+            'data'          => Service::getServiceList(),
+            'theme'         => Select2::THEME_MATERIAL,
+            'size'          => Select2::SMALL,
+            'options'       => [
+                'placeholder'  => 'Выберите услугу ...',
+                'multiple'     => true,
+                'autocomplete' => 'off',
+            ],
+            'pluginOptions' => [
+                'tags'            =>  true,
+                'allowClear'      => true,
+            ],
+        ]
+    ) ?>
 
-    <?= $form->field($model, 'service_id') ?>
 
-    <?= $form->field($model, 'amount') ?>
+    <?= $form->field($model, 'date')->input('text',['class'=>'form-control form-control-sm']) ?>
 
-    <?= $form->field($model, 'date') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
+        <?= Html::resetButton('Сбросить', ['class' => 'btn btn-sm btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

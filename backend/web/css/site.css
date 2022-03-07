@@ -405,3 +405,6 @@ a.desc:after {
 .dark-mode .popover-header {
     color:#000000;
 }
+.dark-mode .daterangepicker {
+    color:#000;
+}

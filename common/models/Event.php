@@ -3,13 +3,11 @@
 namespace common\models;
 
 use backend\modules\telegram\models\Telegram;
-use common\modules\calendar\controllers\EventController;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
-use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -243,6 +241,7 @@ class Event extends ActiveRecord
     public function afterFind()
     {
         $this->service_array = $this->services;
+
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -550,16 +549,16 @@ class Event extends ActiveRecord
      */
     public static function getServiceString($data): string
     {
-        $services_name = '';
+        $servicesName = '';
 
         foreach ($data as $service) {
-            $services_name .= $service['name'] . '</br>';
+            $servicesName .= $service['name'] . '</br>';
         }
-        if ($services_name == null) {
-            $services_name = 'Услуга не указана'; // TODO вынести в параметры
+        if ($servicesName == null) {
+            $servicesName = 'Услуга не указана'; // TODO вынести в параметры
         }
 
-        return $services_name;
+        return $servicesName;
     }
 
     /**
@@ -717,7 +716,7 @@ class Event extends ActiveRecord
                     )
                     ->joinWith(
                         [
-                            'event' => function ($q) use ($params) {
+                            'event' => function ($q)  {
                                 $q->select(
                                     [
                                         'event.id',
@@ -726,8 +725,6 @@ class Event extends ActiveRecord
                                     ]
                                 )
                                     ->with(['eventService', 'services']);
-                                /*->andFilterWhere(['=','event_time_start', $params]);*/
-                                //->groupBy(['master_id']);
                             },
                         ]
                     )
@@ -748,8 +745,9 @@ class Event extends ActiveRecord
                             }
                         ]
                     )
-                    ->groupBy(['event.master_id'])
-                    ->andFilterWhere(['like', 'event_time_start', $params])
+                    ->andFilterWhere(['>=', 'event.event_time_start', $params['from_date'] ?$params['from_date'] . ' 00:00:00' : null])
+                    ->andFilterWhere(['<=', 'event.event_time_start', $params['to_date'] ? $params['to_date']. ' 23:59:59' : null])
+                    ->groupBy(['DATE_FORMAT(event.event_time_start,"%Y-%b")','event.master_id'])
                     ->asArray(),
                 'pagination' => false
             ]
@@ -769,5 +767,37 @@ class Event extends ActiveRecord
         }
 
         return $total;
+    }
+
+    /**
+     * Saving the history of services for the month in the database
+     * @param $dataProvider
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    public static function saveHistory($dataProvider): bool
+    {
+        foreach ($dataProvider->models as $value) {
+            foreach ($value['event']['master']['rates'] as $rate) {
+                if ($value['service_id'] == $rate['service_id']) {
+                    $archive             = new Archive();
+                    $archive->user_id    = $value['event']['master_id'];
+                    $archive->service_id = $value['service_id'];
+                    $archive->amount     = $value['amount'];
+                    $archive->salary     = $value['amount'] * $rate['rate'] / 100;
+                    $archive->date       = Yii::$app->formatter->asDate(
+                        $value['event']['event_time_start'],
+                        'php: m-Y'
+                    );
+                    if ($archive->save()) {
+                        $flag = true;
+                    }
+                }
+            }
+        }
+        if ($flag) {
+            return true;
+        }
+        return false;
     }
 }
