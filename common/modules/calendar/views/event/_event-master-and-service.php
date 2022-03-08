@@ -17,7 +17,6 @@ use yii\widgets\Pjax;
 
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
-
 ?>
 
 
@@ -162,15 +161,16 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         },
                     ],
                     [
-                        'attribute' => 'cost',
+                        'attribute' => 'services.cost',
+                        //'footerOptions' => ['class' => 'bg-info'],
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $service_one   = '';
+                            $service_one   = null;
                             $service_total = 0;
                             foreach ($model->services as $item) {
                                 foreach ($model->master->rates as $master) {
                                     if ($master->service_id == $item->id) {
-                                        $service_one   .= $item->cost . "</br>";
+                                        $service_one   .= $item->cost . "<br>";
                                         $service_total += $item->cost;
                                     }
                                 }
@@ -183,6 +183,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     ],
                     [
                         'attribute' => 'salary',
+                        //'footerOptions' => ['class' => 'bg-primary'],
                         'format'    => 'raw',
                         'value'     => function ($model) {
                             $salary     = 0;

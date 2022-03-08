@@ -1,5 +1,6 @@
 <?php
 
+use common\components\totalCell\NumberColumn;
 use common\modules\calendar\controllers\EventController;
 use kartik\daterange\DateRangePicker;
 use yii\bootstrap4\ActiveForm;
@@ -7,7 +8,6 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 
 /* @var $dataHistory EventController */
-/* @var $totalHistoryAmount EventController */
 
 /*echo '<pre>';
 var_dump($dataHistory->models);
@@ -46,9 +46,9 @@ endif; ?>
                     'endAttribute'   => 'to_date',
                     'initRangeExpr'  => false,
                     'pluginOptions'  => [
-                        'locale'          => [
+                        'locale' => [
                             'format' => 'Y-m-d',
-                            '' => true,
+                            ''       => true,
                         ],
                     ],
                     'hideInput'      => true,
@@ -101,7 +101,7 @@ endif; ?>
                     'showFooter'       => true,
                     'summary'          => '',
                     'tableOptions'     => [
-                        'class' => 'table table-striped table-bordered',
+                        'class' => 'table table-striped table-bordered text-center',
                         'id'    => 'historyList'
                     ],
                     'emptyText'        => 'Ничего не найдено',
@@ -111,19 +111,31 @@ endif; ?>
                     ],
                     'columns'          => [
                         ['class' => 'yii\grid\SerialColumn'],
-                        'service.name',
-                        'event.master.username',
                         [
-                            'attribute'     => 'amount',
-                            'footerOptions' => ['class' => 'bg-success'],
-                            'footer'        => Yii::$app->formatter->asCurrency($totalHistoryAmount),
+                            'attribute'     => 'service.name',
+                            'contentOptions'=>[
+                                'class' => 'text-left'
+                            ],
                         ],
                         [
-                            'attribute' => 'З/П',
+                            'attribute'     => 'event.master.username',
+                            'contentOptions'=>[
+                                'class' => 'text-left'
+                            ],
+                        ],
+                        [
+                            'class'         => NumberColumn::class,
+                            'attribute'     => 'amount',
+                            'footerOptions' => ['class' => 'bg-success'],
+                        ],
+                        [
+                            'attribute' => 'event.salary',
                             'value'     => function ($model) {
+                                $salary = null;
                                 foreach ($model['event']['master']['rates'] as $rate) {
-                                    return $model['amount'] * $rate['rate'] / 100;
+                                    $salary = $model['amount'] * $rate['rate'] / 100;
                                 }
+                                return $salary;
                             }
                         ],
                         [

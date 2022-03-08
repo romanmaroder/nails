@@ -14,7 +14,9 @@ use common\models\ExpenseslistSearch;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
+use yii\base\InvalidConfigException;
 use yii\caching\DbDependency;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -66,7 +68,7 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
@@ -415,7 +417,7 @@ class EventController extends Controller
 
     /**
      * Displaying user statistics
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionStatistic()
     {
@@ -426,16 +428,16 @@ class EventController extends Controller
         $chartEventLabels = Event::getlabelsCharts($dataProvider);
         $chartEventData   = Event::getDataCharts($dataProvider);
 
+        $searchModelExpenseslist  = new ExpenseslistSearch();
+        $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
+        $chartExpensesLabels      = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
+        $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
 
-        //$dataHistory        = Event::getHistory(Yii::$app->request->get('from_date'));
-         $dataHistory = Event::getHistory(Yii::$app->request->queryParams);
-         $totalHistoryAmount = Event::getHistoryAmount($dataHistory);
-
+        $dataHistory = $this->getHistory();
 
         if (Yii::$app->request->post('archive')) {
-            if(!empty(Yii::$app->request->queryParams)){
-                $saveHistory = Event::saveHistory($dataHistory);
-                if ($saveHistory) {
+            if (!empty(Yii::$app->request->queryParams)) {
+                if ($this->saveHistory()) {
                     Yii::$app->session->setFlash('info', 'Данные сохранены');
                     return $this->redirect(['/calendar/event/statistic']);
                 }
@@ -443,15 +445,7 @@ class EventController extends Controller
                 return $this->redirect(['/calendar/event/statistic']);
             }
             Yii::$app->session->setFlash('info', 'Не выбран промежуток дат');
-
         }
-
-        $searchModelExpenseslist  = new ExpenseslistSearch();
-        $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
-        $totalExpenses            = Expenseslist::getTotalExpenses($dataProviderExpenseslist->models);
-        $chartExpensesLabels      = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
-        $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
-
 
         return $this->render(
             'statistic',
@@ -462,45 +456,37 @@ class EventController extends Controller
                 'totalSalary'              => $totalSalary,
                 'chartEventLabels'         => $chartEventLabels,
                 'chartEventData'           => $chartEventData,
-//                'searchModelArchive'       => $searchModelArchive,
                 'dataHistory'              => $dataHistory,
-                'totalHistoryAmount'       => $totalHistoryAmount,
                 'dataProviderExpenseslist' => $dataProviderExpenseslist,
                 'searchModelExpenseslist'  => $searchModelExpenseslist,
-                'totalExpenses'            => $totalExpenses,
                 'chartExpensesLabels'      => $chartExpensesLabels,
                 'chartExpensesData'        => $chartExpensesData,
 
             ]
         );
     }
-    /*public function actionSave(){
 
-        $dataHistory1 = Event::getHistory(Yii::$app->request->queryParams);
-        //$dataHistory1 = Event::getHistory(Yii::$app->request->getBodyParam('from_date'));
-echo'<pre>';
-var_dump($dataHistory1);
-die();
-       // if (Yii::$app->request->get('archive')) {
-            //die('123');
-            foreach ($dataHistory1 as $value) {
-                foreach ($value['event']['master']['rates'] as $rate) {
-                    if ($value['service_id'] == $rate['service_id']) {
-                        $archive             = new Archive();
-                        $archive->user_id    = $value['event']['master_id'];
-                        $archive->service_id = $value['service_id'];
-                        $archive->amount     = $value['amount'] * $rate['rate'] / 100;
-                        $archive->date       = Yii::$app->formatter->asDate(
-                            $value['event']['event_time_start'],
-                            'php: m-Y'
-                        );
-                        if ($archive->validate()) {
-                            $archive->save();
-                        }
-                    }
-                }
-            }
-        return $this->redirect(['/calendar/event/statistic']);
-        //}
-    }*/
+    /**
+     * Returns an array of dates
+     *
+     * @return ActiveDataProvider
+     */
+    private function getHistory(): ActiveDataProvider
+    {
+        return Event::getHistoryData(Yii::$app->request->queryParams);
+    }
+
+    /**
+     * Preserves history
+     *
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    private function saveHistory(): bool
+    {
+        if ($this->getHistory()) {
+            return Event::saveHistoryData($this->getHistory());
+        }
+        return false;
+    }
 }

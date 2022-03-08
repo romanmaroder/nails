@@ -58,6 +58,7 @@ return [
                 ''                             => 'site/index',
                 //'login'           => 'site/login',
                 'event'                        => '/calendar/event/index',
+                'archive'                      => '/archive/index',
                 'statistic'                    => '/calendar/event/statistic',
                 'save'                         => '/calendar/event/save',
                 'expenses'                     => '/expenses/',

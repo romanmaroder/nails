@@ -1,5 +1,6 @@
 <?php
 
+use common\components\totalCell\NumberColumn;
 use common\models\Archive;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
@@ -32,39 +33,74 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= GridView::widget(
             [
                 'dataProvider' => $dataProvider,
+                'rowOptions'   => function ($model) {
+                    return ['style' => 'background-color:' . $model->user->profile->color];
+                },
                 //'filterModel'  => $searchModel,
-                'showFooter'       => true,
+                'showFooter'   => true,
                 'tableOptions' => [
-                    'class' => 'table table-striped table-bordered',
+                    'class' => 'table table-striped table-bordered text-center',
                     'id'    => 'archive'
                 ],
                 'columns'      => [
-                   // ['class' => 'yii\grid\SerialColumn'],
+                    // ['class' => 'yii\grid\SerialColumn'],
 
                     //'id',
                     [
-                        'attribute' => 'user_id',
-                        'value'     => function ($model) {
+                        'attribute'      => 'user_id',
+                        'contentOptions' => [
+                            'class' => 'text-left'
+                        ],
+                        'value'          => function ($model) {
                             return $model['user']['username'];
                         }
                     ],
                     [
-                        'attribute' => 'service_id',
-                        'value'     => function ($model) {
+                        'attribute'      => 'service_id',
+                        'contentOptions' => [
+                            'class' => 'text-left'
+                        ],
+                        'value'          => function ($model) {
                             return $model['service']['name'];
                         }
                     ],
                     [
-                        'attribute' => 'amount',
-                        'footerOptions' => ['class' => 'bg-success'],
-                        'footer' => Yii::$app->formatter->asCurrency(Archive::getTotal($dataProvider->models, 'amount')),
+                        'class'         => NumberColumn::class,
+                        'attribute'     => 'amount',
+                        'footerOptions' => ['class' => 'bg-info'],
                     ],
-                    'salary',
+                    [
+                        'class'         => NumberColumn::class,
+                        'attribute'     => 'salary',
+                        'value'         => function ($model) {
+                            if ($model->amount == $model->salary) {
+                                return 0;
+                            }
+                            return $model->salary;
+                        },
+                        'footerOptions' => ['class' => 'bg-secondary'],
+                    ],
+                    [
+                        'class'         => NumberColumn::class,
+                        'attribute' => 'profit',
+                        'footerOptions' => ['class' => 'bg-success'],
+                        'value'     => function ($model) {
+                            /*if ($model->amount == $model->salary) {
+                                return $model->amount;
+                            }*/
+                            return $model->salary;
+                        },
+
+                    ],
                     'date',
                     //'created_at',
                     //'updated_at',
 
-                    ['class' => 'yii\grid\ActionColumn'],
+                    [
+                        'class'    => 'yii\grid\ActionColumn',
+                        'template' => '{view}',
+
+                    ],
                 ],
             ]
         ); ?>
@@ -81,7 +117,7 @@ $js = <<< JS
     "responsive": true,
     "pageLength": 10,
     "paging": true,
-    "searching": false,
+    "searching": true,
     "ordering": false,
     "info": false,
     "autoWidth": false,

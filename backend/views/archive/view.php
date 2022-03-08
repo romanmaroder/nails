@@ -1,42 +1,57 @@
 <?php
 
-use yii\helpers\Html;
+use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Archive */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Archives', 'url' => ['index']];
+$this->title                   = $model->service->name;
+$this->params['breadcrumbs'][] = ['label' => 'Архив', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-\yii\web\YiiAsset::register($this);
+YiiAsset::register($this);
 ?>
 <div class="archive-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!--<h1><?
+    /*= Html::encode($this->title) */ ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+        <?
+    /*= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) */ ?>
+        <?
+    /*= Html::a('Удалить', ['delete', 'id' => $model->id], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) */ ?>
+    </p>-->
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'user_id',
-            'service_id',
-            'amount',
-            'date',
-            'created_at',
-            'updated_at',
-        ],
-    ]) ?>
+    <?= DetailView::widget(
+        [
+            'model'      => $model,
+            'attributes' => [
+
+                [
+                    'attribute' => 'user_id',
+                    'value'     => function ($model) {
+                        return $model->user->username;
+                    }
+                ],
+                [
+                    'attribute' => 'service.name'
+                ],
+                [
+                    'attribute' => 'amount',
+                    'value'     => function ($model) {
+                        return Yii::$app->formatter->asCurrency($model->amount);
+                    },
+                ],
+                'date',
+            ],
+        ]
+    ) ?>
 
 </div>

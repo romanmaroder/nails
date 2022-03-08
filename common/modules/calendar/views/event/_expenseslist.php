@@ -1,8 +1,9 @@
 <?php
 
 
+use common\components\totalCell\NumberColumn;
 use common\models\EventSearch;
-use common\models\Expenseslist;use common\modules\calendar\controllers\EventController;
+use common\modules\calendar\controllers\EventController;
 use dosamigos\chartjs\ChartJs;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
@@ -10,7 +11,6 @@ use yii\widgets\Pjax;
 
 /* @var $dataProviderExpenseslist EventController */
 /* @var $searchModelExpenseslist EventSearch */
-/* @var $totalExpenses EventController */
 /* @var $chartExpensesLabels EventController */
 /* @var $chartExpensesData EventController */
 
@@ -151,14 +151,14 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                             return $model->expenses->title;
                         },
                     ],
-                    //'price',
                     [
+                        'class'         => NumberColumn::class,
                         'attribute' => 'price',
                         'format'    => 'raw',
+                        'footerOptions' => ['class' => 'bg-success'],
                         'value'     => function ($model) {
                             return $model->price;
                         },
-                        'footer' => Yii::$app->formatter->asCurrency($totalExpenses),
                     ],
                     [
                         'attribute' => 'created_at',

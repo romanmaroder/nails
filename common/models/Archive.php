@@ -22,6 +22,8 @@ use yii\db\ActiveRecord;
  */
 class Archive extends \yii\db\ActiveRecord
 {
+    public $profit;
+
     /**
      *
      * @return array[]
@@ -53,7 +55,8 @@ class Archive extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'service_id', 'amount','salary', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'service_id', 'amount', 'salary', 'created_at', 'updated_at'], 'integer'],
+            [['profit'], 'safe'],
             [['date'], 'string', 'max' => 255],
             [
                 ['service_id'],
@@ -83,6 +86,7 @@ class Archive extends \yii\db\ActiveRecord
             'service_id' => 'Услуга',
             'amount'     => 'Итого',
             'salary'     => 'Зарплата',
+            'profit'     => 'Чистая',
             'date'       => 'Дата',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -108,19 +112,5 @@ class Archive extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
-
-    public static function getTotal($provider, $fieldName)
-    {
-
-        $total = 0;
-
-        foreach ($provider as $item) {
-            $total += $item[$fieldName];
-
-        }
-
-        return $total;
-    }
-
 
 }

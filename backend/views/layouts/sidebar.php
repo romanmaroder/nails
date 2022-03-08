@@ -255,6 +255,7 @@ use yii\helpers\Url;
                         ],
                         //['label' => 'Ставки', 'icon' => 'fas fa-percent', 'url' => ['/service-user/index'],'iconClassAdded'=>'text-info'],
                         ['label' => 'Статистика', 'icon' => 'fas fa-chart-pie', 'url' => ['/statistic'],'iconClassAdded' =>'text-info'],
+                        ['label' => 'Архив', 'icon' => 'fas fa-archive', 'url' => ['/archive'],'iconClassAdded' =>'text-info'],
                         ['label' => 'Заметки', 'icon' => 'fa fa-list-ul', 'url' => ['/todo/todo/index'],'iconClassAdded' =>'text-info'],
                         /*['label' => 'LABELS', 'header' => true],
                         ['label' => 'Important', 'iconStyle' => 'far', 'iconClassAdded' => 'text-danger'],

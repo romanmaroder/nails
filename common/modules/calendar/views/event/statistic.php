@@ -17,7 +17,6 @@ use yii\bootstrap4\Tabs;
 
 /* @var $dataProviderExpenseslist EventController */
 /* @var $searchModelExpenseslist EventSearch */
-/* @var $totalExpenses EventController */
 /* @var $chartExpensesLabels EventController */
 /* @var $chartExpensesData EventController */
 
@@ -56,7 +55,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     [
                                         'dataProviderExpenseslist' => $dataProviderExpenseslist,
                                         'searchModelExpenseslist'  => $searchModelExpenseslist,
-                                        'totalExpenses'            => $totalExpenses,
                                         'chartExpensesLabels'      => $chartExpensesLabels,
                                         'chartExpensesData'        => $chartExpensesData,
                                     ]

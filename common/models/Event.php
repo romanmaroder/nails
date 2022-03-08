@@ -175,10 +175,9 @@ class Event extends ActiveRecord
             'master_id'        => 'Мастер',
             'description'      => 'Услуги',
             'service_array'    => 'Услуги',
-            'cost'             => 'Цена',
-            'salary'           => 'Вознаграждение',
+            'salary'           => 'З/П',
             'notice'           => 'Пожелания',
-            'event_time_start' => 'Время начала',
+            'event_time_start' => 'Дата',
             'event_time_end'   => 'Время окончания',
         ];
     }
@@ -188,8 +187,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getMaster(): ActiveQuery
+    public function getMaster(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'master_id']);
     }
@@ -199,8 +197,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getClient(): ActiveQuery
+    public function getClient(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'client_id']);
     }
@@ -210,8 +207,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getTelegram(): ActiveQuery
+    public function getTelegram(): ActiveQuery
     {
         return $this->hasOne(Telegram::class, ['user_id' => 'client_id']);
     }
@@ -241,7 +237,6 @@ class Event extends ActiveRecord
     public function afterFind()
     {
         $this->service_array = $this->services;
-
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -275,8 +270,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    static function findMasterEvents(
+    public static function findMasterEvents(
         int $id
     ): ActiveQuery {
         /*$dependency = Yii::createObject(
@@ -309,8 +303,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    static function findManagerEvents(): ActiveQuery
+    public static function findManagerEvents(): ActiveQuery
     {
         /*$dependency = Yii::createObject(
             [
@@ -351,10 +344,8 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    static function findClientEvents(
-        int $id
-    ): ActiveQuery {
+    public static function findClientEvents(int $id): ActiveQuery
+    {
         /*$dependency = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
@@ -413,8 +404,7 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public
-    static function findPreviousClientEvents(
+    public static function findPreviousClientEvents(
         $user_id
     ): array {
         return Event::find()
@@ -432,10 +422,7 @@ class Event extends ActiveRecord
      *
      * @return bool|int|string|null
      */
-    public
-    static function countEventTotal(
-        $masterIds
-    ) {
+    public static function countEventTotal($masterIds) {
         $dependency = Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
@@ -461,8 +448,7 @@ class Event extends ActiveRecord
      *
      * @return array
      */
-    public
-    function getTotalEventsMaster(
+    public function getTotalEventsMaster(
         $masterIds
     ): array {
         $dependency = Yii::createObject(
@@ -500,8 +486,7 @@ class Event extends ActiveRecord
      * @throws \Throwable
      * @throws InvalidConfigException
      */
-    public
-    static function getEventDataProvider(
+    public static function getEventDataProvider(
         $userId
     ): ActiveDataProvider {
         if (Yii::$app->user->can('manager')) {
@@ -565,7 +550,6 @@ class Event extends ActiveRecord
      * Total amount for services
      * @param $dataProvider
      * @return string
-     * @throws InvalidConfigException
      */
     public static function getTotal($dataProvider): string
     {
@@ -575,6 +559,7 @@ class Event extends ActiveRecord
                 $total += $cost->cost;
             }
         }
+
 
         return $total;
     }
@@ -646,7 +631,6 @@ class Event extends ActiveRecord
         return array_values($amount);
     }
 
-
     /**
      * Forming the list of existing/absent master rates
      * @param $model - each master's data for each entry
@@ -696,10 +680,11 @@ class Event extends ActiveRecord
 
     /**
      * Sampling of monthly service data
-     * @param $params
+     *
+     * @param $params - date range
      * @return ActiveDataProvider
      */
-    public static function getHistory($params): ActiveDataProvider
+    public static function getHistoryData($params): ActiveDataProvider
     {
         return new ActiveDataProvider(
             [
@@ -716,7 +701,7 @@ class Event extends ActiveRecord
                     )
                     ->joinWith(
                         [
-                            'event' => function ($q)  {
+                            'event' => function ($q) {
                                 $q->select(
                                     [
                                         'event.id',
@@ -745,28 +730,22 @@ class Event extends ActiveRecord
                             }
                         ]
                     )
-                    ->andFilterWhere(['>=', 'event.event_time_start', $params['from_date'] ?$params['from_date'] . ' 00:00:00' : null])
-                    ->andFilterWhere(['<=', 'event.event_time_start', $params['to_date'] ? $params['to_date']. ' 23:59:59' : null])
-                    ->groupBy(['DATE_FORMAT(event.event_time_start,"%Y-%b")','event.master_id'])
+                    ->andFilterWhere(
+                        [
+                            '>=',
+                            'event.event_time_start',
+                            $params['from_date'] ? $params['from_date'] . ' 00:00:00' : null
+                        ]
+                    )
+                    ->andFilterWhere(
+                        ['<=', 'event.event_time_start', $params['to_date'] ? $params['to_date'] . ' 23:59:59' : null]
+                    )
+                    ->groupBy(['DATE_FORMAT(event.event_time_start,"%Y-%b")', 'event.master_id'])
+                    ->orderBy(['event.event_time_start'=>SORT_ASC])
                     ->asArray(),
                 'pagination' => false
             ]
         );
-    }
-
-    /**
-     * Total amount of services for the month
-     * @param $dataProvider
-     * @return string
-     */
-    public static function getHistoryAmount($dataProvider): string
-    {
-        $total = 0;
-        foreach ($dataProvider->models as $model) {
-            $total += $model['amount'];
-        }
-
-        return $total;
     }
 
     /**
@@ -775,8 +754,9 @@ class Event extends ActiveRecord
      * @return bool
      * @throws InvalidConfigException
      */
-    public static function saveHistory($dataProvider): bool
+    public static function saveHistoryData($dataProvider): bool
     {
+        $flag = false;
         foreach ($dataProvider->models as $value) {
             foreach ($value['event']['master']['rates'] as $rate) {
                 if ($value['service_id'] == $rate['service_id']) {
