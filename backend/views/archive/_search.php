@@ -2,6 +2,7 @@
 
 use common\models\Service;
 use common\models\User;
+use kartik\date\DatePicker;
 use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
@@ -45,8 +46,23 @@ use yii\bootstrap4\ActiveForm;
         ]
     ) ?>
 
-
-    <?= $form->field($model, 'date')->input('text',['class'=>'form-control form-control-sm']) ?>
+    <?/*= $form->field($model, 'date')->input('text',['class'=>'form-control form-control-sm']) */?>
+    <?= $form->field($model, 'date')->widget(DatePicker::class, [
+        'options' => [
+                'placeholder' => 'Выберите дату ...',
+                'autocomplete'=>'off',
+            ],
+        'size' => 'sm',
+        'pluginOptions' => [
+            'todayHighlight' => true,
+            'weekStart'      => 1, //неделя начинается с понедельника
+            'autoclose'      => true,
+            'orientation'    => 'bottom auto',
+            'clearBtn'       => true,
+            'todayBtn'       => 'linked',
+            'format' => 'mm-yyyy'
+        ]
+    ]) ?>
 
 
     <div class="form-group">

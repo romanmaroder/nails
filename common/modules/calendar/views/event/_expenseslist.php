@@ -131,7 +131,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                 'dataProvider' => $dataProviderExpenseslist,
                 'showFooter' => true,
                 'tableOptions' => [
-                    'class' => 'table table-striped table-bordered',
+                    'class' => 'table table-striped table-bordered text-center',
                     'id' => 'expenseslist_table'
                 ],
                 'emptyText' => 'Ничего не найдено',
@@ -147,6 +147,9 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     [
                         'attribute' => 'expenses_id',
                         'format'    => 'raw',
+                        'contentOptions' => [
+                            'class' => 'text-left'
+                        ],
                         'value'     => function ($model) {
                             return $model->expenses->title;
                         },
@@ -154,6 +157,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     [
                         'class'         => NumberColumn::class,
                         'attribute' => 'price',
+
                         'format'    => 'raw',
                         'footerOptions' => ['class' => 'bg-success'],
                         'value'     => function ($model) {

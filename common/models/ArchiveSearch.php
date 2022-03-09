@@ -11,9 +11,6 @@ use common\models\Archive;
  */
 class ArchiveSearch extends Archive
 {
-
-    public $service_name;
-
     /**
      * {@inheritdoc}
      */
@@ -21,7 +18,7 @@ class ArchiveSearch extends Archive
     {
         return [
             [['id', 'created_at', 'updated_at'], 'integer'],
-            [['date', 'service_name', 'user_name', 'service_id', 'user_id'], 'safe'],
+            [['date', 'user_name', 'service_id', 'user_id'], 'safe'],
         ];
     }
 
@@ -75,8 +72,12 @@ class ArchiveSearch extends Archive
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
 
-            return $dataProvider;
+            return $dataProvider ;
         }
+
+
+
+
 
         // grid filtering conditions
         $query->andFilterWhere(
@@ -92,6 +93,7 @@ class ArchiveSearch extends Archive
         );
 
         $query->andFilterWhere(['like', 'date', $this->date]);
+
 
         return $dataProvider;
     }

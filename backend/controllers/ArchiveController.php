@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\models\Expenseslist;
 use Yii;
 use common\models\Archive;
 use common\models\ArchiveSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,7 +23,7 @@ class ArchiveController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -35,13 +37,43 @@ class ArchiveController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ArchiveSearch();
+        $searchModel  = new ArchiveSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
+        /*$query = Expenseslist::find()
+            ->select(
+                [
+                    'SUM(price) as price',
+                    'title',
+                    'expenses_id',
+                    'FROM_UNIXTIME(expenseslist.created_at,"%m-%Y") as created_at'
+                ]
+            )
+            ->joinWith(
+                [
+                    'expenses' => function ($q) {
+                        $q->select(
+                            [
+                                'id',
+                                'title'
+                            ]
+                        );
+                }
+                ]
+            )
+            ->groupBy(['expenses.title', 'created_at',])
+            ->asArray();
+        $expenses =  new ActiveDataProvider(
+            [
+                'query'      =>$query
+    ]);*/
+
+        return $this->render(
+            'index', [
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
+        ]
+        );
     }
 
     /**
@@ -52,9 +84,11 @@ class ArchiveController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->render(
+            'view', [
             'model' => $this->findModel($id),
-        ]);
+        ]
+        );
     }
 
     /**
@@ -70,9 +104,11 @@ class ArchiveController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('create', [
+        return $this->render(
+            'create', [
             'model' => $model,
-        ]);
+        ]
+        );
     }
 
     /**
@@ -90,9 +126,11 @@ class ArchiveController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->render(
+            'update', [
             'model' => $model,
-        ]);
+        ]
+        );
     }
 
     /**

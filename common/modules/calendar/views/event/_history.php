@@ -34,9 +34,7 @@ endif; ?>
                 ]
             ); ?>
 
-            <?php
-
-            echo DateRangePicker::widget(
+            <?php echo DateRangePicker::widget(
                 [
                     'name'           => 'archive',
                     'value'          => '',
@@ -61,7 +59,7 @@ endif; ?>
                     'Поиск',
                     [
                         'class' => 'btn btn-sm btn-primary',
-                        'id'    => 'btn-search',
+                        //'id'    => 'btn-search',
                     ]
                 ) ?>
             </div>
@@ -69,8 +67,7 @@ endif; ?>
             <?php
             ActiveForm::end(); ?>
 
-            <?php
-            $form = ActiveForm::begin(
+            <?php $form = ActiveForm::begin(
                 [
                     'id'     => 'history',
                     'method' => 'post',
@@ -81,8 +78,8 @@ endif; ?>
                     'Отправить',
                     [
                         'class' => 'btn btn-sm btn-primary',
-                        'id'    => 'btn-save',
-                        'name'  => 'archive',
+                       // 'id'    => 'btn-save',
+                        'name'  => 'save-archive',
                         'value' => 'archive',
                     ]
                 ) ?>

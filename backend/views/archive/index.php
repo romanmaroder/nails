@@ -1,7 +1,7 @@
 <?php
 
+use backend\controllers\ArchiveController;
 use common\components\totalCell\NumberColumn;
-use common\models\Archive;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -14,6 +14,8 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 
 $this->title                   = 'Архив';
 $this->params['breadcrumbs'][] = $this->title;
+
+
 ?>
     <div class="archive-index">
 
@@ -82,16 +84,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'class'         => NumberColumn::class,
-                        'attribute' => 'profit',
+                        'attribute'     => 'profit',
                         'footerOptions' => ['class' => 'bg-success'],
-                        'value'     => function ($model) {
-                            /*if ($model->amount == $model->salary) {
+                        'value'         => function ($model) {
+                            if ($model->amount == $model->salary) {
                                 return $model->amount;
-                            }*/
-                            return $model->salary;
+                            }
+                            return $model->amount - $model->salary;
                         },
 
                     ],
+
                     'date',
                     //'created_at',
                     //'updated_at',
@@ -104,6 +107,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]
         ); ?>
+
+
+
 
         <?php
         Pjax::end(); ?>
@@ -118,7 +124,7 @@ $js = <<< JS
     "pageLength": 10,
     "paging": true,
     "searching": true,
-    "ordering": false,
+    "ordering": true,
     "info": false,
     "autoWidth": false,
     "bStateSave": true,

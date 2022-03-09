@@ -2,8 +2,8 @@
 
 namespace common\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -20,7 +20,7 @@ use yii\db\ActiveRecord;
  * @property Service $service
  * @property User $user
  */
-class Archive extends \yii\db\ActiveRecord
+class Archive extends ActiveRecord
 {
     public $profit;
 
@@ -96,9 +96,9 @@ class Archive extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Service]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getService()
+    public function getService(): ActiveQuery
     {
         return $this->hasOne(Service::class, ['id' => 'service_id']);
     }
@@ -106,9 +106,9 @@ class Archive extends \yii\db\ActiveRecord
     /**
      * Gets query for [[User]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }

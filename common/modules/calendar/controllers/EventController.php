@@ -435,7 +435,7 @@ class EventController extends Controller
 
         $dataHistory = $this->getHistory();
 
-        if (Yii::$app->request->post('archive')) {
+        if (Yii::$app->request->post('save-archive')) {
             if (!empty(Yii::$app->request->queryParams)) {
                 if ($this->saveHistory()) {
                     Yii::$app->session->setFlash('info', 'Данные сохранены');
