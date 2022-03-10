@@ -68,8 +68,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     '_history',
                                     [
                                         'dataHistory'              => $dataHistory,
-                                        'totalHistoryAmount'              => $totalHistoryAmount,
-//                                        'searchModelArchive'       => $searchModelArchive,
                                     ]
                                 ),
                                 'active'  => true, // указывает на активность вкладки
