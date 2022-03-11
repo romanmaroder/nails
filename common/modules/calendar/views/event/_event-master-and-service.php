@@ -4,7 +4,6 @@
 use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
 use dosamigos\chartjs\ChartJs;
-use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
@@ -14,12 +13,13 @@ use yii\widgets\Pjax;
 /* @var $totalSalary EventController */
 /* @var $chartEventLabels EventController */
 /* @var $chartEventData EventController */
-/*PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);*/
 
 ?>
 
 <?php
-Pjax::begin() ?>
+Pjax::begin([
+                'id'=>'pjax-gridview',
+            ]) ?>
 <div class="row">
     <div class="col-12 col-md-4">
         <?php
@@ -134,12 +134,12 @@ Pjax::begin() ?>
                 'showFooter'       => true,
                 'tableOptions'     => [
                     'class' => 'table table-striped table-bordered',
-                    'id'    => 'statistic_table'
+                    'id'    => 'master-events'
                 ],
                 'emptyText'        => 'Ничего не найдено',
                 'emptyTextOptions' => [
                     'tag'   => 'div',
-                    'class' => 'col-12 col-lg-6 mb-3 text-info'
+                    'class' => 'col-12 col-lg-6 mb-3 text-info master-events'
                 ],
                 'columns'          => [
                     //['class' => 'yii\grid\SerialColumn'],
@@ -196,6 +196,17 @@ Pjax::begin() ?>
                         'attribute'      => 'salary',
                         'footerOptions'  => ['class' => 'bg-primary'],
                         'format'         => 'raw',
+                        'contentOptions' => function ($model) {
+                            $salary = 0;
+                            foreach ($model->services as $service) {
+                                foreach ($model->master->rates as $master) {
+                                    if ($master->rate < 100 && $master->service_id == $service->id) {
+                                        $salary += ($service->cost * $master->rate) / 100;
+                                    }
+                                }
+                            }
+                            return ['data-total' => $salary];
+                        },
                         'value'          => function ($model) {
                             $salary = 0;
                             $salary_one = '';
@@ -215,18 +226,6 @@ Pjax::begin() ?>
                                 $amount = '<hr>' . Yii::$app->formatter->asCurrency($salary);
                             }
                             return $amount_one . $amount;
-                        },
-                        'contentOptions' => function ($model) {
-                            $salary = 0;
-                            foreach ($model->services as $service) {
-                                foreach ($model->master->rates as $master) {
-                                    if ($master->rate < 100 && $master->service_id == $service->id) {
-                                        $salary += ($service->cost * $master->rate) / 100;
-                                    }
-                                }
-                            }
-
-                            return ['data-salary' => $salary];
                         },
                         'footer'    => Yii::$app->formatter->asCurrency($totalSalary),
                     ],
@@ -251,110 +250,4 @@ Pjax::begin() ?>
 </div>
 <?php
 Pjax::end() ?>
-<?php
-$js = <<< JS
-$(function () {
-    $("#statistic_table").DataTable({
-    "responsive": true,
-    "pageLength": 10,
-    "paging": true,
-    "searching": true,
-    "ordering": false,
-    "info": false,
-    "autoWidth": false,
-    "bStateSave": true,
-    "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
-    "footerCallback": function ( row, data, start, end, display ) {
-                var api = this.api();
-     
-                // Remove the formatting to get integer data for summation
-                var intVal = function ( i ) {
-                    return typeof i === 'string' ?
-                        i.replace(/[\$,]/g, '')*1 :
-                        typeof i === 'number' ?
-                            i : 0;
-                };
-     
-                // Total over all pages
-                totalAmount = api
-                    .column( 2)
-                    .nodes()
-                    .reduce( function (a, b) {
-                        return intVal(a) + intVal($(b).attr('data-total'));
-                    }, 0 );
-     
-                // Total over this page
-                pageTotalAmount = api
-                    .column( 2, { page: 'current'} )
-                    .nodes()
-                    .reduce( function (a, b) {
-                        return intVal(a) + intVal($(b).attr('data-total'));
-                    }, 0 );
-                
-                // Update footer
-                $( api.column( 2 ).footer() ).html(
-                    pageTotalAmount.toLocaleString('ru') + ' &#8381;'+' <hr> '+ totalAmount.toLocaleString('ru') + ' &#8381;'
-                );
-                
-                
-                // Total over all pages
-                totalSalary = api
-                    .column( 3 )
-                    .nodes()
-                    .reduce( function (a, b) {
-                        return intVal(a) + intVal($(b).attr('data-salary'));
-                    }, 0 );
-     
-                // Total over this page
-                pageTotalSalary = api
-                    .column( 3, { page: 'current'} )
-                    .nodes()
-                    .reduce( function (a, b) {
-                        return intVal(a) + intVal($(b).attr('data-salary'));
-                    }, 0 );
-                
-                // Update footer
-                $( api.column( 3 ).footer() ).html(
-                    pageTotalSalary.toLocaleString('ru') + ' &#8381;'+' <hr> '+ totalSalary.toLocaleString('ru') + ' &#8381;'
-                );
-                
-                //
-                 var diffPage =  pageTotalAmount - pageTotalSalary;
-                 var diffTotal =  totalAmount - totalSalary;
-                $( api.column( 0 ).footer() ).html(
-                    diffPage.toLocaleString('ru') + ' &#8381;'+' <hr>'+ diffTotal.toLocaleString('ru') + ' &#8381;'
-                );
-                
-                
-            },
-    "fnStateSave": function (oSettings, oData) {
-    localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-    },
-    "fnStateLoad": function () {
-    var data = localStorage.getItem('DataTables_' + window.location.pathname);
-    return JSON.parse(data);
-    },
-    "language": {
-    "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
-        '<option value="10">10</option>'+
-        '<option value="20">20</option>'+
-        '<option value="50">50</option>'+
-        '<option value="-1">Все</option>'+
-        '</select>',
-    "search": "Поиск:",
-    "zeroRecords": "Совпадений не найдено",
-    "emptyTable": "В таблице отсутствуют данные",
-    "paginate": {
-    "first": "Первая",
-    "previous": '<i class="fas fa-backward"></i>',
-    "last": "Последняя",
-    "next": '<i class="fas fa-forward"></i>'
-    }
-    }
-    }).buttons().container().appendTo('#statistic_table_wrapper .col-md-6:eq(0)');
-});
-JS;
 
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = 'eventMaster');
-
-?>

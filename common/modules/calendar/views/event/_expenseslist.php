@@ -5,7 +5,6 @@ use common\components\totalCell\NumberColumn;
 use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
 use dosamigos\chartjs\ChartJs;
-use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
@@ -15,12 +14,15 @@ use yii\widgets\Pjax;
 /* @var $chartExpensesData EventController */
 
 ?>
-<?php
-Pjax::begin() ?>
+<?php Pjax::begin(
+    [
+        'id' => 'pjax-gridview',
+    ]
+) ?>
 
 <div class="row">
     <div class="col-12 col-md-4">
-        <?php  echo \Yii::$app->view->renderFile(
+        <?php echo \Yii::$app->view->renderFile(
             '@backend/views/expenseslist/_search.php',
             ['model' => $searchModelExpenseslist]
         );
@@ -126,46 +128,59 @@ Pjax::begin() ?>
         <?php
         echo GridView::widget(
             [
-                'dataProvider' => $dataProviderExpenseslist,
-                'showFooter' => true,
-                'tableOptions' => [
-                    'class' => 'table table-striped table-bordered text-center',
-                    'id' => 'expenseslist_table'
+                'dataProvider'     => $dataProviderExpenseslist,
+                'showFooter'       => true,
+                'tableOptions'     => [
+                    'class' => 'table table-striped table-bordered text-center expenseslist',
+                    'id'    => 'expenseslist'
                 ],
-                'emptyText' => 'Ничего не найдено',
+                'emptyText'        => 'Ничего не найдено',
                 'emptyTextOptions' => [
-                    'tag' => 'div',
+                    'tag'   => 'div',
                     'class' => 'col-12 col-lg-6 mb-3 text-info'
                 ],
 
 
                 'columns' => [
-                    //['class' => 'yii\grid\SerialColumn'],
-
                     [
-                        'attribute' => 'expenses_id',
-                        'format'    => 'raw',
+                        'class'         => 'yii\grid\SerialColumn',
+                        'footerOptions' => ['class' => 'bg-success'],
+                    ],
+                    [
+                        'visible' => false
+                    ],
+                    [
+                        'visible' => false
+                    ],
+                    [
+                        'attribute'      => 'expenses_id',
+                        'format'         => 'raw',
                         'contentOptions' => [
                             'class' => 'text-left'
                         ],
-                        'value'     => function ($model) {
+                        'value'          => function ($model) {
                             return $model->expenses->title;
                         },
                     ],
                     [
-                        'class'         => NumberColumn::class,
-                        'attribute' => 'price',
+                        'class'          => NumberColumn::class,
+                        'attribute'      => 'price',
+                        'contentOptions' => function ($model) {
+                            return ['data-total' => $model['price']];
+                        },
 
-                        'format'    => 'raw',
-                        'footerOptions' => ['class' => 'bg-success'],
-                        'value'     => function ($model) {
+                        'format'        => 'raw',
+                        'footerOptions' => ['class' => 'bg-info'],
+                        'value'         => function ($model) {
                             return $model->price;
                         },
                     ],
+
                     [
                         'attribute' => 'created_at',
-                        'format' => ['date', 'php:d M Y'],
+                        'format'    => ['date', 'php:d M Y'],
                     ],
+
 
                 ],
             ]
@@ -175,83 +190,5 @@ Pjax::begin() ?>
     </div>
 
 </div>
-<?php
-Pjax::end() ?>
-<?php
-$js = <<< JS
-$(function () {
-$("#expenseslist_table").DataTable({
-"responsive": true,
-"pageLength": 10,
-"paging": true,
-"searching": true,
-"ordering": false,
-"info": false,
-"autoWidth": false,
-"bStateSave": true,
-"dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
- "footerCallback": function ( row, data, start, end, display ) {
-            var api = this.api();
- 
-            // Remove the formatting to get integer data for summation
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
- 
-            // Total over all pages
-            total = api
-                .column( 2 )
-                .nodes()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
- 
-            // Total over this page
-            pageTotal = api
-                .column( 2, { page: 'current'} )
-                .nodes()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-            
-            // Update footer
-            $( api.column( 2 ).footer() ).html(
-                pageTotal.toLocaleString('ru') + ' &#8381;'+' <hr> '+ total.toLocaleString('ru') + ' &#8381;'
-            );
-            
-        },
-"fnStateSave": function (oSettings, oData) {
-localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-},
-"fnStateLoad": function () {
-var data = localStorage.getItem('DataTables_' + window.location.pathname);
-return JSON.parse(data);
-},
-"language": {
-"lengthMenu": 'Показать <select class="form-control form-control-sm">'+
-    '<option value="10">10</option>'+
-    '<option value="20">20</option>'+
-    '<option value="50">50</option>'+
-    '<option value="-1">Все</option>'+
-    '</select>',
-"search": "Поиск:",
-"zeroRecords": "Совпадений не найдено",
-"emptyTable": "В таблице отсутствуют данные",
-"paginate": {
-"first": "Первая",
-"previous": '<i class="fas fa-backward"></i>',
-"last": "Последняя",
-"next": '<i class="fas fa-forward"></i>'
-}
-}
-}).buttons().container().appendTo('#expenseslist_table_wrapper .col-md-6:eq(0)');
+<?php Pjax::end() ?>
 
-});
-JS;
-
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = 'expenses');
-
-?>
