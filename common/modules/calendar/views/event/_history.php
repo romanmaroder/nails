@@ -2,28 +2,31 @@
 
 use common\components\totalCell\NumberColumn;
 use common\modules\calendar\controllers\EventController;
+use hail812\adminlte3\assets\PluginAsset;
 use kartik\daterange\DateRangePicker;
 use yii\bootstrap4\ActiveForm;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\widgets\Pjax;
 
 /* @var $dataHistory EventController */
 
-/*echo '<pre>';
-var_dump($dataHistory->models);
-die();*/
+
 ?>
 <?php
-if (Yii::$app->session->hasFlash('info')): ?>
-    <div class="alert alert-info alert-dismissible mt-3" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        <?php
-        echo Yii::$app->session->getFlash('info'); ?>
-    </div>
-<?php
-endif; ?>
+Pjax::begin() ?>
     <div class="row">
+        <?php if (Yii::$app->session->hasFlash('info')): ?>
+        <div class="col-12">
+            <div class="alert alert-info alert-dismissible mt-3" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <?php
+                echo Yii::$app->session->getFlash('info'); ?>
+            </div>
+        </div>
+        <?php
+        endif; ?>
         <div class="col-12 col-md-3">
 
             <?php
@@ -78,7 +81,7 @@ endif; ?>
                     'Отправить',
                     [
                         'class' => 'btn btn-sm btn-primary',
-                       // 'id'    => 'btn-save',
+                        // 'id'    => 'btn-save',
                         'name'  => 'save-archive',
                         'value' => 'archive',
                     ]
@@ -96,10 +99,9 @@ endif; ?>
                 [
                     'dataProvider'     => $dataHistory,
                     'showFooter'       => true,
-                    'summary'          => '',
                     'tableOptions'     => [
-                        'class' => 'table table-striped table-bordered text-center',
-                        'id'    => 'historyList'
+                        'class' => 'table table-striped table-bordered text-center display',
+                        'id'    => 'historyTable'
                     ],
                     'emptyText'        => 'Ничего не найдено',
                     'emptyTextOptions' => [
@@ -107,33 +109,36 @@ endif; ?>
                         'class' => 'col-12 col-lg-6 mb-3 text-info'
                     ],
                     'columns'          => [
-                        ['class' => 'yii\grid\SerialColumn'],
+                        //['class' => 'yii\grid\SerialColumn'],
                         [
-                            'attribute'     => 'service.name',
-                            'contentOptions'=>[
+                            'attribute'      => 'service.name',
+                            'contentOptions' => [
                                 'class' => 'text-left'
                             ],
                         ],
                         [
-                            'attribute'     => 'event.master.username',
-                            'contentOptions'=>[
+                            'attribute'      => 'event.master.username',
+                            'contentOptions' => [
                                 'class' => 'text-left'
                             ],
                         ],
                         [
                             'class'         => NumberColumn::class,
                             'attribute'     => 'amount',
+                            'contentOptions' => function ($model) {
+                                return ['data-total' => $model['amount']];
+                            },
                             'footerOptions' => ['class' => 'bg-success'],
                         ],
                         [
-                            'attribute' => 'event.salary',
-                            'value'     => function ($model) {
+                            'attribute'      => 'event.salary',
+                            'value'          => function ($model) {
                                 $salary = null;
                                 foreach ($model['event']['master']['rates'] as $rate) {
                                     $salary = $model['amount'] * $rate['rate'] / 100;
                                 }
                                 return $salary;
-                            }
+                            },
                         ],
                         [
                             'attribute' => 'event.event_time_start',
@@ -147,12 +152,13 @@ endif; ?>
         </div>
     </div>
 
-
+<?php
+Pjax::end() ?>
 <?php
 
 $js = <<< JS
  $(function () {
-    $("#historyList").DataTable({
+    /*$("#historyTable").DataTable({
     "responsive": true,
     "pageLength": 10,
     "paging": true,
@@ -162,6 +168,39 @@ $js = <<< JS
     "autoWidth": false,
     "bStateSave": true,
     "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
+    "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api();
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total over all pages
+            total = api
+                .column( 2 )
+                .nodes()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal($(b).attr('data-total'));
+                }, 0 );
+ 
+            // Total over this page
+            pageTotal = api
+                .column( 2, { page: 'current'} )
+                .nodes()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal($(b).attr('data-total'));
+                }, 0 );
+            
+            // Update footer
+            $( api.column( 2 ).footer() ).html(
+                pageTotal.toLocaleString('ru') + ' &#8381;'+' <hr> '+ total.toLocaleString('ru') + ' &#8381;'
+            );
+            
+        },
     "fnStateSave": function (oSettings, oData) {
         localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
     },
@@ -186,10 +225,13 @@ $js = <<< JS
                     "next": '<i class="fas fa-forward"></i>'
                 }
        }
-    }).buttons().container().appendTo('#historyList_wrapper .col-md-6:eq(0)');
+    }).buttons().container().appendTo('#historyTable_wrapper .col-md-6:eq(0)');
+    $(document).on('pjax:complete', function() {
+    $('#historyTable').DataTable();
+});*/
   });
 JS;
 
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
+//$this->registerJs($js, $position = yii\web\View::POS_READY, $key = 'history');
 
 ?>

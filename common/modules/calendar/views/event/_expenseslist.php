@@ -14,10 +14,9 @@ use yii\widgets\Pjax;
 /* @var $chartExpensesLabels EventController */
 /* @var $chartExpensesData EventController */
 
-PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
-
 ?>
-
+<?php
+Pjax::begin() ?>
 
 <div class="row">
     <div class="col-12 col-md-4">
@@ -123,8 +122,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
     </div>
 
     <div class="col-12 col-md-8">
-        <?php
-        Pjax::begin() ?>
+
         <?php
         echo GridView::widget(
             [
@@ -142,7 +140,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 
 
                 'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
+                    //['class' => 'yii\grid\SerialColumn'],
 
                     [
                         'attribute' => 'expenses_id',
@@ -185,13 +183,46 @@ $(function () {
 $("#expenseslist_table").DataTable({
 "responsive": true,
 "pageLength": 10,
-"paging": false,
-"searching": false,
+"paging": true,
+"searching": true,
 "ordering": false,
 "info": false,
 "autoWidth": false,
 "bStateSave": true,
 "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
+ "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api();
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total over all pages
+            total = api
+                .column( 2 )
+                .nodes()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Total over this page
+            pageTotal = api
+                .column( 2, { page: 'current'} )
+                .nodes()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            
+            // Update footer
+            $( api.column( 2 ).footer() ).html(
+                pageTotal.toLocaleString('ru') + ' &#8381;'+' <hr> '+ total.toLocaleString('ru') + ' &#8381;'
+            );
+            
+        },
 "fnStateSave": function (oSettings, oData) {
 localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
 },
@@ -216,10 +247,11 @@ return JSON.parse(data);
 "next": '<i class="fas fa-forward"></i>'
 }
 }
-}).buttons().container().appendTo('#statistic_table_wrapper .col-md-6:eq(0)');
+}).buttons().container().appendTo('#expenseslist_table_wrapper .col-md-6:eq(0)');
+
 });
 JS;
 
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
+$this->registerJs($js, $position = yii\web\View::POS_READY, $key = 'expenses');
 
 ?>

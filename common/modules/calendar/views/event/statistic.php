@@ -3,6 +3,7 @@
 
 use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
+use hail812\adminlte3\assets\PluginAsset;
 use yii\bootstrap4\Tabs;
 
 /* @var $dataProvider EventController */
@@ -20,9 +21,13 @@ use yii\bootstrap4\Tabs;
 /* @var $chartExpensesLabels EventController */
 /* @var $chartExpensesData EventController */
 
+
 $this->title = 'Статистика';
 $this->params['breadcrumbs'][] = $this->title;
+PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
+
 ?>
+
     <div class="row">
         <div class="col-12">
             <div class="tab-content">
@@ -70,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'dataHistory'              => $dataHistory,
                                     ]
                                 ),
-                                'active'  => true, // указывает на активность вкладки
+                                //'active'  => true, // указывает на активность вкладки
                                 'options' => ['id' => 'history'],
 
                             ],
@@ -98,6 +103,8 @@ $(function (){
         var id = $(this).find('a').attr('href');
         localStorage.setItem('nav-tabs', id);
     });
+	
+	
 })
 JS;
 $this->registerJs($tabs, $position = yii\web\View::POS_READY, $key = null); ?>

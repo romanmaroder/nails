@@ -15,6 +15,8 @@ return [
     'storagePath' => '@frontend/web/uploads/',
     'storageUri'  => '/uploads/', //http://nails.com/uploads/c1/d3/78df89d65d.jpg
 
+    'errorService'=>'Услуга не указана',
+
     'avatarPicture' => [
         'maxWidth'  => 300,
         'maxHeight' => 300
@@ -35,12 +37,12 @@ return [
         'maxWidth'  => 1024,
         'maxHeight' => 1024
     ],
-    'hail812/yii2-adminlte3' => [
+    /*'hail812/yii2-adminlte3' => [
         'pluginMap' => [
-            /*'chart'=>[
+            'chart'=>[
                 'css'=>'chart.js/Chart.css',
                 'js'=>'chart.js/Chart.js'
-            ],*/
+            ],
             'datatables'                    => [
                 'js' => 'datatables/jquery.dataTables.min.js'
             ],
@@ -85,7 +87,7 @@ return [
             'filterizr'                     => [
                 'js' => 'filterizr/jquery.filterizr.min.js'
             ],
-            /*'summernote'=>[
+            'summernote'=>[
                 'css'=>'summernote/summernote-bs4.min.css',
                 'js'=>[
                     'summernote/summernote-bs4.min.js',
@@ -103,8 +105,8 @@ return [
                     'codemirror/mode/xml/xml.js',
                     'codemirror/mode/htmlmixed/htmlmixed.js'
                 ]
-            ],*/
+            ],
         ]
-    ],
+    ],*/
 
 ];

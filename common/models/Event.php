@@ -540,7 +540,7 @@ class Event extends ActiveRecord
             $servicesName .= $service['name'] . '</br>';
         }
         if ($servicesName == null) {
-            $servicesName = 'Услуга не указана'; // TODO вынести в параметры
+            $servicesName = Yii::$app->params['errorService'];
         }
 
         return $servicesName;
