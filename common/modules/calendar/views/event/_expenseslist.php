@@ -14,11 +14,7 @@ use yii\widgets\Pjax;
 /* @var $chartExpensesData EventController */
 
 ?>
-<?php Pjax::begin(
-    [
-        'id' => 'pjax-gridview',
-    ]
-) ?>
+
 
 <div class="row">
     <div class="col-12 col-md-4">
@@ -125,8 +121,7 @@ use yii\widgets\Pjax;
 
     <div class="col-12 col-md-8">
 
-        <?php
-        echo GridView::widget(
+        <?php echo GridView::widget(
             [
                 'dataProvider'     => $dataProviderExpenseslist,
                 'showFooter'       => true,
@@ -190,5 +185,4 @@ use yii\widgets\Pjax;
     </div>
 
 </div>
-<?php Pjax::end() ?>
 

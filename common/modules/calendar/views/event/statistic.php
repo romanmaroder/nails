@@ -5,6 +5,7 @@ use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
 use hail812\adminlte3\assets\PluginAsset;
 use yii\bootstrap4\Tabs;
+use yii\widgets\Pjax;
 
 /* @var $dataProvider EventController */
 /* @var $searchModel EventSearch */
@@ -31,6 +32,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
     <div class="row">
         <div class="col-12">
             <div class="tab-content">
+                <?php Pjax::begin() ?>
                 <?php echo Tabs::widget(
                     [
                         'options' => ['class' => 'mb-3'],
@@ -64,7 +66,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                                         'chartExpensesData'        => $chartExpensesData,
                                     ]
                                 ),
-                                'active'  => true, // указывает на активность вкладки
+                                //'active'  => true, // указывает на активность вкладки
                                 'options'     => ['id' => 'expenseslist'],
                                 'linkOptions' => ['data-id' => 'expenseslist'],
 
@@ -86,6 +88,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         ]
                     ]
                 ); ?>
+                <?php Pjax::end() ?>
             </div>
 
         </div>
@@ -93,7 +96,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
     </div>
 
 <?php
-//The last tab opened and init Table
+//The last tab opened
 $tabs = <<<JS
 $(function (){
     var storage = localStorage.getItem('nav-tabs');
@@ -105,14 +108,17 @@ $(function (){
         var id = $(this).find('a').attr('href');
         localStorage.setItem('nav-tabs', id);
     });
-	  
+	  $(document).on('beforeSubmit', '#search, #history', function(event) {
+    $(this).find('[type=submit]').attr('disabled', true).addClass('disabled');
+    });
+ 
 })
 JS;
 
+// Initializing the DataTable plugin on the selected tab
 $initTable = <<<JS
 $(function (){
     
-	// Initializing the DataTable plugin on the selected tab
 	function initTable(currentTab = $('table')){
 	    $(currentTab).DataTable({
                 "bDestroy": true,
@@ -211,6 +217,7 @@ $(function (){
                 },
     }).buttons().container().appendTo('#statistic_table_wrapper .col-md-6:eq(0)');
 	}
+	
 	// DataTable reinitialization after pjax execution
 	 $(document).on('pjax:complete', function() {
         initTable();
@@ -227,9 +234,6 @@ $(function (){
               };
         });
 	 }
-	
-	  
-	   
 })
 JS;
 

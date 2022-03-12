@@ -28,45 +28,7 @@ class Event extends ActiveRecord
     public $totalEvent;
     public $checkEvent;
     public $service_array;
-
-    /*  public static function getHistory()
-      {
-          $archive = EventService::find()
-              ->select(['event_service.id', 'event_id', 'service_id', 'SUM(service.cost) as amount','event.master_id'])
-              ->joinWith(
-                  [
-                      'event' => function ($q) {
-                          $q->select(['event.id', 'master_id','DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'])
-                              ->with(['eventService', 'services'])
-                              ->where(['like','event_time_start','2022-02']);
-                          //->groupBy(['master_id']);
-                      },
-                  ]
-              )
-              ->joinWith(
-                  [
-                      'service' => function ($q) {
-                          $q->select(['service.id', 'name','cost'])
-                              ->distinct()
-                              ->groupBy(['name']);
-                      },
-                  ]
-              )
-              ->joinWith(
-                  [
-                      'event.master' => function ($q) {
-                          $q->select(['id', 'username'])
-                           ->with(['rates']);
-                      }
-                  ]
-              )
-              ->groupBy(['event.master_id'])
-              ->asArray()
-              ->all();
-
-          return $archive;
-      }*/
-
+public $search;
 
     /**
      *
@@ -106,7 +68,7 @@ class Event extends ActiveRecord
             [['service_array'], 'safe'],
             ['master_id', 'filter', 'filter' => 'intval'],
             ['client_id', 'filter', 'filter' => 'intval'],
-            [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent'], 'safe'],
+            [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent','search'], 'safe'],
             [['notice'], 'string', 'max' => 255],
             //['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
 
@@ -249,8 +211,8 @@ class Event extends ActiveRecord
         if ($this->service_array) {
             foreach ($this->service_array as $one) {
                 if (!in_array($one, $arr)) {
-                    $model             = new EventService();
-                    $model->event_id   = $this->id;
+                    $model = new EventService();
+                    $model->event_id = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
@@ -422,7 +384,8 @@ class Event extends ActiveRecord
      *
      * @return bool|int|string|null
      */
-    public static function countEventTotal($masterIds) {
+    public static function countEventTotal($masterIds)
+    {
         $dependency = Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
@@ -497,15 +460,15 @@ class Event extends ActiveRecord
             $query = Event::findClientEvents($userId);
         }
 
-        $dataProvider    = new ActiveDataProvider(
+        $dataProvider = new ActiveDataProvider(
             [
                 'query'      => $query,
                 'pagination' => false,
             ]
         );
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency      = Yii::createObject(
+        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -640,15 +603,15 @@ class Event extends ActiveRecord
     {
         $rates = ArrayHelper::getColumn($model->master->rates, 'service_id');
 
-        $events   = [];
+        $events = [];
         $event_id = [];
         foreach ($model->services as $item) {
             $events[$item['id']] .= $item['name'];
-            $event_id[]          .= $item['id'];
+            $event_id[] .= $item['id'];
         }
 
 
-        $no_set_rate    = array_diff($event_id, $rates);
+        $no_set_rate = array_diff($event_id, $rates);
         $isset_set_rate = array_intersect($event_id, $rates);
 
 
@@ -741,7 +704,7 @@ class Event extends ActiveRecord
                         ['<=', 'event.event_time_start', $params['to_date'] ? $params['to_date'] . ' 23:59:59' : null]
                     )
                     ->groupBy(['DATE_FORMAT(event.event_time_start,"%Y-%b")', 'event.master_id'])
-                    ->orderBy(['event.event_time_start'=>SORT_ASC])
+                    ->orderBy(['event.event_time_start' => SORT_ASC])
                     ->asArray(),
                 'pagination' => false
             ]
@@ -760,12 +723,12 @@ class Event extends ActiveRecord
         foreach ($dataProvider->models as $value) {
             foreach ($value['event']['master']['rates'] as $rate) {
                 if ($value['service_id'] == $rate['service_id']) {
-                    $archive             = new Archive();
-                    $archive->user_id    = $value['event']['master_id'];
+                    $archive = new Archive();
+                    $archive->user_id = $value['event']['master_id'];
                     $archive->service_id = $value['service_id'];
-                    $archive->amount     = $value['amount'];
-                    $archive->salary     = $value['amount'] * $rate['rate'] / 100;
-                    $archive->date       = Yii::$app->formatter->asDate(
+                    $archive->amount = $value['amount'];
+                    $archive->salary = $value['amount'] * $rate['rate'] / 100;
+                    $archive->date = Yii::$app->formatter->asDate(
                         $value['event']['event_time_start'],
                         'php: m-Y'
                     );

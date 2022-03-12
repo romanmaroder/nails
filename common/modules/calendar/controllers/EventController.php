@@ -73,11 +73,11 @@ class EventController extends Controller
     public function actionIndex()
     {
         $cache = Yii::$app->cache;
-        $key   = 'events_list';  // Формируем ключ
+        $key = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency      = Yii::createObject(
+        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -87,7 +87,7 @@ class EventController extends Controller
                 ],
             ]
         );
-        $events          = $cache->getOrSet(
+        $events = $cache->getOrSet(
             $key,
             function () {
                 return Event::find()->with(['master', 'client', 'services'])->all();
@@ -97,10 +97,10 @@ class EventController extends Controller
         );
 
         foreach ($events as $item) {
-            $event                  = new \yii2fullcalendar\models\Event();
-            $event->id              = $item->id;
-            $event->title           = $item->client->username;
-            $event->nonstandard     = [
+            $event = new \yii2fullcalendar\models\Event();
+            $event->id = $item->id;
+            $event->title = $item->client->username;
+            $event->nonstandard = [
                 'description' => Event::getServiceString($item->services) ? Event::getServiceString(
                     $item->services
                 ) : $item->description,
@@ -108,8 +108,8 @@ class EventController extends Controller
                 'master_name' => $item->master->username,
             ];
             $event->backgroundColor = $item->master->color;
-            $event->start           = $item->event_time_start;
-            $event->end             = $item->event_time_end;
+            $event->start = $item->event_time_start;
+            $event->end = $item->event_time_end;
 
             $events[] = $event;
         }
@@ -150,9 +150,9 @@ class EventController extends Controller
      */
     public function actionCreate($start, $end)
     {
-        $model                   = new Event();
+        $model = new Event();
         $model->event_time_start = $start;
-        $model->event_time_end   = $end;
+        $model->event_time_end = $end;
 
 
         if ($model->load(Yii::$app->request->post())) {
@@ -334,9 +334,9 @@ class EventController extends Controller
      */
     public function actionUpdateResize($id, $start, $end)
     {
-        $model                   = $this->findModel($id);
+        $model = $this->findModel($id);
         $model->event_time_start = $start;
-        $model->event_time_end   = $end;
+        $model->event_time_end = $end;
         $model->save(false);
 
         if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
@@ -361,9 +361,9 @@ class EventController extends Controller
      */
     public function actionUpdateDrop($id, $start, $end)
     {
-        $model                   = $this->findModel($id);
+        $model = $this->findModel($id);
         $model->event_time_start = $start;
-        $model->event_time_end   = $end;
+        $model->event_time_end = $end;
 
         $model->save(false);
 
@@ -421,31 +421,36 @@ class EventController extends Controller
      */
     public function actionStatistic()
     {
-        $searchModel      = new EventSearch();
-        $dataProvider     = $searchModel->search(Yii::$app->request->queryParams);
-        $totalEvent       = Event::getTotal($dataProvider);
-        $totalSalary      = Event::getSalary($dataProvider->models);
+        $searchModel = new EventSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $totalEvent = Event::getTotal($dataProvider);
+        $totalSalary = Event::getSalary($dataProvider->models);
         $chartEventLabels = Event::getlabelsCharts($dataProvider);
-        $chartEventData   = Event::getDataCharts($dataProvider);
+        $chartEventData = Event::getDataCharts($dataProvider);
 
-        $searchModelExpenseslist  = new ExpenseslistSearch();
+        $searchModelExpenseslist = new ExpenseslistSearch();
         $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
-        $chartExpensesLabels      = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
-        $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
+        $chartExpensesLabels = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
+        $chartExpensesData = Expenseslist::getDataCharts($dataProviderExpenseslist);
 
         $dataHistory = $this->getHistory();
 
-        if (Yii::$app->request->post('save-archive')) {
-            if (!empty(Yii::$app->request->queryParams)) {
-                if ($this->saveHistory()) {
-                    Yii::$app->session->setFlash('info', 'Данные сохранены');
-                    return $this->redirect(['/calendar/event/statistic']);
-                }
-                Yii::$app->session->setFlash('info', 'Произошла ошибка');
-                return $this->redirect(['/calendar/event/statistic']);
-            }
+        if (Yii::$app->request->get('history') && empty(Yii::$app->request->get('archive'))) {
             Yii::$app->session->setFlash('info', 'Не выбран промежуток дат');
         }
+        if (Yii::$app->request->get('history') == 'save' && !empty(Yii::$app->request->get('archive'))) {
+            if ($this->saveHistory()) {
+                Yii::$app->session->setFlash(
+                    'info',
+                    'Данные за промежуток ' . Yii::$app->request->queryParams['from_date'] . ' - ' . Yii::$app->request->queryParams['to_date']
+                    . ' сохранены'
+                );
+                return $this->redirect(['/calendar/event/statistic']);
+            }
+            Yii::$app->session->setFlash('info', 'Произошла ошибка');
+            return $this->redirect(['/calendar/event/statistic']);
+        }
+
 
         return $this->render(
             'statistic',

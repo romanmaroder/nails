@@ -16,14 +16,10 @@ use yii\widgets\Pjax;
 
 ?>
 
-<?php
-Pjax::begin([
-                'id'=>'pjax-gridview',
-            ]) ?>
+
 <div class="row">
     <div class="col-12 col-md-4">
-        <?php
-        echo $this->render('_search', ['model' => $searchModel]); ?>
+        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
         <?= ChartJs::widget(
             [
@@ -127,8 +123,7 @@ Pjax::begin([
 
     <div class="col-12 col-md-8">
 
-        <?php
-        echo GridView::widget(
+        <?php echo GridView::widget(
             [
                 'dataProvider'     => $dataProvider,
                 'showFooter'       => true,
@@ -248,6 +243,5 @@ Pjax::begin([
     </div>
 
 </div>
-<?php
-Pjax::end() ?>
+
 
