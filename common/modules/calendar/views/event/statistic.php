@@ -24,28 +24,35 @@ use yii\widgets\Pjax;
 /* @var $chartExpensesData EventController */
 
 
-$this->title = 'Статистика';
+$this->title                   = 'Статистика';
 $this->params['breadcrumbs'][] = $this->title;
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
 ?>
-<?php Pjax::begin() ?>
+<?php
+Pjax::begin(
+    [
+        //'enablePushState' => true,
+        // 'enableReplaceState' => true,
+        'timeout' => '10000',
+    ]
+) ?>
     <div class="row">
         <div class="col-12">
 
-            <?php $form = ActiveForm::begin(
+            <?php
+            $form = ActiveForm::begin(
                 [
-                    //'action'  => [''],
                     'method'  => 'get',
                     'options' => [
                         'data-pjax' => 1,
-                        //'id'        => 'ppp'
                     ],
                 ]
             ); ?>
             <div class="tab-content">
 
-                <?php echo Tabs::widget(
+                <?php
+                echo Tabs::widget(
                     [
                         'options' => ['class' => 'mb-3'],
                         'items'   => [
@@ -105,41 +112,60 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                 ); ?>
 
             </div>
-            <?php ActiveForm::end(); ?>
+            <?php
+            ActiveForm::end(); ?>
 
         </div>
     </div>
-<?php Pjax::end() ?>
+<?php
+Pjax::end() ?>
 <?php
 //The last tab opened
 $tabs = <<<JS
 $(function (){
-    var storage = localStorage.getItem('nav-tabs');
     
-	if (storage && storage !== '#') {
-		$('.nav-tabs a[href="' + storage + '"]').tab('show');
-	}
-	$('ul.nav li').on('click', function() {
-        var id = $(this).find('a').attr('href');
-        localStorage.setItem('nav-tabs', id);
-    });
+    function updateURL() {
+    if (history.pushState) {
+        var baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        history.pushState(null, null, baseUrl);
+        //history.replaceState(null, null, baseUrl);
+    }
+    else {
+        console.warn('History API не поддерживается');
+    }
+}
+    
+    
+    function getTabs(){
+        var storage = localStorage.getItem('nav-tabs');
+    
+        if (storage && storage !== '#') {
+            $('.nav-tabs a[href="' + storage + '"]').tab('show');
+        }
+        
+        $('ul.nav li').on('click', function() {
+            var id = $(this).find('a').attr('href');
+            localStorage.setItem('nav-tabs', id);
+            updateURL();
+            
+        });
+    }
+    getTabs();
+    
+	 $(document).on('pjax:complete', function() {
+	     getTabs();
+	      updateURL();
+     });
 	
-	  $(document).on('beforeSubmit', '#search, #history', function(event) {
-        $(this).find('[type=submit]').attr('disabled', true).addClass('disabled');
-	  });
-	  
 	    let noActive = $('.tab-pane').not('.active');
-	    let button = noActive.find('button[type=submit]').attr('disabled', true).addClass('disabled');
-	    let input = noActive.find('input').attr('disabled', true).addClass('disabled');
-	    let select = noActive.find('select').attr('disabled', true).addClass('disabled');
-	     
-	  
-})
+	    let disable = noActive.find('button[type=submit],input,select').attr('disabled', true).addClass('disabled');
+    })
 JS;
 
 // Initializing the DataTable plugin on the selected tab
 $initTable = <<<JS
 $(function (){
+    let tabs = $('a[data-toggle="tab"]');
     
 	function initTable(currentTab = $('table')){
 	    $(currentTab).DataTable({
@@ -246,7 +272,7 @@ $(function (){
     });
 	
 	 if ( $.fn.dataTable.isDataTable(  initTable() ) ) {
-	     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+	     tabs.on('shown.bs.tab', function(e) {
               var currentTab = $(e.target).attr('data-id');
               switch (currentTab)   {
                  case currentTab  :   //do nothing
@@ -257,26 +283,27 @@ $(function (){
         });
 	     
 	 }
-             
-	 $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-             var activeTab = $(e.relatedTarget), // активная вкладка
-                previousTab = $(e.target);   // предыдущая вкладка, которая до этого была активной
-             var currentTab = $(e.target).attr('data-id');
-             let noActive = $('.tab-pane').not('.active');
-             let button = noActive.find('button[type=submit]').attr('disabled', true).addClass('disabled');
-             let input = noActive.find('input').attr('disabled', true).addClass('disabled');
-             let select = noActive.find('select').attr('disabled', true).addClass('disabled');
-        });
-	 $('a[data-toggle="tab"]').on('hide.bs.tab', function(e) {
-             var activeTab = $(e.relatedTarget), // активная вкладка
-                previousTab = $(e.target);   // предыдущая вкладка, которая до этого была активной
-             var currentTab = $(e.target).attr('data-id');
-             let noActive = $('.tab-pane').not('.active');
-             let button = noActive.find('button[type=submit]').attr('disabled', false).removeClass('disabled');
-             let input = noActive.find('input').attr('disabled', false).removeClass('disabled');
-             let select = noActive.find('select').attr('disabled', false).removeClass('disabled');
-             
-        });
+	 
+	 function tabsEvent(tabs,event){
+	     
+	    tabs.on(event+'.bs.tab', function(e) {
+           let tab = $('.tab-pane');
+           switch (event) {
+              case 'shown':
+                tab.not('.active').find('button[type=submit],input,select').attr('disabled', true).addClass('disabled');
+                break;
+              case 'hide':
+                tab.not('.active').find('button[type=submit],input,select').attr('disabled', false).removeClass('disabled');
+                break;
+              default:
+                tab.not('.active').find('button[type=submit],input,select').attr('disabled', true).addClass('disabled');
+                break;
+           }
+	    });
+	 }
+	 tabsEvent(tabs,'shown');
+	 tabsEvent(tabs,'hide');
+    
 })
 JS;
 

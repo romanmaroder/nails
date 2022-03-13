@@ -3,10 +3,8 @@
 use common\components\totalCell\NumberColumn;
 use common\modules\calendar\controllers\EventController;
 use kartik\daterange\DateRangePicker;
-use yii\bootstrap4\ActiveForm;
 use yii\grid\GridView;
 use yii\helpers\Html;
-use yii\widgets\Pjax;
 
 /* @var $dataHistory EventController */
 
@@ -14,27 +12,32 @@ use yii\widgets\Pjax;
 ?>
 
 <div class="row">
-    <?php if (Yii::$app->session->hasFlash('info')): ?>
+    <?php
+    if (Yii::$app->session->hasFlash('info')): ?>
         <div class="col-12">
             <div class="alert alert-info alert-dismissible mt-3" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                <?php echo Yii::$app->session->getFlash('info'); ?>
+                <?php
+                echo Yii::$app->session->getFlash('info'); ?>
             </div>
         </div>
-    <?php endif; ?>
+    <?php
+    endif; ?>
     <div class="col-12 col-md-3">
 
 
-        <?php /*ActiveForm::begin(
-            [
-                'id'      => 'search',
-                'method'  => 'GET',
-                'options' => ['data-pjax' => true]
-            ]
-        ); */?>
+        <?php
+        /*ActiveForm::begin(
+                   [
+                       'id'      => 'search',
+                       'method'  => 'GET',
+                       'options' => ['data-pjax' => true]
+                   ]
+               ); */ ?>
 
-        <?php echo DateRangePicker::widget(
+        <?php
+        echo DateRangePicker::widget(
             [
                 'name'           => 'archive',
                 'value'          => Yii::$app->request->queryParams['archive'],
@@ -75,13 +78,14 @@ use yii\widgets\Pjax;
             ) ?>
         </div>
 
-        <?php /*ActiveForm::end(); */?>
+        <?php
+        /*ActiveForm::end(); */ ?>
 
     </div>
 
     <div class="col-12 col-md-9">
-
-        <?php echo GridView::widget(
+        <?php
+        echo GridView::widget(
             [
                 'dataProvider'     => $dataHistory,
                 'showFooter'       => true,

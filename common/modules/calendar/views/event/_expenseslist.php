@@ -6,7 +6,6 @@ use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
 use dosamigos\chartjs\ChartJs;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
 
 /* @var $dataProviderExpenseslist EventController */
 /* @var $searchModelExpenseslist EventSearch */
@@ -14,7 +13,6 @@ use yii\widgets\Pjax;
 /* @var $chartExpensesData EventController */
 
 ?>
-
 
 <div class="row">
     <div class="col-12 col-md-4">
@@ -119,6 +117,7 @@ use yii\widgets\Pjax;
         ?>
     </div>
 
+
     <div class="col-12 col-md-8">
 
         <?php echo GridView::widget(
@@ -179,8 +178,7 @@ use yii\widgets\Pjax;
 
                 ],
             ]
-        );
-        ?>
+        );?>
 
     </div>
 

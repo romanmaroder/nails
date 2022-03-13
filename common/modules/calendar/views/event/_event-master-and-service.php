@@ -5,7 +5,6 @@ use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
 use dosamigos\chartjs\ChartJs;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
 
 /* @var $dataProvider EventController */
 /* @var $searchModel EventSearch */
@@ -243,5 +242,4 @@ use yii\widgets\Pjax;
     </div>
 
 </div>
-
 
