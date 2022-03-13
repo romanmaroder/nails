@@ -26,13 +26,13 @@ use yii\widgets\Pjax;
     <div class="col-12 col-md-3">
 
 
-        <?php ActiveForm::begin(
+        <?php /*ActiveForm::begin(
             [
                 'id'      => 'search',
                 'method'  => 'GET',
                 'options' => ['data-pjax' => true]
             ]
-        ); ?>
+        ); */?>
 
         <?php echo DateRangePicker::widget(
             [
@@ -60,7 +60,8 @@ use yii\widgets\Pjax;
                 [
                     'class' => 'btn btn-sm btn-primary',
                     'name'  => 'history',
-                    'value' => 'search'
+                    'value' => 'search',
+                    //'form'=>$form->id,
                 ]
             ) ?>
             <?= Html::submitButton(
@@ -69,11 +70,12 @@ use yii\widgets\Pjax;
                     'class' => 'btn btn-sm btn-primary',
                     'name'  => 'history',
                     'value' => 'save',
+                    //'form'=>$form->id,
                 ]
             ) ?>
         </div>
 
-        <?php ActiveForm::end(); ?>
+        <?php /*ActiveForm::end(); */?>
 
     </div>
 

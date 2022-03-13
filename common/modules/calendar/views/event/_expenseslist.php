@@ -20,7 +20,7 @@ use yii\widgets\Pjax;
     <div class="col-12 col-md-4">
         <?php echo \Yii::$app->view->renderFile(
             '@backend/views/expenseslist/_search.php',
-            ['model' => $searchModelExpenseslist]
+            ['model' => $searchModelExpenseslist,'form'=>$form,]
         );
         ?>
 

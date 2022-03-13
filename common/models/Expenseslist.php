@@ -55,6 +55,7 @@ class Expenseslist extends \yii\db\ActiveRecord
             [['expenses_id', 'price', 'created_at', 'updated_at'], 'integer'],
             [['expenses_id'], 'exist', 'skipOnError' => true, 'targetClass' => Expenses::class, 'targetAttribute' => ['expenses_id' => 'id']],
         ];
+
     }
 
     /**

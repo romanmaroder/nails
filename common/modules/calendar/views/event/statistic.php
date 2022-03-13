@@ -4,6 +4,7 @@
 use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
 use hail812\adminlte3\assets\PluginAsset;
+use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Tabs;
 use yii\widgets\Pjax;
 
@@ -28,11 +29,22 @@ $this->params['breadcrumbs'][] = $this->title;
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
 ?>
-
+<?php Pjax::begin() ?>
     <div class="row">
         <div class="col-12">
+
+            <?php $form = ActiveForm::begin(
+                [
+                    //'action'  => [''],
+                    'method'  => 'get',
+                    'options' => [
+                        'data-pjax' => 1,
+                        //'id'        => 'ppp'
+                    ],
+                ]
+            ); ?>
             <div class="tab-content">
-                <?php Pjax::begin() ?>
+
                 <?php echo Tabs::widget(
                     [
                         'options' => ['class' => 'mb-3'],
@@ -48,6 +60,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                                         'totalSalary'      => $totalSalary,
                                         'chartEventLabels' => $chartEventLabels,
                                         'chartEventData'   => $chartEventData,
+                                        'form'             => $form,
                                     ]
                                 ),
                                 //'active'  => true, // указывает на активность вкладки
@@ -64,6 +77,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                                         'searchModelExpenseslist'  => $searchModelExpenseslist,
                                         'chartExpensesLabels'      => $chartExpensesLabels,
                                         'chartExpensesData'        => $chartExpensesData,
+                                        'form'                     => $form,
                                     ]
                                 ),
                                 //'active'  => true, // указывает на активность вкладки
@@ -77,6 +91,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                                     '_history',
                                     [
                                         'dataHistory' => $dataHistory,
+                                        //'form'        => $form,
                                     ]
                                 ),
                                 //'active'  => true, // указывает на активность вкладки
@@ -88,13 +103,13 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         ]
                     ]
                 ); ?>
-                <?php Pjax::end() ?>
+
             </div>
+            <?php ActiveForm::end(); ?>
 
         </div>
-
     </div>
-
+<?php Pjax::end() ?>
 <?php
 //The last tab opened
 $tabs = <<<JS
@@ -108,10 +123,17 @@ $(function (){
         var id = $(this).find('a').attr('href');
         localStorage.setItem('nav-tabs', id);
     });
+	
 	  $(document).on('beforeSubmit', '#search, #history', function(event) {
-    $(this).find('[type=submit]').attr('disabled', true).addClass('disabled');
-    });
- 
+        $(this).find('[type=submit]').attr('disabled', true).addClass('disabled');
+	  });
+	  
+	    let noActive = $('.tab-pane').not('.active');
+	    let button = noActive.find('button[type=submit]').attr('disabled', true).addClass('disabled');
+	    let input = noActive.find('input').attr('disabled', true).addClass('disabled');
+	    let select = noActive.find('select').attr('disabled', true).addClass('disabled');
+	     
+	  
 })
 JS;
 
@@ -233,7 +255,28 @@ $(function (){
                  default: //do nothing 
               };
         });
+	     
 	 }
+             
+	 $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+             var activeTab = $(e.relatedTarget), // активная вкладка
+                previousTab = $(e.target);   // предыдущая вкладка, которая до этого была активной
+             var currentTab = $(e.target).attr('data-id');
+             let noActive = $('.tab-pane').not('.active');
+             let button = noActive.find('button[type=submit]').attr('disabled', true).addClass('disabled');
+             let input = noActive.find('input').attr('disabled', true).addClass('disabled');
+             let select = noActive.find('select').attr('disabled', true).addClass('disabled');
+        });
+	 $('a[data-toggle="tab"]').on('hide.bs.tab', function(e) {
+             var activeTab = $(e.relatedTarget), // активная вкладка
+                previousTab = $(e.target);   // предыдущая вкладка, которая до этого была активной
+             var currentTab = $(e.target).attr('data-id');
+             let noActive = $('.tab-pane').not('.active');
+             let button = noActive.find('button[type=submit]').attr('disabled', false).removeClass('disabled');
+             let input = noActive.find('input').attr('disabled', false).removeClass('disabled');
+             let select = noActive.find('select').attr('disabled', false).removeClass('disabled');
+             
+        });
 })
 JS;
 

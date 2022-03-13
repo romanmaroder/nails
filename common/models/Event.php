@@ -28,7 +28,7 @@ class Event extends ActiveRecord
     public $totalEvent;
     public $checkEvent;
     public $service_array;
-public $search;
+    public $search;
 
     /**
      *
@@ -68,7 +68,7 @@ public $search;
             [['service_array'], 'safe'],
             ['master_id', 'filter', 'filter' => 'intval'],
             ['client_id', 'filter', 'filter' => 'intval'],
-            [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent','search'], 'safe'],
+            [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent', 'search'], 'safe'],
             [['notice'], 'string', 'max' => 255],
             //['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
 

@@ -19,7 +19,7 @@ use yii\widgets\Pjax;
 
 <div class="row">
     <div class="col-12 col-md-4">
-        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+        <?php echo $this->render('_search', ['model' => $searchModel,'form'=>$form,]); ?>
 
         <?= ChartJs::widget(
             [
