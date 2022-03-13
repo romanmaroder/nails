@@ -11,7 +11,7 @@ use yii\grid\GridView;
 /* @var $searchModelExpenseslist EventSearch */
 /* @var $chartExpensesLabels EventController */
 /* @var $chartExpensesData EventController */
-
+/* @var $form common\modules\calendar\*/
 ?>
 
 <div class="row">

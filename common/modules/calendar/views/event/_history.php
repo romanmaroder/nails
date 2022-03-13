@@ -12,8 +12,7 @@ use yii\helpers\Html;
 ?>
 
 <div class="row">
-    <?php
-    if (Yii::$app->session->hasFlash('info')): ?>
+    <?php if (Yii::$app->session->hasFlash('info')): ?>
         <div class="col-12">
             <div class="alert alert-info alert-dismissible mt-3" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -22,22 +21,9 @@ use yii\helpers\Html;
                 echo Yii::$app->session->getFlash('info'); ?>
             </div>
         </div>
-    <?php
-    endif; ?>
+    <?php endif; ?>
     <div class="col-12 col-md-3">
-
-
-        <?php
-        /*ActiveForm::begin(
-                   [
-                       'id'      => 'search',
-                       'method'  => 'GET',
-                       'options' => ['data-pjax' => true]
-                   ]
-               ); */ ?>
-
-        <?php
-        echo DateRangePicker::widget(
+        <?php echo DateRangePicker::widget(
             [
                 'name'           => 'archive',
                 'value'          => Yii::$app->request->queryParams['archive'],
@@ -64,7 +50,6 @@ use yii\helpers\Html;
                     'class' => 'btn btn-sm btn-primary',
                     'name'  => 'history',
                     'value' => 'search',
-                    //'form'=>$form->id,
                 ]
             ) ?>
             <?= Html::submitButton(
@@ -73,13 +58,9 @@ use yii\helpers\Html;
                     'class' => 'btn btn-sm btn-primary',
                     'name'  => 'history',
                     'value' => 'save',
-                    //'form'=>$form->id,
                 ]
             ) ?>
         </div>
-
-        <?php
-        /*ActiveForm::end(); */ ?>
 
     </div>
 

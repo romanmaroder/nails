@@ -32,7 +32,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
 <?php
 Pjax::begin(
     [
-        //'enablePushState' => true,
+        'enablePushState' => false,
         // 'enableReplaceState' => true,
         'timeout' => '10000',
     ]
@@ -124,18 +124,6 @@ Pjax::end() ?>
 $tabs = <<<JS
 $(function (){
     
-    function updateURL() {
-    if (history.pushState) {
-        var baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        history.pushState(null, null, baseUrl);
-        //history.replaceState(null, null, baseUrl);
-    }
-    else {
-        console.warn('History API не поддерживается');
-    }
-}
-    
-    
     function getTabs(){
         var storage = localStorage.getItem('nav-tabs');
     
@@ -146,7 +134,6 @@ $(function (){
         $('ul.nav li').on('click', function() {
             var id = $(this).find('a').attr('href');
             localStorage.setItem('nav-tabs', id);
-            updateURL();
             
         });
     }
@@ -154,11 +141,10 @@ $(function (){
     
 	 $(document).on('pjax:complete', function() {
 	     getTabs();
-	      updateURL();
      });
 	
 	    let noActive = $('.tab-pane').not('.active');
-	    let disable = noActive.find('button[type=submit],input,select').attr('disabled', true).addClass('disabled');
+	        noActive.find('button[type=submit],input,select').attr('disabled', true).addClass('disabled');
     })
 JS;
 

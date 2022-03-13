@@ -12,6 +12,7 @@ use yii\grid\GridView;
 /* @var $totalSalary EventController */
 /* @var $chartEventLabels EventController */
 /* @var $chartEventData EventController */
+/* @var $form common\modules\calendar\*/
 
 ?>
 
