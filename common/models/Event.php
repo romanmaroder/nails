@@ -366,9 +366,8 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public static function findPreviousClientEvents(
-        $user_id
-    ): array {
+    public static function findPreviousClientEvents($user_id): array
+    {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])
@@ -411,9 +410,8 @@ class Event extends ActiveRecord
      *
      * @return array
      */
-    public function getTotalEventsMaster(
-        $masterIds
-    ): array {
+    public function getTotalEventsMaster($masterIds): array
+    {
         $dependency = Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
@@ -449,9 +447,8 @@ class Event extends ActiveRecord
      * @throws \Throwable
      * @throws InvalidConfigException
      */
-    public static function getEventDataProvider(
-        $userId
-    ): ActiveDataProvider {
+    public static function getEventDataProvider( $userId): ActiveDataProvider
+    {
         if (Yii::$app->user->can('manager')) {
             $query = Event::findManagerEvents();
         } elseif (Yii::$app->user->can('master')) {
@@ -503,7 +500,7 @@ class Event extends ActiveRecord
             $servicesName .= $service['name'] . '</br>';
         }
         if ($servicesName == null) {
-            $servicesName = Yii::$app->params['errorService'];
+            $servicesName = Yii::$app->params['error']['service'];
         }
 
         return $servicesName;
@@ -649,7 +646,10 @@ class Event extends ActiveRecord
      */
     public static function getHistoryData($params): ActiveDataProvider
     {
-        return new ActiveDataProvider(
+
+
+
+        $dataProvider = new ActiveDataProvider(
             [
                 'query'      => EventService::find()
                     ->select(
@@ -709,6 +709,21 @@ class Event extends ActiveRecord
                 'pagination' => false
             ]
         );
+        $dependency   = Yii::createObject(
+            [
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(id) FROM event_service',
+                'reusable' => true
+            ]
+        );
+        Yii::$app->db->cache(
+            function () use ($dataProvider) {
+                $dataProvider->prepare();
+            },
+            3600,
+            $dependency
+        );
+        return $dataProvider;
     }
 
     /**

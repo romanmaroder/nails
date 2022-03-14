@@ -8,7 +8,9 @@ use yii\helpers\Html;
 
 /* @var $dataHistory EventController */
 
-
+/*echo'<pre>';
+var_dump($dataHistory->models);
+die();*/
 ?>
 
 <div class="row">

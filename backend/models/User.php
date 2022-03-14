@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models;
+namespace backend\models;
 
 use Yii;
 use yii\base\InvalidConfigException;
@@ -166,15 +166,28 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return array
      */
-    public function getRoles($column_name = null): array
+    public function getRoless($column_name = null): array
     {
-        //if (Yii::$app->controller->action->id === 'update'){
+        if (Yii::$app->controller->action->id === 'update'){
             $roles = Yii::$app->authManager->getRolesByUser($this->getId());
             return ArrayHelper::getColumn($roles, $column_name, true);
-        //}
-       // return [];
+        }
+        return [];
     }
 
+
+    /**
+     * Get user roles from RBAC
+     *
+     * @param $column_name
+     *
+     * @return array
+     */
+    public function getRoles($column_name = null): array
+    {
+            $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+            return ArrayHelper::getColumn($roles, $column_name, true);
+    }
 
     /**
      * Get user role from RBAC
@@ -185,7 +198,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return array_values(Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId()))[0];
     }
-
 
     /**
      * {@inheritdoc}
@@ -594,14 +606,18 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getProfile(): ActiveQuery
     {
-        return $this->hasOne(Profile::class, ['user_id' => 'id'])->inverseOf('user');
+        return $this->hasOne(Profile::class, ['user_id' => 'id']);
     }
-
     /**
      * Relationship with [[ServiceUser]] table
      *
      * @return \yii\db\ActiveQuery
      */
+    /*public function getRates(): ActiveQuery
+    {
+        return $this->hasMany(Service::class, ['id' => 'service_id'])->viaTable('service_user',['user_id'=>'id']);
+    }*/
+
     public function getRates(): ActiveQuery
     {
         return $this->hasMany(ServiceUser::class, ['user_id' => 'id']);

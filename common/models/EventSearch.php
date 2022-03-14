@@ -58,6 +58,7 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
+        //$query->select(['event.id','master_id','client_id','name','event_time_start']);
         $query->joinWith(['eventService', 'master', 'client', 'master.profile', 'client.profile']);
         $query->andWhere(' YEAR(event_time_start) = YEAR(NOW())');
         $query->orderBy(['event_time_start' => SORT_ASC]);

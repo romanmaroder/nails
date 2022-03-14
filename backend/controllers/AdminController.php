@@ -56,7 +56,7 @@ class AdminController extends Controller
                         'roles'        => ['@'],
                         'denyCallback' => function ($rule, $action) {
                             Yii::$app->user->logout();
-                            Yii::$app->session->setFlash('denide', 'У Вас нет доступа'); ;
+                            Yii::$app->session->setFlash('denied', Yii::$app->params['error']['access-is-denied']); ;
                            return $this->redirect('site/login') ;
 //                            ;
                         }

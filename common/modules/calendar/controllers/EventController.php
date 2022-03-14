@@ -436,7 +436,7 @@ class EventController extends Controller
         $dataHistory = $this->getHistory();
 
         if (Yii::$app->request->get('history') && empty(Yii::$app->request->get('archive'))) {
-            Yii::$app->session->setFlash('info', 'Не выбран промежуток дат');
+            Yii::$app->session->setFlash('info', Yii::$app->params['error']['date-range']);
         }
         if (Yii::$app->request->get('history') == 'save' && !empty(Yii::$app->request->get('archive'))) {
             if ($this->saveHistory()) {
@@ -447,7 +447,7 @@ class EventController extends Controller
                 );
                 return $this->redirect(['/calendar/event/statistic']);
             }
-            Yii::$app->session->setFlash('info', 'Произошла ошибка');
+            Yii::$app->session->setFlash('info', Yii::$app->params['error']['error']);
             return $this->redirect(['/calendar/event/statistic']);
         }
 

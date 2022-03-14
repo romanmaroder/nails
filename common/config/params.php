@@ -9,31 +9,36 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength'        => 8,
 
-    'maxLimitNews'=>5, //лимит новостей на странице
+    'maxLimitNews' => 5, //лимит новостей на странице
 
     'maxFileSize' => 1024 * 1024 * 2.5, // Размер загружаемого файла 2mb
     'storagePath' => '@frontend/web/uploads/',
     'storageUri'  => '/uploads/', //http://nails.com/uploads/c1/d3/78df89d65d.jpg
 
-    'errorService'=>'Услуга не указана',
+    'error' => [
+        'service'          => 'Услуга не указана',
+        'date-range'       => 'Не выбран промежуток дат',
+        'error'            => 'Произошла ошибка',
+        'access-is-denied' => 'У Вас нет доступа'
+    ],
 
-    'avatarPicture' => [
+    'avatarPicture'      => [
         'maxWidth'  => 300,
         'maxHeight' => 300
     ],
-    'photoPicture'  => [
+    'photoPicture'       => [
         'maxWidth'  => 450,
         'maxHeight' => 450
     ],
-    'certificatePicture'  => [
+    'certificatePicture' => [
         'maxWidth'  => 450,
         'maxHeight' => 450
     ],
-    'postPicture' => [
+    'postPicture'        => [
         'maxWidth'  => 1024,
         'maxHeight' => 'auto'
     ],
-    'postPreview' => [
+    'postPreview'        => [
         'maxWidth'  => 1024,
         'maxHeight' => 1024
     ],

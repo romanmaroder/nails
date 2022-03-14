@@ -44,7 +44,7 @@ class ExpenseslistSearch extends Expenseslist
     public function search($params)
     {
         $query = Expenseslist::find();
-        $query->joinWith(['expenses']);
+        //$query->joinWith(['expenses']);
 
         // add conditions that should always apply here
 
