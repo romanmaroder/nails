@@ -153,7 +153,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function afterFind()
     {
-        $this->roles = $this->getRoles('name');
+        $this->roles = $this->checkRoles('name');
 
         $this->color = $this->profile->color;
     }
@@ -166,13 +166,27 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return array
      */
+    public function checkRoles($column_name = null): array
+    {
+         if (Yii::$app->controller->id === 'client'){
+        $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+        return ArrayHelper::getColumn($roles, $column_name, true);
+        }
+        return [];
+    }
+
+
+    /**
+     * Get user roles from RBAC
+     *
+     * @param $column_name
+     *
+     * @return array
+     */
     public function getRoles($column_name = null): array
     {
-        //if (Yii::$app->controller->action->id === 'update'){
             $roles = Yii::$app->authManager->getRolesByUser($this->getId());
             return ArrayHelper::getColumn($roles, $column_name, true);
-        //}
-       // return [];
     }
 
 
@@ -594,7 +608,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getProfile(): ActiveQuery
     {
-        return $this->hasOne(Profile::class, ['user_id' => 'id'])->inverseOf('user');
+        return $this->hasOne(Profile::class, ['user_id' => 'id']);
     }
 
     /**

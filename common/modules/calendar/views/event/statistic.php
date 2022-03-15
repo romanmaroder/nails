@@ -265,7 +265,7 @@ $(function (){
                       initTable('#' +currentTab);
                     break ;
                  default: //do nothing 
-              };
+              }
         });
 	     
 	 }

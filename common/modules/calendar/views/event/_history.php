@@ -41,7 +41,24 @@ die();*/
                     ],
                 ],
                 'hideInput'      => true,
+                'pluginEvents' => [
+                       'hide.daterangepicker' => 'function(e) { 
+                           $("span[title=Clear]").on("click",function(){
+                                   $("input[type=text]").val("");
+                                   $("input[type=hidden]").removeAttr("value");
+                           });
+                       }',
+                       'show.daterangepicker' => 'function(e) { $(".applyBtn").addClass("mt-1 mt-sm-0"); }',
+                       'apply.daterangepicker' => 'function() {
+                            $("input[type=hidden]").val(); 
+                            $("input[type=text]").val();
 
+                        }',
+                       'cancel.daterangepicker' => 'function() {
+                            $("input[type=hidden]").removeAttr("value");
+                            $("input[type=text]").val("");
+                        }'
+                ]
             ]
         );; ?>
 

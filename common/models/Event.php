@@ -226,46 +226,11 @@ class Event extends ActiveRecord
     }
 
     /**
-     * Getting records for masters
-     *
-     * @param int $id
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public static function findMasterEvents(
-        int $id
-    ): ActiveQuery {
-        /*$dependency = Yii::createObject(
-            [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
-                'reusable' => true
-            ]
-        );
-        return Event::getDb()->cache(
-            function () use ($id) {
-                return Event::find()->with(['master', 'client'])->where(['master_id' => $id])->andWhere(
-                    'event_time_start >= DATE(NOW())'
-                )->orderBy(
-                    ['event_time_start' => SORT_ASC]
-                )->asArray();
-            },
-            3600,
-            $dependency
-        );*/
-        return Event::find()->with(['master', 'client', 'services'])
-            ->where(['master_id' => $id])
-            ->andWhere('event_time_start >= DATE(NOW())')
-            ->orderBy(['event_time_start' => SORT_ASC])
-            ->asArray();
-    }
-
-    /**
      * Getting records for manager
      *
      * @return \yii\db\ActiveQuery
      */
-    public static function findManagerEvents(): ActiveQuery
+    public static function findEvents($userId = null): ActiveQuery
     {
         /*$dependency = Yii::createObject(
             [
@@ -288,16 +253,23 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        return Event::find()->with(['master', 'client', 'services', 'eventService'])
-            ->where('event_time_start >= DATE(NOW())')
-            ->orderBy(
+        $query= Event::find()->with(['master', 'client', 'services', 'eventService'])
+            ->where('event_time_start >= DATE(NOW())');
+
+        if (!empty($userId)) {
+            $query->andWhere(['master_id'=>$userId]);
+        };
+        $query->orderBy(
                 [
                     'event_time_start'
                     => SORT_ASC
                 ]
             )
             ->asArray();
+        return $query;
     }
+
+
 
     /**
      * Getting records for client
@@ -443,27 +415,27 @@ class Event extends ActiveRecord
     /**
      * Return event list dataProvider
      *
+     * @param $userId
      * @return \yii\data\ActiveDataProvider
-     * @throws \Throwable
-     * @throws InvalidConfigException
      */
     public static function getEventDataProvider( $userId): ActiveDataProvider
     {
-        if (Yii::$app->user->can('manager')) {
-            $query = Event::findManagerEvents();
-        } elseif (Yii::$app->user->can('master')) {
-            $query = Event::findMasterEvents($userId);
-        } else {
+        $roles = Yii::$app->authManager->getRolesByUser($userId);
+        if (array_key_exists('manager', $roles) || array_key_exists('admin', $roles)) {
+            $query = Event::findEvents();
+        }elseif(array_key_exists('master', $roles)){
+            $query = Event::findEvents($userId);
+        }else{
             $query = Event::findClientEvents($userId);
         }
 
-        $dataProvider = new ActiveDataProvider(
+        return new ActiveDataProvider(
             [
                 'query'      => $query,
                 'pagination' => false,
             ]
         );
-        $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
+        /*$eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
         $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
         $dependency = Yii::createObject(
             [
@@ -482,9 +454,10 @@ class Event extends ActiveRecord
             },
             3600,
             $dependency
-        );
+        );*/
 
-        return $dataProvider;
+
+
     }
 
     /**

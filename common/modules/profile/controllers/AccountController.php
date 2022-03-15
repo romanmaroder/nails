@@ -70,6 +70,7 @@ class AccountController extends Controller
 
         $user = User::findIdentity($userId);
 
+
         $profile = Profile::getUserProfileInfo($userId);
 
         $setting = new Setting();
@@ -90,9 +91,12 @@ class AccountController extends Controller
         if (!isset($user)) {
             throw new NotFoundHttpException("Пользователь не найден.");
         }
-        if (!isset($profile)) {
-            throw new NotFoundHttpException("Данные о пользователе не найдены.");
+        if(Yii::$app->authManager->getAssignment('master',$userId) ){
+            if (!isset($profile)) {
+                throw new NotFoundHttpException("Данные о пользователе не найдены.");
+            }
         }
+
         if($profile){
             if( $profile->load(Yii::$app->request->post()) ){
                 $isValid = $profile->validate();

@@ -2,7 +2,11 @@
 
 use backend\controllers\ArchiveController;
 use common\components\totalCell\NumberColumn;
+use common\models\Service;
+use common\models\User;
 use hail812\adminlte3\assets\PluginAsset;
+use kartik\date\DatePicker;
+use kartik\select2\Select2;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
@@ -30,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
         Pjax::begin(); ?>
         <?php
-        echo $this->render('_search', ['model' => $searchModel]); ?>
+        /*echo $this->render('_search', ['model' => $searchModel]); */ ?>
 
         <?= GridView::widget(
             [
@@ -38,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'rowOptions'   => function ($model) {
                     return ['style' => 'background-color:' . $model->user->profile->color];
                 },
-                //'filterModel'  => $searchModel,
+                'filterModel'  => $searchModel,
                 'showFooter'   => true,
                 'tableOptions' => [
                     'class' => 'table table-striped table-bordered text-center',
@@ -50,6 +54,26 @@ $this->params['breadcrumbs'][] = $this->title;
                     //'id',
                     [
                         'attribute'      => 'user_id',
+                        'filter'         => Select2::widget(
+                            [
+                                'model'         => $searchModel,
+                                'attribute'     => 'user_id',
+                                'data'          => User::getMasterList(),
+                                'value'         => $searchModel->user_id,
+                                'language'      => 'ru',
+                                'theme'         => Select2::THEME_KRAJEE_BS4,
+                                'size'          => Select2::SMALL,
+                                'options'       => [
+                                    'placeholder'  => 'Мастер',
+                                    'multiple'     => false,
+                                    'autocomplete' => 'off',
+                                ],
+                                'pluginOptions' => [
+                                    'tags'       => true,
+                                    'allowClear' => true,
+                                ],
+                            ]
+                        ),
                         'contentOptions' => [
                             'class' => 'text-left'
                         ],
@@ -59,6 +83,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute'      => 'service_id',
+                        'filter'         => Select2::widget(
+                            [
+                                'model'         => $searchModel,
+                                'attribute'     => 'service_id',
+                                'language'      => 'ru',
+                                'data'          => Service::getServiceList(),
+                                'theme'         => Select2::THEME_KRAJEE_BS4,
+                                'size'          => Select2::SMALL,
+                                'options'       => [
+                                    'placeholder'  => 'Выберите услугу ...',
+                                    'multiple'     => true,
+                                    'autocomplete' => 'off',
+                                ],
+                                'pluginOptions' => [
+                                    'tags'       => true,
+                                    'allowClear' => true,
+                                ],
+                            ]
+                        ),
                         'contentOptions' => [
                             'class' => 'text-left'
                         ],
@@ -94,11 +137,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
 
                     ],
-
-                    'date',
-                    //'created_at',
-                    //'updated_at',
-
+                    [
+                        'attribute' => 'date',
+                        'filter'    => DatePicker::widget(
+                            [
+                                'model'         => $searchModel,
+                                'attribute'     => 'date',
+                                'options'       => [
+                                    'placeholder'  => 'Выберите дату ...',
+                                    'autocomplete' => 'off',
+                                ],
+                                'size'          => 'sm',
+                                'pluginOptions' => [
+                                    'todayHighlight' => true,
+                                    'weekStart'      => 1, //неделя начинается с понедельника
+                                    'autoclose'      => true,
+                                    'orientation'    => 'bottom auto',
+                                    'clearBtn'       => true,
+                                    'todayBtn'       => 'linked',
+                                    'format'         => 'mm-yyyy'
+                                ]
+                            ]
+                        ),
+                    ],
                     [
                         'class'    => 'yii\grid\ActionColumn',
                         'template' => '{view}',
@@ -116,45 +177,83 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 <?php
-
 $js = <<< JS
- $(function () {
-    $("#archive").DataTable({
-    "responsive": true,
-    "pageLength": 10,
-    "paging": true,
-    "searching": true,
-    "ordering": true,
-    "info": false,
-    "autoWidth": false,
-    "bStateSave": true,
-    "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
-    "fnStateSave": function (oSettings, oData) {
-        localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-    },
-    "fnStateLoad": function () {
-        var data = localStorage.getItem('DataTables_' + window.location.pathname);
-        return JSON.parse(data);
-    },
-       "language": {
-       "lengthMenu": 'Показать <select class="form-control form-control-sm">'+
-      '<option value="10">10</option>'+
-      '<option value="20">20</option>'+
-      '<option value="50">50</option>'+
-      '<option value="-1">Все</option>'+
-      '</select>',
-           "search": "Поиск:",
-           "zeroRecords": "Совпадений не найдено",
-    	  	"emptyTable": "В таблице отсутствуют данные",
-           "paginate": {
-                    "first": "Первая",
-                    "previous": '<i class="fas fa-backward"></i>',
-                    "last": "Последняя",
-                    "next": '<i class="fas fa-forward"></i>'
-                }
-       }
-    }).buttons().container().appendTo('#archive_wrapper .col-md-6:eq(0)');
-  });
+$(function () {
+$("#archive").DataTable({
+"responsive": true,
+"pageLength": 10,
+"paging": true,
+"searching": false,
+"ordering": false,
+"info": false,
+"autoWidth": false,
+"bStateSave": true,
+"dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
+"fnStateSave": function (oSettings, oData) {
+localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+},
+"fnStateLoad": function () {
+var data = localStorage.getItem('DataTables_' + window.location.pathname);
+return JSON.parse(data);
+},
+"language": {
+"lengthMenu": 'Показать <select class="form-control form-control-sm">'+
+    '<option value="10">10</option>'+
+    '<option value="20">20</option>'+
+    '<option value="50">50</option>'+
+    '<option value="-1">Все</option>'+
+    '</select>',
+"search": "Поиск:",
+"zeroRecords": "Совпадений не найдено",
+"emptyTable": "В таблице отсутствуют данные",
+"paginate": {
+"first": "Первая",
+"previous": '<i class="fas fa-backward"></i>',
+"last": "Последняя",
+"next": '<i class="fas fa-forward"></i>'
+}
+}
+}).buttons().container().appendTo('#archive_wrapper .col-md-6:eq(0)');
+
+ $(document).on('pjax:complete', function() {
+      $("#archive").DataTable({
+"responsive": true,
+"pageLength": 10,
+"paging": true,
+"searching": false,
+"ordering": false,
+"info": false,
+"autoWidth": false,
+"bStateSave": true,
+"dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
+"fnStateSave": function (oSettings, oData) {
+localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+},
+"fnStateLoad": function () {
+var data = localStorage.getItem('DataTables_' + window.location.pathname);
+return JSON.parse(data);
+},
+"language": {
+"lengthMenu": 'Показать <select class="form-control form-control-sm">'+
+    '<option value="10">10</option>'+
+    '<option value="20">20</option>'+
+    '<option value="50">50</option>'+
+    '<option value="-1">Все</option>'+
+    '</select>',
+"search": "Поиск:",
+"zeroRecords": "Совпадений не найдено",
+"emptyTable": "В таблице отсутствуют данные",
+"paginate": {
+"first": "Первая",
+"previous": '<i class="fas fa-backward"></i>',
+"last": "Последняя",
+"next": '<i class="fas fa-forward"></i>'
+}
+}
+}).buttons().container().appendTo('#archive_wrapper .col-md-6:eq(0)');
+    });
+
+});
 JS;
 
 $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
