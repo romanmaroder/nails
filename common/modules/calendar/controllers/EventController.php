@@ -101,7 +101,7 @@ class EventController extends Controller
             $event->id = $item->id;
             $event->title = $item->client->username;
             $event->nonstandard = [
-                'description' => Event::getServiceString($item->services) ? Event::getServiceString(
+                'description' => Event::getServiceName($item->services) ? Event::getServiceName(
                     $item->services
                 ) : $item->description,
                 'notice'      => $item->notice,

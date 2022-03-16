@@ -18,6 +18,7 @@ use yii\grid\GridView;
 
 
 <div class="row">
+
     <div class="col-12 col-md-4">
         <?php echo $this->render('_search', ['model' => $searchModel,'form'=>$form,]); ?>
 
@@ -120,13 +121,14 @@ use yii\grid\GridView;
         )
         ?>
     </div>
-
     <div class="col-12 col-md-8">
 
         <?php echo GridView::widget(
             [
                 'dataProvider'     => $dataProvider,
+                'summary'=>false,
                 'showFooter'       => true,
+                'showHeader'=>true,
                 'tableOptions'     => [
                     'class' => 'table table-striped table-bordered',
                     'id'    => 'master-events'
@@ -145,6 +147,8 @@ use yii\grid\GridView;
                             return $model->master->username;
                         },
                         'footerOptions' => ['class' => 'bg-success'],
+                        'headerOptions' => ['class' => 'bg-success'],
+                        'header'=>Yii::$app->formatter->asCurrency($totalEvent - $totalSalary),
                          'footer'        => Yii::$app->formatter->asCurrency($totalEvent - $totalSalary),
                     ],
                     [
@@ -156,7 +160,6 @@ use yii\grid\GridView;
                     ],
                     [
                         'attribute'      => 'services.cost',
-                        'footerOptions'  => ['class' => 'bg-info'],
                         'format'         => 'raw',
                         'contentOptions' => function ($model) {
                             $service_total = 0;
@@ -184,12 +187,13 @@ use yii\grid\GridView;
                                     $service_total
                                 );
                         },
-
+                        'header'=>Yii::$app->formatter->asCurrency($totalEvent),
+                        'headerOptions' => ['class' => 'bg-info'],
                         'footer'    => Yii::$app->formatter->asCurrency($totalEvent),
+                        'footerOptions'  => ['class' => 'bg-info'],
                     ],
                     [
                         'attribute'      => 'salary',
-                        'footerOptions'  => ['class' => 'bg-primary'],
                         'format'         => 'raw',
                         'contentOptions' => function ($model) {
                             $salary = 0;
@@ -222,7 +226,10 @@ use yii\grid\GridView;
                             }
                             return $amount_one . $amount;
                         },
+                        'header'=>Yii::$app->formatter->asCurrency($totalSalary),
+                        'headerOptions' => ['class' => 'bg-info'],
                         'footer'    => Yii::$app->formatter->asCurrency($totalSalary),
+                        'footerOptions'  => ['class' => 'bg-primary'],
                     ],
                     [
                         'attribute' => 'client_id',

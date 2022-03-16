@@ -13,6 +13,10 @@ use yii\base\InvalidConfigException;
 /**
  * Class SmsSender
  * @package common\components\sms
+ * @property-read string MORNING
+ * @property-read string DAY
+ * @property-read string EVENING
+ * @property-read string NIGHT
  */
 class SmsSender extends Component implements SmsSenderInterface
 {
@@ -23,6 +27,7 @@ class SmsSender extends Component implements SmsSenderInterface
 
     /**
      * Checking what operating system the user is using
+     *
      * @return  string
      * @property $params
      */
@@ -48,6 +53,7 @@ class SmsSender extends Component implements SmsSenderInterface
 
     /**
      * Checking the time of day for the greeting
+     *
      * @return string
      * @throws InvalidConfigException
      */
@@ -76,9 +82,10 @@ class SmsSender extends Component implements SmsSenderInterface
 
     /**
      * The text of the sent message
+     *
      * @param string $dataEvent
-     * @param string|null $greeting
-     * @return string
+     * @param string|null $greeting - greeting
+     * @return string - next post message
      * @throws InvalidConfigException
      */
     final public function messageText(string $dataEvent, string $greeting = null): string
@@ -92,21 +99,24 @@ class SmsSender extends Component implements SmsSenderInterface
 
 
         if ($daysToLaunch >= 1) {
-            return $greeting . '. У Вас следующая запись ' . $data . '.';
+            return $greeting . Yii::$app->params['sms-location']['entry-next'] . $data . '.';
         }
 
-        return $greeting . '. У Вас запись ' . $data . '. Вы будете?';
+        return $greeting . '. '. $data . Yii::$app->params['sms-location']['entry'];
     }
 
     /**
+     * Sending a message with an address
+     *
      * @param string|null $greeting
-     * @return string
+     * @param array  - message text in application options
+     * @return string - message with an address
      * @throws InvalidConfigException
      */
     final public function messageAddress(string $greeting = null): string
     {
         $greeting = self::checkTimeOfDay();
 
-        return $greeting . '. Наш адрес: ул.Раздольная д.11, подъезд 4, кв.142, этаж 9.';
+        return $greeting . Yii::$app->params['sms-location']['address'];
     }
 }

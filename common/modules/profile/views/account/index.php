@@ -156,8 +156,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     <?php endif;?>
 
-
-
                     <div class="tab-content">
                         <?php
                         echo Tabs::widget(

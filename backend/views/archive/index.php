@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
     <div class="archive-index">
-
+        <?php Pjax::begin(); ?>
         <!--<h1><?
         /*= Html::encode($this->title) */ ?></h1>
 
@@ -31,10 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
         /*= Html::a('Create Archive', ['create'], ['class' => 'btn btn-success']) */ ?>
     </p>-->
 
-        <?php
-        Pjax::begin(); ?>
-        <?php
-        /*echo $this->render('_search', ['model' => $searchModel]); */ ?>
+
+        <?php echo $this->render('_search', ['model' => $searchModel]);  ?>
 
         <?= GridView::widget(
             [
@@ -42,7 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'rowOptions'   => function ($model) {
                     return ['style' => 'background-color:' . $model->user->profile->color];
                 },
-                'filterModel'  => $searchModel,
+                //'filterModel'  => $searchModel,
+                'summary'=>false,
                 'showFooter'   => true,
                 'tableOptions' => [
                     'class' => 'table table-striped table-bordered text-center',
@@ -112,11 +111,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'class'         => NumberColumn::class,
                         'attribute'     => 'amount',
+                        'contentOptions' => function ($model) {
+                            return ['data-total' => $model->amount];
+                        },
                         'footerOptions' => ['class' => 'bg-info'],
                     ],
                     [
                         'class'         => NumberColumn::class,
                         'attribute'     => 'salary',
+                        'contentOptions' => function ($model) {
+                            if ($model->amount == $model->salary) {
+                                $model->salary = 0;
+                            }
+                            return ['data-total' => $model->salary];
+                        },
                         'value'         => function ($model) {
                             if ($model->amount == $model->salary) {
                                 return 0;
@@ -172,23 +180,84 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
-        <?php
-        Pjax::end(); ?>
+        <?php Pjax::end(); ?>
 
     </div>
 <?php
 $js = <<< JS
 $(function () {
-$("#archive").DataTable({
+    
+    function initTable (){
+        $("#archive").DataTable({
 "responsive": true,
 "pageLength": 10,
 "paging": true,
-"searching": false,
+"searching": true,
 "ordering": false,
-"info": false,
+"info": true,
 "autoWidth": false,
 "bStateSave": true,
 "dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
+"footerCallback": function ( row, data, start, end, display ) {
+                            var api = this.api();
+                            // Remove the formatting to get integer data for summation
+                            var intVal = function ( i ) {
+                                return typeof i === 'string' ?
+                                    i.replace(/[\$,]/g, '')*1 :
+                                    typeof i === 'number' ?
+                                        i : 0;
+                            };
+                            // Total over all pages
+                            totalAmount = api
+                                .column( 2)
+                                .nodes()
+                                .reduce( function (a, b) {
+                                    return intVal(a) + intVal($(b).attr('data-total'));
+                                }, 0 );
+                            // Total over this page
+                            pageTotalAmount = api
+                                .column( 2, { page: 'current'} )
+                                .nodes()
+                                .reduce( function (a, b) {
+                                    return intVal(a) + intVal($(b).attr('data-total'));
+                                }, 0 );
+                            // Update footer
+                            $( api.column( 2 ).footer() )
+                            //.html( pageTotalAmount.toLocaleString('ru') + ' &#8381;'+' <hr> '+ totalAmount .toLocaleString('ru') + ' &#8381;');
+                            .html( pageTotalAmount.toLocaleString('ru') + ' &#8381;');
+                            // Total over all pages
+                            totalSalary = api
+                                .column( 3 )
+                                .nodes()
+                                .reduce( function (a, b) {
+                                    return intVal(a) + intVal($(b).attr('data-total'));
+                                }, 0 );
+                            // Total over this page
+                            pageTotalSalary = api
+                                .column( 3, { page: 'current'} )
+                                .nodes()
+                                .reduce( function (a, b) {
+                                    return intVal(a) + intVal($(b).attr('data-total'));
+                                }, 0 );
+                            // Update footer
+                            if ( pageTotalSalary == 0 ){
+                                 $( api.column( 3 ).footer() )
+                                 //.html(pageTotalSalary.toLocaleString('ru') + ' &#8381;'+' <hr> '+ totalSalary.toLocaleString('ru') + ' &#8381;');
+                                 .html('-').css({'text-align':'center'});
+                            }else{
+                                 $( api.column( 3 ).footer() ).html(pageTotalSalary.toLocaleString('ru') + ' &#8381;').css({'text-align':'center'});
+                            }
+                            
+                            //
+                            
+                             var diffPage =  pageTotalAmount - pageTotalSalary;
+                             var diffTotal =  totalAmount - totalSalary;
+                            $( api.column( 4 ).footer() )
+                            //.html( diffPage.toLocaleString('ru') + ' &#8381;'+' <hr>'+ diffTotal.toLocaleString('ru') + ' &#8381;');
+                            .html( diffPage.toLocaleString('ru') + ' &#8381;');
+                            
+                            
+                        },
 "fnStateSave": function (oSettings, oData) {
 localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
 },
@@ -214,45 +283,12 @@ return JSON.parse(data);
 }
 }
 }).buttons().container().appendTo('#archive_wrapper .col-md-6:eq(0)');
-
- $(document).on('pjax:complete', function() {
-      $("#archive").DataTable({
-"responsive": true,
-"pageLength": 10,
-"paging": true,
-"searching": false,
-"ordering": false,
-"info": false,
-"autoWidth": false,
-"bStateSave": true,
-"dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
-"fnStateSave": function (oSettings, oData) {
-localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-},
-"fnStateLoad": function () {
-var data = localStorage.getItem('DataTables_' + window.location.pathname);
-return JSON.parse(data);
-},
-"language": {
-"lengthMenu": 'Показать <select class="form-control form-control-sm">'+
-    '<option value="10">10</option>'+
-    '<option value="20">20</option>'+
-    '<option value="50">50</option>'+
-    '<option value="-1">Все</option>'+
-    '</select>',
-"search": "Поиск:",
-"zeroRecords": "Совпадений не найдено",
-"emptyTable": "В таблице отсутствуют данные",
-"paginate": {
-"first": "Первая",
-"previous": '<i class="fas fa-backward"></i>',
-"last": "Последняя",
-"next": '<i class="fas fa-forward"></i>'
-}
-}
-}).buttons().container().appendTo('#archive_wrapper .col-md-6:eq(0)');
-    });
-
+    }
+    
+     $(document).on('pjax:complete', function() {
+         initTable();
+     });
+  initTable();
 });
 JS;
 

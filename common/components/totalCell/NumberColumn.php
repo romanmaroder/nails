@@ -17,16 +17,15 @@ class NumberColumn extends DataColumn
 
     public function getDataCellValue($model, $key, $index): ?string
     {
-        $value = parent::getDataCellValue($model, $key, $index);
+        $value        = parent::getDataCellValue($model, $key, $index);
         $this->_total += $value;
         return $value;
     }
 
     protected function renderFooterCellContent(): string
     {
-
-            return $this->grid->formatter->format($this->grid->formatter->asCurrency($this->_total), $this->format);
-
+        return $this->grid->formatter->format($this->grid->formatter->asCurrency($this->_total), $this->format);
     }
 
 }
+

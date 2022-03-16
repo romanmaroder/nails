@@ -85,7 +85,7 @@ class AccountController extends Controller
 
         $certificate = new Certificate();
 
-        $dataProvider = Event::getEventDataProvider($userId);
+        $dataProvider = Event::getEventDataProvider( $userId);
 
 
         if (!isset($user)) {

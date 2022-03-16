@@ -23,10 +23,24 @@ use yii\bootstrap4\ActiveForm;
 
     ]); ?>
 
-    <?= $form->field($model, 'user_id')->dropDownList(
-        User::getMasterList(),
-        ['prompt' => 'Выберите мастера...','class'=>'form-control form-control-sm']) ?>
-
+    <?= $form->field($model, 'user_id')->widget(
+        Select2::class,
+        [
+            'language' => 'ru',
+            'data'          =>  User::getMasterList(),
+            'theme'         => Select2::THEME_MATERIAL,
+            'size'          => Select2::SMALL,
+            'options'       => [
+                'placeholder'  => 'Выберите мастера...',
+                'multiple'     => false,
+                'autocomplete' => 'off',
+            ],
+            'pluginOptions' => [
+                'tags'            =>  true,
+                'allowClear'      => true,
+            ],
+        ]
+    ) ?>
     <?= $form->field($model, 'service_id')->widget(
         Select2::class,
         [
@@ -46,7 +60,6 @@ use yii\bootstrap4\ActiveForm;
         ]
     ) ?>
 
-    <?/*= $form->field($model, 'date')->input('text',['class'=>'form-control form-control-sm']) */?>
     <?= $form->field($model, 'date')->widget(DatePicker::class, [
         'options' => [
                 'placeholder' => 'Выберите дату ...',

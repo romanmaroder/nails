@@ -8,13 +8,11 @@ use yii\helpers\Html;
 
 /* @var $dataHistory EventController */
 
-/*echo'<pre>';
-var_dump($dataHistory->models);
-die();*/
 ?>
 
 <div class="row">
-    <?php if (Yii::$app->session->hasFlash('info')): ?>
+    <?php
+    if (Yii::$app->session->hasFlash('info')): ?>
         <div class="col-12">
             <div class="alert alert-info alert-dismissible mt-3" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -23,38 +21,40 @@ die();*/
                 echo Yii::$app->session->getFlash('info'); ?>
             </div>
         </div>
-    <?php endif; ?>
+    <?php
+    endif; ?>
     <div class="col-12 col-md-3">
-        <?php echo DateRangePicker::widget(
+        <?php
+        echo DateRangePicker::widget(
             [
-                'name'           => 'archive',
-                'value'          => Yii::$app->request->queryParams['archive'],
-                'useWithAddon'   => false,
-                'convertFormat'  => true,
-                'startAttribute' => 'from_date',
-                'endAttribute'   => 'to_date',
-                'initRangeExpr'  => false,
-                'pluginOptions'  => [
+                'name'             => 'archive',
+                'value'            => Yii::$app->request->queryParams['archive'],
+                'useWithAddon'     => false,
+                'convertFormat'    => true,
+                'startAttribute'   => 'from_date',
+                'endAttribute'     => 'to_date',
+                'initRangeExpr'    => false,
+                'pluginOptions'    => [
                     'locale' => [
                         'format' => 'Y-m-d',
                         ''       => true,
                     ],
                 ],
-                'hideInput'      => true,
-                'pluginEvents' => [
-                       'hide.daterangepicker' => 'function(e) { 
+                'hideInput'        => true,
+                'pluginEvents'     => [
+                    'hide.daterangepicker'   => 'function(e) { 
                            $("span[title=Clear]").on("click",function(){
                                    $("input[type=text]").val("");
                                    $("input[type=hidden]").removeAttr("value");
                            });
                        }',
-                       'show.daterangepicker' => 'function(e) { $(".applyBtn").addClass("mt-1 mt-sm-0"); }',
-                       'apply.daterangepicker' => 'function() {
+                    'show.daterangepicker'   => 'function(e) { $(".applyBtn").addClass("mt-1 mt-sm-0"); }',
+                    'apply.daterangepicker'  => 'function() {
                             $("input[type=hidden]").val(); 
                             $("input[type=text]").val();
 
                         }',
-                       'cancel.daterangepicker' => 'function() {
+                    'cancel.daterangepicker' => 'function() {
                             $("input[type=hidden]").removeAttr("value");
                             $("input[type=text]").val("");
                         }'
@@ -88,6 +88,7 @@ die();*/
         echo GridView::widget(
             [
                 'dataProvider'     => $dataHistory,
+                'summary'          => false,
                 'showFooter'       => true,
                 'tableOptions'     => [
                     'class' => 'table table-striped table-bordered text-center history',

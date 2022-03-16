@@ -15,11 +15,16 @@ return [
     'storagePath' => '@frontend/web/uploads/',
     'storageUri'  => '/uploads/', //http://nails.com/uploads/c1/d3/78df89d65d.jpg
 
-    'error' => [
+    'error'        => [
         'service'          => 'Услуга не указана',
         'date-range'       => 'Не выбран промежуток дат',
         'error'            => 'Произошла ошибка',
         'access-is-denied' => 'У Вас нет доступа'
+    ],
+    'sms-location' => [
+        'address'    => '. Наш адрес: ул.Раздольная д.11, подъезд 4, кв.142, этаж 9. ',
+        'entry'      => ' у Вас запись. Вы будете?',
+        'entry-next' => '. У Вас следующая запись '
     ],
 
     'avatarPicture'      => [

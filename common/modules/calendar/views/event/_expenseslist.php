@@ -123,6 +123,7 @@ use yii\grid\GridView;
         <?php echo GridView::widget(
             [
                 'dataProvider'     => $dataProviderExpenseslist,
+                'summary'=>false,
                 'showFooter'       => true,
                 'tableOptions'     => [
                     'class' => 'table table-striped table-bordered text-center expenseslist',
@@ -133,7 +134,6 @@ use yii\grid\GridView;
                     'tag'   => 'div',
                     'class' => 'col-12 col-lg-6 mb-3 text-info'
                 ],
-
 
                 'columns' => [
                     [

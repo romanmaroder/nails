@@ -378,11 +378,11 @@ class Event extends ActiveRecord
     /**
      * Total number of records for each master
      *
-     * @param $masterIds
+     * @param array $ids - array of master identifiers
      *
      * @return array
      */
-    public function getTotalEventsMaster($masterIds): array
+    public function getTotalEventsMaster(array $ids): array
     {
         $dependency = Yii::createObject(
             [
@@ -392,7 +392,7 @@ class Event extends ActiveRecord
             ]
         );
         return Event::getDb()->cache(
-            function () use ($masterIds) {
+            function () use ($ids) {
                 return Event::find()->select(['COUNT(client_id) AS totalEvent', 'master_id'])
                     ->with(
                         [
@@ -401,7 +401,7 @@ class Event extends ActiveRecord
                             }
                         ]
                     )
-                    ->where(['master_id' => $masterIds])
+                    ->where(['master_id' => $ids])
                     ->andWhere(['>=', 'event_time_start', date('Y-m-d')])
                     ->groupBy('master_id')
                     ->all();
@@ -415,18 +415,18 @@ class Event extends ActiveRecord
     /**
      * Return event list dataProvider
      *
-     * @param $userId
-     * @return \yii\data\ActiveDataProvider
+     * @param int $id - User id
+     * @return ActiveDataProvider
      */
-    public static function getEventDataProvider( $userId): ActiveDataProvider
+    public static function getEventDataProvider(int $id): ActiveDataProvider
     {
-        $roles = Yii::$app->authManager->getRolesByUser($userId);
+        $roles = Yii::$app->authManager->getRolesByUser($id);
         if (array_key_exists('manager', $roles) || array_key_exists('admin', $roles)) {
             $query = Event::findEvents();
         }elseif(array_key_exists('master', $roles)){
-            $query = Event::findEvents($userId);
+            $query = Event::findEvents($id);
         }else{
-            $query = Event::findClientEvents($userId);
+            $query = Event::findClientEvents($id);
         }
 
         return new ActiveDataProvider(
@@ -462,10 +462,10 @@ class Event extends ActiveRecord
 
     /**
      * Getting the name of the service
-     * @param $data
-     * @return string
+     * @param array $data - array with data
+     * @return string - service name
      */
-    public static function getServiceString($data): string
+    public static function getServiceName(array $data): string
     {
         $servicesName = '';
 
@@ -481,10 +481,10 @@ class Event extends ActiveRecord
 
     /**
      * Total amount for services
-     * @param $dataProvider
+     * @param object $dataProvider
      * @return string
      */
-    public static function getTotal($dataProvider): string
+    public static function getTotal(object $dataProvider): string
     {
         $total = 0;
         foreach ($dataProvider->models as $model) {
