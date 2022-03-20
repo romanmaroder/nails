@@ -43,6 +43,7 @@ let toggleCheckbox = function(){
             beforeSend: function() { $('#overlay').show(); },
             complete: function() { $('#overlay').hide(); },
             success: function(data){
+                $.pjax.reload({container:'#todo-list'});
             }
         });
     });

@@ -18,10 +18,7 @@ use yii\widgets\Pjax;
 $this->registerJsFile(
     '@web/js/todo.js',
     ['depends' => [\yii\web\JqueryAsset::class]]
-);
-
-
-;?>
+);; ?>
 <div class="card">
     <div class="card-header ui-sortable-handle" style="cursor: move;">
         <h3 class="card-title">
@@ -30,41 +27,45 @@ $this->registerJsFile(
         </h3>
 
         <div class="card-tools">
-                <?php Pjax::begin(['id' => 'pager',
-                    'enableReplaceState'=>true,
-                    'options' => ['class' => ''],
-                    'enablePushState' => false, // to disable push state
+            <?php Pjax::begin(
+                [
+                    'id'                 => 'pager',
+                    'enableReplaceState' => true,
+                    'options'            => ['class' => ''],
+                    'enablePushState'    => false, // to disable push state
                     //'enableReplaceState' => false, // to disable replace state,
-                    'timeout'=> 1000,
-                    'clientOptions' => ['method' => 'POST']]); ?>
-                <!--Пагинация-->
+                    'timeout'            => 1000,
+                    'clientOptions'      => ['method' => 'POST']
+                ]
+            ); ?>
+            <!--Пагинация-->
             <?= ListView::widget(
                 [
-                    'dataProvider' => $dataProvider,
-                    'options' => [
+                    'dataProvider'     => $dataProvider,
+                    'options'          => [
                         'tag' => false,
                     ],
-                    'layout' => "{pager}",
-                    'pager' => [
+                    'layout'           => "{pager}",
+                    'pager'            => [
                         'prevPageLabel' => '<i class="fas fa-angle-double-left"></i>',
                         'nextPageLabel' => '<i class="fas fa-angle-double-right"></i>',
 
-                        'options' => [
-                            'tag' => 'ul',
+                        'options'                       => [
+                            'tag'   => 'ul',
                             'class' => 'pagination pagination-sm',
 
                         ],
-                        'maxButtonCount'=>20,
-                        'linkContainerOptions' => [
+                        'maxButtonCount'                => 20,
+                        'linkContainerOptions'          => [
 
                             'class' => 'page-item'
                         ],
                         'disabledListItemSubTagOptions' => ['tag' => 'a', 'class' => 'page-link'],
-                        'linkOptions' => ['class' => 'page-link','data-pjax'=>1],
+                        'linkOptions'                   => ['class' => 'page-link', 'data-pjax' => 1],
                     ],
-                    'emptyText' => '',
+                    'emptyText'        => '',
                     'emptyTextOptions' => [
-                        'tag' => 'div',
+                        'tag'   => 'div',
                         'class' => 'col-12 col-lg-6 mb-3 text-info '
                     ],
                 ]
@@ -78,35 +79,51 @@ $this->registerJsFile(
 
     <div class="card-body">
 
-<?php  Pjax::begin(['id' => 'new_todo', 'enablePushState'=>false,'options' => ['class'=>'row mb-3'],'clientOptions' => ['method' => 'POST']])?>
+        <?php Pjax::begin(
+            [
+                'id'              => 'new_todo',
+                'enablePushState' => false,
+                'options'         => ['class' => 'row mb-3'],
+                'clientOptions'   => ['method' => 'POST']
+            ]
+        ) ?>
         <div class="col-12 col-sm-10 mb-2 mb-sm-0">
-    <?php $form = ActiveForm::begin( ['options' => ['data-pjax' => true ],
-                                         'id'=>'todo-form',
-                                         'method' => 'post',
-                                         'fieldConfig' => [
-                                             'options' => [
-                                                 'tag' => false,
-                                             ]
-                                         ]
-                                         ]); ?>
+            <?php $form = ActiveForm::begin(
+                [
+                    'options'     => ['data-pjax' => true],
+                    'id'          => 'todo-form',
+                    'method'      => 'post',
+                    'fieldConfig' => [
+                        'options' => [
+                            'tag' => false,
+                        ]
+                    ]
+                ]
+            ); ?>
 
-    <?= $form->field($model, 'user_id')->hiddenInput(['value' => Yii::$app->user->getId()])->label(
-        false) ?>
+            <?= $form->field($model, 'user_id')->hiddenInput(['value' => Yii::$app->user->getId()])->label(
+                false
+            ) ?>
 
-    <?= $form->field($model, 'title')->textInput([
-                                                     'class' => 'form-control',
-                                                     'maxlength' => true,
-                                                     'placeholder' => 'Добавить заметку',
-                                                 ])->label(false) ?>
+            <?= $form->field($model, 'title')->textInput(
+                [
+                    'class'       => 'form-control',
+                    'maxlength'   => true,
+                    'placeholder' => 'Добавить заметку',
+                ]
+            )->label(false) ?>
 
-    <?= $form->field($model, 'status')->checkbox(['class' => 'd-none', 'uncheckValue' =>  0])->label(false) ?>
+            <?= $form->field($model, 'status')->checkbox(['class' => 'd-none', 'uncheckValue' => 0])->label(false) ?>
             <?php ActiveForm::end(); ?>
 
         </div>
-    <div class="col-12 col-sm-2 text-right">
-        <?= Html::submitButton('<i class="fas fa-plus"></i> Добавить', ['class' => 'btn btn btn-primary','form' => 'todo-form']) ?>
-    </div>
-<?php  Pjax::end();?>
+        <div class="col-12 col-sm-2 text-right">
+            <?= Html::submitButton(
+                '<i class="fas fa-plus"></i> Добавить',
+                ['class' => 'btn btn btn-primary', 'form' => 'todo-form']
+            ) ?>
+        </div>
+        <?php Pjax::end(); ?>
 
 
 
