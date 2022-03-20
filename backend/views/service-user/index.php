@@ -35,9 +35,9 @@ PluginAsset::register($this)->add(
                                                  'id' => 'serviceUser'
                                              ],
                                              'columns' => [
-                                                 ['class' => 'yii\grid\SerialColumn'],
+                                                // ['class' => 'yii\grid\SerialColumn'],
 
-                                                 'service.id',
+                                                // 'service.id',
                                                  'service.name',
                                                  'user.username',
                                                  'rate',

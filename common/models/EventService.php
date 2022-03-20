@@ -13,10 +13,12 @@ use yii\db\ActiveRecord;
  *
  * @property Event $event
  * @property Service $service
+ * @property int $id [int(11)]
  */
 class EventService extends ActiveRecord
 {
     public int $amount;
+
     /**
      * {@inheritdoc}
      */
@@ -34,8 +36,20 @@ class EventService extends ActiveRecord
             [['event_id', 'service_id'], 'required'],
             [['event_id', 'service_id'], 'integer'],
             [['event_id', 'service_id'], 'unique', 'targetAttribute' => ['event_id', 'service_id']],
-            [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::class, 'targetAttribute' => ['event_id' => 'id']],
-            [['service_id'], 'exist', 'skipOnError' => true, 'targetClass' => Service::class, 'targetAttribute' => ['service_id' => 'id']],
+            [
+                ['event_id'],
+                'exist',
+                'skipOnError'     => true,
+                'targetClass'     => Event::class,
+                'targetAttribute' => ['event_id' => 'id']
+            ],
+            [
+                ['service_id'],
+                'exist',
+                'skipOnError'     => true,
+                'targetClass'     => Service::class,
+                'targetAttribute' => ['service_id' => 'id']
+            ],
         ];
     }
 
@@ -45,9 +59,9 @@ class EventService extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'event_id' => 'Event ID',
+            'event_id'   => 'Event ID',
             'service_id' => 'Service ID',
-            'amount'=>'Итого'
+            'amount'     => 'Итого'
         ];
     }
 
@@ -70,7 +84,6 @@ class EventService extends ActiveRecord
     {
         return $this->hasOne(Service::class, ['id' => 'service_id']);
     }
-
 
 
 }
