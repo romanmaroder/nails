@@ -61,6 +61,9 @@ use yii\widgets\ActiveForm;
             'options'       => [
                 'autocomplete' => 'off',
             ],
+            'options2'       => [
+                'autocomplete' => 'off',
+            ],
             'pluginOptions' => [
                 'todayHighlight' => true,
                 'weekStart'      => 1, //неделя начинается с понедельника
@@ -76,7 +79,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton(
-            'Поиск',
+            '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Поиск',
             [
                 'class' => 'btn btn-sm btn-primary',
                // 'name'  => 'master-events',

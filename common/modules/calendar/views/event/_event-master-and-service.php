@@ -146,8 +146,8 @@ use yii\grid\GridView;
                         'value'         => function ($model) {
                             return $model->master->username;
                         },
-                        'footerOptions' => ['class' => 'bg-success'],
-                        'headerOptions' => ['class' => 'bg-success'],
+                        'footerOptions' => ['class' => 'bg-success text-center'],
+                        'headerOptions' => ['class' => 'bg-success text-center'],
                         'header'=>Yii::$app->formatter->asCurrency($totalEvent - $totalSalary),
                          'footer'        => Yii::$app->formatter->asCurrency($totalEvent - $totalSalary),
                     ],
@@ -188,9 +188,9 @@ use yii\grid\GridView;
                                 );
                         },
                         'header'=>Yii::$app->formatter->asCurrency($totalEvent),
-                        'headerOptions' => ['class' => 'bg-info'],
+                        'headerOptions' => ['class' => 'bg-info text-center'],
                         'footer'    => Yii::$app->formatter->asCurrency($totalEvent),
-                        'footerOptions'  => ['class' => 'bg-info'],
+                        'footerOptions'  => ['class' => 'bg-info text-center'],
                     ],
                     [
                         'attribute'      => 'salary',
@@ -227,9 +227,9 @@ use yii\grid\GridView;
                             return $amount_one . $amount;
                         },
                         'header'=>Yii::$app->formatter->asCurrency($totalSalary),
-                        'headerOptions' => ['class' => 'bg-info'],
+                        'headerOptions' => ['class' => 'bg-info text-center'],
                         'footer'    => Yii::$app->formatter->asCurrency($totalSalary),
-                        'footerOptions'  => ['class' => 'bg-primary'],
+                        'footerOptions'  => ['class' => 'bg-primary text-center'],
                     ],
                     [
                         'attribute' => 'client_id',

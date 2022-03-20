@@ -645,25 +645,13 @@ class Event extends ActiveRecord
                                         'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'
                                     ]
                                 )
-                                    ->with(['eventService', 'services']);
+                                    ->with(['eventService', 'services','master.rates']);
                             },
-                        ]
-                    )
-                    ->joinWith(
-                        [
                             'service' => function ($q) {
                                 $q->select(['service.id', 'name', 'cost'])
                                     ->distinct()
                                     ->groupBy(['name']);
                             },
-                        ]
-                    )
-                    ->joinWith(
-                        [
-                            'event.master' => function ($q) {
-                                $q->select(['id', 'username'])
-                                    ->with(['rates']);
-                            }
                         ]
                     )
                     ->andFilterWhere(

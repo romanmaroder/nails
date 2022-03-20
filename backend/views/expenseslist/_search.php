@@ -54,7 +54,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton(
-            'Поиск',
+            '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Поиск',
             [
                 'class' => 'btn btn-sm btn-primary',
                 //'name'=>'expenseslist',

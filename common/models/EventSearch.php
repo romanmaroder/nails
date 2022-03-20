@@ -7,6 +7,12 @@ use yii\data\ActiveDataProvider;
 
 /**
  * EventSearch represents the model behind the search form of `app\models\Event`.
+ * @property int $client_id [int(11)]
+ * @property int $master_id [int(11)]
+ * @property string $event_time_start [datetime]
+ * @property string $event_time_end [datetime]
+ * @property int $created_at [int(11)]
+ * @property int $updated_at [int(11)]
  */
 class EventSearch extends Event
 {
@@ -58,7 +64,6 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
-        //$query->select(['event.id','master_id','client_id','name','event_time_start']);
         $query->joinWith(['eventService', 'master', 'client', 'master.profile', 'client.profile']);
         $query->andWhere(' YEAR(event_time_start) = YEAR(NOW())');
         $query->orderBy(['event_time_start' => SORT_ASC]);

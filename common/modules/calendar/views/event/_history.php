@@ -24,8 +24,7 @@ use yii\helpers\Html;
     <?php
     endif; ?>
     <div class="col-12 col-md-3">
-        <?php
-        echo DateRangePicker::widget(
+        <?php echo DateRangePicker::widget(
             [
                 'name'             => 'archive',
                 'value'            => Yii::$app->request->queryParams['archive'],
@@ -64,7 +63,7 @@ use yii\helpers\Html;
 
         <div class="form-group my-3">
             <?= Html::submitButton(
-                'Поиск',
+                '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Поиск',
                 [
                     'class' => 'btn btn-sm btn-primary',
                     'name'  => 'history',
@@ -72,7 +71,7 @@ use yii\helpers\Html;
                 ]
             ) ?>
             <?= Html::submitButton(
-                'Сохранить',
+                '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Сохранить ',
                 [
                     'class' => 'btn btn-sm btn-primary',
                     'name'  => 'history',
@@ -131,17 +130,10 @@ use yii\helpers\Html;
                             }
                             return $salary;
                         },
-                        /*'contentOptions' => function ($model) {
-                            $salary = null;
-                            foreach ($model['event']['master']['rates'] as $rate) {
-                                $salary = $model['amount'] * $rate['rate'] / 100;
-                            }
-                            return ['data-total' => $salary ];
-                        },*/
                     ],
                     [
                         'attribute' => 'event.event_time_start',
-                        'format'    => ['date', 'php:Y-M'],
+                        'format'    => ['date', 'php:M Y'],
                     ],
 
                 ],

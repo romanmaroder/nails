@@ -139,8 +139,14 @@ $(function (){
     }
     getTabs();
     
+    $(document).on('pjax:send', function() {
+        $(".spinner-border").removeClass('d-none');
+    });
+    
+    
 	 $(document).on('pjax:complete', function() {
 	     getTabs();
+	     $(".spinner-border").addClass('d-none');
      });
 	
 	    let noActive = $('.tab-pane').not('.active');
@@ -207,12 +213,12 @@ $(function (){
                                     return intVal(a) + intVal($(b).attr('data-total'));
                                 }, 0 );
                             // Update footer
-                            if ( pageTotalSalary == 0 ){
+                            if ( pageTotalSalary === 0 ){
                                  $( api.column( 3 ).footer() )
                                  //.html(pageTotalSalary.toLocaleString('ru') + ' &#8381;'+' <hr> '+ totalSalary.toLocaleString('ru') + ' &#8381;');
-                                 .html('-').css({'text-align':'center'});
+                                 .html('-');
                             }else{
-                                 $( api.column( 3 ).footer() ).html(pageTotalSalary.toLocaleString('ru') + ' &#8381;').css({'text-align':'center'});
+                                 $( api.column( 3 ).footer() ).html(pageTotalSalary.toLocaleString('ru') + ' &#8381;');
                             }
                             
                             //
