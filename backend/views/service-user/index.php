@@ -14,50 +14,55 @@ PluginAsset::register($this)->add(
     ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons','sweetalert2']
 );
 ?>
-<div class="service-user-index">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="service-user-index">
 
-    <!--<h1><?/*= Html::encode($this->title) */?></h1>-->
+                    <p>
+                        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-sm btn-success']) ?>
+                    </p>
 
-    <p>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-sm btn-success']) ?>
-    </p>
+                    <?php Pjax::begin(); ?>
+                    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                    <?= GridView::widget([
+                                             'dataProvider' => $dataProvider,
+                                             //'filterModel' => $searchModel,
+                                             'summary' => false,
+                                             'tableOptions' => [
+                                                 'class' => 'table table-striped table-bordered',
+                                                 'id' => 'serviceUser'
+                                             ],
+                                             'columns' => [
+                                                 ['class' => 'yii\grid\SerialColumn'],
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
-        'summary' => false,
-        'tableOptions' => [
-            'class' => 'table table-striped table-bordered',
-            'id' => 'serviceUser'
-        ],
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                                                 'service.id',
+                                                 'service.name',
+                                                 'user.username',
+                                                 'rate',
+                                                 [
+                                                     'attribute' => 'created_at',
+                                                     'label'     => 'Дата',
+                                                     'format'    => ['date', 'php:d-m-Y'],
+                                                 ],
+                                                 /*[
+                                                     'attribute' => 'updated_at',
+                                                     'label'     => 'Дата',
+                                                     'format'    => ['date', 'php:d-m-Y'],
+                                                 ],*/
 
-            'service.id',
-            'service.name',
-            'user.username',
-            'rate',
-            [
-                'attribute' => 'created_at',
-                'label'     => 'Дата',
-                'format'    => ['date', 'php:d-m-Y'],
-            ],
-            /*[
-                'attribute' => 'updated_at',
-                'label'     => 'Дата',
-                'format'    => ['date', 'php:d-m-Y'],
-            ],*/
+                                                 ['class' => 'yii\grid\ActionColumn'],
+                                             ],
+                                         ]); ?>
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                    <?php Pjax::end(); ?>
 
-    <?php Pjax::end(); ?>
+                </div>
+            </div>
+        </div>
+    </div>
 
-</div>
 <?php
 $js = <<< JS
 $(function () {

@@ -40,8 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 
-<!-- Main content -->
-<section class="content">
 <div class="container-fluid">
     <div class="row justify-content-end">
         <div class="col-md-3">
@@ -258,8 +256,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <!-- /.col -->
 </div>
-</section>
-<!-- /.content -->
+
 
 
 

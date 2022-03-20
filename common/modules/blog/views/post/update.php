@@ -10,12 +10,23 @@ $this->params['breadcrumbs'][] = ['label' => 'статьи', 'url' => ['index']]
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'редактировать';
 ?>
-<div class="post-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+            <div class="post-update">
 
+                <h1><?= Html::encode($this->title) ?></h1>
+
+                <?= $this->render(
+                    '_form',
+                    [
+                        'model' => $model,
+                    ]
+                ) ?>
+
+            </div>
+        </div>
+    </div>
 </div>

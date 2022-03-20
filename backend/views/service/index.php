@@ -14,53 +14,58 @@ $this->title = 'Услуги';
 $this->params['breadcrumbs'][] = $this->title;
 
 PluginAsset::register($this)->add(
-    ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons','sweetalert2']
+    ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons', 'sweetalert2']
 );
 ?>
-<div class="service-index">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="service-index">
+
+                    <p>
+                        <?= Html::a('Добавить услугу', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+                    </p>
+
+                    <?php
+                    Pjax::begin(); ?>
 
 
-    <p>
-        <?= Html::a('Добавить услугу', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
-    </p>
+                    <?= GridView::widget(
+                        [
+                            'dataProvider' => $dataProvider,
+                            'summary'      => '',
+                            'filterModel'  => null,
+                            'tableOptions' => [
+                                'class' => 'table table-striped table-bordered',
+                                'id'    => 'service'
+                            ],
+                            'columns'      => [
+                                ['class' => 'yii\grid\SerialColumn'],
+                                'name',
+                                [
+                                    'attribute' => 'cost',
+                                    'value'     => function ($model) {
+                                        return Yii::$app->formatter->asCurrency($model->cost);
+                                    },
+                                ],
+                                [
+                                    'attribute' => 'created_at',
+                                    'format'    => ['date', 'php: d-m-Y']
+                                ],
+                                [
+                                    'class' => 'yii\grid\ActionColumn',
+                                ],
+                            ],
+                        ]
+                    ); ?>
 
-    <?php
-    Pjax::begin(); ?>
+                    <?php
+                    Pjax::end(); ?>
 
-
-    <?= GridView::widget(
-        [
-            'dataProvider' => $dataProvider,
-            'summary' => '',
-            'filterModel' => null,
-            'tableOptions' => [
-                'class' => 'table table-striped table-bordered',
-                'id' => 'service'
-            ],
-            'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
-                'name',
-                [
-                    'attribute' => 'cost',
-                    'value' => function ($model) {
-                        return Yii::$app->formatter->asCurrency($model->cost);
-                    },
-                ],
-                [
-                    'attribute' => 'created_at',
-                    'format' => ['date', 'php: d-m-Y']
-                ],
-                [
-                    'class' => 'yii\grid\ActionColumn',
-                ],
-            ],
-        ]
-    ); ?>
-
-    <?php
-    Pjax::end(); ?>
-
-</div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $js = <<< JS
 $(function () {

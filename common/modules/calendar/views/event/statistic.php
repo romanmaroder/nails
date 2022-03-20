@@ -37,84 +37,86 @@ Pjax::begin(
         'timeout' => '10000',
     ]
 ) ?>
-    <div class="row">
-        <div class="col-12">
-
-            <?php
-            $form = ActiveForm::begin(
-                [
-                    'method'  => 'get',
-                    'options' => [
-                        'data-pjax' => 1,
-                    ],
-                ]
-            ); ?>
-            <div class="tab-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
 
                 <?php
-                echo Tabs::widget(
+                $form = ActiveForm::begin(
                     [
-                        'options' => ['class' => 'mb-3'],
-                        'items'   => [
-                            [
-                                'label'       => 'Мастера - Услуги',
-                                'content'     => $this->render(
-                                    '_event-master-and-service',
-                                    [
-                                        'dataProvider'     => $dataProvider,
-                                        'searchModel'      => $searchModel,
-                                        'totalEvent'       => $totalEvent,
-                                        'totalSalary'      => $totalSalary,
-                                        'chartEventLabels' => $chartEventLabels,
-                                        'chartEventData'   => $chartEventData,
-                                        'form'             => $form,
-                                    ]
-                                ),
-                                //'active'  => true, // указывает на активность вкладки
-                                'options'     => ['id' => 'master-events'],
-                                'linkOptions' => ['data-id' => 'master-events'],
-
-                            ],
-                            [
-                                'label'       => 'Расходы',
-                                'content'     => $this->render(
-                                    '_expenseslist',
-                                    [
-                                        'dataProviderExpenseslist' => $dataProviderExpenseslist,
-                                        'searchModelExpenseslist'  => $searchModelExpenseslist,
-                                        'chartExpensesLabels'      => $chartExpensesLabels,
-                                        'chartExpensesData'        => $chartExpensesData,
-                                        'form'                     => $form,
-                                    ]
-                                ),
-                                //'active'  => true, // указывает на активность вкладки
-                                'options'     => ['id' => 'expenseslist'],
-                                'linkOptions' => ['data-id' => 'expenseslist'],
-
-                            ],
-                            [
-                                'label'       => 'История',
-                                'content'     => $this->render(
-                                    '_history',
-                                    [
-                                        'dataHistory' => $dataHistory,
-                                        //'form'        => $form,
-                                    ]
-                                ),
-                                //'active'  => true, // указывает на активность вкладки
-                                'options'     => ['id' => 'history'],
-                                'linkOptions' => ['data-id' => 'history'],
-
-                            ],
-
-                        ]
+                        'method'  => 'get',
+                        'options' => [
+                            'data-pjax' => 1,
+                        ],
                     ]
                 ); ?>
+                <div class="tab-content">
+
+                    <?php
+                    echo Tabs::widget(
+                        [
+                            'options' => ['class' => 'mb-3'],
+                            'items'   => [
+                                [
+                                    'label'       => 'Мастера - Услуги',
+                                    'content'     => $this->render(
+                                        '_event-master-and-service',
+                                        [
+                                            'dataProvider'     => $dataProvider,
+                                            'searchModel'      => $searchModel,
+                                            'totalEvent'       => $totalEvent,
+                                            'totalSalary'      => $totalSalary,
+                                            'chartEventLabels' => $chartEventLabels,
+                                            'chartEventData'   => $chartEventData,
+                                            'form'             => $form,
+                                        ]
+                                    ),
+                                    //'active'  => true, // указывает на активность вкладки
+                                    'options'     => ['id' => 'master-events'],
+                                    'linkOptions' => ['data-id' => 'master-events'],
+
+                                ],
+                                [
+                                    'label'       => 'Расходы',
+                                    'content'     => $this->render(
+                                        '_expenseslist',
+                                        [
+                                            'dataProviderExpenseslist' => $dataProviderExpenseslist,
+                                            'searchModelExpenseslist'  => $searchModelExpenseslist,
+                                            'chartExpensesLabels'      => $chartExpensesLabels,
+                                            'chartExpensesData'        => $chartExpensesData,
+                                            'form'                     => $form,
+                                        ]
+                                    ),
+                                    //'active'  => true, // указывает на активность вкладки
+                                    'options'     => ['id' => 'expenseslist'],
+                                    'linkOptions' => ['data-id' => 'expenseslist'],
+
+                                ],
+                                [
+                                    'label'       => 'История',
+                                    'content'     => $this->render(
+                                        '_history',
+                                        [
+                                            'dataHistory' => $dataHistory,
+                                            //'form'        => $form,
+                                        ]
+                                    ),
+                                    //'active'  => true, // указывает на активность вкладки
+                                    'options'     => ['id' => 'history'],
+                                    'linkOptions' => ['data-id' => 'history'],
+
+                                ],
+
+                            ]
+                        ]
+                    ); ?>
+
+                </div>
+                <?php
+                ActiveForm::end(); ?>
 
             </div>
-            <?php
-            ActiveForm::end(); ?>
-
         </div>
     </div>
 <?php

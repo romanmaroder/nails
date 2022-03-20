@@ -44,12 +44,11 @@ class ExpenseslistSearch extends Expenseslist
     public function search($params)
     {
         $query = Expenseslist::find();
-        $query->select(['expenses_id','expenseslist.created_at','price','SUM(price) as price']);
-        $query->groupBy(['FROM_UNIXTIME(expenseslist.created_at,"%d-%m-%Y")','expenses.title']);
 
         // add conditions that should always apply here
 
         if (\Yii::$app->controller->action->id == 'statistic'){
+            $query->select(['expenses_id','expenseslist.created_at','price','SUM(price) as price']);
             $query->groupBy(['FROM_UNIXTIME(expenseslist.created_at,"%m-%Y")','expenses.title']);
 
         }

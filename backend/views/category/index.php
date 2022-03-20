@@ -3,89 +3,60 @@
 use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\CategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title                   = 'Категории';
+$this->title = 'Категории';
 $this->params['breadcrumbs'][] = $this->title;
 
 
 PluginAsset::register($this)->add(
-    ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons','sweetalert2']
+    ['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons', 'sweetalert2']
 );
 ?>
-	<div class="category-index">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="category-index">
+                    <?= GridView::widget(
+                        [
+                            'dataProvider' => $dataProvider,
+                            'summary'      => '',
+                            'filterModel'  => null,
+                            'tableOptions' => [
+                                'class' => 'table table-striped table-bordered',
+                                'id'    => 'category'
+                            ],
+                            'columns'      => [
+                                'category_name',
+                                [
+                                    'class' => 'yii\grid\ActionColumn',
+                                ],
+                            ],
+                        ]
+                    ); ?>
 
-		<!--<h1><?
-        /*= Html::encode($this->title) */ ?></h1>-->
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+#Регистрация переменных для использования в js коде
 
-		<p>
-            <?= Html::a('Добавить категорию', ['create'], ['class' => 'btn btn-outline-success']) ?>
-		</p>
-
-        <?php
-        // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-        <?= GridView::widget(
-            [
-                'dataProvider' => $dataProvider,
-                'summary'      => '',
-//                'filterModel'  => $searchModel,
-                'filterModel'  => null,
-                'tableOptions' => [
-                    'class' => 'table table-striped table-bordered',
-                    'id'    => 'category'
-                ],
-                'columns'      => [
-//                    ['class' => 'yii\grid\SerialColumn'],
-//                    'id',
-                    'category_name',
-                    [
-                    		'class' => 'yii\grid\ActionColumn',
-//						'template'=>'{view}{delete}'
-					],
-                ],
-            ]
-        ); ?>
-
-
-	</div>
+Yii::$app->view->registerJs(
+    "create=".Json::encode(Url::to(['/category/create'])).";
+     ",
+    View::POS_HEAD
+); ?>
 
 <?php
 $js = <<< JS
  $(function () {
-     
-   /*$("#example2").DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": false,
-      "info": false,
-      buttons: [
-        {
-				"text": "Добавить клиента",
-				"className":"btn btn-success",
-				"tag":"a",
-				"attr":{
-				"href":"/admin/client/client/create"
-				},
-				"action": function ( e, dt, node, config ) {
-				  $(location).attr('href',config.attr.href);
-				}
-        }
-        ],
-         "language": {
-          "search":"Поиск",
-          "paginate": {
-                    "first": "Первая",
-                    "previous": "Предыдущая",
-                    "last": "Последняя",
-                    "next": "Следующая"
-                }
-         }
-    
-    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');*/
  
     $('#category').DataTable({
       "paging": false,
@@ -95,11 +66,24 @@ $js = <<< JS
       "info": false,
       "autoWidth": false,
       "responsive": true,
-      "language": {
+         "dom": "<'row'<'col-6 col-md-6 order-3 order-md-1 text-left'B><'col-sm-12 order-md-2 col-md-6 d-flex d-md-block'f>>tp",
+      "buttons": [
+        {
+				"text": "Добавить категорию",
+				"className":"btn btn-success",
+				"tag":"a",
+				"attr":{
+				"href":create
+				},
+				"action": function ( e, dt, node, config ) {
+				  $(location).attr('href',config.attr.href);
+				}
+        }
+        ],
+        "language": {
           "search":"Поиск"
-         
-         }
-    });
+         },
+    }).buttons().container().appendTo('#category_wrapper .col-md-6:eq(0)');
   });
 JS;
 

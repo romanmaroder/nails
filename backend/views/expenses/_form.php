@@ -8,6 +8,7 @@ use yii\bootstrap4\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
+
 <div class="expenses-form">
 
     <?php $form = ActiveForm::begin(); ?>

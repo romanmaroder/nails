@@ -4,6 +4,7 @@ use hail812\adminlte3\assets\PluginAsset;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\ExpensesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -11,42 +12,51 @@ use yii\widgets\Pjax;
 $this->title = 'Расходы';
 $this->params['breadcrumbs'][] = $this->title;
 PluginAsset::register($this)->add(
-    ['sweetalert2','datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']
+    ['sweetalert2', 'datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']
 );
 ?>
-<div class="expenses-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="expenses-index">
 
-    <p>
-        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
-    </p>
+                    <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                    <p>
+                        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+                    </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
-        'tableOptions' => [
-            'class' => 'table table-striped table-bordered text-center',
-            'id'=>'expenses'
-        ],
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                    <?php Pjax::begin(); ?>
+                    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-            //'id',
-            'title',
-            //'created_at',
-           // 'updated_at',
+                    <?= GridView::widget(
+                        [
+                            'dataProvider' => $dataProvider,
+                            //'filterModel' => $searchModel,
+                            'tableOptions' => [
+                                'class' => 'table table-striped table-bordered text-center',
+                                'id'    => 'expenses'
+                            ],
+                            'columns'      => [
+                                ['class' => 'yii\grid\SerialColumn'],
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                                //'id',
+                                'title',
+                                //'created_at',
+                                // 'updated_at',
 
-    <?php Pjax::end(); ?>
+                                ['class' => 'yii\grid\ActionColumn'],
+                            ],
+                        ]
+                    ); ?>
 
-</div>
+                    <?php Pjax::end(); ?>
+
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 
 $js = <<< JS

@@ -22,7 +22,7 @@ Yii::$app->view->registerJs(
     "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
     View::POS_HEAD
 ); ?>
-<section class="content">
+<div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <!-- Render create form -->
@@ -90,7 +90,7 @@ Yii::$app->view->registerJs(
     </div>
 
 
-</section>
+</div>
 
 
 

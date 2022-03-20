@@ -12,90 +12,73 @@ use yii\bootstrap4\ActiveForm;
 /* @var $model \common\modules\blog\models\AddPost */
 /* @var $form yii\widgets\ActiveForm */
 
-$bundle        = PluginAsset::register($this);
+$bundle = PluginAsset::register($this);
 $bundle->css[] = 'summernote/summernote-bs4.min.css';
-$bundle->js[]  = 'summernote/summernote-bs4.min.js';
-$bundle->js[]  = 'summernote/lang/summernote-Ru.js';
+$bundle->js[] = 'summernote/summernote-bs4.min.js';
+$bundle->js[] = 'summernote/lang/summernote-Ru.js';
 
 $bundle->css[] = 'codemirror/codemirror.css';
 $bundle->css[] = 'codemirror/theme/monokai.css';
-$bundle->js[]  = 'codemirror/codemirror.js';
-$bundle->js[]  = 'codemirror/mode/css/css.js';
-$bundle->js[]  = 'codemirror/mode/xml/xml.js';
-$bundle->js[]  = 'codemirror/mode/htmlmixed/htmlmixed.js';
+$bundle->js[] = 'codemirror/codemirror.js';
+$bundle->js[] = 'codemirror/mode/css/css.js';
+$bundle->js[] = 'codemirror/mode/xml/xml.js';
+$bundle->js[] = 'codemirror/mode/htmlmixed/htmlmixed.js';
 ?>
 
 
-	<!-- Main content -->
-	<section class="content">
-		<div class="container-fluid">
-			<div class="row">
-				<!-- left column -->
-				<div class="col">
-					<!-- general form elements -->
-					<div class="card card-success card-outline">
-						<div class="card-header">
-							<h3 class="card-title"><?php
-                                echo $this->title; ?></h3>
-						</div>
-						<!-- /.card-header -->
-						<!-- form start -->
-                        <?php
-                        $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
-						<div class="card-body">
+    <div class="card card-success card-outline">
+        <div class="card-header">
+            <h3 class="card-title"><?php
+                echo $this->title; ?></h3>
+        </div>
+        <?php
+        $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+        <div class="card-body">
 
-                            <?= $form->field($model, 'category_id')->dropDownList(
-                                Category::getCategoryList(),
-                                [
-                                    'prompt' => [
-                                        'text'    => 'Выберите категорию',
-                                        'options' => [
-                                            'value' => 'none',
-                                            'class' => 'prompt',
-                                            'label' =>
-                                                'Выберите категорию'
-                                        ]
-                                    ],
-                                ]
-                            ) ?>
+            <?= $form->field($model, 'category_id')->dropDownList(
+                Category::getCategoryList(),
+                [
+                    'prompt' => [
+                        'text'    => 'Выберите категорию',
+                        'options' => [
+                            'value' => 'none',
+                            'class' => 'prompt',
+                            'label' =>
+                                'Выберите категорию'
+                        ]
+                    ],
+                ]
+            ) ?>
 
-                            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-                            <?= $form->field($model, 'subtitle')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'subtitle')->textInput(['maxlength' => true]) ?>
 
-                            <?= $form->field($model, 'description')->textarea(['rows' => 6, 'id' => 'summernote']) ?>
+            <?= $form->field($model, 'description')->textarea(['rows' => 6, 'id' => 'summernote']) ?>
 
 
-                            <?= $form->field($model, 'picture')->fileInput(['class' => 'form-control-file']); ?>
+            <?= $form->field($model, 'picture')->fileInput(['class' => 'form-control-file']); ?>
 
 
-							<div class="form-group">
-                                <?php
-                                if (Yii::$app->controller->action->id === 'create') : ?>
-                                    <?= Html::submitButton('Добавить', ['class' => 'btn btn-outline-success']) ?>
-                                <?php
-                                else: ?>
-                                <?= Html::submitButton('Обновить', ['class' => 'btn btn-outline-success']) ?>
-								<?php
-                                endif; ?>
-							</div>
-						</div>
-                        <?php
-                        ActiveForm::end(); ?>
-					</div>
-					<!-- /.card -->
-				</div>
-				<!--/.col (left) -->
-			</div>
-			<!-- /.row -->
-		</div><!-- /.container-fluid -->
-	</section>
-	<!-- /.content -->
+            <div class="form-group">
+                <?php
+                if (Yii::$app->controller->action->id === 'create') : ?>
+                    <?= Html::submitButton('Добавить', ['class' => 'btn btn-outline-success']) ?>
+                <?php
+                else: ?>
+                    <?= Html::submitButton('Обновить', ['class' => 'btn btn-outline-success']) ?>
+                <?php
+                endif; ?>
+            </div>
+        </div>
+        <?php
+        ActiveForm::end(); ?>
+    </div>
 
 
 <?php
 
-Yii::$app->view->registerJs("url= ".Json::htmlEncode(Url::base()), View::POS_HEAD);
+Yii::$app->view->registerJs("url= " . Json::htmlEncode(Url::base()), View::POS_HEAD);
 
 
 $editor = <<< JS

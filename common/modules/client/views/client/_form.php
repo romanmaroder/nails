@@ -10,8 +10,6 @@ use yii\widgets\MaskedInput;
 /* @var $form yii\bootstrap4\ActiveForm */
 ?>
 
-<!-- Main content -->
-<section class="content">
 	<div class="container-fluid">
 		<div class="row">
 			<!-- left column -->
@@ -103,6 +101,5 @@ use yii\widgets\MaskedInput;
 			<!--/.col (left) -->
 		</div>
 		<!-- /.row -->
-	</div><!-- /.container-fluid -->
-</section>
-<!-- /.content -->
+	</div>
+

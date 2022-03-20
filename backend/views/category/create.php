@@ -9,10 +9,14 @@ $this->title = 'Добавить категорию';
 $this->params['breadcrumbs'][] = ['label' => 'категории', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="category-create">
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
-
-</div>
+    <div class="container-fluid">
+        <div class="row category-create">
+                <?= $this->render(
+                    '_form',
+                    [
+                        'model' => $model,
+                    ]
+                ) ?>
+        </div>
+    </div>

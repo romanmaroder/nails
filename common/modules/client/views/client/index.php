@@ -20,8 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 
-	<!-- Main content -->
-	<section class="content">
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
@@ -32,14 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
 						</div>
 						<!-- /.card-header -->
 						<div class="card-body">
-
                             <?php if( Yii::$app->session->hasFlash('info') ): ?>
                                 <div class="alert alert-info alert-dismissible mt-3" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <?php echo Yii::$app->session->getFlash('info'); ?>
                                 </div>
                             <?php endif;?>
-
 
                             <?php
                             if (Yii::$app->id =='app-frontend') : ?>
@@ -49,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'summary'      => '',
                                         'tableOptions' => [
                                             'class' => 'table table-striped table-bordered',
-                                            'id'    => 'example2'
+                                            'id'    => 'client'
                                         ],
                                         'columns'      => [
 //            ['class' => 'yii\grid\SerialColumn'],
@@ -145,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'summary'      => '',
                                         'tableOptions' => [
                                             'class' => 'table table-striped table-bordered',
-                                            'id'    => 'example2'
+                                            'id'    => 'client'
                                         ],
                                         'columns'      => [
 //            ['class' => 'yii\grid\SerialColumn'],
@@ -258,15 +255,9 @@ $this->params['breadcrumbs'][] = $this->title;
 						</div>
 						<!-- /.card-body -->
 					</div>
-					<!-- /.card -->
 				</div>
-				<!-- /.col -->
 			</div>
-			<!-- /.row -->
 		</div>
-		<!-- /.container-fluid -->
-	</section>
-	<!-- /.content -->
 
 <?php
 #Регистрация переменных для использования в js коде
@@ -282,7 +273,7 @@ Yii::$app->view->registerJs(
 if (Yii::$app->id == 'app-backend') {
     $js = <<< JS
  $(function () {
-   $("#example2").DataTable({
+   $("#client").DataTable({
       "responsive": true,
       "lengthChange":true,
       "pageLength": 10,
@@ -320,7 +311,7 @@ if (Yii::$app->id == 'app-backend') {
                 }
          }
     
-    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)')
+    }).buttons().container().appendTo('#client_wrapper .col-md-6:eq(0)')
     
   });
 JS;
@@ -328,7 +319,7 @@ JS;
     $js = <<< JS
  $(function () {
      
-   $("#example2").DataTable({ 
+   $("#client").DataTable({ 
       "responsive": true,
       "autoWidth": false,
       "info": false,
@@ -353,7 +344,7 @@ JS;
                 }
          }
     
-    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+    }).buttons().container().appendTo('#client_wrapper .col-md-6:eq(0)');
  
   });
 JS;

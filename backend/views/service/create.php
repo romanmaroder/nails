@@ -9,7 +9,6 @@ $this->title = 'Добавить услугу';
 $this->params['breadcrumbs'][] = ['label' => 'Услуги', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="service-create">
 
     <!--<h1><?/*= Html::encode($this->title) */?></h1>-->
 
@@ -17,4 +16,3 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
     ]) ?>
 
-</div>

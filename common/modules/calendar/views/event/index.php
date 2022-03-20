@@ -23,57 +23,60 @@ PluginAsset::register($this)->add(['sweetalert2']);
 $this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="event-index">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="event-index">
 
-    <?php
-    #Регистрация переменных для использования в js коде
+                <?php
+                #Регистрация переменных для использования в js коде
 
-    Yii::$app->view->registerJs(
-        "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
-        View::POS_HEAD
-    ); ?>
+                Yii::$app->view->registerJs(
+                    "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
+                    View::POS_HEAD
+                ); ?>
 
-    <?php
-    Modal::begin(
-        [
-            'title'   => 'Добавить событие',
-            'size'    => 'SIZE_SMALL',
-            'id'      => 'modal',
-            'options' => ['tabindex' => '']
-        ]
-    );
-    Modal::end(); ?>
+                <?php
+                Modal::begin(
+                    [
+                        'title'   => 'Добавить событие',
+                        'size'    => 'SIZE_SMALL',
+                        'id'      => 'modal',
+                        'options' => ['tabindex' => '']
+                    ]
+                );
+                Modal::end(); ?>
 
-    <?php
-    Modal::begin(
-        [
-            'title'        => 'Ошибка',
-            'titleOptions' => [
-                'class' => 'text-danger'
-            ],
-            'size'         => 'SIZE_SMALL',
-            'id'           => 'modal-error',
-            'options'      => ['tabindex' => '']
-        ]
-    );
-    Modal::end(); ?>
+                <?php
+                Modal::begin(
+                    [
+                        'title'        => 'Ошибка',
+                        'titleOptions' => [
+                            'class' => 'text-danger'
+                        ],
+                        'size'         => 'SIZE_SMALL',
+                        'id'           => 'modal-error',
+                        'options'      => ['tabindex' => '']
+                    ]
+                );
+                Modal::end(); ?>
 
 
-    <?php
-    # Модальное окно просмотра и редактирования
-    Modal::begin(
-        [
-            'id'      => 'view',
-            'title'   => 'О событии',
-            'options' => ['tabindex' => '']
-        ]
-    );
-    Modal::end();
-    ?>
+                <?php
+                # Модальное окно просмотра и редактирования
+                Modal::begin(
+                    [
+                        'id'      => 'view',
+                        'title'   => 'О событии',
+                        'options' => ['tabindex' => '']
+                    ]
+                );
+                Modal::end();
+                ?>
 
-    <?php
-    if (Yii::$app->session->hasFlash('msg')) {
-        $js = "$(function (){
+                <?php
+                if (Yii::$app->session->hasFlash('msg')) {
+                    $js = "$(function (){
 				var Toast = Swal.mixin({
 							  toast: true,
 							  position: 'top-end',
@@ -87,40 +90,40 @@ $this->params['breadcrumbs'][] = $this->title;
 				})
 		";
 
-        $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
-    }; ?>
+                    $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
+                }; ?>
 
 
-    <?php
+                <?php
 
-    if (Yii::$app->user->can('manager')) {
-        $right    = 'month,basicDay,basicWeek,listWeek';
-        $editable = true;
-    } else {
-        $right    = 'month,basicDay,basicWeek,listWeek';
-        $editable = false;
-    }
-    if (Yii::$app->user->can('admin')) {
-        $right         = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
-        $initialView   = 'basicDay';
-        $nowIndicator  = true;
-        $window_resize = new JsExpression(
-            "function(view){
+                if (Yii::$app->user->can('manager')) {
+                    $right    = 'month,basicDay,basicWeek,listWeek';
+                    $editable = true;
+                } else {
+                    $right    = 'month,basicDay,basicWeek,listWeek';
+                    $editable = false;
+                }
+                if (Yii::$app->user->can('admin')) {
+                    $right         = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
+                    $initialView   = 'basicDay';
+                    $nowIndicator  = true;
+                    $window_resize = new JsExpression(
+                        "function(view){
 						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
 						if ($(window).width() < 540 ){
 							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
    						}
         	}"
-        );
-    }
+                    );
+                }
 
-    /**
-     * Triggered when a date/time selection is made
-     *
-     * @var  $select
-     */
-    $select = new JsExpression(
-        "function (start,end,view) {
+                /**
+                 * Triggered when a date/time selection is made
+                 *
+                 * @var  $select
+                 */
+                $select = new JsExpression(
+                    "function (start,end,view) {
 							var start = $.fullCalendar.formatDate(start,'Y-MM-DD HH:mm:ss');
 							var end = $.fullCalendar.formatDate(end,'Y-MM-DD HH:mm:ss');
                         if(app == 'app-backend'){
@@ -147,16 +150,16 @@ $this->params['breadcrumbs'][] = $this->title;
 							});
 						}
                     }"
-    );
+                );
 
 
-    /**
-     * Triggered when resizing stops and the event has changed in duration.
-     *
-     * @var  $eventResize
-     */
-    $eventResize = new JsExpression(
-        "function(event){
+                /**
+                 * Triggered when resizing stops and the event has changed in duration.
+                 *
+                 * @var  $eventResize
+                 */
+                $eventResize = new JsExpression(
+                    "function(event){
 									var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm');
 									var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm');
 									var id = event.id;
@@ -180,15 +183,15 @@ $this->params['breadcrumbs'][] = $this->title;
 										});
 									 }
 						}"
-    );
+                );
 
-    /**
-     * Triggered when dragging stops and the event has moved to a different day/time.
-     *
-     * @var  $eventDrop
-     */
-    $eventDrop = new JsExpression(
-        "function(event){
+                /**
+                 * Triggered when dragging stops and the event has moved to a different day/time.
+                 *
+                 * @var  $eventDrop
+                 */
+                $eventDrop = new JsExpression(
+                    "function(event){
 									var start = $.fullCalendar.formatDate(event.start, 'Y-MM-DD HH:mm');
 									var end = $.fullCalendar.formatDate(event.end, 'Y-MM-DD HH:mm');
 									var id = event.id;
@@ -212,89 +215,89 @@ $this->params['breadcrumbs'][] = $this->title;
 										});
 									 }
                 		}"
-    );; ?>
+                );; ?>
 
-    <?= yii2fullcalendar::widget(
-        [
-            'id' => 'calendar',
+                <?= yii2fullcalendar::widget(
+                    [
+                        'id' => 'calendar',
 
-            'events'      => [
-                'events' => $events,
-            ],
-            'defaultView' => new JsExpression(
-                "
+                        'events'      => [
+                            'events' => $events,
+                        ],
+                        'defaultView' => new JsExpression(
+                            "
              localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
             "
-            ),
+                        ),
 
-            'header'        => [
-                'left'   => 'prev,next,today',
-                'center' => 'title',
-                'right'  => $right
-            ],
-            'clientOptions' => [
-                'eventOverlap '        => false,
-                'todayBtn'             => true,
-                'themeSystem'          => 'bootstrap4',
-                'navLinks'             => true,
-                'contentHeight'        => 'auto',
-                'timeFormat'           => 'H:mm',
-                'locale'               => 'ru',
-                'eventLimit'           => true,
-                'eventOrder'           => '-title',
-                'buttonText'           => [
-                    'listWeek'   => 'Повестка недели',
-                    'agendaDay'  => 'День-Время',
-                    'agendaWeek' => 'Неделя-Время'
-                ],
-                'views'                => [
-                    'month'      => [
-                        'eventLimit'       => 10,
-                        'displayEventTime' => true, // отображение времени в месяце
-                    ],
-                    'agendaDay'  => [
-                        'displayEventTime' => true, // отображение времени в месяце
-                    ],
-                    'agendaWeek' => [
-                        'displayEventTime' => true, // отображение времени в месяце
-                    ],
-                    'day'        => [
-                        'eventLimit' => 15,
-                    ],
-                    'basicWeek'  => [
-                        'eventLimit'       => false,
-                        'displayEventTime' => false
-                    ]
-                ],
-                'eventLimitClick'      => 'popover',
-                'theme'                => true,
-                'fixedWeekCount'       => false,
-                'allDaySlot'           => false,
-                //'allDayText'=>false,
-                'slotEventOverlap'     => true,
-                'agendaEventMinHeight' => 100,
-                'slotDuration'         => '0:15:00',
-                'slotLabelInterval'    => '01:00:00',
-                'slotLabelFormat'      => 'HH:mm',
-                'minTime'              => '07:00:00',
-                'maxTime'              => '21:00:00',
-                'selectable'           => Yii::$app->user->can('manager'),
-                'selectHelper'         => true,
-                'select'               => $select,
-                'editable'             => $editable,
-                'eventResize'          => $eventResize,
-                'eventDrop'            => $eventDrop,
-                'initialView'          => $initialView,
-                'nowIndicator'         => $nowIndicator,
-                'defaultDate'          => new JsExpression(
-                    "
+                        'header'        => [
+                            'left'   => 'prev,next,today',
+                            'center' => 'title',
+                            'right'  => $right
+                        ],
+                        'clientOptions' => [
+                            'eventOverlap '        => false,
+                            'todayBtn'             => true,
+                            'themeSystem'          => 'bootstrap4',
+                            'navLinks'             => true,
+                            'contentHeight'        => 'auto',
+                            'timeFormat'           => 'H:mm',
+                            'locale'               => 'ru',
+                            'eventLimit'           => true,
+                            'eventOrder'           => '-title',
+                            'buttonText'           => [
+                                'listWeek'   => 'Повестка недели',
+                                'agendaDay'  => 'День-Время',
+                                'agendaWeek' => 'Неделя-Время'
+                            ],
+                            'views'                => [
+                                'month'      => [
+                                    'eventLimit'       => 10,
+                                    'displayEventTime' => true, // отображение времени в месяце
+                                ],
+                                'agendaDay'  => [
+                                    'displayEventTime' => true, // отображение времени в месяце
+                                ],
+                                'agendaWeek' => [
+                                    'displayEventTime' => true, // отображение времени в месяце
+                                ],
+                                'day'        => [
+                                    'eventLimit' => 15,
+                                ],
+                                'basicWeek'  => [
+                                    'eventLimit'       => false,
+                                    'displayEventTime' => false
+                                ]
+                            ],
+                            'eventLimitClick'      => 'popover',
+                            'theme'                => true,
+                            'fixedWeekCount'       => false,
+                            'allDaySlot'           => false,
+                            //'allDayText'=>false,
+                            'slotEventOverlap'     => true,
+                            'agendaEventMinHeight' => 100,
+                            'slotDuration'         => '0:15:00',
+                            'slotLabelInterval'    => '01:00:00',
+                            'slotLabelFormat'      => 'HH:mm',
+                            'minTime'              => '07:00:00',
+                            'maxTime'              => '21:00:00',
+                            'selectable'           => Yii::$app->user->can('manager'),
+                            'selectHelper'         => true,
+                            'select'               => $select,
+                            'editable'             => $editable,
+                            'eventResize'          => $eventResize,
+                            'eventDrop'            => $eventDrop,
+                            'initialView'          => $initialView,
+                            'nowIndicator'         => $nowIndicator,
+                            'defaultDate'          => new JsExpression(
+                                "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
                 "
-                ),
-                'windowResize'         => $window_resize,
+                            ),
+                            'windowResize'         => $window_resize,
 
-                'eventClick'          => new JsExpression(
-                    "function(event) {
+                            'eventClick'          => new JsExpression(
+                                "function(event) {
                    
                      if(app == 'app-backend'){
                         viewUrl = basePath +'/calendar/event/view?id=' + event.id;
@@ -309,13 +312,13 @@ $this->params['breadcrumbs'][] = $this->title;
                       $('#view').find('.modal-body').load(viewUrl);
                       $('#view').modal('show');
                     }"
-                ),
-                'dayRender'           => new JsExpression(
-                    "function(cell,date){
+                            ),
+                            'dayRender'           => new JsExpression(
+                                "function(cell,date){
                     } "
-                ),
-                'eventRender'         => new JsExpression(
-                    "function (event, element, view, popover){
+                            ),
+                            'eventRender'         => new JsExpression(
+                                "function (event, element, view, popover){
 								$('.popover').remove();
 								element.addClass('event-render');
 								element.find('.fc-content').append( element.find('.fc-time').addClass('font-italic') );
@@ -387,9 +390,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                   }
                   				 
                 	}"
-                ),
-                'eventAfterAllRender' => new JsExpression(
-                    "
+                            ),
+                            'eventAfterAllRender' => new JsExpression(
+                                "
                 	function(view){
 						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
 						if ($(window).width() < 540 ){
@@ -397,17 +400,20 @@ $this->params['breadcrumbs'][] = $this->title;
 						}
 					}
                 "
-                ),
-                'viewRender'          => new JsExpression(
-                    "function (view,event, element){
+                            ),
+                            'viewRender'          => new JsExpression(
+                                "function (view,event, element){
 								localStorage.setItem('fcDefaultView', view.name);
 								var date = $('#calendar').fullCalendar('getDate');
 								localStorage.setItem('fcDefaultViewDate', date.format());
                 	}"
-                ),
-            ],
+                            ),
+                        ],
 
-        ]
-    ); ?>
+                    ]
+                ); ?>
 
+            </div>
+        </div>
+    </div>
 </div>

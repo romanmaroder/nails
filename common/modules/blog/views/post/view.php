@@ -8,109 +8,113 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\Post */
 
-$this->title                   = $model->title;
+$this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Статьи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 YiiAsset::register($this);
 
 PluginAsset::register($this)->add(['sweetalert2']);
 ?>
-	<div class="post-view">
-
-
-		<p>
-            <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?php
-            if (Yii::$app->user->can('manager')) : ?>
-                <?= Html::a(
-                    $model->status ? 'Снять с публикации' : 'Опубликовать',
-                    ['publish', 'id' => $model->id],
-                    [
-                        'class'       => 'btn btn-primary',
-                        'id'          => 'published',
-                        'data-status' => $model->status
-                    ]
-                ) ?>
-            <?php
-            endif; ?>
-
-            <?= Html::a(
-                'Удалить',
-                ['delete', 'id' => $model->id],
-                [
-                    'class' => 'btn btn-danger my-2 my-md-0',
-                    'data'  => [
-                        'confirm' => 'Удалить статью?',
-                        'method'  => 'post',
-                    ],
-                ]
-            ) ?>
-		</p>
-
-        <?= DetailView::widget(
-            [
-                'model'      => $model,
-                'attributes' => [
-                    [
-                        'attribute' => 'user_id',
-                        'value'     => function ($model) {
-                            return $model->user->username;
-                        }
-                    ],
-                    [
-                        'attribute' => 'category_id',
-                        'value'     => function ($model) {
-                            return $model->category->category_name;
-                        }
-                    ],
-                    'slug',
-                    'title',
-                    'subtitle',
-                    [
-                        'attribute' => 'description',
-                        'format'    => 'raw',
-
-                    ],
-                    [
-                        'attribute' => 'preview',
-                        'format'    => 'raw',
-                        //'value'=>Yii::$app->storage->getFile($model->preview),
-                        'value'     => function ($model) {
-                            $option = [
-                                'style' => [
-                                    'width'  => '200px',
-                                    'height' => 'auto',
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="post-view">
+                    <p>
+                        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                        <?php
+                        if (Yii::$app->user->can('manager')) : ?>
+                            <?= Html::a(
+                                $model->status ? 'Снять с публикации' : 'Опубликовать',
+                                ['publish', 'id' => $model->id],
+                                [
+                                    'class'       => 'btn btn-primary',
+                                    'id'          => 'published',
+                                    'data-status' => $model->status
                                 ]
-                            ];
-                            return Yii::$app->storage->getFile($model->preview) ? Html::tag
-                            (
-                                'div',
-                                Html::img(
-                                    Yii::$app->storage->getFile($model->preview),
-                                    [
-                                        'alt'   => 'Превью статьи',
-                                        'style' => 'max-width:100%; height:auto
+                            ) ?>
+                        <?php
+                        endif; ?>
+
+                        <?= Html::a(
+                            'Удалить',
+                            ['delete', 'id' => $model->id],
+                            [
+                                'class' => 'btn btn-danger my-2 my-md-0',
+                                'data'  => [
+                                    'confirm' => 'Удалить статью?',
+                                    'method'  => 'post',
+                                ],
+                            ]
+                        ) ?>
+                    </p>
+
+                    <?= DetailView::widget(
+                        [
+                            'model'      => $model,
+                            'attributes' => [
+                                [
+                                    'attribute' => 'user_id',
+                                    'value'     => function ($model) {
+                                        return $model->user->username;
+                                    }
+                                ],
+                                [
+                                    'attribute' => 'category_id',
+                                    'value'     => function ($model) {
+                                        return $model->category->category_name;
+                                    }
+                                ],
+                                'slug',
+                                'title',
+                                'subtitle',
+                                [
+                                    'attribute' => 'description',
+                                    'format'    => 'raw',
+
+                                ],
+                                [
+                                    'attribute' => 'preview',
+                                    'format'    => 'raw',
+                                    //'value'=>Yii::$app->storage->getFile($model->preview),
+                                    'value'     => function ($model) {
+                                        $option = [
+                                            'style' => [
+                                                'width'  => '200px',
+                                                'height' => 'auto',
+                                            ]
+                                        ];
+                                        return Yii::$app->storage->getFile($model->preview) ? Html::tag
+                                        (
+                                            'div',
+                                            Html::img(
+                                                Yii::$app->storage->getFile($model->preview),
+                                                [
+                                                    'alt'   => 'Превью статьи',
+                                                    'style' => 'max-width:100%; height:auto
 																  '
-                                    ]
-                                ),
-                                $option
-                            ) : 'Превью не выбрано';
-                        },
+                                                ]
+                                            ),
+                                            $option
+                                        ) : 'Превью не выбрано';
+                                    },
 
-                    ],
-                    [
-                        'attribute' => 'created_at',
-                        'format'    => ['date', 'php:d-m-Y H:i']
-                    ],
-                    [
-                        'attribute' => 'updated_at',
-                        'format'    => ['date', 'php:d-m-Y H:i']
-                    ],
-                ],
-            ]
-        ) ?>
+                                ],
+                                [
+                                    'attribute' => 'created_at',
+                                    'format'    => ['date', 'php:d-m-Y H:i']
+                                ],
+                                [
+                                    'attribute' => 'updated_at',
+                                    'format'    => ['date', 'php:d-m-Y H:i']
+                                ],
+                            ],
+                        ]
+                    ) ?>
 
-	</div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 $js = <<< JS
 $('#published').on('click',function (e){

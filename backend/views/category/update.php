@@ -10,10 +10,20 @@ $this->params['breadcrumbs'][] = ['label' => 'категории', 'url' => ['in
 $this->params['breadcrumbs'][] = ['label' => $model->category_name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'редактировать';
 ?>
-<div class="category-update">
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="category-update">
 
+                <?= $this->render(
+                    '_form',
+                    [
+                        'model' => $model,
+                    ]
+                ) ?>
+
+            </div>
+        </div>
+    </div>
 </div>

@@ -15,56 +15,64 @@ PluginAsset::register($this)->add(
     ['sweetalert2','datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']
 );
 ?>
-<div class="expenseslist-index">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="expenseslist-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+                    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Добавить затраты', ['create'], ['class' => 'btn btn-sm btn-success']) ?>
-    </p>
+                    <p>
+                        <?= Html::a('Добавить затраты', ['create'], ['class' => 'btn btn-sm btn-success']) ?>
+                    </p>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                    <?php Pjax::begin(); ?>
+                    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
-        'showFooter'   => true,
-        'tableOptions' => [
-            'class' => 'table table-striped table-bordered text-center',
-            'id'=>'expensesList'
-        ],
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                    <?= GridView::widget([
+                                             'dataProvider' => $dataProvider,
+                                             //'filterModel' => $searchModel,
+                                             'showFooter'   => true,
+                                             'tableOptions' => [
+                                                 'class' => 'table table-striped table-bordered text-center',
+                                                 'id'=>'expensesList'
+                                             ],
+                                             'columns' => [
+                                                 ['class' => 'yii\grid\SerialColumn'],
 
-            //'id',
-            [
-                'attribute' => 'expenses_id',
-                'contentOptions' => [
-                    'class' => 'text-left'
-                ],
-                'value'     => function ($model) {
-                    return $model->expenses->title;
-                }
-            ],
+                                                 //'id',
+                                                 [
+                                                     'attribute' => 'expenses_id',
+                                                     'contentOptions' => [
+                                                         'class' => 'text-left'
+                                                     ],
+                                                     'value'     => function ($model) {
+                                                         return $model->expenses->title;
+                                                     }
+                                                 ],
 
-            [
-                'class'         => NumberColumn::class,
-                'attribute'=> 'price',
-                'footerOptions' => ['class' => 'bg-success'],
-            ],
-            [
-                'attribute' => 'created_at',
-                'format'    => ['date', 'php: d-m-Y']
-            ],
+                                                 [
+                                                     'class'         => NumberColumn::class,
+                                                     'attribute'=> 'price',
+                                                     'footerOptions' => ['class' => 'bg-success'],
+                                                 ],
+                                                 [
+                                                     'attribute' => 'created_at',
+                                                     'format'    => ['date', 'php: d-m-Y']
+                                                 ],
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                                                 ['class' => 'yii\grid\ActionColumn'],
+                                             ],
+                                         ]); ?>
 
-    <?php Pjax::end(); ?>
+                    <?php Pjax::end(); ?>
 
-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 <?php
 
 $js = <<< JS

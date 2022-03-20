@@ -21,168 +21,164 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 ?>
-    <div class="archive-index">
-        <?php Pjax::begin(); ?>
-        <!--<h1><?
-        /*= Html::encode($this->title) */ ?></h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="archive-index">
+                    <?php Pjax::begin(); ?>
 
-    <p>
-        <?
-        /*= Html::a('Create Archive', ['create'], ['class' => 'btn btn-success']) */ ?>
-    </p>-->
+                    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
+                    <?= GridView::widget(
+                        [
+                            'dataProvider' => $dataProvider,
+                            'rowOptions'   => function ($model) {
+                                return ['style' => 'background-color:' . $model->user->profile->color];
+                            },
+                            //'filterModel'  => $searchModel,
+                            'summary'      => false,
+                            'showFooter'   => true,
+                            'tableOptions' => [
+                                'class' => 'table table-striped table-bordered text-center',
+                                'id'    => 'archive'
+                            ],
+                            'columns'      => [
+                                // ['class' => 'yii\grid\SerialColumn'],
 
-        <?php echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-        <?= GridView::widget(
-            [
-                'dataProvider' => $dataProvider,
-                'rowOptions'   => function ($model) {
-                    return ['style' => 'background-color:' . $model->user->profile->color];
-                },
-                //'filterModel'  => $searchModel,
-                'summary'=>false,
-                'showFooter'   => true,
-                'tableOptions' => [
-                    'class' => 'table table-striped table-bordered text-center',
-                    'id'    => 'archive'
-                ],
-                'columns'      => [
-                    // ['class' => 'yii\grid\SerialColumn'],
-
-                    //'id',
-                    [
-                        'attribute'      => 'user_id',
-                        'filter'         => Select2::widget(
-                            [
-                                'model'         => $searchModel,
-                                'attribute'     => 'user_id',
-                                'data'          => User::getMasterList(),
-                                'value'         => $searchModel->user_id,
-                                'language'      => 'ru',
-                                'theme'         => Select2::THEME_KRAJEE_BS4,
-                                'size'          => Select2::SMALL,
-                                'options'       => [
-                                    'placeholder'  => 'Мастер',
-                                    'multiple'     => false,
-                                    'autocomplete' => 'off',
+                                //'id',
+                                [
+                                    'attribute'      => 'user_id',
+                                    'filter'         => Select2::widget(
+                                        [
+                                            'model'         => $searchModel,
+                                            'attribute'     => 'user_id',
+                                            'data'          => User::getMasterList(),
+                                            'value'         => $searchModel->user_id,
+                                            'language'      => 'ru',
+                                            'theme'         => Select2::THEME_KRAJEE_BS4,
+                                            'size'          => Select2::SMALL,
+                                            'options'       => [
+                                                'placeholder'  => 'Мастер',
+                                                'multiple'     => false,
+                                                'autocomplete' => 'off',
+                                            ],
+                                            'pluginOptions' => [
+                                                'tags'       => true,
+                                                'allowClear' => true,
+                                            ],
+                                        ]
+                                    ),
+                                    'contentOptions' => [
+                                        'class' => 'text-left'
+                                    ],
+                                    'value'          => function ($model) {
+                                        return $model['user']['username'];
+                                    }
                                 ],
-                                'pluginOptions' => [
-                                    'tags'       => true,
-                                    'allowClear' => true,
+                                [
+                                    'attribute'      => 'service_id',
+                                    'filter'         => Select2::widget(
+                                        [
+                                            'model'         => $searchModel,
+                                            'attribute'     => 'service_id',
+                                            'language'      => 'ru',
+                                            'data'          => Service::getServiceList(),
+                                            'theme'         => Select2::THEME_KRAJEE_BS4,
+                                            'size'          => Select2::SMALL,
+                                            'options'       => [
+                                                'placeholder'  => 'Выберите услугу ...',
+                                                'multiple'     => true,
+                                                'autocomplete' => 'off',
+                                            ],
+                                            'pluginOptions' => [
+                                                'tags'       => true,
+                                                'allowClear' => true,
+                                            ],
+                                        ]
+                                    ),
+                                    'contentOptions' => [
+                                        'class' => 'text-left'
+                                    ],
+                                    'value'          => function ($model) {
+                                        return $model['service']['name'];
+                                    }
                                 ],
-                            ]
-                        ),
-                        'contentOptions' => [
-                            'class' => 'text-left'
-                        ],
-                        'value'          => function ($model) {
-                            return $model['user']['username'];
-                        }
-                    ],
-                    [
-                        'attribute'      => 'service_id',
-                        'filter'         => Select2::widget(
-                            [
-                                'model'         => $searchModel,
-                                'attribute'     => 'service_id',
-                                'language'      => 'ru',
-                                'data'          => Service::getServiceList(),
-                                'theme'         => Select2::THEME_KRAJEE_BS4,
-                                'size'          => Select2::SMALL,
-                                'options'       => [
-                                    'placeholder'  => 'Выберите услугу ...',
-                                    'multiple'     => true,
-                                    'autocomplete' => 'off',
+                                [
+                                    'class'          => NumberColumn::class,
+                                    'attribute'      => 'amount',
+                                    'contentOptions' => function ($model) {
+                                        return ['data-total' => $model->amount];
+                                    },
+                                    'footerOptions'  => ['class' => 'bg-info'],
                                 ],
-                                'pluginOptions' => [
-                                    'tags'       => true,
-                                    'allowClear' => true,
+                                [
+                                    'class'          => NumberColumn::class,
+                                    'attribute'      => 'salary',
+                                    'contentOptions' => function ($model) {
+                                        if ($model->amount == $model->salary) {
+                                            $model->salary = 0;
+                                        }
+                                        return ['data-total' => $model->salary];
+                                    },
+                                    'value'          => function ($model) {
+                                        if ($model->amount == $model->salary) {
+                                            return 0;
+                                        }
+                                        return $model->salary;
+                                    },
+                                    'footerOptions'  => ['class' => 'bg-secondary'],
                                 ],
-                            ]
-                        ),
-                        'contentOptions' => [
-                            'class' => 'text-left'
-                        ],
-                        'value'          => function ($model) {
-                            return $model['service']['name'];
-                        }
-                    ],
-                    [
-                        'class'         => NumberColumn::class,
-                        'attribute'     => 'amount',
-                        'contentOptions' => function ($model) {
-                            return ['data-total' => $model->amount];
-                        },
-                        'footerOptions' => ['class' => 'bg-info'],
-                    ],
-                    [
-                        'class'         => NumberColumn::class,
-                        'attribute'     => 'salary',
-                        'contentOptions' => function ($model) {
-                            if ($model->amount == $model->salary) {
-                                $model->salary = 0;
-                            }
-                            return ['data-total' => $model->salary];
-                        },
-                        'value'         => function ($model) {
-                            if ($model->amount == $model->salary) {
-                                return 0;
-                            }
-                            return $model->salary;
-                        },
-                        'footerOptions' => ['class' => 'bg-secondary'],
-                    ],
-                    [
-                        'class'         => NumberColumn::class,
-                        'attribute'     => 'profit',
-                        'footerOptions' => ['class' => 'bg-success'],
-                        'value'         => function ($model) {
-                            if ($model->amount == $model->salary) {
-                                return $model->amount;
-                            }
-                            return $model->amount - $model->salary;
-                        },
+                                [
+                                    'class'         => NumberColumn::class,
+                                    'attribute'     => 'profit',
+                                    'footerOptions' => ['class' => 'bg-success'],
+                                    'value'         => function ($model) {
+                                        if ($model->amount == $model->salary) {
+                                            return $model->amount;
+                                        }
+                                        return $model->amount - $model->salary;
+                                    },
 
-                    ],
-                    [
-                        'attribute' => 'date',
-                        'filter'    => DatePicker::widget(
-                            [
-                                'model'         => $searchModel,
-                                'attribute'     => 'date',
-                                'options'       => [
-                                    'placeholder'  => 'Выберите дату ...',
-                                    'autocomplete' => 'off',
                                 ],
-                                'size'          => 'sm',
-                                'pluginOptions' => [
-                                    'todayHighlight' => true,
-                                    'weekStart'      => 1, //неделя начинается с понедельника
-                                    'autoclose'      => true,
-                                    'orientation'    => 'bottom auto',
-                                    'clearBtn'       => true,
-                                    'todayBtn'       => 'linked',
-                                    'format'         => 'mm-yyyy'
-                                ]
-                            ]
-                        ),
-                    ],
-                    [
-                        'class'    => 'yii\grid\ActionColumn',
-                        'template' => '{view}',
+                                [
+                                    'attribute' => 'date',
+                                    'filter'    => DatePicker::widget(
+                                        [
+                                            'model'         => $searchModel,
+                                            'attribute'     => 'date',
+                                            'options'       => [
+                                                'placeholder'  => 'Выберите дату ...',
+                                                'autocomplete' => 'off',
+                                            ],
+                                            'size'          => 'sm',
+                                            'pluginOptions' => [
+                                                'todayHighlight' => true,
+                                                'weekStart'      => 1, //неделя начинается с понедельника
+                                                'autoclose'      => true,
+                                                'orientation'    => 'bottom auto',
+                                                'clearBtn'       => true,
+                                                'todayBtn'       => 'linked',
+                                                'format'         => 'mm-yyyy'
+                                            ]
+                                        ]
+                                    ),
+                                ],
+                                [
+                                    'class'    => 'yii\grid\ActionColumn',
+                                    'template' => '{view}',
 
-                    ],
-                ],
-            ]
-        ); ?>
+                                ],
+                            ],
+                        ]
+                    ); ?>
 
+                    <?php Pjax::end(); ?>
 
-
-
-        <?php Pjax::end(); ?>
-
+                </div>
+            </div>
+        </div>
     </div>
+
 <?php
 $js = <<< JS
 $(function () {

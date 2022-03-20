@@ -16,27 +16,38 @@ PluginAsset::register($this)->add(['sweetalert2']);
 
 
 ?>
-<div class="category-view">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="category-view">
 
+                <p>
+                    <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a(
+                        'Удалить',
+                        ['delete', 'id' => $model->id],
+                        [
+                            'class' => 'btn btn-danger',
+                            'data'  => [
+                                'confirm' => 'Удалить категорию?',
+                                'method'  => 'post',
+                            ],
+                        ]
+                    ) ?>
+                </p>
 
-    <p>
-        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Удалить категорию?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+                <?= DetailView::widget(
+                    [
+                        'model'      => $model,
+                        'attributes' => [
+                            //'id',
+                            'category_name',
+                            'slug',
+                        ],
+                    ]
+                ) ?>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-           //'id',
-            'category_name',
-            'slug',
-        ],
-    ]) ?>
-
+            </div>
+        </div>
+    </div>
 </div>

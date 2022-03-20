@@ -10,8 +10,7 @@ use yii\bootstrap4\Breadcrumbs;
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6 col-md-12">
-                    <?php
-                    echo Breadcrumbs::widget(
+                    <?php echo Breadcrumbs::widget(
                         [
                             'links' => $this->params['breadcrumbs'] ?? [],
                             'activeItemTemplate'=>"<!--noindex--><li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n<!--/noindex-->",
