@@ -4,9 +4,7 @@
 use common\models\EventSearch;
 use common\modules\calendar\controllers\EventController;
 use dosamigos\chartjs\ChartJs;
-use hail812\adminlte3\assets\PluginAsset;
 use yii\grid\GridView;
-use yii\widgets\Pjax;
 
 /* @var $dataProvider EventController */
 /* @var $searchModel EventSearch */
@@ -14,45 +12,61 @@ use yii\widgets\Pjax;
 /* @var $totalSalary EventController */
 /* @var $chartEventLabels EventController */
 /* @var $chartEventData EventController */
-
-PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
-
+/* @var $form common\modules\calendar\*/
 
 ?>
 
 
 <div class="row">
+
     <div class="col-12 col-md-4">
-        <?php
-        echo $this->render('_search', ['model' => $searchModel]); ?>
+        <?php echo $this->render('_search', ['model' => $searchModel,'form'=>$form,]); ?>
 
         <?= ChartJs::widget(
             [
                 'type'          => 'bar',
-                'id'            => 'structureBar',
+                'id'            => 'structureEvent',
                 'options'       => [
-
                     'legend' => [
-                        'display' => false,
+                        'display' => true,
                         'title'   => [
                             'display' => true,
                             'text'    => ''
-                        ]
+                        ],
                     ],
 
                 ],
                 'data'          => [
 
-                    'labels'   => $chartEventLabels,
+                    'labels' => $chartEventLabels,
+
                     'datasets' => [
                         [
-                            'data'            =>$chartEventData,
+                            'data'             => $chartEventData,
                             'backgroundColor'  => [
                                 '#ADC3FF',
                                 '#FF9A9A',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
-                                'rgba(190, 124, 145, 0.8)',
+                                '#9b59b6',
+                                '#f1c40f',
+                                '#e67e22',
+                                '#16a085',
+                                '#b8e994',
+                                '#1e3799',
+                                '#fa983a',
+                                '#eb2f06',
+                                '#38ada9',
+                                '#b71540',
+                                '#40407a',
+                                '#ccae62',
+                                '#ff6b81',
+                                '#c23616',
+                                '#44bd32',
+                                '#e1b12c',
+                                '#c23616',
+                                '#e84118',
+                                '#10ac84',
+                                '#48dbfb',
+                                '#f368e0',
                             ],
                             'borderColor'      => [
                                 '#fff'
@@ -64,6 +78,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     ]
                 ],
                 'clientOptions' => [
+
                     'legend'    => [
                         'display'  => false,
                         'position' => 'bottom',
@@ -84,7 +99,11 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                     'scales'    => [
                         'xAxes' => [
                             [
-                                'stacked' => true,
+                                'ticks' => [
+                                    'beginAtZero' => true,
+                                    'stacked'     => true,
+                                    'fontColor'   => "#7f8c8d",
+                                ]
                             ]
                         ],
                         'yAxes' => [
@@ -92,6 +111,7 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                                 'ticks' => [
                                     'beginAtZero' => true,
                                     'stacked'     => true,
+                                    'fontColor'   => "#7f8c8d",
                                 ]
                             ]
                         ]
@@ -101,85 +121,115 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
         )
         ?>
     </div>
-
     <div class="col-12 col-md-8">
-        <?php
-        Pjax::begin() ?>
-        <?php
-        echo GridView::widget(
+
+        <?php echo GridView::widget(
             [
                 'dataProvider'     => $dataProvider,
+                'summary'=>false,
                 'showFooter'       => true,
+                'showHeader'=>true,
                 'tableOptions'     => [
                     'class' => 'table table-striped table-bordered',
-                    'id'    => 'statistic_table'
+                    'id'    => 'master-events'
                 ],
                 'emptyText'        => 'Ничего не найдено',
                 'emptyTextOptions' => [
                     'tag'   => 'div',
-                    'class' => 'col-12 col-lg-6 mb-3 text-info'
+                    'class' => 'col-12 col-lg-6 mb-3 text-info master-events'
                 ],
-
-
-                'columns' => [
-
-
+                'columns'          => [
+                    //['class' => 'yii\grid\SerialColumn'],
                     [
-                        'attribute' => 'master_id',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
+                        'attribute'     => 'master_id',
+                        'format'        => 'raw',
+                        'value'         => function ($model) {
                             return $model->master->username;
                         },
                         'footerOptions' => ['class' => 'bg-success'],
-                        'footer'=> Yii::$app->formatter->asCurrency($totalEvent - $totalSalary)  ,
+                        'headerOptions' => ['class' => 'bg-success'],
+                        'header'=>Yii::$app->formatter->asCurrency($totalEvent - $totalSalary),
+                         'footer'        => Yii::$app->formatter->asCurrency($totalEvent - $totalSalary),
                     ],
                     [
                         'attribute' => 'services.name',
                         'format'    => 'raw',
                         'value'     => function ($model) {
-                            $service_name = '';
-                            foreach ($model->services as $services) {
-                                $service_name .= $services->name . " </br>";
-                            }
-
-                            return $service_name;
+                            return \common\models\Event::MissingMasterRates($model);
                         },
-
                     ],
                     [
-                        'attribute' => 'cost',
-                        'format'    => 'raw',
-                        'value'     => function ($model) {
-                            $service_one   = '';
+                        'attribute'      => 'services.cost',
+                        'format'         => 'raw',
+                        'contentOptions' => function ($model) {
                             $service_total = 0;
                             foreach ($model->services as $item) {
-                                $service_one   .= $item->cost . " </br>";
-                                $service_total += $item->cost;
+                                foreach ($model->master->rates as $master) {
+                                    if ($master->service_id == $item->id) {
+                                        $service_total += $item->cost;
+                                    }
+                                }
                             }
-                            return $service_one . '<hr>' . Yii::$app->formatter->asCurrency($service_total);
+                            return ['data-total' => $service_total];
                         },
+                        'value'          => function ($model) {
+                            $service_one = null;
+                            $service_total = 0;
+                            foreach ($model->services as $item) {
+                                foreach ($model->master->rates as $master) {
+                                    if ($master->service_id == $item->id) {
+                                        $service_one .= $item->cost . "<br>";
+                                        $service_total += $item->cost;
+                                    }
+                                }
+                            }
+                            return $service_one . '<hr>' . Yii::$app->formatter->asCurrency(
+                                    $service_total
+                                );
+                        },
+                        'header'=>Yii::$app->formatter->asCurrency($totalEvent),
+                        'headerOptions' => ['class' => 'bg-info'],
                         'footer'    => Yii::$app->formatter->asCurrency($totalEvent),
+                        'footerOptions'  => ['class' => 'bg-info'],
                     ],
                     [
-                        'attribute' => 'salary',
-                        'format'    => 'raw',
-                        'value' => function ($model) {
-                            $salary     = 0;
-                            $salary_one = '';
-                            if (($model->master->rate < 100)) {
-                                foreach ($model->services as $item) {
-                                    $salary_one .= $item->cost * ($model->master->rate / 100) . '<br>';
-                                    $salary     += $item->cost * ($model->master->rate / 100);
+                        'attribute'      => 'salary',
+                        'format'         => 'raw',
+                        'contentOptions' => function ($model) {
+                            $salary = 0;
+                            foreach ($model->services as $service) {
+                                foreach ($model->master->rates as $master) {
+                                    if ($master->rate < 100 && $master->service_id == $service->id) {
+                                        $salary += ($service->cost * $master->rate) / 100;
+                                    }
                                 }
-                                return $salary_one . '<hr>' . Yii::$app->formatter->asCurrency($salary);
-                            } else {
-                               return false;
+                            }
+                            return ['data-total' => $salary];
+                        },
+                        'value'          => function ($model) {
+                            $salary = 0;
+                            $salary_one = '';
+                            $amount = '';
+                            $amount_one = '';
+                            foreach ($model->services as $service) {
+                                foreach ($model->master->rates as $master) {
+                                    if ($master->rate < 100 && $master->service_id == $service->id) {
+                                        $salary_one .= ($service->cost * $master->rate) / 100 . '<br> ';
+                                        $salary += ($service->cost * $master->rate) / 100;
+                                    }
+                                }
                             }
 
+                            if ($salary > 0 && $salary_one > 0) {
+                                $amount_one = $salary_one;
+                                $amount = '<hr>' . Yii::$app->formatter->asCurrency($salary);
+                            }
+                            return $amount_one . $amount;
                         },
-
-                        'footer' => Yii::$app->formatter->asCurrency($totalSalary),
-
+                        'header'=>Yii::$app->formatter->asCurrency($totalSalary),
+                        'headerOptions' => ['class' => 'bg-info'],
+                        'footer'    => Yii::$app->formatter->asCurrency($totalSalary),
+                        'footerOptions'  => ['class' => 'bg-primary'],
                     ],
                     [
                         'attribute' => 'client_id',
@@ -192,7 +242,6 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
                         'attribute' => 'event_time_start',
                         'format'    => ['date', 'php:d M Y'],
                     ],
-
                 ],
             ]
         );
@@ -201,49 +250,4 @@ PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-r
     </div>
 
 </div>
-<?php
-Pjax::end() ?>
-<?php
-$js = <<< JS
-$(function () {
-$("#statistic_table").DataTable({
-"responsive": true,
-"pageLength": 10,
-"paging": true,
-"searching": false,
-"ordering": false,
-"info": false,
-"autoWidth": false,
-"bStateSave": true,
-"dom": "<'row'<'col-12 col-sm-6 d-flex align-content-md-start'f><'col-12 col-sm-6 d-flex justify-content-sm-end'l>>tp",
-"fnStateSave": function (oSettings, oData) {
-localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-},
-"fnStateLoad": function () {
-var data = localStorage.getItem('DataTables_' + window.location.pathname);
-return JSON.parse(data);
-},
-"language": {
-"lengthMenu": 'Показать <select class="form-control form-control-sm">'+
-    '<option value="10">10</option>'+
-    '<option value="20">20</option>'+
-    '<option value="50">50</option>'+
-    '<option value="-1">Все</option>'+
-    '</select>',
-"search": "Поиск:",
-"zeroRecords": "Совпадений не найдено",
-"emptyTable": "В таблице отсутствуют данные",
-"paginate": {
-"first": "Первая",
-"previous": '<i class="fas fa-backward"></i>',
-"last": "Последняя",
-"next": '<i class="fas fa-forward"></i>'
-}
-}
-}).buttons().container().appendTo('#statistic_table_wrapper .col-md-6:eq(0)');
-});
-JS;
 
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
-
-?>

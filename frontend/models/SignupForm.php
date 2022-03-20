@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use common\models\Profile;
 use Yii;
 use yii\base\Model;
 use common\models\User;
@@ -31,15 +30,9 @@ class SignupForm extends Model
                 'targetClass' => '\common\models\User',
                 'message'     => 'This username has already been taken.'
             ],*/
-            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['username', 'string', 'min' => 2, 'max' => 50],
+            ['username', 'match', 'pattern' => '/^[A-zА-я\s]+$/u'],
 
-            [
-                'email',
-                'default',
-                'value' => function () {
-                    return 'user'.rand(1, 100).'@user.com';
-                }
-            ],
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -52,13 +45,7 @@ class SignupForm extends Model
             ],
 
             ['password', 'required'],
-            [
-                'password',
-                'default',
-                'value' => function () {
-                    return '11111111';
-                }
-            ],
+
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
         ];
     }
@@ -76,6 +63,7 @@ class SignupForm extends Model
      * Signs user up.
      *
      * @return bool whether the creating new account was successful and email was sent
+     * @throws \yii\base\Exception
      */
     public function signup()
     {
@@ -84,7 +72,6 @@ class SignupForm extends Model
         }
 
         $user    = new User();
-        $profile = new Profile();
 
         $user->username = $this->username;
         $user->email    = $this->email;
@@ -94,12 +81,9 @@ class SignupForm extends Model
 
         //Добавляем роль по умолчанию для каждого зарегестрированного
         if ($user->save()) {
-            $profile->user_id = $user->id;
             $auth             = Yii::$app->authManager;
             $role             = $auth->getRole('user');
             $auth->assign($role, $user->id);
-            $profile->save();
-
             return $user && $this->sendEmail($user);
         }
         return null;

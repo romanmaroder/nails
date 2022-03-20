@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
 					<!-- /.card-header -->
 					<!-- form start -->
 
-                    <?php $form = ActiveForm::begin(); ?>
+                   <!-- --><?php /*$form = ActiveForm::begin(); */?>
 					<div class="card-body">
                         <?= $form->field($model, 'status')->dropDownList($model->getStatus()) ?>
 

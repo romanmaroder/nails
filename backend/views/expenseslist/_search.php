@@ -12,17 +12,20 @@ use yii\widgets\ActiveForm;
 
 <div class="expenseslist-search">
 
-    <?php $form = ActiveForm::begin([
+    <?php /*$form = ActiveForm::begin([
         //'action' => ['index'],
         'method' => 'get',
         'options' => [
-            'data-pjax' => 1
+            'data-pjax' => 1,
+            //'id'=>'expenses'
         ],
-    ]); ?>
+    ]); */ ?>
 
 
-    <?= $form->field($model, 'expenses_id')->dropDownList(Expenses::getTitle(),
-        ['prompt' => 'Выберите статью расходов..','class'=>'form-control form-control-sm']) ?>
+    <?= $form->field($model, 'expenses_id')->dropDownList(
+        Expenses::getTitle(),
+        ['prompt' => 'Выберите статью расходов..', 'class' => 'form-control form-control-sm']
+    ) ?>
 
 
     <?= $form->field($model, 'date_from')->widget(
@@ -34,8 +37,8 @@ use yii\widgets\ActiveForm;
             'type'          => kartik\date\DatePicker::TYPE_RANGE,
             'size'          => 'sm',
             'separator'     => 'по',
-            'options'=>[
-                'autocomplete'=>'off',
+            'options'       => [
+                'autocomplete' => 'off',
             ],
             'pluginOptions' => [
                 'todayHighlight' => true,
@@ -50,9 +53,16 @@ use yii\widgets\ActiveForm;
     )->label('Дата') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
+        <?= Html::submitButton(
+            'Поиск',
+            [
+                'class' => 'btn btn-sm btn-primary',
+                //'name'=>'expenseslist',
+                //'form'  => $form->id
+            ]
+        ) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <!-- --><?php /*ActiveForm::end(); */ ?>
 
 </div>

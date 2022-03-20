@@ -14,32 +14,36 @@ use yii\widgets\ActiveForm;
 
 <div class="event-search">
 
-    <?php $form = ActiveForm::begin([
-                                        'action' => [''],
-                                        'method' => 'get',
-                                        'options' => [
-                                            'data-pjax' => 1
-                                        ],
-                                    ]); ?>
+    <?php /*$form = ActiveForm::begin(
+        [
+            'action'  => [''],
+            'method'  => 'get',
+            'options' => [
+                'data-pjax' => 1
+            ],
+        ]
+    ); */ ?>
 
     <?= $form->field($model, 'master_id')->dropDownList(
         User::getMasterList(),
-        ['prompt' => 'Выберите мастера...','class'=>'form-control form-control-sm']) ?>
+        ['prompt' => 'Выберите мастера...', 'class' => 'form-control form-control-sm']
+    ) ?>
 
     <?= $form->field($model, 'service')->widget(
         Select2::class,
         [
-            'language' => 'ru',
+            'language'      => 'ru',
             'data'          => Service::getServiceList(),
             'theme'         => Select2::THEME_MATERIAL,
+            'size'          => Select2::SMALL,
             'options'       => [
                 'placeholder'  => 'Выберите услугу ...',
                 'multiple'     => true,
                 'autocomplete' => 'off',
             ],
             'pluginOptions' => [
-                'tags'            =>  true,
-                'allowClear'      => true,
+                'tags'       => true,
+                'allowClear' => true,
             ],
         ]
     )->label('Услуги') ?>
@@ -54,8 +58,8 @@ use yii\widgets\ActiveForm;
             'type'          => kartik\date\DatePicker::TYPE_RANGE,
             'size'          => 'sm',
             'separator'     => 'по',
-            'options'=>[
-                    'autocomplete'=>'off',
+            'options'       => [
+                'autocomplete' => 'off',
             ],
             'pluginOptions' => [
                 'todayHighlight' => true,
@@ -65,16 +69,23 @@ use yii\widgets\ActiveForm;
                 'clearBtn'       => true,
                 'todayBtn'       => 'linked',
                 'format'         => 'yyyy-mm-dd',
-                ]
+            ]
         ]
     )->label('Дата') ?>
 
 
     <div class="form-group">
-        <?= Html::submitButton('Поиск', ['class' => 'btn btn-sm btn-primary']) ?>
+        <?= Html::submitButton(
+            'Поиск',
+            [
+                'class' => 'btn btn-sm btn-primary',
+               // 'name'  => 'master-events',
+                //'form'  => $form->id
+            ]
+        ) ?>
 
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php /*ActiveForm::end(); */ ?>
 
 </div>

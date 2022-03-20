@@ -7,13 +7,16 @@ use backend\modules\telegram\models\Telegram;
 use backend\modules\viber\api\ViberBot;
 use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
+use common\models\Archive;
 use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
+use yii\base\InvalidConfigException;
 use yii\caching\DbDependency;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -65,15 +68,16 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
+     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
         $cache = Yii::$app->cache;
-        $key   = 'events_list';  // Формируем ключ
+        $key = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency      = Yii::createObject(
+        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -83,7 +87,7 @@ class EventController extends Controller
                 ],
             ]
         );
-        $events          = $cache->getOrSet(
+        $events = $cache->getOrSet(
             $key,
             function () {
                 return Event::find()->with(['master', 'client', 'services'])->all();
@@ -93,19 +97,19 @@ class EventController extends Controller
         );
 
         foreach ($events as $item) {
-            $event                  = new \yii2fullcalendar\models\Event();
-            $event->id              = $item->id;
-            $event->title           = $item->client->username;
-            $event->nonstandard     = [
-                'description' => Event::getServiceString($item->services) ? Event::getServiceString(
+            $event = new \yii2fullcalendar\models\Event();
+            $event->id = $item->id;
+            $event->title = $item->client->username;
+            $event->nonstandard = [
+                'description' => Event::getServiceName($item->services) ? Event::getServiceName(
                     $item->services
                 ) : $item->description,
                 'notice'      => $item->notice,
                 'master_name' => $item->master->username,
             ];
             $event->backgroundColor = $item->master->color;
-            $event->start           = $item->event_time_start;
-            $event->end             = $item->event_time_end;
+            $event->start = $item->event_time_start;
+            $event->end = $item->event_time_end;
 
             $events[] = $event;
         }
@@ -146,9 +150,9 @@ class EventController extends Controller
      */
     public function actionCreate($start, $end)
     {
-        $model                   = new Event();
+        $model = new Event();
         $model->event_time_start = $start;
-        $model->event_time_end   = $end;
+        $model->event_time_end = $end;
 
 
         if ($model->load(Yii::$app->request->post())) {
@@ -320,11 +324,19 @@ class EventController extends Controller
     }
 
 
+    /**
+     * Updating the record date by changing the event size
+     * @param $id - user identifier
+     * @param $start - start time
+     * @param $end - end time
+     * @return string|Response
+     * @throws NotFoundHttpException
+     */
     public function actionUpdateResize($id, $start, $end)
     {
-        $model                   = $this->findModel($id);
+        $model = $this->findModel($id);
         $model->event_time_start = $start;
-        $model->event_time_end   = $end;
+        $model->event_time_end = $end;
         $model->save(false);
 
         if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
@@ -339,11 +351,19 @@ class EventController extends Controller
         );
     }
 
+    /**
+     * Updating the record date by dragging and dropping an event
+     * @param $id - user identifier
+     * @param $start - start time
+     * @param $end - end time
+     * @return string|Response
+     * @throws NotFoundHttpException
+     */
     public function actionUpdateDrop($id, $start, $end)
     {
-        $model                   = $this->findModel($id);
+        $model = $this->findModel($id);
         $model->event_time_start = $start;
-        $model->event_time_end   = $end;
+        $model->event_time_end = $end;
 
         $model->save(false);
 
@@ -388,7 +408,6 @@ class EventController extends Controller
      */
     protected function findModel(int $id)
     {
-
         if (($model = Event::find()->with('services')->andwhere(['id' => $id])->one()) !== null) {
             return $model;
         }
@@ -396,23 +415,41 @@ class EventController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionStatistic(): string
+    /**
+     * Displaying user statistics
+     * @throws InvalidConfigException
+     */
+    public function actionStatistic()
     {
-        $searchModel      = new EventSearch();
-        $dataProvider     = $searchModel->search(Yii::$app->request->queryParams);
-        $totalEvent       = Event::getTotal($dataProvider);
-        $totalSalary      = Event::getSalary($dataProvider->models);
+        $searchModel = new EventSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $totalEvent = Event::getTotal($dataProvider);
+        $totalSalary = Event::getSalary($dataProvider->models);
         $chartEventLabels = Event::getlabelsCharts($dataProvider);
-        $chartEventData   = Event::getDataCharts($dataProvider);
+        $chartEventData = Event::getDataCharts($dataProvider);
 
-
-        $searchModelExpenseslist  = new ExpenseslistSearch();
+        $searchModelExpenseslist = new ExpenseslistSearch();
         $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
-        $totalExpenses            = Expenseslist::getTotalExpenses($dataProviderExpenseslist->models);
-        $chartExpensesLabels      = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
-        $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
+        $chartExpensesLabels = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
+        $chartExpensesData = Expenseslist::getDataCharts($dataProviderExpenseslist);
 
+        $dataHistory = $this->getHistory();
 
+        if (Yii::$app->request->get('history') && empty(Yii::$app->request->get('archive'))) {
+            Yii::$app->session->setFlash('info', Yii::$app->params['error']['date-range']);
+        }
+        if (Yii::$app->request->get('history') == 'save' && !empty(Yii::$app->request->get('archive'))) {
+            if ($this->saveHistory()) {
+                Yii::$app->session->setFlash(
+                    'info',
+                    'Данные за промежуток ' . Yii::$app->request->queryParams['from_date'] . ' - ' . Yii::$app->request->queryParams['to_date']
+                    . ' сохранены'
+                );
+                return $this->redirect(['/calendar/event/statistic']);
+            }
+            Yii::$app->session->setFlash('info', Yii::$app->params['error']['error']);
+            return $this->redirect(['/calendar/event/statistic']);
+        }
 
 
         return $this->render(
@@ -424,13 +461,37 @@ class EventController extends Controller
                 'totalSalary'              => $totalSalary,
                 'chartEventLabels'         => $chartEventLabels,
                 'chartEventData'           => $chartEventData,
+                'dataHistory'              => $dataHistory,
                 'dataProviderExpenseslist' => $dataProviderExpenseslist,
                 'searchModelExpenseslist'  => $searchModelExpenseslist,
-                'totalExpenses'            => $totalExpenses,
                 'chartExpensesLabels'      => $chartExpensesLabels,
                 'chartExpensesData'        => $chartExpensesData,
 
             ]
         );
+    }
+
+    /**
+     * Returns an array of dates
+     *
+     * @return ActiveDataProvider
+     */
+    private function getHistory(): ActiveDataProvider
+    {
+        return Event::getHistoryData(Yii::$app->request->queryParams);
+    }
+
+    /**
+     * Preserves history
+     *
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    private function saveHistory(): bool
+    {
+        if ($this->getHistory()) {
+            return Event::saveHistoryData($this->getHistory());
+        }
+        return false;
     }
 }

@@ -3,7 +3,6 @@
 namespace common\models;
 
 use backend\modules\telegram\models\Telegram;
-use common\modules\calendar\controllers\EventController;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
@@ -29,7 +28,7 @@ class Event extends ActiveRecord
     public $totalEvent;
     public $checkEvent;
     public $service_array;
-
+    public $search;
 
     /**
      *
@@ -65,17 +64,18 @@ class Event extends ActiveRecord
         return [
             [['master_id'], 'required', 'message' => 'Выберите мастера'],
             [['client_id'], 'required', 'message' => 'Выберите клиента'],
-            [['service_array'], 'required', 'message' => 'Выберите услуги'],
+            //[['service_array'], 'required', 'message' => 'Выберите услуги'],
+            [['service_array'], 'safe'],
             ['master_id', 'filter', 'filter' => 'intval'],
             ['client_id', 'filter', 'filter' => 'intval'],
-            [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent'], 'safe'],
+            [['event_time_start', 'event_time_end', 'created_at', 'updated_at', 'checkEvent', 'search'], 'safe'],
             [['notice'], 'string', 'max' => 255],
-            ['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
+            //['checkEvent', 'validateEvent', 'skipOnEmpty' => false, 'skipOnError' => false]
 
         ];
     }
 
-    public function validateEvent()
+    /*public function validateEvent()
     {
         $old_model = Event::find()
             ->with('client', 'master')
@@ -122,7 +122,7 @@ class Event extends ActiveRecord
             }
         }
         return true;
-    }
+    }*/
 
 
     /**
@@ -137,10 +137,9 @@ class Event extends ActiveRecord
             'master_id'        => 'Мастер',
             'description'      => 'Услуги',
             'service_array'    => 'Услуги',
-            'cost'             => 'Цена',
-            'salary'           => 'Вознаграждение',
+            'salary'           => 'З/П',
             'notice'           => 'Пожелания',
-            'event_time_start' => 'Время начала',
+            'event_time_start' => 'Дата',
             'event_time_end'   => 'Время окончания',
         ];
     }
@@ -150,8 +149,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getMaster(): ActiveQuery
+    public function getMaster(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'master_id']);
     }
@@ -161,8 +159,7 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getClient(): ActiveQuery
+    public function getClient(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'client_id']);
     }
@@ -172,19 +169,27 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getTelegram(): ActiveQuery
+    public function getTelegram(): ActiveQuery
     {
         return $this->hasOne(Telegram::class, ['user_id' => 'client_id']);
     }
 
+    /**
+     * Relationship with [[event_service]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
 
     public function getEventService(): ActiveQuery
     {
         return $this->hasMany(EventService::class, ['event_id' => 'id']);
     }
 
-
+    /**
+     * Relationship with [[Service]] table
+     *
+     * @return \yii\db\ActiveQuery
+     */
     public function getServices(): ActiveQuery
     {
         return $this->hasMany(Service::class, ['id' => 'service_id'])->via('eventService');
@@ -206,8 +211,8 @@ class Event extends ActiveRecord
         if ($this->service_array) {
             foreach ($this->service_array as $one) {
                 if (!in_array($one, $arr)) {
-                    $model             = new EventService();
-                    $model->event_id   = $this->id;
+                    $model = new EventService();
+                    $model->event_id = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
@@ -221,48 +226,11 @@ class Event extends ActiveRecord
     }
 
     /**
-     * Getting records for masters
-     *
-     * @param int $id
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public
-    static function findMasterEvents(
-        int $id
-    ): ActiveQuery {
-        /*$dependency = Yii::createObject(
-            [
-                'class' => 'yii\caching\DbDependency',
-                'sql' => 'SELECT MAX(updated_at) FROM event',
-                'reusable' => true
-            ]
-        );
-        return Event::getDb()->cache(
-            function () use ($id) {
-                return Event::find()->with(['master', 'client'])->where(['master_id' => $id])->andWhere(
-                    'event_time_start >= DATE(NOW())'
-                )->orderBy(
-                    ['event_time_start' => SORT_ASC]
-                )->asArray();
-            },
-            3600,
-            $dependency
-        );*/
-        return Event::find()->with(['master', 'client', 'services'])
-            ->where(['master_id' => $id])
-            ->andWhere('event_time_start >= DATE(NOW())')
-            ->orderBy(['event_time_start' => SORT_ASC])
-            ->asArray();
-    }
-
-    /**
      * Getting records for manager
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    static function findManagerEvents(): ActiveQuery
+    public static function findEvents($userId = null): ActiveQuery
     {
         /*$dependency = Yii::createObject(
             [
@@ -285,16 +253,23 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        return Event::find()->with(['master', 'client', 'services', 'eventService'])
-            ->where('event_time_start >= DATE(NOW())')
-            ->orderBy(
+        $query= Event::find()->with(['master', 'client', 'services', 'eventService'])
+            ->where('event_time_start >= DATE(NOW())');
+
+        if (!empty($userId)) {
+            $query->andWhere(['master_id'=>$userId]);
+        };
+        $query->orderBy(
                 [
                     'event_time_start'
                     => SORT_ASC
                 ]
             )
             ->asArray();
+        return $query;
     }
+
+
 
     /**
      * Getting records for client
@@ -303,10 +278,8 @@ class Event extends ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    static function findClientEvents(
-        int $id
-    ): ActiveQuery {
+    public static function findClientEvents(int $id): ActiveQuery
+    {
         /*$dependency = Yii::createObject(
             [
                 'class' => 'yii\caching\DbDependency',
@@ -365,10 +338,8 @@ class Event extends ActiveRecord
      *
      * @return array|\common\models\Event[]|\yii\db\ActiveRecord[]
      */
-    public
-    static function findPreviousClientEvents(
-        $user_id
-    ): array {
+    public static function findPreviousClientEvents($user_id): array
+    {
         return Event::find()
             ->select('event_time_start, description')
             ->where(['client_id' => $user_id])
@@ -384,10 +355,8 @@ class Event extends ActiveRecord
      *
      * @return bool|int|string|null
      */
-    public
-    static function countEventTotal(
-        $masterIds
-    ) {
+    public static function countEventTotal($masterIds)
+    {
         $dependency = Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
@@ -409,14 +378,12 @@ class Event extends ActiveRecord
     /**
      * Total number of records for each master
      *
-     * @param $masterIds
+     * @param array $ids - array of master identifiers
      *
      * @return array
      */
-    public
-    function getTotalEventsMaster(
-        $masterIds
-    ): array {
+    public function getTotalEventsMaster(array $ids): array
+    {
         $dependency = Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
@@ -425,7 +392,7 @@ class Event extends ActiveRecord
             ]
         );
         return Event::getDb()->cache(
-            function () use ($masterIds) {
+            function () use ($ids) {
                 return Event::find()->select(['COUNT(client_id) AS totalEvent', 'master_id'])
                     ->with(
                         [
@@ -434,7 +401,7 @@ class Event extends ActiveRecord
                             }
                         ]
                     )
-                    ->where(['master_id' => $masterIds])
+                    ->where(['master_id' => $ids])
                     ->andWhere(['>=', 'event_time_start', date('Y-m-d')])
                     ->groupBy('master_id')
                     ->all();
@@ -448,31 +415,29 @@ class Event extends ActiveRecord
     /**
      * Return event list dataProvider
      *
-     * @return \yii\data\ActiveDataProvider
-     * @throws \Throwable
-     * @throws InvalidConfigException
+     * @param int $id - User id
+     * @return ActiveDataProvider
      */
-    public
-    static function getEventDataProvider(
-        $userId
-    ): ActiveDataProvider {
-        if (Yii::$app->user->can('manager')) {
-            $query = Event::findManagerEvents();
-        } elseif (Yii::$app->user->can('master')) {
-            $query = Event::findMasterEvents($userId);
-        } else {
-            $query = Event::findClientEvents($userId);
+    public static function getEventDataProvider(int $id): ActiveDataProvider
+    {
+        $roles = Yii::$app->authManager->getRolesByUser($id);
+        if (array_key_exists('manager', $roles) || array_key_exists('admin', $roles)) {
+            $query = Event::findEvents();
+        }elseif(array_key_exists('master', $roles)){
+            $query = Event::findEvents($id);
+        }else{
+            $query = Event::findClientEvents($id);
         }
 
-        $dataProvider    = new ActiveDataProvider(
+        return new ActiveDataProvider(
             [
                 'query'      => $query,
                 'pagination' => false,
             ]
         );
-        $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency      = Yii::createObject(
+        /*$eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
+        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -489,41 +454,45 @@ class Event extends ActiveRecord
             },
             3600,
             $dependency
-        );
+        );*/
 
-        return $dataProvider;
+
+
     }
 
     /**
      * Getting the name of the service
-     * @param $data
-     * @return string
+     * @param array $data - array with data
+     * @return string - service name
      */
-    public static function getServiceString($data): string
+    public static function getServiceName(array $data): string
     {
-        $services_name = '';
+        $servicesName = '';
 
         foreach ($data as $service) {
-            $services_name .= $service['name'] . PHP_EOL;
+            $servicesName .= $service['name'] . '</br>';
+        }
+        if ($servicesName == null) {
+            $servicesName = Yii::$app->params['error']['service'];
         }
 
-        return $services_name;
+        return $servicesName;
     }
 
     /**
      * Total amount for services
-     * @param $dataProvider
+     * @param object $dataProvider
      * @return string
-     * @throws InvalidConfigException
      */
-    public static function getTotal($dataProvider): string
+    public static function getTotal(object $dataProvider): string
     {
         $total = 0;
         foreach ($dataProvider->models as $model) {
             foreach ($model->service_array as $cost) {
-                $total = $total + $cost->cost;
+                $total += $cost->cost;
             }
         }
+
 
         return $total;
     }
@@ -537,10 +506,13 @@ class Event extends ActiveRecord
     public static function getSalary($dataProvider): string
     {
         $total = 0;
+
         foreach ($dataProvider as $model) {
-            foreach ($model->services as $item) {
-                if ($model->master->rate < 100) {
-                    $total += $item->cost * ($model->master->rate / 100);
+            foreach ($model->master->rates as $master) {
+                foreach ($model->services as $service) {
+                    if ($master->service_id == $service->id && $master->rate < 100) {
+                        $total += $service->cost * ($master->rate / 100);
+                    }
                 }
             }
         }
@@ -548,6 +520,12 @@ class Event extends ActiveRecord
         return $total;
     }
 
+
+    /**
+     * Label data for the chart
+     * @param $dataProvider
+     * @return array
+     */
     public static function getlabelsCharts($dataProvider): array
     {
         $labels = [];
@@ -555,25 +533,202 @@ class Event extends ActiveRecord
         foreach ($dataProvider->models as $model) {
             foreach ($model->services as $key => $item) {
                 if (!in_array($item->name, $labels)) {
-                    $labels[$item->name] .= $item->name;
+                    $labels[$item->id] .= $item->name;
                 }
             }
         }
+
         return array_values($labels);
     }
 
+    /**
+     * Data for the chart
+     * @param $dataProvider
+     * @return array
+     */
     public static function getDataCharts($dataProvider): array
     {
         $amount = [];
 
         foreach ($dataProvider->models as $model) {
-
-            foreach ($model->services as $key => $item) {
-                if (!in_array($item->name, $amount)) {
-                        $amount[$item->name] += $item->cost * ($model->master->rate / 100);
+            foreach ($model->master->rates as $rate) {
+                foreach ($model->services as $item) {
+                    if (!in_array($item->name, $amount)) {
+                        if ($rate->service_id == $item->id) {
+                            $amount[$item->id] += ($item->cost * $rate->rate) / 100;
+                        }
+                    }
                 }
             }
         }
         return array_values($amount);
+    }
+
+    /**
+     * Forming the list of existing/absent master rates
+     * @param $model - each master's data for each entry
+     * @return string - list of services
+     */
+    public static function MissingMasterRates($model): string
+    {
+        $rates = ArrayHelper::getColumn($model->master->rates, 'service_id');
+
+        $events = [];
+        $event_id = [];
+        foreach ($model->services as $item) {
+            $events[$item['id']] .= $item['name'];
+            $event_id[] .= $item['id'];
+        }
+
+
+        $no_set_rate = array_diff($event_id, $rates);
+        $isset_set_rate = array_intersect($event_id, $rates);
+
+
+        $no_rate = [];
+        foreach ($no_set_rate as $no) {
+            foreach ($events as $key => $event) {
+                if ($no == $key) {
+                    $no_rate[] .= "<span class='text-danger'>$event</span></br>";
+                }
+            }
+        }
+        $isset_rate = [];
+        foreach ($isset_set_rate as $isset) {
+            foreach ($events as $key => $event) {
+                if ($isset == $key) {
+                    $isset_rate[] .= "<span class='text-green'>$event</span></br>";
+                }
+            }
+        }
+
+        $all_events_names = ArrayHelper::merge($isset_rate, $no_rate);
+
+        $list_all_event_name = '';
+        foreach ($all_events_names as $event_name) {
+            $list_all_event_name .= $event_name;
+        }
+        return $list_all_event_name;
+    }
+
+    /**
+     * Sampling of monthly service data
+     *
+     * @param $params - date range
+     * @return ActiveDataProvider
+     */
+    public static function getHistoryData($params): ActiveDataProvider
+    {
+
+
+
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query'      => EventService::find()
+                    ->select(
+                        [
+                            'event_service.id',
+                            'event_id',
+                            'service_id',
+                            'SUM(service.cost) as amount',
+                            'event.master_id',
+                            'event.event_time_start'
+                        ]
+                    )
+                    ->joinWith(
+                        [
+                            'event' => function ($q) {
+                                $q->select(
+                                    [
+                                        'event.id',
+                                        'master_id',
+                                        'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'
+                                    ]
+                                )
+                                    ->with(['eventService', 'services']);
+                            },
+                        ]
+                    )
+                    ->joinWith(
+                        [
+                            'service' => function ($q) {
+                                $q->select(['service.id', 'name', 'cost'])
+                                    ->distinct()
+                                    ->groupBy(['name']);
+                            },
+                        ]
+                    )
+                    ->joinWith(
+                        [
+                            'event.master' => function ($q) {
+                                $q->select(['id', 'username'])
+                                    ->with(['rates']);
+                            }
+                        ]
+                    )
+                    ->andFilterWhere(
+                        [
+                            '>=',
+                            'event.event_time_start',
+                            $params['from_date'] ? $params['from_date'] . ' 00:00:00' : null
+                        ]
+                    )
+                    ->andFilterWhere(
+                        ['<=', 'event.event_time_start', $params['to_date'] ? $params['to_date'] . ' 23:59:59' : null]
+                    )
+                    ->groupBy(['DATE_FORMAT(event.event_time_start,"%Y-%b")', 'event.master_id'])
+                    ->orderBy(['event.event_time_start' => SORT_ASC])
+                    ->asArray(),
+                'pagination' => false
+            ]
+        );
+        $dependency   = Yii::createObject(
+            [
+                'class'    => 'yii\caching\DbDependency',
+                'sql'      => 'SELECT MAX(id) FROM event_service',
+                'reusable' => true
+            ]
+        );
+        Yii::$app->db->cache(
+            function () use ($dataProvider) {
+                $dataProvider->prepare();
+            },
+            3600,
+            $dependency
+        );
+        return $dataProvider;
+    }
+
+    /**
+     * Saving the history of services for the month in the database
+     * @param $dataProvider
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    public static function saveHistoryData($dataProvider): bool
+    {
+        $flag = false;
+        foreach ($dataProvider->models as $value) {
+            foreach ($value['event']['master']['rates'] as $rate) {
+                if ($value['service_id'] == $rate['service_id']) {
+                    $archive = new Archive();
+                    $archive->user_id = $value['event']['master_id'];
+                    $archive->service_id = $value['service_id'];
+                    $archive->amount = $value['amount'];
+                    $archive->salary = $value['amount'] * $rate['rate'] / 100;
+                    $archive->date = Yii::$app->formatter->asDate(
+                        $value['event']['event_time_start'],
+                        'php: m-Y'
+                    );
+                    if ($archive->save()) {
+                        $flag = true;
+                    }
+                }
+            }
+        }
+        if ($flag) {
+            return true;
+        }
+        return false;
     }
 }

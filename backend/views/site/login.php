@@ -10,9 +10,9 @@ $this->title = 'Логин';
 <div class="card">
 	<div class="card-body login-card-body">
         <?php
-        if (Yii::$app->getSession()->hasFlash('denide')):?>
+        if (Yii::$app->getSession()->hasFlash('denied')):?>
             <?php
-            echo '<p class="text-danger text-center"><b>'.Yii::$app->session->getFlash('denide').'</b></p>'; ?>
+            echo '<p class="text-danger text-center"><b>'.Yii::$app->session->getFlash('denied').'</b></p>'; ?>
         <?php
         else: ?>
 			<p class="login-box-msg">Войдите, чтобы начать сеанс</p>

@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use common\models\Event;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -13,8 +12,6 @@ class EventSearch extends Event
 {
 
     public $service;
-    public $cost;
-    public $salary;
     public $date_from;
     public $date_to;
 
@@ -31,8 +28,6 @@ class EventSearch extends Event
                     'master_id',
                     'client_id',
                     'service',
-                    'cost',
-                    'salary',
                     'description',
                     'notice',
                     'event_time_start',
@@ -63,20 +58,21 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
-        $query->joinWith(['services', 'eventService', 'master', 'client']);
+        //$query->select(['event.id','master_id','client_id','name','event_time_start']);
+        $query->joinWith(['eventService', 'master', 'client', 'master.profile', 'client.profile']);
         $query->andWhere(' YEAR(event_time_start) = YEAR(NOW())');
-        $query->orderBy(['event_time_start'=>SORT_ASC]);
+        $query->orderBy(['event_time_start' => SORT_ASC]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider(
             [
-                'query' => $query,
+                'query'      => $query,
                 'pagination' => false,
-                'sort' => [
+                'sort'       => [
                     'attributes' => [
                         'event_time_start' => [
-                            'asc' => ['event_time_start' => SORT_ASC],
+                            'asc'  => ['event_time_start' => SORT_ASC],
                             'desc' => ['event_time_start' => SORT_DESC],
                         ],
                     ]
@@ -96,14 +92,13 @@ class EventSearch extends Event
         // grid filtering conditions
         $query->andFilterWhere(
             [
-                'id' => $this->id,
+                'id'        => $this->id,
                 'master_id' => $this->master_id,
             ]
         );
 
         $query->andFilterWhere(['>=', 'event_time_start', $this->date_from ? $this->date_from . ' 00:00:00' : null])
-            ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null])
-            ->andFilterWhere(['=', 'service.cost', $this->salary]);
+            ->andFilterWhere(['<=', 'event_time_end', $this->date_to ? $this->date_to . ' 23:59:59' : null]);
 
 
         $query->joinWith(

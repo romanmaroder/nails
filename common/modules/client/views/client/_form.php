@@ -88,10 +88,7 @@ use yii\widgets\MaskedInput;
 
                         <?= $form->field($model, 'roles')->checkboxList($model->getRolesDropdown()); ?>
 
-                        <?= $form->field($model,'color', [ 'template' => "{input}" ]
-                        )->input('color', ['class' => "form-control"])->label( 'Цвет',['class' => 'd-none']) ?>
-
-                        <?= $form->field($model,'rate')->textInput()->label( 'Ставка',['class' => 'd-none']) ?>
+                        <?= $form->field($model,'color')->input('color', ['class' => "form-control"])->label( 'Цвет',['class' => 'd-none']) ?>
 
 						<div class="form-group">
                             <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>

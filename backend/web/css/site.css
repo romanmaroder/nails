@@ -4,7 +4,9 @@ html,
 body {
     height: 100%;
 }
-
+hr{
+    margin: 0.5em 0;
+}
 body.blank {
     display: flex;
     padding: 40px 0;
@@ -404,4 +406,7 @@ a.desc:after {
 
 .dark-mode .popover-header {
     color:#000000;
+}
+.dark-mode .daterangepicker {
+    color:#000;
 }

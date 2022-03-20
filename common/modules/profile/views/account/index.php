@@ -50,8 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="card-body box-profile">
                     <div class="text-center">
                         <img class="profile-user-img img-fluid img-circle"
-                             src="<?php
-                             echo $user->getPicture(); ?>"
+                             src="<?php echo $user->getPicture(); ?>"
                              id="profile-picture"
                              alt="User profile picture"/>
                     </div>
@@ -59,25 +58,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h3 class="profile-username text-center"><?php
                         echo $user->username; ?></h3>
                     <?php
-                    if (Yii::$app->user->can('master')) : ?>
+                    if (Yii::$app->authManager->getAssignment('master',$user->id)) : ?>
                         <p class="text-muted text-center">
-                            <?php
-                            echo User::getRole()->description ?>
+                            <?php echo User::getRole()->description ?>
                         </p>
+                    <?php endif; ?>
                         <?php
-                        if (Yii::$app->user->can('manager') && Yii::$app->id !== 'app-backend') : ?>
+                        if (Yii::$app->authManager->getAssignment('manager',$user->id) && Yii::$app->id !== 'app-backend') : ?>
                             <p class="text-muted text-center">
-                                <?php
-                                echo Html::a(
+                                <?php echo Html::a(
                                     '<i class="fas fa-user-cog"></i> Админка',
                                     ['/admin/profile/account/'],
                                     ['class' => 'btn btn-primary btn-sm']
                                 ); ?>
                             </p>
-                        <?php
-                        endif; ?>
-                    <?php
-                    endif; ?>
+
+                    <?php endif; ?>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -159,8 +155,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php echo Yii::$app->session->getFlash('success'); ?>
                         </div>
                     <?php endif;?>
-
-
 
                     <div class="tab-content">
                         <?php

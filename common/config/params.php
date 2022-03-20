@@ -9,38 +9,50 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength'        => 8,
 
-    'maxLimitNews'=>5, //лимит новостей на странице
+    'maxLimitNews' => 5, //лимит новостей на странице
 
     'maxFileSize' => 1024 * 1024 * 2.5, // Размер загружаемого файла 2mb
     'storagePath' => '@frontend/web/uploads/',
     'storageUri'  => '/uploads/', //http://nails.com/uploads/c1/d3/78df89d65d.jpg
 
-    'avatarPicture' => [
+    'error'        => [
+        'service'          => 'Услуга не указана',
+        'date-range'       => 'Не выбран промежуток дат',
+        'error'            => 'Произошла ошибка',
+        'access-is-denied' => 'У Вас нет доступа'
+    ],
+    'sms-location' => [
+        'address'    => '. Наш адрес: ул.Раздольная д.11, подъезд 4, кв.142, этаж 9. ',
+        'entry'      => ' у Вас запись. Вы будете?',
+        'entry-next' => '. У Вас следующая запись '
+    ],
+
+    'avatarPicture'      => [
         'maxWidth'  => 300,
         'maxHeight' => 300
     ],
-    'photoPicture'  => [
+    'photoPicture'       => [
         'maxWidth'  => 450,
         'maxHeight' => 450
     ],
-    'certificatePicture'  => [
+    'certificatePicture' => [
         'maxWidth'  => 450,
         'maxHeight' => 450
     ],
-    'postPicture' => [
+    'postPicture'        => [
         'maxWidth'  => 1024,
         'maxHeight' => 'auto'
     ],
-    'postPreview' => [
+    'postPreview'        => [
         'maxWidth'  => 1024,
         'maxHeight' => 1024
     ],
-    'hail812/yii2-adminlte3' => [
+    /*'hail812/yii2-adminlte3' => [
         'pluginMap' => [
-            /*'chart'=>[
+            'chart'=>[
                 'css'=>'chart.js/Chart.css',
                 'js'=>'chart.js/Chart.js'
-            ],*/
+            ],
             'datatables'                    => [
                 'js' => 'datatables/jquery.dataTables.min.js'
             ],
@@ -85,7 +97,7 @@ return [
             'filterizr'                     => [
                 'js' => 'filterizr/jquery.filterizr.min.js'
             ],
-            /*'summernote'=>[
+            'summernote'=>[
                 'css'=>'summernote/summernote-bs4.min.css',
                 'js'=>[
                     'summernote/summernote-bs4.min.js',
@@ -103,8 +115,8 @@ return [
                     'codemirror/mode/xml/xml.js',
                     'codemirror/mode/htmlmixed/htmlmixed.js'
                 ]
-            ],*/
+            ],
         ]
-    ],
+    ],*/
 
 ];

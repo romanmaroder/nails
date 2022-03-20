@@ -48,14 +48,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                 [
                                     'attribute' => 'description',
-                                    'format'=>'ntext',
+                                    'format'=>'raw',
                                     'visible' => $model->description ?? '',
                                 ],
                                 [
                                     'attribute' => 'service_array',
-                                    'format'=>'ntext',
+                                    'format'=>'raw',
                                     'value' => function ($data) {
-                                        return \common\models\Event::getServiceString($data->services);
+                                        return \common\models\Event::getServiceName($data->services);
                                     },
                                     'visible' => $model->services ?? '',
                                 ],
