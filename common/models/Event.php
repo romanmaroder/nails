@@ -620,8 +620,6 @@ class Event extends ActiveRecord
     public static function getHistoryData($params): ActiveDataProvider
     {
 
-
-
         $dataProvider = new ActiveDataProvider(
             [
                 'query'      => EventService::find()

@@ -72,11 +72,8 @@ class ArchiveSearch extends Archive
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
 
-            return $dataProvider ;
+            return $dataProvider;
         }
-
-
-
 
 
         // grid filtering conditions
@@ -84,7 +81,7 @@ class ArchiveSearch extends Archive
             [
                 'id'         => $this->id,
                 'user_id'    => $this->user_id,
-                'service_id'    => $this->service_id,
+                'service_id' => $this->service_id,
                 'amount'     => $this->amount,
                 'salary'     => $this->salary,
                 'created_at' => $this->created_at,
