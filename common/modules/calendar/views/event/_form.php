@@ -129,7 +129,8 @@ use yii\web\JsExpression;
                                         });
                           Toast.fire({
                             icon: "error",
-                            title: data.responseJSON.message
+                            //title: data.responseJSON.message
+                            title: data.responseText
                           });
                     }
                 });

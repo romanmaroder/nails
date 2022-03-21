@@ -7,7 +7,6 @@ use backend\modules\telegram\models\Telegram;
 use backend\modules\viber\api\ViberBot;
 use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
-use common\models\Archive;
 use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
@@ -15,7 +14,6 @@ use common\models\ServiceUser;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
-use yii\base\InvalidConfigException;
 use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -48,11 +46,12 @@ class EventController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['login'],
+                        'actions' => ['login','user-service'],
                         'roles'   => ['?'],
                     ],
                     [
                         'allow' => true,
+                        //'actions' => [],
                         'roles' => ['@'],
                     ],
                 ],
@@ -69,16 +68,16 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
-     * @throws InvalidConfigException
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionIndex()
     {
         $cache = Yii::$app->cache;
-        $key = 'events_list';  // Формируем ключ
+        $key   = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency = Yii::createObject(
+        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency      = Yii::createObject(
             [
                 'class'        => 'yii\caching\ChainedDependency',
                 'dependOnAll'  => true,
@@ -88,7 +87,7 @@ class EventController extends Controller
                 ],
             ]
         );
-        $events = $cache->getOrSet(
+        $events          = $cache->getOrSet(
             $key,
             function () {
                 return Event::find()->with(['master', 'client', 'services'])->all();
@@ -98,10 +97,10 @@ class EventController extends Controller
         );
 
         foreach ($events as $item) {
-            $event = new \yii2fullcalendar\models\Event();
-            $event->id = $item->id;
-            $event->title = $item->client->username;
-            $event->nonstandard = [
+            $event                  = new \yii2fullcalendar\models\Event();
+            $event->id              = $item->id;
+            $event->title           = $item->client->username;
+            $event->nonstandard     = [
                 'description' => Event::getServiceName($item->services) ? Event::getServiceName(
                     $item->services
                 ) : $item->description,
@@ -109,8 +108,8 @@ class EventController extends Controller
                 'master_name' => $item->master->username,
             ];
             $event->backgroundColor = $item->master->color;
-            $event->start = $item->event_time_start;
-            $event->end = $item->event_time_end;
+            $event->start           = $item->event_time_start;
+            $event->end             = $item->event_time_end;
 
             $events[] = $event;
         }
@@ -151,9 +150,10 @@ class EventController extends Controller
      */
     public function actionCreate($start, $end)
     {
-        $model = new Event();
+        $model                   = new Event();
         $model->event_time_start = $start;
-        $model->event_time_end = $end;
+        $model->event_time_end   = $end;
+
 
         if ($model->load(Yii::$app->request->post())) {
             if (Yii::$app->request->isAjax && $model->validate() || $model->hasErrors()) {
@@ -162,7 +162,8 @@ class EventController extends Controller
             } else {
                 $model->save(false);
 
-                /*$chat    = Telegram::find()->where(['user_id' => $model->client_id])->asArray()->one();
+
+                $chat    = Telegram::find()->where(['user_id' => $model->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
                 if ($chat_id) {
                     $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
@@ -216,12 +217,13 @@ class EventController extends Controller
                                     )
                             )
                     );
-                }*/
+                }
 
                 Yii::$app->session->setFlash('msg', "Запись " . $model->client->username . " сохранена");
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
+
 
         return $this->renderAjax(
             'create',
@@ -251,7 +253,7 @@ class EventController extends Controller
             } else {
                 $events->save(false);
 
-                /*$chat    = Telegram::find()->where(['user_id' => $events->client_id])->asArray()->one();
+                $chat    = Telegram::find()->where(['user_id' => $events->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
                 if ($chat_id) {
                     $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
@@ -308,7 +310,7 @@ class EventController extends Controller
                                     )
                             )
                     );
-                }*/
+                }
 
                 return $this->redirect('/admin/calendar/event/index');
             }
@@ -321,6 +323,7 @@ class EventController extends Controller
         );
     }
 
+
     /**
      * Updating the record date by changing the event size
      * @param $id - user identifier
@@ -331,9 +334,9 @@ class EventController extends Controller
      */
     public function actionUpdateResize($id, $start, $end)
     {
-        $model = $this->findModel($id);
+        $model                   = $this->findModel($id);
         $model->event_time_start = $start;
-        $model->event_time_end = $end;
+        $model->event_time_end   = $end;
         $model->save(false);
 
         if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
@@ -358,9 +361,9 @@ class EventController extends Controller
      */
     public function actionUpdateDrop($id, $start, $end)
     {
-        $model = $this->findModel($id);
+        $model                   = $this->findModel($id);
         $model->event_time_start = $start;
-        $model->event_time_end = $end;
+        $model->event_time_end   = $end;
 
         $model->save(false);
 
@@ -405,7 +408,8 @@ class EventController extends Controller
      */
     protected function findModel(int $id)
     {
-        if (($model = Event::find()->with('services')->where(['id' => $id])->one()) !== null) {
+
+        if (($model = Event::find()->with('services')->andwhere(['id' => $id])->one()) !== null) {
             return $model;
         }
 
@@ -414,7 +418,7 @@ class EventController extends Controller
 
     /**
      * Displaying user statistics
-     * @throws InvalidConfigException
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionStatistic()
     {
@@ -501,8 +505,7 @@ class EventController extends Controller
      */
     public function actionUserService(?int $id)
     {
-
-        if (Yii::$app->request->isAjax ) {
+        if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if (!$id) {
                 throw new NotFoundHttpException('Не найдено услуг для данного пользователя!');

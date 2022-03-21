@@ -46,6 +46,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 );
                 Modal::end(); ?>
+                <?php
+                Modal::begin(
+                    [
+                        'title'        => 'Ошибка',
+                        'titleOptions' => [
+                            'class' => 'text-danger'
+                        ],
+                        'size'         => 'SIZE_SMALL',
+                        'id'           => 'modal-error',
+                        'options'      => ['tabindex' => '']
+                    ]
+                );
+                Modal::end(); ?>
 
                 <?php
                 # Модальное окно просмотра и редактирования
