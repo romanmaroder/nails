@@ -231,6 +231,19 @@ class EventController extends Controller
         );
     }
 
+    public function actionUserService( $id)
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if (!$id) {
+                throw new NotFoundHttpException('Не найдено услуг для данного пользователя!');
+            } else {
+                return ServiceUser::getUserServices($id);
+            }
+        }
+        return false;
+    }
+
     /**
      * Updates an existing Event model.
      * If update is successful, the browser will be redirected to the 'view' page.
