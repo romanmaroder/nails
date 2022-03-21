@@ -126,5 +126,3 @@ PluginAsset::register($this)->add(['sweetalert2']);
     <?php
     endif; ?>
 </div>
-
-

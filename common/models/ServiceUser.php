@@ -54,7 +54,7 @@ class ServiceUser extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['service_id', 'user_id','rate'], 'required'],
+            [['service_id', 'user_id', 'rate'], 'required'],
             [['service_id', 'user_id'], 'integer'],
             [
                 ['service_id'],
@@ -117,9 +117,26 @@ class ServiceUser extends \yii\db\ActiveRecord
     }
 
 
-    public static function getUserServices(){
+    /**
+     * List of services provided by the master
+     *
+     * @param ?int $id
+     * @return array|string
+     */
+    public static function getUserServices( ?int $id)
+    {
+        $services = self::find()->with('service', 'user')->where(['user_id' => $id])->asArray()->all();
 
-        $services = self::find()->asArray()->all();
-        return ArrayHelper::map($services,'service_id','service_id','user_id');
+        if (Yii::$app->controller->action->id == 'user-service') {
+            $data = [];
+            foreach ($services as $service) {
+                $data .= '<option value="' . $service['service']['id'] . '">' . $service['service']['name'] . '</option>';
+            }
+            return $data;
+        } elseif (Yii::$app->controller->action->id == 'update') {
+
+            return ArrayHelper::map($services,'service.id','service.name');
+        }
+        return false;
     }
 }

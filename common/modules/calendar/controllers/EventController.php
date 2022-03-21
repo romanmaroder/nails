@@ -11,6 +11,7 @@ use common\models\Archive;
 use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
+use common\models\ServiceUser;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
@@ -38,7 +39,7 @@ class EventController extends Controller
             'verbs'  => [
                 'class'   => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['POST','GET'],
                 ],
             ],
             'access' => [
@@ -154,14 +155,12 @@ class EventController extends Controller
         $model->event_time_start = $start;
         $model->event_time_end = $end;
 
-
         if ($model->load(Yii::$app->request->post())) {
             if (Yii::$app->request->isAjax && $model->validate() || $model->hasErrors()) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
                 $model->save(false);
-
 
                 /*$chat    = Telegram::find()->where(['user_id' => $model->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
@@ -223,7 +222,6 @@ class EventController extends Controller
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
-
 
         return $this->renderAjax(
             'create',
@@ -323,7 +321,6 @@ class EventController extends Controller
         );
     }
 
-
     /**
      * Updating the record date by changing the event size
      * @param $id - user identifier
@@ -408,7 +405,7 @@ class EventController extends Controller
      */
     protected function findModel(int $id)
     {
-        if (($model = Event::find()->with('services')->andwhere(['id' => $id])->one()) !== null) {
+        if (($model = Event::find()->with('services')->where(['id' => $id])->one()) !== null) {
             return $model;
         }
 
@@ -491,6 +488,27 @@ class EventController extends Controller
     {
         if ($this->getHistory()) {
             return Event::saveHistoryData($this->getHistory());
+        }
+        return false;
+    }
+
+    /**
+     * Getting a list of services of one master when making an appointment
+     *
+     * @param ?int $id - User ID
+     * @return array|false|string
+     * @throws NotFoundHttpException
+     */
+    public function actionUserService(?int $id)
+    {
+
+        if (Yii::$app->request->isAjax ) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if (!$id) {
+                throw new NotFoundHttpException('Не найдено услуг для данного пользователя!');
+            } else {
+                return ServiceUser::getUserServices($id);
+            }
         }
         return false;
     }

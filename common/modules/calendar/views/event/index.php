@@ -48,21 +48,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 Modal::end(); ?>
 
                 <?php
-                Modal::begin(
-                    [
-                        'title'        => 'Ошибка',
-                        'titleOptions' => [
-                            'class' => 'text-danger'
-                        ],
-                        'size'         => 'SIZE_SMALL',
-                        'id'           => 'modal-error',
-                        'options'      => ['tabindex' => '']
-                    ]
-                );
-                Modal::end(); ?>
-
-
-                <?php
                 # Модальное окно просмотра и редактирования
                 Modal::begin(
                     [
@@ -227,9 +212,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'defaultView' => new JsExpression(
                             "
              localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
-            "
-                        ),
-
+            "),
                         'header'        => [
                             'left'   => 'prev,next,today',
                             'center' => 'title',
@@ -292,124 +275,114 @@ $this->params['breadcrumbs'][] = $this->title;
                             'defaultDate'          => new JsExpression(
                                 "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
-                "
-                            ),
+                " ),
                             'windowResize'         => $window_resize,
 
                             'eventClick'          => new JsExpression(
                                 "function(event) {
                    
-                     if(app == 'app-backend'){
-                        viewUrl = basePath +'/calendar/event/view?id=' + event.id;
-                        updateUrl = basePath +'/calendar/event/update?id=' + event.id;
-                         $('#edit-link').attr('href', updateUrl);
-                     }else{
-                        viewUrl = '/calendar/event/view?id=' + event.id;
-                        //updateUrl = '/calendar/event/update?id=' + event.id;
-                     }
-                        
-                      $('.popover').remove();
-                      $('#view').find('.modal-body').load(viewUrl);
-                      $('#view').modal('show');
-                    }"
+                                     if(app == 'app-backend'){
+                                        viewUrl = basePath +'/calendar/event/view?id=' + event.id;
+                                        updateUrl = basePath +'/calendar/event/update?id=' + event.id;
+                                         $('#edit-link').attr('href', updateUrl);
+                                     }else{
+                                        viewUrl = '/calendar/event/view?id=' + event.id;
+                                        //updateUrl = '/calendar/event/update?id=' + event.id;
+                                     }
+                                        
+                                      $('.popover').remove();
+                                      $('#view').find('.modal-body').load(viewUrl);
+                                      $('#view').modal('show');
+                                      
+                                }"
                             ),
                             'dayRender'           => new JsExpression(
-                                "function(cell,date){
-                    } "
+                                "function(cell,date){} "
                             ),
                             'eventRender'         => new JsExpression(
                                 "function (event, element, view, popover){
-								$('.popover').remove();
-								element.addClass('event-render');
-								element.find('.fc-content').append( element.find('.fc-time').addClass('font-italic') );
-								
-                  				if (view.name == 'basicDay' ) { 
-                  					element.find('.fc-content').addClass('d-flex flex-column');
-                  					element.addClass('fc-basic_day');
-                  				 	element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
-                  				 	if( event.nonstandard.notice){
-                  				 		element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
-                  				 	}
-                  				}
-                  				 if (view.name == 'month' ) { 
-                  					element.addClass('fc-basic_month');
-                  					element.find('.fc-content').prepend(element.find('.fc-time'));
-                  					
-                  					if(event.title === 'Свободное время'){
-                  					    element.find('.fc-title').addClass('free-time');
-                  					    element.find('.fc-time').addClass('free-time');
-                  					}
-                  					
-                  					element.find('.fc-content').find('.fc-time').css({'white-space':'break-spaces'});
-                  					element.find('.fc-content').find('.fc-title').addClass('d-none d-sm-block').css({'float':'none'});
-                  					
-                  					if( $('.fc-basic_month').closest('div').length > 0 ){
-										element.find('.fc-content').find('.fc-title').removeClass('d-none').addClass('d-inline-block');     
-										element.addClass('w-100');
-                  					}
-                  					
-                  					 element.popover({
-											placement: 'top',
-											html: true,
-											image: true,
-											trigger : 'hover',
-											title: event.title,
-											content: event.nonstandard.description ? event.nonstandard.description : '',
-											container:'body'
-									}); 
-                  				 }
-                  				 if ( view.name == 'basicWeek' ){ 
-                                    let pop =  element.popover({
-											placement: 'top',
-											html: true,
-											image: true,
-											trigger : 'hover',
-											title: event.title + ' ' + event.start.format('HH:mm'),
-											content: event.nonstandard.description ? event.nonstandard.description : '',
-											container:'body',
-											
-									}); 
-									if(event.title === 'Свободное время'){
-                  					    element.find('.fc-title').addClass('free-time');
-                  					}
-									
-                                 }
-                  				 
-                  				 
-                  				 if ( view.name == 'listWeek' ) { 
-                  				  	element.find('.fc-list-item-marker ').append(' (' + event.nonstandard.master_name + ') '); 
-                  				  
-                                 }
-                                 
-                                  if (view.name == 'agendaWeek' || view.name == 'agendaDay' ) {
-                                  
-                                  element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
-                  				 	if( event.nonstandard.notice){
-                  				 		element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
-                  				 	}
-                                  }
-                  				 
-                	}"
+                                    $('.popover').remove();
+                                    element.addClass('event-render');
+                                    element.find('.fc-content').append( element.find('.fc-time').addClass('font-italic') );
+                                    
+                                    if (view.name == 'basicDay' ) { 
+                                        element.find('.fc-content').addClass('d-flex flex-column');
+                                        element.addClass('fc-basic_day');
+                                        element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
+                                        if( event.nonstandard.notice){
+                                            element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
+                                        }
+                                    }
+                                     if (view.name == 'month' ) { 
+                                        element.addClass('fc-basic_month');
+                                        element.find('.fc-content').prepend(element.find('.fc-time'));
+                                        
+                                        if(event.title === 'Свободное время'){
+                                            element.find('.fc-title').addClass('free-time');
+                                            element.find('.fc-time').addClass('free-time');
+                                        }
+                                        
+                                        element.find('.fc-content').find('.fc-time').css({'white-space':'break-spaces'});
+                                        element.find('.fc-content').find('.fc-title').addClass('d-none d-sm-block').css({'float':'none'});
+                                        
+                                        if( $('.fc-basic_month').closest('div').length > 0 ){
+                                            element.find('.fc-content').find('.fc-title').removeClass('d-none').addClass('d-inline-block');     
+                                            element.addClass('w-100');
+                                        }
+                                        
+                                         element.popover({
+                                                placement: 'top',
+                                                html: true,
+                                                image: true,
+                                                trigger : 'hover',
+                                                title: event.title,
+                                                content: event.nonstandard.description ? event.nonstandard.description : '',
+                                                container:'body'
+                                        }); 
+                                     }
+                                     if ( view.name == 'basicWeek' ){ 
+                                        let pop =  element.popover({
+                                                placement: 'top',
+                                                html: true,
+                                                image: true,
+                                                trigger : 'hover',
+                                                title: event.title + ' ' + event.start.format('HH:mm'),
+                                                content: event.nonstandard.description ? event.nonstandard.description : '',
+                                                container:'body',
+                                                
+                                        }); 
+                                        if(event.title === 'Свободное время'){
+                                            element.find('.fc-title').addClass('free-time');
+                                        }
+                                     }
+                                     if ( view.name == 'listWeek' ) { 
+                                        element.find('.fc-list-item-marker ').append(' (' + event.nonstandard.master_name + ') '); 
+                                     }
+                                      if (view.name == 'agendaWeek' || view.name == 'agendaDay') {
+                                      
+                                          element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
+                                            if( event.nonstandard.notice){
+                                                element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
+                                            }
+                                      }
+                  				}"
                             ),
-                            'eventAfterAllRender' => new JsExpression(
-                                "
-                	function(view){
-						view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
-						if ($(window).width() < 540 ){
-							view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
-						}
-					}
-                "
+                            'eventAfterAllRender' => new JsExpression("
+                                function(view){
+                                    view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
+                                    if ($(window).width() < 540 ){
+                                        view.calendar.el.find('.fc-right').find('.btn-group').removeClass('btn-group').addClass('btn-group-vertical');
+                                    }
+                                }"
                             ),
                             'viewRender'          => new JsExpression(
-                                "function (view,event, element){
-								localStorage.setItem('fcDefaultView', view.name);
-								var date = $('#calendar').fullCalendar('getDate');
-								localStorage.setItem('fcDefaultViewDate', date.format());
-                	}"
+                                    "function (view,event, element){
+                                        localStorage.setItem('fcDefaultView', view.name);
+                                        var date = $('#calendar').fullCalendar('getDate');
+                                        localStorage.setItem('fcDefaultViewDate', date.format());
+                	                }"
                             ),
                         ],
-
                     ]
                 ); ?>
 
