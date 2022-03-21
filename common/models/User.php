@@ -498,6 +498,9 @@ class User extends ActiveRecord implements IdentityInterface
         return ArrayHelper::map($master, 'id', 'username');
     }
 
+
+
+
     /**
      * Getting user data
      *
@@ -620,6 +623,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(ServiceUser::class, ['user_id' => 'id']);
     }
+
 
     /**
      * Return client list dataProvider

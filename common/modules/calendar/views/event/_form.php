@@ -4,6 +4,7 @@
 //use common\models\Master;
 use common\models\Event;
 use common\models\Service;
+use common\models\ServiceUser;
 use common\models\User;
 use kartik\datetime\DateTimePicker;
 use kartik\select2\Select2;
@@ -11,10 +12,13 @@ use yii\helpers\Html;
 
 //use yii\widgets\ActiveForm;/*/
 use yii\bootstrap4\ActiveForm;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Event */
 /* @var $form yii\bootstrap4\ActiveForm */
+
+
 ?>
 
 <div class="event-form">
@@ -105,24 +109,53 @@ use yii\bootstrap4\ActiveForm;
             'pluginOptions' => [
                 'allowClear' => true
             ],
+            'pluginEvents'  => [
+                "change" => 'function() { 
+                var data_id = $(this).val();
+                $.ajax({
+                    url: "/calendar/event/user-service",
+                    method: "get",
+                    dataType: "json",
+                    data: {id: data_id},
+                    success: function(data){
+                       $("select#serviceUser").html(data).attr("disabled", false);
+                    },
+                    error: function(data , jqXHR, exception){
+                        var Toast = Swal.mixin({
+                                          toast: true,
+                                          position: "top-end",
+                                          showConfirmButton: false,
+                                          timer: 5000,
+                                        });
+                          Toast.fire({
+                            icon: "error",
+                            //title: data.responseJSON.message
+                            title: data.responseText
+                          });
+                    }
+                });
+                }',
+            ],
         ]
     ); ?>
+
 
     <?= $form->field($model, 'service_array')->widget(
         Select2::class,
         [
-            'name'     => 'service_array[]',
-            'language' => 'ru',
-            'data'          => Service::getServiceList(),
+            'name'          => 'service_array[]',
+            'language'      => 'ru',
+            'data'          => ServiceUser::getUserServices($model->master->id),
             'theme'         => Select2::THEME_MATERIAL,
             'options'       => [
+                'id'           => 'serviceUser',
                 'placeholder'  => 'Выберите услугу ...',
                 'multiple'     => true,
                 'autocomplete' => 'off',
             ],
             'pluginOptions' => [
-                'tags'            =>  true,
-                'allowClear'      => true,
+                'tags'       => true,
+                'allowClear' => true,
             ],
         ]
     ) ?>
