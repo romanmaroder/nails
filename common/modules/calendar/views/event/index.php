@@ -77,17 +77,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php
                 if (Yii::$app->session->hasFlash('msg')) {
                     $js = "$(function (){
-				var Toast = Swal.mixin({
-							  toast: true,
-							  position: 'top-end',
-							  showConfirmButton: false,
-							  timer: 5000,
-							});
-							Toast.fire({
-									icon: 'success',
-									title: '" . Yii::$app->session->getFlash('msg') . "'
-							});	  
-				})
+                    var Toast = Swal.mixin({
+                                  toast: true,
+                                  position: 'top-end',
+                                  showConfirmButton: false,
+                                  timer: 5000,
+                                });
+                                Toast.fire({
+                                        icon: 'success',
+                                        title: '" . Yii::$app->session->getFlash('msg') . "'
+                                });	  
+                    })
 		";
 
                     $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
