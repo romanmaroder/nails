@@ -5,6 +5,7 @@ use common\models\User;
 use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\ServiceUser */
@@ -19,13 +20,19 @@ use yii\bootstrap4\ActiveForm;
     </div>
 <?php endif; ?>
 
-
+<?php Pjax::begin(); ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col">
             <div class="service-user-form">
 
-                <?php $form = ActiveForm::begin(); ?>
+                <?php $form = ActiveForm::begin(
+                    [
+                        'options' => [
+                            'data-pjax' => 1,
+                        ],
+                    ]
+                ); ?>
 
                 <?= $form->field($model, 'service_id')->widget(
                     Select2::class,
@@ -66,7 +73,10 @@ use yii\bootstrap4\ActiveForm;
                 <? /*= $form->field($model, 'updated_at')->textInput() */ ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-sm btn-success']) ?>
+                    <?= Html::submitButton(
+                        '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Сохранить',
+                        ['class' => 'btn btn-sm btn-success']
+                    ) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
@@ -75,3 +85,4 @@ use yii\bootstrap4\ActiveForm;
         </div>
     </div>
 </div>
+<?php Pjax::end(); ?>

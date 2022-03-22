@@ -19,8 +19,6 @@ $this->title                   = 'Клиенты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-
-
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
@@ -279,7 +277,15 @@ if (Yii::$app->id == 'app-backend') {
       "pageLength": 10,
       "autoWidth": false,
       "info": false,
+      "bStateSave": true,
       "dom": "<'row'<'col-sm-12 col-md-4 order-3 order-md-1 text-left'B><'col-sm-12 col-md-4 order-md-3 text-md-right d-flex d-md-block'l><'col-sm-12 order-md-2 col-md-4 d-flex d-md-block'f>>tp",
+      /*"fnStateSave": function (oSettings, oData) {
+        localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+      },
+      "fnStateLoad": function () {
+        var data = localStorage.getItem('DataTables_' + window.location.pathname);
+        return JSON.parse(data);
+      },*/
       "buttons": [
         {
 				"text": "Добавить клиента",
