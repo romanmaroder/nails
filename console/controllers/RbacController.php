@@ -27,9 +27,9 @@ class RbacController extends Controller
         $auth->add($permCreatePost);
 
         // добавляем роль "user"
-        $user              = $auth->createRole('user');
-        $user->description = 'Клиент';
-        $auth->add($user);
+       // $user              = $auth->createRole('user');
+        //$user->description = 'Клиент';
+        //$auth->add($user);
 
         // добавляем роль "master"
         $master              = $auth->createRole('master');
@@ -45,7 +45,7 @@ class RbacController extends Controller
         $manager              = $auth->createRole('manager');
         $manager->description = 'Менеджер';
         $auth->add($manager);
-        $auth->addChild($manager, $user);
+       // $auth->addChild($manager, $user);
         $auth->addChild($manager, $master);
         $auth->addChild($manager, $author);
 

@@ -81,9 +81,9 @@ class SignupForm extends Model
 
         //Добавляем роль по умолчанию для каждого зарегестрированного
         if ($user->save()) {
-            $auth             = Yii::$app->authManager;
-            $role             = $auth->getRole('user');
-            $auth->assign($role, $user->id);
+           // $auth             = Yii::$app->authManager;//TODO убрать роль по умолчанию
+            //$role             = $auth->getRole('user');
+            //$auth->assign($role, $user->id);
             return $user && $this->sendEmail($user);
         }
         return null;

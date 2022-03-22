@@ -142,10 +142,10 @@ class User extends ActiveRecord implements IdentityInterface
                     Yii::$app->authManager->assign($role, $this->getId());
                 }
             }
-        } else {
+        } /*else {
             $role = Yii::$app->authManager->getRole('user');
-            Yii::$app->authManager->assign($role, $this->getId());
-        }
+            Yii::$app->authManager->assign($role, $this->getId()); //TODO проверить чтоб ничего не сломалось
+        }*/
     }
 
     /**
@@ -169,8 +169,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function checkRoles($column_name = null): array
     {
          if (Yii::$app->controller->id === 'client'){
-        $roles = Yii::$app->authManager->getRolesByUser($this->getId());
-        return ArrayHelper::getColumn($roles, $column_name, true);
+            $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+            return ArrayHelper::getColumn($roles, $column_name, true);
         }
         return [];
     }
