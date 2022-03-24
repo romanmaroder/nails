@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use common\models\ServiceUser;
 use common\models\ServiceUserSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,6 +21,21 @@ class ServiceUserController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                //'only'  => ['login', 'logout', 'index'],
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions'=>['login'],
+                        'roles'   => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['admin','manager'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [

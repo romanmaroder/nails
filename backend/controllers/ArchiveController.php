@@ -7,6 +7,7 @@ use Yii;
 use common\models\Archive;
 use common\models\ArchiveSearch;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +23,21 @@ class ArchiveController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                //'only'  => ['login', 'logout', 'index'],
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions'=>['login'],
+                        'roles'   => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['admin','manager'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class'   => VerbFilter::class,
                 'actions' => [

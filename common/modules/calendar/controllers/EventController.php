@@ -46,12 +46,11 @@ class EventController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['login','user-service'],
+                        'actions'=>['login','user-service'],
                         'roles'   => ['?'],
                     ],
                     [
                         'allow' => true,
-                        //'actions' => [],
                         'roles' => ['@'],
                     ],
                 ],
@@ -72,6 +71,9 @@ class EventController extends Controller
      */
     public function actionIndex()
     {
+        /*echo'<pre>';
+        var_dump(Event::find()->with(['master', 'client', 'services'])->all());
+        die();*/
         $cache = Yii::$app->cache;
         $key   = 'events_list';  // Формируем ключ
         // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час

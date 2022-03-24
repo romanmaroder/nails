@@ -18,7 +18,7 @@ class AdminController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                /*'class' => AccessControl::class,
                 'only'  => ['logout', 'signup'],
                 'rules' => [
                     [
@@ -31,36 +31,36 @@ class AdminController extends Controller
                         'allow'   => true,
                         'roles'   => ['@'],
                     ],
-                ],
+                ],*/
 
-            ],
+            //],
 
             //Доступ только для админа
-            [
+           // [
                 'class' => AccessControl::class,
                 'only'  => ['index'],
                 'rules' => [
                     [
                         'actions'       => ['index'],
-                        'controllers'   => ['site', 'event', 'client','master'],
+                        'controllers'   => ['site', 'event', 'client','master','blog'],
                         'allow'         => true,
                         'roles'         => ['admin', 'manager'],
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->can('perm_view-calendar');
+                            return Yii::$app->user->can('perm_create-event');
                         },
                     ],
                     [
                         'actions'      => ['index'],
-                        'controllers'  => ['site', 'event', 'client','master','todo'],
+                        'controllers'  => ['site', 'event', 'client','master','todo','blog'],
                         'allow'        => false,
                         'roles'        => ['@'],
                         'denyCallback' => function ($rule, $action) {
                             Yii::$app->user->logout();
-                            Yii::$app->session->setFlash('denied', Yii::$app->params['error']['access-is-denied']); ;
+                            Yii::$app->session->setFlash('denied', Yii::$app->params['error']['access-is-denied']);
                            return $this->redirect('site/login') ;
-//                            ;
                         }
                     ],
+
                 ],
             ],
 

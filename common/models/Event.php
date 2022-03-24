@@ -144,6 +144,7 @@ class Event extends ActiveRecord
         ];
     }
 
+
     /**
      * Gets query for [[Master]].
      *

@@ -23,7 +23,7 @@ $( document ).ready(function() {
 
     $(document).on('pjax:complete', function() {
         $(".spinner-border").addClass('d-none');
-        $('button[type=submit]').attr('disabled', true).addClass('disabled');
+        $('button[type=submit]').attr('disabled', false).removeClass('disabled');
     });
 
 

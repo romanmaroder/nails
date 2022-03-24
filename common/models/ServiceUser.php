@@ -126,7 +126,7 @@ class ServiceUser extends \yii\db\ActiveRecord
      */
     public static function getUserServices( ?int $id)
     {
-        $services = self::find()->with('service', 'user')->where(['user_id' => $id])->asArray()->all();
+        $services = ServiceUser::find()->with('service', 'user')->where(['user_id' => $id])->asArray()->all();
 
         if (Yii::$app->controller->action->id == 'user-service') {
             $data = [];
