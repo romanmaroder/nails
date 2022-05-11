@@ -26,9 +26,9 @@ use yii\helpers\Url;
 		<div class="user-panel mt-3 pb-3 mb-3 d-flex">
 			<div class="image">
 				<?php
-/*                echo Html::img($user->getPicture(),['class'=>'img-circle
+                echo Html::img($user->getPicture(),['class'=>'img-circle
                                                 elevation-2','alt'=>'User
-                                                Image']) ;*/?>
+                                                Image']) ;?>
 			</div>
 			<div class="info">
                 <?php echo Html::a($user->username . ' (<span>'. Yii::$app->user->identity->role->description

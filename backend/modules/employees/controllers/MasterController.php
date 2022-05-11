@@ -38,8 +38,20 @@ class MasterController extends Controller
                         'roles'   => ['?'],
                     ],
                     [
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'allow'         => true,
+                        'roles'         => ['admin', 'manager'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->can('perm_create-event');
+                        },
+                    ],
+                    [
+                        'allow'        => false,
+                        'roles'        => ['@'],
+                        'denyCallback' => function ($rule, $action) {
+                            Yii::$app->user->logout();
+                            Yii::$app->session->setFlash('denied', Yii::$app->params['error']['access-is-denied']);
+                            return $this->redirect(['site/login']) ;
+                        }
                     ],
                 ],
             ],

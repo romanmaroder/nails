@@ -1,5 +1,7 @@
 <?php
+
 namespace backend\modules\telegram\api;
+
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Message;
 
@@ -7,9 +9,9 @@ class TelegramBot extends Api
 {
     /**
      *  Method for sending responses to callback requests sent from built-in keypads
-     * @param  array  $params
+     * @param array $params
      *
-     * @return \Telegram\Bot\Objects\Message
+     * @return Message
      */
     public function answerCallbackQuery(array $params): Message
     {
@@ -20,9 +22,9 @@ class TelegramBot extends Api
     /**
      *
      * @param $method
-     * @param  array  $params
+     * @param array $params
      *
-     * @return \Telegram\Bot\Objects\Message
+     * @return Message
      */
     public function customSendRequest($method, array $params = []): Message
     {

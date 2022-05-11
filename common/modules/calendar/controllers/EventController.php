@@ -11,6 +11,7 @@ use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
 use common\models\ServiceUser;
+use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
@@ -167,8 +168,10 @@ class EventController extends Controller
 
                 $chat    = Telegram::find()->where(['user_id' => $model->client_id])->asArray()->one();
                 $chat_id = $chat['chat_id'];
+
                 if ($chat_id) {
                     $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
+
                     $telegram_bot->sendMessage(
                         [
                             'chat_id' => $chat_id,
@@ -180,8 +183,10 @@ class EventController extends Controller
 
                 $viber    = Viber::find()->where(['user_id' => $model->client_id])->asArray()->one();
                 $viber_id = $viber['viber_user_id'];
+
                 if ($viber_id) {
                     $viber_bot = new ViberBot(['token' => Yii::$app->params['viber']['viberToken']]);
+
                     $botSender = new Sender(
                         [
                             'name'   => Yii::$app->params['viber']['viberBotName'],
@@ -189,7 +194,7 @@ class EventController extends Controller
                         ]
                     );
                     $viber_bot->getClient()->sendMessage(
-                        (new \Viber\Api\Message\Text())
+                        (new Text())
                             ->setSender($botSender)
                             ->setReceiver($viber_id)
                             ->setMinApiVersion(3)
@@ -282,7 +287,7 @@ class EventController extends Controller
                         ]
                     );
                     $viber_bot->getClient()->sendMessage(
-                        (new \Viber\Api\Message\Text())
+                        (new Text())
                             ->setSender($botSender)
                             ->setReceiver($viber_id)
                             ->setMinApiVersion(3)
