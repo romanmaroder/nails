@@ -93,4 +93,11 @@ class Telegram extends ActiveRecord
     {
         return static::find()->select('user_id')->where(['chat_id' => $chat_id]);
     }
+
+    public function findById(int $id)
+    {
+        $id =  self::find()->where(['user_id' => $id])->asArray()->one();
+
+        return $id['chat_id'];
+    }
 }

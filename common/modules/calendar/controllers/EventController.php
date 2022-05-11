@@ -2,6 +2,7 @@
 
 namespace common\modules\calendar\controllers;
 
+use backend\modules\messenger\controllers\AppMessenger;
 use backend\modules\telegram\api\TelegramBot;
 use backend\modules\telegram\models\Telegram;
 use backend\modules\viber\api\ViberBot;

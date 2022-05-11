@@ -7,7 +7,9 @@ namespace backend\modules\telegram\controllers;
 use backend\modules\telegram\api\TelegramBot;
 use backend\modules\telegram\models\Telegram;
 use common\models\Event;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use common\models\User;
@@ -39,8 +41,8 @@ class TelegramController extends Controller
     /**
      * Bot initialization
      *
-     * @return \backend\modules\telegram\api\TelegramBot
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @return TelegramBot
+     * @throws TelegramSDKException
      */
     public function telegramBot(): TelegramBot
     {
@@ -49,8 +51,8 @@ class TelegramController extends Controller
 
     /**
      * Bot functionality
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     * @throws InvalidConfigException
+     * @throws TelegramSDKException
      */
     public function actionWebhook()
     {
