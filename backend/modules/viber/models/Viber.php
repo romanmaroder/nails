@@ -108,5 +108,10 @@ class Viber extends \yii\db\ActiveRecord
     {
         return static::find()->select('user_id')->where(['viber_user_id' => $viber_user_id]);
     }
+    public function findById(int $id)
+    {
+        $id =  self::find()->where(['user_id' => $id])->asArray()->one();
 
+        return $id['viber_user_id'];
+    }
 }

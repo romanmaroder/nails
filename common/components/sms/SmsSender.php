@@ -20,10 +20,10 @@ use yii\base\InvalidConfigException;
  */
 class SmsSender extends Component implements SmsSenderInterface
 {
-    protected const MORNING = "Доброе утро" . PHP_EOL;
-    protected const DAY     = "Добрый день" . PHP_EOL;
-    protected const EVENING = "Добрый вечер" . PHP_EOL;
-    protected const NIGHT   = "Доброй ночи" . PHP_EOL;
+    protected const MORNING = "Доброе утро." . PHP_EOL;
+    protected const DAY     = "Добрый день." . PHP_EOL;
+    protected const EVENING = "Добрый вечер." . PHP_EOL;
+    protected const NIGHT   = "Доброй ночи." . PHP_EOL;
 
     /**
      * Checking what operating system the user is using
@@ -102,7 +102,7 @@ class SmsSender extends Component implements SmsSenderInterface
             return $greeting . Yii::$app->params['sms-location']['entry-next'] . $data . '.';
         }
 
-        return $greeting . '. '. $data . Yii::$app->params['sms-location']['entry'];
+        return $greeting . $data . Yii::$app->params['sms-location']['entry'];
     }
 
     /**
@@ -119,4 +119,5 @@ class SmsSender extends Component implements SmsSenderInterface
 
         return $greeting . Yii::$app->params['sms-location']['address'];
     }
+
 }

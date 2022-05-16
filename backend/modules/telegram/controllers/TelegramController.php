@@ -42,11 +42,10 @@ class TelegramController extends Controller
      * Bot initialization
      *
      * @return TelegramBot
-     * @throws TelegramSDKException
      */
     public function telegramBot(): TelegramBot
     {
-        return new TelegramBot(Yii::$app->params['telegramToken']);
+        return new TelegramBot();
     }
 
     /**
