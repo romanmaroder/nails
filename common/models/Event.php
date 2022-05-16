@@ -151,7 +151,6 @@ class Event extends ActiveRecord
         parent::__construct($config);
     }
 
-
     /**
      * Notifying subscribed users
      *
@@ -163,9 +162,9 @@ class Event extends ActiveRecord
             'event_time_start' => $this->event_time_start
         ];
 
-        $item = new AppMessenger();
-        $item->toTelegram()->send($data);
-        $item->toViber()->send($data);
+        $notify = new AppMessenger();
+        $notify->toTelegram()->send($data);
+        $notify->toViber()->send($data);
     }
 
     /**
