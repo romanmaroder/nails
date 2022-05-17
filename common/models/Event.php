@@ -165,6 +165,7 @@ class Event extends ActiveRecord
         $notify = new AppMessenger();
         $notify->toTelegram()->send($data);
         $notify->toViber()->send($data);
+
     }
 
     /**

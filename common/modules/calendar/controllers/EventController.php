@@ -18,6 +18,7 @@ use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
+use yii\base\InvalidConfigException;
 use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -71,7 +72,7 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
@@ -166,9 +167,9 @@ class EventController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
             } else {
-
                 $model->save(false);
-                Yii::$app->session->setFlash('msg', "Запись " . $model->client->username . " сохранена");
+
+                Yii::$app->session->setFlash('msg', "Запись {$model->client->username} сохранена.");
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
@@ -211,7 +212,6 @@ class EventController extends Controller
             ]
         );
     }
-
 
     /**
      * Updating the record date by changing the event size
@@ -306,7 +306,7 @@ class EventController extends Controller
 
     /**
      * Displaying user statistics
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionStatistic()
     {

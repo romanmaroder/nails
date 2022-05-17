@@ -35,7 +35,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
                     View::POS_HEAD
                 ); ?>
-
                 <?php
                 Modal::begin(
                     [
@@ -59,7 +58,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 );
                 Modal::end(); ?>
-
                 <?php
                 # Модальное окно просмотра и редактирования
                 Modal::begin(
@@ -71,7 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 );
                 Modal::end();
                 ?>
-
                 <?php
                 if (Yii::$app->session->hasFlash('msg')) {
                     $js = "$(function (){
@@ -90,8 +87,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     $this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);
                 }; ?>
-
-
                 <?php
 
                 if (Yii::$app->user->can('manager')) {
@@ -214,7 +209,6 @@ $this->params['breadcrumbs'][] = $this->title;
 									 }
                 		}"
                 );; ?>
-
                 <?= yii2fullcalendar::widget(
                     [
                         'id' => 'calendar',
@@ -398,7 +392,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ]
                 ); ?>
-
             </div>
         </div>
     </div>

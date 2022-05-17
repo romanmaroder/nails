@@ -16,7 +16,7 @@ use Yii;
 class ViberMessenger extends AbstractMessenger
 {
     private ViberBot $messenger;
-    private string   $recipient;
+    private ?string  $recipient;
     protected string $text;
 
     public function __construct()
@@ -24,52 +24,55 @@ class ViberMessenger extends AbstractMessenger
         $this->messenger = new ViberBot();
     }
 
-    private function setReceiver($recipient): string
+    private function setReceiver($recipient): ?string
     {
-        $id = new Viber();
-        if ($id->findById($recipient)) {
-            $this->recipient = $id->findById($recipient);
-        }
+        $id              = new Viber();
+        $this->recipient = $id->findById($recipient);
         return $this->recipient;
     }
 
 
-    public function send(array $params): Response
+    public function send(array $params): ?Response
     {
-        return $this->messenger
-            ->getClient()
-            ->sendMessage((new Text())
-                              ->setSender(
-                                  new Sender(
-                                      [
-                                          'name'   => Yii::$app->params['viber']['viberBotName'],
-                                          'avatar' => Yii::$app->params['viber']['viberBotAvatar'],
-                                      ]
-                                  )
-                              )
-                              ->setReceiver($this->setReceiver($params['id']))
-                              ->setMinApiVersion(3)
-                              ->setText(Yii::$app->smsSender->messageText($params['event_time_start']))
-                              ->setKeyboard(
-                                  (new Keyboard())
-                                      ->setButtons(
-                                          [
-                                              (new Button())
-                                                  ->setColumns('3')
-                                                  ->setBgColor('#7f8c8d')
-                                                  ->setTextSize('regular')
-                                                  ->setActionType('reply')
-                                                  ->setActionBody('next')
-                                                  ->setText('Следующие'),
-                                              (new Button())
-                                                  ->setColumns('3')
-                                                  ->setBgColor('#7f8c8d')
-                                                  ->setTextSize('regular')
-                                                  ->setActionType('reply')
-                                                  ->setActionBody('previous')
-                                                  ->setText('Предыдущие')
-                                          ]
-                                      )
-                              ));
+        if ($this->setReceiver($params['id']) !== null) {
+            return $this->messenger
+                ->getClient()
+                ->sendMessage(
+                    (new Text())
+                        ->setSender(
+                            new Sender(
+                                [
+                                    'name'   => Yii::$app->params['viber']['viberBotName'],
+                                    'avatar' => Yii::$app->params['viber']['viberBotAvatar'],
+                                ]
+                            )
+                        )
+                        ->setReceiver($this->setReceiver($params['id']))
+                        ->setMinApiVersion(3)
+                        ->setText(Yii::$app->smsSender->messageText($params['event_time_start']))
+                        ->setKeyboard(
+                            (new Keyboard())
+                                ->setButtons(
+                                    [
+                                        (new Button())
+                                            ->setColumns('3')
+                                            ->setBgColor('#7f8c8d')
+                                            ->setTextSize('regular')
+                                            ->setActionType('reply')
+                                            ->setActionBody('next')
+                                            ->setText('Следующие'),
+                                        (new Button())
+                                            ->setColumns('3')
+                                            ->setBgColor('#7f8c8d')
+                                            ->setTextSize('regular')
+                                            ->setActionType('reply')
+                                            ->setActionBody('previous')
+                                            ->setText('Предыдущие')
+                                    ]
+                                )
+                        )
+                );
+        }
+        return null;
     }
 }
