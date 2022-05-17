@@ -92,9 +92,9 @@ use yii\widgets\Pjax;
 
                         <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
 
-                        <?= $form->field($model, 'roles')->checkboxList($model->getRolesDropdown()); ?>
+                        <?= $form->field($model, 'roles')->checkboxList($model->getRolesDropdown(),['value'=>$model->getRoles('name')]); ?>
 
-                        <?= $form->field($model, 'color')->input('color', ['class' => "form-control"])->label(
+                        <?= $form->field($model, 'color')->input('color', ['class' => "form-control",'value'=>$model->profile->color])->label(
                             'Цвет',
                             ['class' => 'd-none']
                         ) ?>

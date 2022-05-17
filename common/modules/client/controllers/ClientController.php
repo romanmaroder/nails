@@ -5,7 +5,10 @@ namespace common\modules\client\controllers;
 use Yii;
 use common\models\User;
 use common\models\Profile;
+use yii\behaviors\AttributeBehavior;
+use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -157,6 +160,10 @@ class ClientController extends Controller
     public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
+        /*echo '<pre>';
+        var_dump($model);
+        echo '</pre>';
+        die();*/
         $profile= Profile::find()->where(['user_id'=>$id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

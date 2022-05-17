@@ -6,6 +6,7 @@ use common\models\Event;
 use Yii;
 use common\models\User;
 use yii\data\ActiveDataProvider;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -22,10 +23,10 @@ class MasterController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::class,
+            'verbs'  => [
+                'class'   => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST','GET'],
+                    'delete' => ['POST', 'GET'],
                 ],
             ],
             'access' => [
@@ -50,31 +51,39 @@ class MasterController extends Controller
                         'denyCallback' => function ($rule, $action) {
                             Yii::$app->user->logout();
                             Yii::$app->session->setFlash('denied', Yii::$app->params['error']['access-is-denied']);
-                            return $this->redirect(['site/login']) ;
+                            return $this->redirect(['site/login']);
                         }
                     ],
                 ],
             ],
         ];
     }
+
     /**
      * Lists all User models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $query = User::find()->select('user.*')
+        $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
+
+        /*$query = User::find()->select('user.*')
             ->leftJoin('auth_assignment', '`auth_assignment`.`user_id` = `user`.`id`')
-            ->andWhere(['auth_assignment.item_name'=>['master','manager']]);
+            ->andWhere(['auth_assignment.item_name'=>['master','manager']]);*/
 
+        $query = User::find()->where(['id' => $masterIds])->with(['profile']);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query' => $query,
+            ]
+        );
 
-        return $this->render('index', [
+        return $this->render(
+            'index', [
             'dataProvider' => $dataProvider,
-        ]);
+        ]
+        );
     }
 
     /**
@@ -83,11 +92,13 @@ class MasterController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView(int $id)
     {
-        return $this->render('view', [
+        return $this->render(
+            'view', [
             'model' => $this->findModel($id),
-        ]);
+        ]
+        );
     }
 
     /**
@@ -103,9 +114,11 @@ class MasterController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('create', [
+        return $this->render(
+            'create', [
             'model' => $model,
-        ]);
+        ]
+        );
     }
 
     /**
@@ -115,7 +128,7 @@ class MasterController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
 
@@ -123,9 +136,11 @@ class MasterController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->render(
+            'update', [
             'model' => $model,
-        ]);
+        ]
+        );
     }
 
     /**
@@ -134,18 +149,17 @@ class MasterController extends Controller
      * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws StaleObjectException
      */
     public function actionDelete(int $id)
     {
-
         if (Event::find()->andWhere(['master_id' => $id])->exists()) {
             Yii::$app->session->setFlash('danger', 'У мастера есть записи');
-            return  $this->redirect(['index']);
+            return $this->redirect(['index']);
         } else {
             $this->findModel($id)->delete();
             return $this->redirect(['index']);
         }
-
     }
 
     /**

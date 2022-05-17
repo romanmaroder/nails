@@ -6,6 +6,7 @@ use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use Yii\db\ActiveQuery;
@@ -43,7 +44,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public $roles;
     public $password;
-    public $color;
+    public  $color;
 
 
     /**
@@ -61,6 +62,17 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::class,
+           /* [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                        ActiveRecord::EVENT_AFTER_FIND => 'roles',
+                ],
+                'value' => function ($event) {
+
+                    $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+                    return ArrayHelper::getColumn($roles, 'name', true);
+                    },
+            ],*/
         ];
     }
 
@@ -148,34 +160,6 @@ class User extends ActiveRecord implements IdentityInterface
             Yii::$app->authManager->assign($role, $this->getId()); //TODO проверить чтоб ничего не сломалось
         }*/
     }
-
-    /**
-     * Populate roles attribute with data from RBAC after record loaded from DB
-     */
-    public function afterFind()
-    {
-        $this->roles = $this->checkRoles('name');
-
-        $this->color = $this->profile->color;
-    }
-
-
-    /**
-     * Get user roles from RBAC
-     *
-     * @param $column_name
-     *
-     * @return array
-     */
-    public function checkRoles($column_name = null): array
-    {
-        if (Yii::$app->controller->id === 'client') {
-            $roles = Yii::$app->authManager->getRolesByUser($this->getId());
-            return ArrayHelper::getColumn($roles, $column_name, true);
-        }
-        return [];
-    }
-
 
     /**
      * Get user roles from RBAC

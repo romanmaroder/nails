@@ -60,7 +60,7 @@ use yii\helpers\Html;
                             </li>
                         <?php endif;?>
 
-                        <?php if ($model->color):?>
+                        <?php if ($model->profile->color):?>
                             <li class="small mb-3">
                                 <span class="fa-li">
                                     <i class="fas fa-paint-brush"></i>
@@ -70,7 +70,7 @@ use yii\helpers\Html;
                                         'width'            => '20px',
                                         'height'           => '20px',
                                         'border-radius'    => '20px',
-                                        'background-color' => $model->color
+                                        'background-color' => $model->profile->color
                                     ]
                                 ];
                                 echo Html::tag('div', '', $option); ;?>

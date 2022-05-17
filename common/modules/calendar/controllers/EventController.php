@@ -79,30 +79,31 @@ class EventController extends Controller
         /*echo'<pre>';
         var_dump(Event::find()->with(['master', 'client', 'services'])->all());
         die();*/
-        $cache = Yii::$app->cache;
-        $key   = 'events_list';  // Формируем ключ
-        // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
-        $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-        $dependency      = Yii::createObject(
-            [
-                'class'        => 'yii\caching\ChainedDependency',
-                'dependOnAll'  => true,
-                'dependencies' => [
-                    $eventDependency,
-                    $userDependency
-                ],
-            ]
-        );
-        $events          = $cache->getOrSet(
-            $key,
-            function () {
-                return Event::find()->with(['master', 'client', 'services'])->all();
-            },
-            3600,
-            $dependency
-        );
 
+      //  $cache = Yii::$app->cache;
+      //  $key   = 'events_list';  // Формируем ключ
+        # Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+      //  $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
+      //  $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+       // $dependency      = Yii::createObject(
+//            [
+//                'class'        => 'yii\caching\ChainedDependency',
+//                'dependOnAll'  => true,
+//                'dependencies' => [
+//                    $eventDependency,
+//                    $userDependency
+//                ],
+//            ]
+//        );
+//        $events          = $cache->getOrSet(
+//            $key,
+//            function () {
+    //            return Event::find()->with(['master', 'client', 'services'])->all();
+//            },
+//            3600,
+//            $dependency
+//        );
+      $events =  Event::find()->with(['master', 'client', 'services'])->all();
         foreach ($events as $item) {
             $event                  = new \yii2fullcalendar\models\Event();
             $event->id              = $item->id;
@@ -114,7 +115,7 @@ class EventController extends Controller
                 'notice'      => $item->notice,
                 'master_name' => $item->master->username,
             ];
-            $event->backgroundColor = $item->master->color;
+            $event->backgroundColor = $item->master->profile->color;
             $event->start           = $item->event_time_start;
             $event->end             = $item->event_time_end;
 
