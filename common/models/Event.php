@@ -232,20 +232,25 @@ class Event extends ActiveRecord
         $arr = ArrayHelper::map($this->services, 'id', 'id');
 
         if ($this->service_array) {
+
             foreach ($this->service_array as $one) {
+
                 if (!in_array($one, $arr)) {
                     $model             = new EventService();
                     $model->event_id   = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
+
                 if (isset($arr[$one])) {
                     unset($arr[$one]);
                 }
+
             }
             EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
         }
         EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
+
     }
 
     /**
@@ -276,7 +281,7 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        $query = Event::find()->with(['master', 'client', 'services', 'eventService'])
+        $query = Event::find()->with(['master', 'client', 'services'])
             ->where('event_time_start >= DATE(NOW())');
 
         if (!empty($userId)) {
@@ -320,7 +325,7 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );*/
-        return Event::find()->with(['master', 'client', 'services', 'eventService'])
+        return Event::find()->with(['master', 'client', 'services'])
             ->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
             ->where(['client_id' => $id])
             ->andWhere('event_time_start >= DATE(NOW())')
@@ -508,7 +513,6 @@ class Event extends ActiveRecord
                 $total += $cost->cost;
             }
         }
-
 
         return $total;
     }

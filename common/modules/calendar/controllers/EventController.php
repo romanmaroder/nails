@@ -80,30 +80,30 @@ class EventController extends Controller
         var_dump(Event::find()->with(['master', 'client', 'services'])->all());
         die();*/
 
-      //  $cache = Yii::$app->cache;
-      //  $key   = 'events_list';  // Формируем ключ
+        $cache = Yii::$app->cache;
+        $key   = 'events_list';  // Формируем ключ
         # Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
-      //  $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
-      //  $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
-       // $dependency      = Yii::createObject(
-//            [
-//                'class'        => 'yii\caching\ChainedDependency',
-//                'dependOnAll'  => true,
-//                'dependencies' => [
-//                    $eventDependency,
-//                    $userDependency
-//                ],
-//            ]
-//        );
-//        $events          = $cache->getOrSet(
-//            $key,
-//            function () {
-    //            return Event::find()->with(['master', 'client', 'services'])->all();
-//            },
-//            3600,
-//            $dependency
-//        );
-      $events =  Event::find()->with(['master', 'client', 'services'])->all();
+        $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
+        $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
+        $dependency      = Yii::createObject(
+            [
+                'class'        => 'yii\caching\ChainedDependency',
+                'dependOnAll'  => true,
+                'dependencies' => [
+                    $eventDependency,
+                    $userDependency
+                ],
+            ]
+        );
+        $events          = $cache->getOrSet(
+            $key,
+            function () {
+                return Event::find()->with(['master', 'client', 'services'])->all();
+            },
+            3600,
+            $dependency
+        );
+
         foreach ($events as $item) {
             $event                  = new \yii2fullcalendar\models\Event();
             $event->id              = $item->id;
@@ -222,45 +222,18 @@ class EventController extends Controller
      * @return string|Response
      * @throws NotFoundHttpException
      */
-    public function actionUpdateResize($id, $start, $end)
+    public function actionUpdateDropResize($id, $start, $end)
     {
-        $model                   = $this->findModel($id);
-        $model->event_time_start = $start;
-        $model->event_time_end   = $end;
-        $model->save(false);
+        $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
-            return $this->redirect(['index']);
-        }
-
-        return $this->render(
-            'update',
-            [
-                'model' => $model,
-            ]
-        );
-    }
-
-    /**
-     * Updating the record date by dragging and dropping an event
-     * @param $id - user identifier
-     * @param $start - start time
-     * @param $end - end time
-     * @return string|Response
-     * @throws NotFoundHttpException
-     */
-    public function actionUpdateDrop($id, $start, $end)
-    {
-        $model                   = $this->findModel($id);
         $model->event_time_start = $start;
         $model->event_time_end   = $end;
 
-        $model->save(false);
+        $model->update(false);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post()) && $model->update(false)) {
+            $this->redirect(['index']);
         }
-
         return $this->render(
             'update',
             [
@@ -293,7 +266,7 @@ class EventController extends Controller
      *
      * @param int $id
      *
-     * @return Event the loaded model
+     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel(int $id)
@@ -390,14 +363,13 @@ class EventController extends Controller
      *
      * @param ?int $id - User ID
      * @return array|false|string
-     * @throws NotFoundHttpException
      */
     public function actionUserService(?int $id)
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if (!$id) {
-                throw new NotFoundHttpException('Не найдено услуг для данного пользователя!');
+            if ($id === null) {
+                return Yii::$app->params['error']['master-error'];
             } else {
                 return ServiceUser::getUserServices($id);
             }

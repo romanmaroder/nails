@@ -22,6 +22,7 @@ Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = [
 PluginAsset::register($this)->add(['sweetalert2']);
 $this->title                   = 'Календарь';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="container-fluid">
     <div class="row">
@@ -35,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     "app=" . Json::encode(Yii::$app->id) . "; basePath=" . Json::encode(Yii::$app->request->baseUrl) . ";",
                     View::POS_HEAD
                 ); ?>
+
                 <?php
                 Modal::begin(
                     [
@@ -137,7 +139,8 @@ $this->params['breadcrumbs'][] = $this->title;
 															});
 															  Toast.fire({
 																icon: 'error',
-																title: data.responseText
+																title: data
+																
 															  });
 								},
 							});
@@ -158,7 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
 									var id = event.id;
 									 if(app == 'app-backend'){
 										$.ajax({
-											url: basePath +'/calendar/event/update-resize?id='+id+'&start='+start+'&end='+end,
+											url: basePath +'/calendar/event/update-drop-resize?id='+id+'&start='+start+'&end='+end,
 											type: 'POST',
 											success: function(data){
 											var Toast = Swal.mixin({
@@ -169,7 +172,7 @@ $this->params['breadcrumbs'][] = $this->title;
 															});
 															  Toast.fire({
 																icon: 'info',
-																title: start + ' - ' + end
+																title: event.title+'<\/br>'+start + ' - ' + end
 															  });
 												$('#calendar').fullCalendar('refetchEvents');
 											},
@@ -190,9 +193,9 @@ $this->params['breadcrumbs'][] = $this->title;
 									var id = event.id;
 									if(app == 'app-backend'){
 										$.ajax({
-											url: basePath +'/calendar/event/update-drop?id='+id+'&start='+start+'&end='+end,
+											url: basePath +'/calendar/event/update-drop-resize?id='+id+'&start='+start+'&end='+end,
 											type: 'POST',
-											success: function(){
+											success: function(data){
 											var Toast = Swal.mixin({
 															  toast: true,
 															  position: 'top-end',
@@ -201,25 +204,25 @@ $this->params['breadcrumbs'][] = $this->title;
 															});
 															  Toast.fire({
 																icon: 'info',
-																title: event.title+'</br>'+start + ' - ' + end
+																title: event.title+'<\/br>'+start + ' - ' + end
 															  });
 												$('#calendar').fullCalendar('refetchEvents');
 											},
 										});
 									 }
                 		}"
-                );; ?>
+                ); ?>
                 <?= yii2fullcalendar::widget(
                     [
                         'id' => 'calendar',
-
-                        'events'      => [
+                        'events'        => [
                             'events' => $events,
                         ],
-                        'defaultView' => new JsExpression(
+                        'defaultView'   => new JsExpression(
                             "
              localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
-            "),
+            "
+                        ),
                         'header'        => [
                             'left'   => 'prev,next,today',
                             'center' => 'title',
@@ -282,7 +285,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'defaultDate'          => new JsExpression(
                                 "
                 localStorage.getItem('fcDefaultViewDate') !==null ? localStorage.getItem('fcDefaultViewDate') : $('#calendar').fullCalendar('getDate')
-                " ),
+                "
+                            ),
                             'windowResize'         => $window_resize,
 
                             'eventClick'          => new JsExpression(
@@ -374,7 +378,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                       }
                   				}"
                             ),
-                            'eventAfterAllRender' => new JsExpression("
+                            'eventAfterAllRender' => new JsExpression(
+                                "
                                 function(view){
                                     view.calendar.el.find('.fc-right').find('.btn-group-vertical').removeClass('btn-group-vertical').addClass('btn-group');
                                     if ($(window).width() < 540 ){
@@ -383,7 +388,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }"
                             ),
                             'viewRender'          => new JsExpression(
-                                    "function (view,event, element){
+                                "function (view,event, element){
                                         localStorage.setItem('fcDefaultView', view.name);
                                         var date = $('#calendar').fullCalendar('getDate');
                                         localStorage.setItem('fcDefaultViewDate', date.format());

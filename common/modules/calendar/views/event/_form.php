@@ -138,8 +138,6 @@ use yii\web\JsExpression;
             ],
         ]
     ); ?>
-
-
     <?= $form->field($model, 'service_array')->widget(
         Select2::class,
         [
@@ -159,6 +157,7 @@ use yii\web\JsExpression;
             ],
         ]
     ) ?>
+
     <?
     /*= $form->field($model, 'description')->textarea(['rows' => 3]) */ ?>
 

@@ -124,20 +124,22 @@ class ServiceUser extends \yii\db\ActiveRecord
      * @param ?int $id
      * @return array|string
      */
-    public static function getUserServices( ?int $id)
+    public static function getUserServices(?int $id)
     {
-        $services = ServiceUser::find()->with('service', 'user')->where(['user_id' => $id])->asArray()->all();
+        if (!$id == null) {
+            $services = ServiceUser::find()->with('service', 'user')->where(['user_id' => $id])->asArray()->all();
 
-        if (Yii::$app->controller->action->id == 'user-service') {
-            $data = [];
-            foreach ($services as $service) {
-                $data .= '<option value="' . $service['service']['id'] . '">' . $service['service']['name'] . '</option>';
+            if (Yii::$app->controller->action->id == 'user-service') {
+                $data = [];
+                foreach ($services as $service) {
+                    $data .= '<option value="' . $service['service']['id'] . '">' . $service['service']['name'] . '</option>';
+                }
+                return $data;
+            } elseif (Yii::$app->controller->action->id == 'update') {
+                return ArrayHelper::map($services, 'service.id', 'service.name');
             }
-            return $data;
-        } elseif (Yii::$app->controller->action->id == 'update') {
-
-            return ArrayHelper::map($services,'service.id','service.name');
         }
         return false;
+
     }
 }
