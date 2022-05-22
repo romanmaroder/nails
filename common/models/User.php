@@ -2,9 +2,11 @@
 
 namespace common\models;
 
+use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use Yii\db\ActiveQuery;
@@ -42,7 +44,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public $roles;
     public $password;
-    public $color;
+    public  $color;
 
 
     /**
@@ -60,6 +62,17 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::class,
+           /* [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                        ActiveRecord::EVENT_AFTER_FIND => 'roles',
+                ],
+                'value' => function ($event) {
+
+                    $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+                    return ArrayHelper::getColumn($roles, 'name', true);
+                    },
+            ],*/
         ];
     }
 
@@ -130,7 +143,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Revoke old roles and assign new if any
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function saveRoles()
     {
@@ -149,34 +162,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Populate roles attribute with data from RBAC after record loaded from DB
-     */
-    public function afterFind()
-    {
-        $this->roles = $this->checkRoles('name');
-
-        $this->color = $this->profile->color;
-    }
-
-
-    /**
-     * Get user roles from RBAC
-     *
-     * @param $column_name
-     *
-     * @return array
-     */
-    public function checkRoles($column_name = null): array
-    {
-         if (Yii::$app->controller->id === 'client'){
-            $roles = Yii::$app->authManager->getRolesByUser($this->getId());
-            return ArrayHelper::getColumn($roles, $column_name, true);
-        }
-        return [];
-    }
-
-
-    /**
      * Get user roles from RBAC
      *
      * @param $column_name
@@ -185,15 +170,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getRoles($column_name = null): array
     {
-            $roles = Yii::$app->authManager->getRolesByUser($this->getId());
-            return ArrayHelper::getColumn($roles, $column_name, true);
+        $roles = Yii::$app->authManager->getRolesByUser($this->getId());
+        return ArrayHelper::getColumn($roles, $column_name, true);
     }
 
 
     /**
      * Get user role from RBAC
      *
-     * @return \yii\rbac\Role
+     * @return Role
      */
     public static function getRole(): Role
     {
@@ -211,7 +196,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * {@inheritdoc}
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -499,8 +484,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
-
-
     /**
      * Getting user data
      *
@@ -523,15 +506,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getUserTotalCount()
     {
-        $client = User::getDb()->cache(
+        return User::getDb()->cache(
             function () {
-                $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
-                return User::find()->where(['id' => $clientIds])->count();
+                $master = Yii::$app->authManager->getUserIdsByRole('master');
+                $all = User::find()->select('id')->count();
+
+                return $all - count($master);
             },
             3600
         );
-
-        return $client;
     }
 
 

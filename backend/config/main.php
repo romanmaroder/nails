@@ -22,6 +22,7 @@ return [
         'viber'     => [
             'class' => 'backend\modules\viber\Module',
         ],
+
     ],
     'name'                => 'NAILS-ADMIN',
     'components'          => [

@@ -13,6 +13,7 @@ AppAsset::register($this);
 
 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 $user = Yii::$app->user->identity;
+
 $countEventTotal = \common\models\Event::countEventTotal(Yii::$app->authManager->getUserIdsByRole('master'))
 ?>
 <?php $this->beginPage() ?>

@@ -2,6 +2,7 @@
 
 namespace common\modules\calendar\controllers;
 
+use backend\modules\notification\AppMessenger;
 use backend\modules\telegram\api\TelegramBot;
 use backend\modules\telegram\models\Telegram;
 use backend\modules\viber\api\ViberBot;
@@ -11,9 +12,13 @@ use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
 use common\models\ServiceUser;
+use Viber\Api\Keyboard;
+use Viber\Api\Keyboard\Button;
+use Viber\Api\Message\Text;
 use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
+use yii\base\InvalidConfigException;
 use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -37,7 +42,7 @@ class EventController extends Controller
             'verbs'  => [
                 'class'   => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST','GET'],
+                    'delete' => ['POST', 'GET'],
                 ],
             ],
             'access' => [
@@ -46,7 +51,7 @@ class EventController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions'=>['login','user-service'],
+                        'actions' => ['login', 'user-service'],
                         'roles'   => ['?'],
                     ],
                     [
@@ -67,16 +72,17 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
         /*echo'<pre>';
         var_dump(Event::find()->with(['master', 'client', 'services'])->all());
         die();*/
+
         $cache = Yii::$app->cache;
         $key   = 'events_list';  // Формируем ключ
-        // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+        # Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
         $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
         $dependency      = Yii::createObject(
@@ -109,7 +115,7 @@ class EventController extends Controller
                 'notice'      => $item->notice,
                 'master_name' => $item->master->username,
             ];
-            $event->backgroundColor = $item->master->color;
+            $event->backgroundColor = $item->master->profile->color;
             $event->start           = $item->event_time_start;
             $event->end             = $item->event_time_end;
 
@@ -164,68 +170,10 @@ class EventController extends Controller
             } else {
                 $model->save(false);
 
-
-                $chat    = Telegram::find()->where(['user_id' => $model->client_id])->asArray()->one();
-                $chat_id = $chat['chat_id'];
-                if ($chat_id) {
-                    $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
-                    $telegram_bot->sendMessage(
-                        [
-                            'chat_id' => $chat_id,
-                            'text'    => Yii::$app->smsSender->checkTimeOfDay() . 'Дата следующей записи '
-                                . Yii::$app->formatter->asDatetime($model->event_time_start, 'php:d M Y на H:i'),
-                        ]
-                    );
-                }
-
-                $viber    = Viber::find()->where(['user_id' => $model->client_id])->asArray()->one();
-                $viber_id = $viber['viber_user_id'];
-                if ($viber_id) {
-                    $viber_bot = new ViberBot(['token' => Yii::$app->params['viber']['viberToken']]);
-                    $botSender = new Sender(
-                        [
-                            'name'   => Yii::$app->params['viber']['viberBotName'],
-                            'avatar' => Yii::$app->params['viber']['viberBotAvatar'],
-                        ]
-                    );
-                    $viber_bot->getClient()->sendMessage(
-                        (new \Viber\Api\Message\Text())
-                            ->setSender($botSender)
-                            ->setReceiver($viber_id)
-                            ->setMinApiVersion(3)
-                            ->setText(
-                                Yii::$app->smsSender->checkTimeOfDay() . 'Дата следующей записи '
-                                . Yii::$app->formatter->asDatetime($model->event_time_start, 'php:d M Y на H:i')
-                            )
-                            ->setKeyboard(
-                                (new \Viber\Api\Keyboard())
-                                    ->setButtons(
-                                        [
-                                            (new \Viber\Api\Keyboard\Button())
-                                                ->setColumns('3')
-                                                ->setBgColor('#7f8c8d')
-                                                ->setTextSize('regular')
-                                                ->setActionType('reply')
-                                                ->setActionBody('next')
-                                                ->setText('Следующие'),
-                                            (new \Viber\Api\Keyboard\Button())
-                                                ->setColumns('3')
-                                                ->setBgColor('#7f8c8d')
-                                                ->setTextSize('regular')
-                                                ->setActionType('reply')
-                                                ->setActionBody('previous')
-                                                ->setText('Предыдущие')
-                                        ]
-                                    )
-                            )
-                    );
-                }
-
-                Yii::$app->session->setFlash('msg', "Запись " . $model->client->username . " сохранена");
+                Yii::$app->session->setFlash('msg', "Запись {$model->client->username} сохранена.");
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
-
 
         return $this->renderAjax(
             'create',
@@ -255,65 +203,6 @@ class EventController extends Controller
             } else {
                 $events->save(false);
 
-                $chat    = Telegram::find()->where(['user_id' => $events->client_id])->asArray()->one();
-                $chat_id = $chat['chat_id'];
-                if ($chat_id) {
-                    $telegram_bot = new TelegramBot(Yii::$app->params['telegramToken']);
-                    $telegram_bot->sendMessage(
-                        [
-                            'chat_id' => $chat_id,
-                            'text'    => Yii::$app->smsSender->checkTimeOfDay(
-                                ) . 'Дата записи изменена ' . Yii::$app->formatter->asDatetime(
-                                    $events->event_time_start,
-                                    'php:d M Y на H:i'
-                                ),
-                        ]
-                    );
-                }
-
-                $viber    = Viber::find()->where(['user_id' => $events->client_id])->asArray()->one();
-                $viber_id = $viber['viber_user_id'];
-                if ($viber_id) {
-                    $viber_bot = new ViberBot(['token' => Yii::$app->params['viber']['viberToken']]);
-                    $botSender = new Sender(
-                        [
-                            'name'   => Yii::$app->params['viber']['viberBotName'],
-                            'avatar' => Yii::$app->params['viber']['viberBotAvatar'],
-                        ]
-                    );
-                    $viber_bot->getClient()->sendMessage(
-                        (new \Viber\Api\Message\Text())
-                            ->setSender($botSender)
-                            ->setReceiver($viber_id)
-                            ->setMinApiVersion(3)
-                            ->setText(
-                                Yii::$app->smsSender->checkTimeOfDay() . 'Дата следующей записи '
-                                . Yii::$app->formatter->asDatetime($events->event_time_start, 'php:d M Y на H:i')
-                            )
-                            ->setKeyboard(
-                                (new \Viber\Api\Keyboard())
-                                    ->setButtons(
-                                        [
-                                            (new \Viber\Api\Keyboard\Button())
-                                                ->setColumns('3')
-                                                ->setBgColor('#7f8c8d')
-                                                ->setTextSize('regular')
-                                                ->setActionType('reply')
-                                                ->setActionBody('next')
-                                                ->setText('Следующие'),
-                                            (new \Viber\Api\Keyboard\Button())
-                                                ->setColumns('3')
-                                                ->setBgColor('#7f8c8d')
-                                                ->setTextSize('regular')
-                                                ->setActionType('reply')
-                                                ->setActionBody('previous')
-                                                ->setText('Предыдущие')
-                                        ]
-                                    )
-                            )
-                    );
-                }
-
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
@@ -325,7 +214,6 @@ class EventController extends Controller
         );
     }
 
-
     /**
      * Updating the record date by changing the event size
      * @param $id - user identifier
@@ -334,45 +222,18 @@ class EventController extends Controller
      * @return string|Response
      * @throws NotFoundHttpException
      */
-    public function actionUpdateResize($id, $start, $end)
+    public function actionUpdateDropResize($id, $start, $end)
     {
-        $model                   = $this->findModel($id);
-        $model->event_time_start = $start;
-        $model->event_time_end   = $end;
-        $model->save(false);
+        $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
-            return $this->redirect(['index']);
-        }
-
-        return $this->render(
-            'update',
-            [
-                'model' => $model,
-            ]
-        );
-    }
-
-    /**
-     * Updating the record date by dragging and dropping an event
-     * @param $id - user identifier
-     * @param $start - start time
-     * @param $end - end time
-     * @return string|Response
-     * @throws NotFoundHttpException
-     */
-    public function actionUpdateDrop($id, $start, $end)
-    {
-        $model                   = $this->findModel($id);
         $model->event_time_start = $start;
         $model->event_time_end   = $end;
 
-        $model->save(false);
+        $model->update(false);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post()) && $model->update(false)) {
+            $this->redirect(['index']);
         }
-
         return $this->render(
             'update',
             [
@@ -405,12 +266,11 @@ class EventController extends Controller
      *
      * @param int $id
      *
-     * @return Event the loaded model
+     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel(int $id)
     {
-
         if (($model = Event::find()->with('services')->andwhere(['id' => $id])->one()) !== null) {
             return $model;
         }
@@ -420,21 +280,21 @@ class EventController extends Controller
 
     /**
      * Displaying user statistics
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionStatistic()
     {
-        $searchModel = new EventSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $totalEvent = Event::getTotal($dataProvider);
-        $totalSalary = Event::getSalary($dataProvider->models);
+        $searchModel      = new EventSearch();
+        $dataProvider     = $searchModel->search(Yii::$app->request->queryParams);
+        $totalEvent       = Event::getTotal($dataProvider);
+        $totalSalary      = Event::getSalary($dataProvider->models);
         $chartEventLabels = Event::getlabelsCharts($dataProvider);
-        $chartEventData = Event::getDataCharts($dataProvider);
+        $chartEventData   = Event::getDataCharts($dataProvider);
 
-        $searchModelExpenseslist = new ExpenseslistSearch();
+        $searchModelExpenseslist  = new ExpenseslistSearch();
         $dataProviderExpenseslist = $searchModelExpenseslist->search(Yii::$app->request->queryParams);
-        $chartExpensesLabels = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
-        $chartExpensesData = Expenseslist::getDataCharts($dataProviderExpenseslist);
+        $chartExpensesLabels      = Expenseslist::getlabelsCharts($dataProviderExpenseslist->models);
+        $chartExpensesData        = Expenseslist::getDataCharts($dataProviderExpenseslist);
 
         $dataHistory = $this->getHistory();
 
@@ -503,14 +363,13 @@ class EventController extends Controller
      *
      * @param ?int $id - User ID
      * @return array|false|string
-     * @throws NotFoundHttpException
      */
     public function actionUserService(?int $id)
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if (!$id) {
-                throw new NotFoundHttpException('Не найдено услуг для данного пользователя!');
+            if ($id === null) {
+                return Yii::$app->params['error']['master-error'];
             } else {
                 return ServiceUser::getUserServices($id);
             }

@@ -42,7 +42,7 @@ class AdminController extends Controller
                 'rules' => [
                     [
                         'actions'       => ['index'],
-                        'controllers'   => ['site', 'event', 'client','master','blog'],
+                        'controllers'   => ['site', 'event', 'client','master','blog','Expenses'],
                         'allow'         => true,
                         'roles'         => ['admin', 'manager'],
                         'matchCallback' => function ($rule, $action) {
@@ -51,7 +51,7 @@ class AdminController extends Controller
                     ],
                     [
                         'actions'      => ['index'],
-                        'controllers'  => ['site', 'event', 'client','master','todo','blog'],
+                        'controllers'  => ['site', 'event', 'client','master','todo','blog','Expenses'],
                         'allow'        => false,
                         'roles'        => ['@'],
                         'denyCallback' => function ($rule, $action) {

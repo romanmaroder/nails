@@ -408,5 +408,8 @@ a.desc:after {
     color:#000000;
 }
 .dark-mode .daterangepicker {
-    color:#000;
+    color:#000000;
+}
+.dark-mode .swal2-popup .swal2-content, .dark-mode .swal2-popup .swal2-title{
+    color:#000000;
 }

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\modules\notification\AppMessenger;
 use backend\modules\telegram\models\Telegram;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -19,7 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property string|null $master
  * @property string|null $description
- * @property-read \yii\db\ActiveQuery $client
+ * @property-read ActiveQuery $client
  * @property string|null $notice
  */
 class Event extends ActiveRecord
@@ -128,8 +129,7 @@ class Event extends ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public
-    function attributeLabels(): array
+    public function attributeLabels(): array
     {
         return [
             'id'               => 'ID',
@@ -144,11 +144,34 @@ class Event extends ActiveRecord
         ];
     }
 
+    public function __construct($config = [])
+    {
+        $this->on(self::EVENT_AFTER_INSERT, [$this, 'notifyUser']);
+        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'notifyUser']);
+        parent::__construct($config);
+    }
+
+    /**
+     * Notifying subscribed users
+     *
+     */
+    public function notifyUser()
+    {
+        $data = [
+            'id'               => $this->client_id,
+            'event_time_start' => $this->event_time_start
+        ];
+
+        $notify = new AppMessenger();
+        $notify->toTelegram()->send($data);
+        $notify->toViber()->send($data);
+
+    }
 
     /**
      * Gets query for [[Master]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getMaster(): ActiveQuery
     {
@@ -158,7 +181,7 @@ class Event extends ActiveRecord
     /**
      * Gets query for [[Client]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getClient(): ActiveQuery
     {
@@ -168,7 +191,7 @@ class Event extends ActiveRecord
     /**
      * Gets query for [[Telegram]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getTelegram(): ActiveQuery
     {
@@ -178,7 +201,7 @@ class Event extends ActiveRecord
     /**
      * Relationship with [[event_service]] table
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
 
     public function getEventService(): ActiveQuery
@@ -189,13 +212,12 @@ class Event extends ActiveRecord
     /**
      * Relationship with [[Service]] table
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getServices(): ActiveQuery
     {
         return $this->hasMany(Service::class, ['id' => 'service_id'])->via('eventService');
     }
-
 
     public function afterFind()
     {
@@ -210,26 +232,31 @@ class Event extends ActiveRecord
         $arr = ArrayHelper::map($this->services, 'id', 'id');
 
         if ($this->service_array) {
+
             foreach ($this->service_array as $one) {
+
                 if (!in_array($one, $arr)) {
-                    $model = new EventService();
-                    $model->event_id = $this->id;
+                    $model             = new EventService();
+                    $model->event_id   = $this->id;
                     $model->service_id = $one;
                     $model->save();
                 }
+
                 if (isset($arr[$one])) {
                     unset($arr[$one]);
                 }
+
             }
             EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
         }
         EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
+
     }
 
     /**
      * Getting records for manager
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public static function findEvents($userId = null): ActiveQuery
     {
@@ -254,30 +281,28 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        $query= Event::find()->with(['master', 'client', 'services', 'eventService'])
+        $query = Event::find()->with(['master', 'client', 'services'])
             ->where('event_time_start >= DATE(NOW())');
 
         if (!empty($userId)) {
-            $query->andWhere(['master_id'=>$userId]);
+            $query->andWhere(['master_id' => $userId]);
         };
         $query->orderBy(
-                [
-                    'event_time_start'
-                    => SORT_ASC
-                ]
-            )
+            [
+                'event_time_start'
+                => SORT_ASC
+            ]
+        )
             ->asArray();
         return $query;
     }
-
-
 
     /**
      * Getting records for client
      *
      * @param int $id
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public static function findClientEvents(int $id): ActiveQuery
     {
@@ -300,7 +325,7 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );*/
-        return Event::find()->with(['master', 'client', 'services', 'eventService'])
+        return Event::find()->with(['master', 'client', 'services'])
             ->select(['id', 'client_id', 'master_id', 'description', 'event_time_start'])
             ->where(['client_id' => $id])
             ->andWhere('event_time_start >= DATE(NOW())')
@@ -330,7 +355,6 @@ class Event extends ActiveRecord
             ->asArray()
             ->all();
     }
-
 
     /**
      * Returns a list of previous records
@@ -412,7 +436,6 @@ class Event extends ActiveRecord
         );
     }
 
-
     /**
      * Return event list dataProvider
      *
@@ -424,9 +447,9 @@ class Event extends ActiveRecord
         $roles = Yii::$app->authManager->getRolesByUser($id);
         if (array_key_exists('manager', $roles) || array_key_exists('admin', $roles)) {
             $query = Event::findEvents();
-        }elseif(array_key_exists('master', $roles)){
+        } elseif (array_key_exists('master', $roles)) {
             $query = Event::findEvents($id);
-        }else{
+        } else {
             $query = Event::findClientEvents($id);
         }
 
@@ -456,9 +479,6 @@ class Event extends ActiveRecord
             3600,
             $dependency
         );*/
-
-
-
     }
 
     /**
@@ -494,7 +514,6 @@ class Event extends ActiveRecord
             }
         }
 
-
         return $total;
     }
 
@@ -520,7 +539,6 @@ class Event extends ActiveRecord
 
         return $total;
     }
-
 
     /**
      * Label data for the chart
@@ -574,15 +592,15 @@ class Event extends ActiveRecord
     {
         $rates = ArrayHelper::getColumn($model->master->rates, 'service_id');
 
-        $events = [];
+        $events   = [];
         $event_id = [];
         foreach ($model->services as $item) {
             $events[$item['id']] .= $item['name'];
-            $event_id[] .= $item['id'];
+            $event_id[]          .= $item['id'];
         }
 
 
-        $no_set_rate = array_diff($event_id, $rates);
+        $no_set_rate    = array_diff($event_id, $rates);
         $isset_set_rate = array_intersect($event_id, $rates);
 
 
@@ -620,7 +638,6 @@ class Event extends ActiveRecord
      */
     public static function getHistoryData($params): ActiveDataProvider
     {
-
         $dataProvider = new ActiveDataProvider(
             [
                 'query'      => EventService::find()
@@ -636,7 +653,7 @@ class Event extends ActiveRecord
                     )
                     ->joinWith(
                         [
-                            'event' => function ($q) {
+                            'event'   => function ($q) {
                                 $q->select(
                                     [
                                         'event.id',
@@ -644,7 +661,7 @@ class Event extends ActiveRecord
                                         'DATE_FORMAT(event_time_start,"%Y-%b") as event_time_start'
                                     ]
                                 )
-                                    ->with(['eventService', 'services','master.rates']);
+                                    ->with(['eventService', 'services', 'master.rates']);
                             },
                             'service' => function ($q) {
                                 $q->select(['service.id', 'name', 'cost'])
@@ -698,12 +715,12 @@ class Event extends ActiveRecord
         foreach ($dataProvider->models as $value) {
             foreach ($value['event']['master']['rates'] as $rate) {
                 if ($value['service_id'] == $rate['service_id']) {
-                    $archive = new Archive();
-                    $archive->user_id = $value['event']['master_id'];
+                    $archive             = new Archive();
+                    $archive->user_id    = $value['event']['master_id'];
                     $archive->service_id = $value['service_id'];
-                    $archive->amount = $value['amount'];
-                    $archive->salary = $value['amount'] * $rate['rate'] / 100;
-                    $archive->date = Yii::$app->formatter->asDate(
+                    $archive->amount     = $value['amount'];
+                    $archive->salary     = $value['amount'] * $rate['rate'] / 100;
+                    $archive->date       = Yii::$app->formatter->asDate(
                         $value['event']['event_time_start'],
                         'php: m-Y'
                     );
