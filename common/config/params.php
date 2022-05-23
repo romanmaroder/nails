@@ -48,7 +48,7 @@ return [
         'maxWidth'  => 1024,
         'maxHeight' => 1024
     ],
-    /*'hail812/yii2-adminlte3' => [
+    'hail812/yii2-adminlte3' => [
         'pluginMap' => [
             'chart'=>[
                 'css'=>'chart.js/Chart.css',
@@ -98,7 +98,7 @@ return [
             'filterizr'                     => [
                 'js' => 'filterizr/jquery.filterizr.min.js'
             ],
-            'summernote'=>[
+            /*'summernote'=>[
                 'css'=>'summernote/summernote-bs4.min.css',
                 'js'=>[
                     'summernote/summernote-bs4.min.js',
@@ -116,8 +116,8 @@ return [
                     'codemirror/mode/xml/xml.js',
                     'codemirror/mode/htmlmixed/htmlmixed.js'
                 ]
-            ],
+            ],*/
         ]
-    ],*/
+    ],
 
 ];

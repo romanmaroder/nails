@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php endif;?>
 
                             <?php
-                            if (Yii::$app->id =='app-frontend') : ?>
+                            if (Yii::$app->id ==='app-frontend') : ?>
                                 <?= GridView::widget(
                                     [
                                         'dataProvider' => $dataProvider,
@@ -324,7 +324,6 @@ JS;
 } else {
     $js = <<< JS
  $(function () {
-     
    $("#client").DataTable({ 
       "responsive": true,
       "autoWidth": false,
@@ -350,7 +349,7 @@ JS;
                 }
          }
     
-    }).buttons().container().appendTo('#client_wrapper .col-md-6:eq(0)');
+    });
  
   });
 JS;

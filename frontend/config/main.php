@@ -10,30 +10,30 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'app-frontend',
-    'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'id'                  => 'app-frontend',
+    'basePath'            => dirname(__DIR__),
+    'bootstrap'           => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-    'name' => 'NAILS',
-    'components' => [
-        'request' => [
+    'name'                => 'NAILS',
+    'components'          => [
+        'request'      => [
             'csrfParam' => '_csrf-frontend',
-            'baseUrl' => '',
+            'baseUrl'   => '',
         ],
-        'user' => [
-            'identityClass' => 'common\models\User',
+        'user'         => [
+            'identityClass'   => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityCookie'  => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
-        'session' => [
+        'session'      => [
             // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
         ],
-        'log' => [
+        'log'          => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
+            'targets'    => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class'  => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -41,32 +41,32 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
+        'urlManager'   => [
+            'enablePrettyUrl'     => true,
+            'showScriptName'      => false,
             'enableStrictParsing' => false,
-            'rules' => [
-                '' => 'site/index',
-               'event' => '/calendar/event/index',
-                'client' => '/client/client/index',
-                'client/<id:\d+>' => '/client/client/view',
-                'account' => '/profile/account',
-                'master/<id:\d+>' => '/site/view',
-                'post' => 'blog/post/index',
-                'post/<id:\d+>' => '/blog/post/post',
+            'rules'               => [
+                ''                                => 'site/index',
+                'event'                           => '/calendar/event/index',
+                'client'                          => '/client/client/index',
+                'client/<id:\d+>'                 => '/client/client/view',
+                'account'                         => '/profile/account',
+                'master/<id:\d+>'                 => '/site/view',
+                'post'                            => 'blog/post/index',
+                'post/<id:\d+>'                   => '/blog/post/post',
                 'post/<category:[\w_-]+>/<slug:>' => '/blog/post/post',
-                'todo' => '/todo/todo/index',
-                'logout'=>'/site/logout',
-                '<action:\w+ >' => 'site/<action>',
+                'todo'                            => '/todo/todo/index',
+                'logout'                          => '/site/logout',
+                '<action:\w+ >'                   => 'site/<action>',
                 [
                     'pattern' => '<action:about|portfolio|contact|login|signup>',
-                    'route' => 'site/<action>',
-                   //'suffix' => '.html',
+                    'route'   => 'site/<action>',
+                    //'suffix' => '.html',
                 ],
             ],
         ],
         'assetManager' => [
         ],
     ],
-    'params' => $params,
+    'params'              => $params,
 ];

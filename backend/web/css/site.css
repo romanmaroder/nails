@@ -313,9 +313,7 @@ a.desc:after {
 #addphotoform-client ~ .select2-container {
     display: none;
 }
-#user-color,#user-rate {
-    display: none;
-}
+
 
 .note-editable {
     font-family: 'Roboto', sans-serif;

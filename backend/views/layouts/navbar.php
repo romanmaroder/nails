@@ -61,7 +61,7 @@ use yii\widgets\Menu;
                                'data-placement' => 'tooltip',
                                'title' =>'Мастера'
                  ],
-                 'url' => ['/employees/master/index']
+                 'url' => ['/client/client/master']
                 ],
                 ['label' => '<i class="fas fa-percent"></i>',
                  'options' => ['class' => 'd-none d-sm-inline-block',
@@ -129,7 +129,7 @@ use yii\widgets\Menu;
                         ],
 
                         ['label' => 'Мастера',
-                         'url' => ['/employees/master/index'],
+                         'url' => ['/client/client/master'],
                          'options' => ['class' => 'nav-item'],
                         ],
                         ['label' => 'Ставка',

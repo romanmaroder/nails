@@ -5,10 +5,9 @@ namespace common\modules\client\controllers;
 use Yii;
 use common\models\User;
 use common\models\Profile;
-use yii\behaviors\AttributeBehavior;
+use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,7 +23,7 @@ class ClientController extends Controller
      * Пароль и почта пользователя по-умолчанию
      */
     protected const DEFAULT_PASSWORD = '11111111';
-    protected const DEFAULT_EMAIL = '@user.com';
+    protected const DEFAULT_EMAIL    = '@user.com';
 
     /**
      * {@inheritdoc}
@@ -32,24 +31,31 @@ class ClientController extends Controller
     public function behaviors(): array
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::class,
+            'verbs'  => [
+                'class'   => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST','GET'],
+                    'delete' => ['POST', 'GET'],
                 ],
             ],
             'access' => [
                 'class' => AccessControl::class,
-                //'only' => ['login', 'logout', 'index'],
+
                 'rules' => [
                     [
-                        'allow' => true,
-                        'actions' => ['login'],
-                        'roles' => ['?'],
+                        'allow'   => true,
+                        'actions' => ['create','update','view','delete','master'],
+                        'roles'   => ['admin', 'manager']
+
                     ],
                     [
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'allow'   => true,
+                        'actions' => ['login'],
+                        'roles'   => ['?'],
+                    ],
+                    [
+                        'allow'   => true,
+                        'actions' => ['index', 'view'],
+                        'roles'   => ['master'],
                     ],
                 ],
             ],
@@ -64,7 +70,6 @@ class ClientController extends Controller
             ],
         ];
     }
-
 
     /**
      * Lists all User models.
@@ -112,12 +117,10 @@ class ClientController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model   = new User();
         $profile = new Profile();
 
         if ($model->load(Yii::$app->request->post())) {
-
-
             $model->email = 'user' . rand(1, 5000) . self::DEFAULT_EMAIL;
 
             $model->setPassword(self::DEFAULT_PASSWORD);
@@ -125,15 +128,14 @@ class ClientController extends Controller
             $model->generateEmailVerificationToken();
 
             if ($model->save()) {
-
-                if ($model->roles){
+                if ($model->roles) {
                     $profile->user_id = $model->id;
-                    $profile->color = $model->color;
+                    $profile->color   = $model->color;
                     $profile->save();
                 }
                 $model->saveRoles();
 
-                Yii::$app->session->setFlash('info', 'Клиент <b>'.$model->username . '</b> сохранен. ');
+                Yii::$app->session->setFlash('info', 'Клиент <b>' . $model->username . '</b> сохранен. ');
 
                 return $this->redirect('client/index');
             }
@@ -160,22 +162,23 @@ class ClientController extends Controller
     public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
-        /*echo '<pre>';
-        var_dump($model);
-        echo '</pre>';
-        die();*/
-        $profile= Profile::find()->where(['user_id'=>$id])->one();
+
+        #$profile= Profile::find()->where(['user_id'=>$id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if(!empty($profile)){
-                $profile->color = $model->color;
+            if (!empty($model->profile->user_id)) {
+                $model->profile->color = $model->color;
+                $model->profile->save();
+            } elseif ($model->roles) {
+                $profile          = new Profile();
+                $profile->user_id = $model->id;
+                $profile->color   = $model->color;
+
                 $profile->save();
-            }elseif ($model->roles){
-                    $profile = new Profile();
-                    $profile->user_id = $model->id;
-                    $profile->color = $model->color;
-                    //$model->saveRoles();
-                    $profile->save();
+            }
+            if ($model->roles === '' && $model->profile->color) {
+                $profile = Profile::find()->where(['user_id' => $model->profile->user_id])->one();
+                $profile->delete();
             }
 
             return $this->redirect(['view', 'id' => $model->id]);
@@ -207,19 +210,41 @@ class ClientController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionMaster()
+    {
+        $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
+
+        /*$query = User::find()->select('user.*')
+            ->leftJoin('auth_assignment', '`auth_assignment`.`user_id` = `user`.`id`')
+            ->andWhere(['auth_assignment.item_name'=>['master','manager']]);*/
+
+        $query = User::find()->where(['id' => $masterIds])->with(['profile']);
+
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query' => $query,
+            ]
+        );
+
+        return $this->render(
+            'master', [
+                        'dataProvider' => $dataProvider,
+                    ]
+        );
+    }
+
     /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      *
      * @param int $id
      *
-     * @return User the loaded model
+     * @return array|ActiveRecord|null
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(int $id): User
+    protected function findModel(int $id)
     {
-
-        if ( ( $model = User::find()->with('profile')->where(['id'=>$id])->one() ) !== null) {
+        if (($model = User::find()->with('profile')->where(['id' => $id])->one()) !== null) {
             return $model;
         }
 

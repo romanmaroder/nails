@@ -1,7 +1,7 @@
 <?php
 return [
     'bsVersion' => '4.x',
-    'hail812/yii2-adminlte3' => [
+    /*'hail812/yii2-adminlte3' => [
         'pluginMap' => [
             'datatables' => [
                 'js' => 'datatables/jquery.dataTables.min.js'
@@ -44,7 +44,7 @@ return [
             'filterizr'=>[
                 'js'=>'filterizr/jquery.filterizr.min.js'
             ],
-           /* 'summernote'=>[
+            'summernote'=>[
                 'css'=>'summernote/summernote-bs4.min.css',
                 'js'=>[
                     'summernote/summernote-bs4.min.js',
@@ -62,7 +62,7 @@ return [
                     'codemirror/mode/xml/xml.js',
                     'codemirror/mode/htmlmixed/htmlmixed.js'
                 ]
-            ],*/
+            ],
         ]
-    ]
+    ]*/
 ];

@@ -133,7 +133,7 @@ use yii\helpers\Url;
                                     'icon'  => 'fas fa-user-tag',
                                     'iconClassAdded' => 'text-secondary',
                                     'url'
-                                            => ['/employees/master/index'],
+                                            => ['/client/client/master'],
                                 ],
                                 [
                                     'label' => 'Ставка мастера',
