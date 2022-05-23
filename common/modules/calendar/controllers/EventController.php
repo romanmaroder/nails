@@ -2,24 +2,16 @@
 
 namespace common\modules\calendar\controllers;
 
-use backend\modules\notification\AppMessenger;
-use backend\modules\telegram\api\TelegramBot;
-use backend\modules\telegram\models\Telegram;
-use backend\modules\viber\api\ViberBot;
-use backend\modules\viber\models\Viber;
+
 use common\components\behaviors\DeleteCacheBehavior;
 use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
 use common\models\ServiceUser;
-use Viber\Api\Keyboard;
-use Viber\Api\Keyboard\Button;
-use Viber\Api\Message\Text;
-use Viber\Api\Sender;
+use common\modules\calendar\FullCalendar;
 use Yii;
 use common\models\Event;
 use yii\base\InvalidConfigException;
-use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -72,15 +64,10 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
-     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
-        /*echo'<pre>';
-        var_dump(Event::find()->with(['master', 'client', 'services'])->all());
-        die();*/
-
-        $cache = Yii::$app->cache;
+        /*$cache = Yii::$app->cache;
         $key   = 'events_list';  // Формируем ключ
         # Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
@@ -98,30 +85,15 @@ class EventController extends Controller
         $events          = $cache->getOrSet(
             $key,
             function () {
-                return Event::find()->with(['master', 'client', 'services'])->all();
+                return Event::find()->with(['master.profile', 'client', 'services'])->asArray()->all();
             },
             3600,
             $dependency
-        );
+        );*/
 
-        foreach ($events as $item) {
-            $event                  = new \yii2fullcalendar\models\Event();
-            $event->id              = $item->id;
-            $event->title           = $item->client->username;
-            $event->nonstandard     = [
-                'description' => Event::getServiceName($item->services) ? Event::getServiceName(
-                    $item->services
-                ) : $item->description,
-                'notice'      => $item->notice,
-                'master_name' => $item->master->username,
-            ];
-            $event->backgroundColor = $item->master->profile->color;
-            $event->start           = $item->event_time_start;
-            $event->end             = $item->event_time_end;
-
-            $events[] = $event;
-        }
-
+        $model    = new Event();
+        $calendar = new FullCalendar($model);
+        $events   = $calendar->events();
         return $this->render(
             'index',
             [
@@ -140,6 +112,7 @@ class EventController extends Controller
      */
     public function actionView(int $id)
     {
+
         return $this->renderAjax(
             'view',
             [
@@ -338,6 +311,7 @@ class EventController extends Controller
      * Returns an array of dates
      *
      * @return ActiveDataProvider
+     * @throws InvalidConfigException
      */
     private function getHistory(): ActiveDataProvider
     {
