@@ -40,37 +40,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php
                 Modal::begin(
                     [
-                        'title'   => 'Добавить событие',
+                        'title'   => $this->title,
                         'size'    => 'SIZE_SMALL',
                         'id'      => 'modal',
                         'options' => ['tabindex' => '']
                     ]
                 );
                 Modal::end(); ?>
-                <?php
-                Modal::begin(
-                    [
-                        'title'        => 'Ошибка',
-                        'titleOptions' => [
-                            'class' => 'text-danger'
-                        ],
-                        'size'         => 'SIZE_SMALL',
-                        'id'           => 'modal-error',
-                        'options'      => ['tabindex' => '']
-                    ]
-                );
-                Modal::end(); ?>
-                <?php
-                # Модальное окно просмотра и редактирования
-                Modal::begin(
-                    [
-                        'id'      => 'view',
-                        'title'   => 'О событии',
-                        'options' => ['tabindex' => '']
-                    ]
-                );
-                Modal::end();
-                ?>
+
                 <?php
                 if (Yii::$app->session->hasFlash('msg')) {
                     $js = "$(function (){
@@ -296,14 +273,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                         viewUrl = basePath +'/calendar/event/view?id=' + event.id;
                                         updateUrl = basePath +'/calendar/event/update?id=' + event.id;
                                          $('#edit-link').attr('href', updateUrl);
+                                       
                                      }else{
                                         viewUrl = '/calendar/event/view?id=' + event.id;
                                         //updateUrl = '/calendar/event/update?id=' + event.id;
                                      }
                                         
                                       $('.popover').remove();
-                                      $('#view').find('.modal-body').load(viewUrl);
-                                      $('#view').modal('show');
+                                      $('#modal').find('.modal-body').load(viewUrl);
+                                      $('#modal').modal('show');
                                       
                                 }"
                             ),

@@ -22,6 +22,7 @@ use yii\helpers\ArrayHelper;
  * @property string|null $description
  * @property-read ActiveQuery $client
  * @property string|null $notice
+ * @property  $service_array
  */
 class Event extends ActiveRecord
 {
@@ -35,7 +36,7 @@ class Event extends ActiveRecord
      *
      * @return array[]
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -146,8 +147,8 @@ class Event extends ActiveRecord
 
     public function __construct($config = [])
     {
-        $this->on(self::EVENT_AFTER_INSERT, [$this, 'notifyUser']);
-        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'notifyUser']);
+        #$this->on(self::EVENT_AFTER_INSERT, [$this, 'notifyUser']);
+        #$this->on(self::EVENT_AFTER_UPDATE, [$this, 'notifyUser']);
         parent::__construct($config);
     }
 
@@ -165,7 +166,38 @@ class Event extends ActiveRecord
         $notify = new AppMessenger();
         $notify->toTelegram()->send($data);
         $notify->toViber()->send($data);
+    }
 
+    public function afterFind()
+    {
+        $this->service_array = $this->services;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+
+        $arr = ArrayHelper::map($this->services, 'id', 'id');
+
+        if ($this->service_array) {
+            foreach ($this->service_array as $one) {
+                if (!in_array($one, $arr)) {
+                    $model             = new EventService();
+                    $model->event_id   = $this->id;
+                    $model->service_id = $one;
+                    $model->save();
+                }
+
+                if (isset($arr[$one])) {
+                    unset($arr[$one]);
+                }
+            }
+            EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
+        }
+        if ((int)$this->client_id == $changedAttributes['client_id'] && (int)$this->master_id == $changedAttributes['master_id']) {
+            EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
+        }
     }
 
     /**
@@ -219,43 +251,10 @@ class Event extends ActiveRecord
         return $this->hasMany(Service::class, ['id' => 'service_id'])->via('eventService');
     }
 
-    public function afterFind()
-    {
-        $this->service_array = $this->services;
-    }
-
-    public function afterSave($insert, $changedAttributes)
-    {
-        parent::afterSave($insert, $changedAttributes);
-
-        //$arr = array_keys($this->services);
-        $arr = ArrayHelper::map($this->services, 'id', 'id');
-
-        if ($this->service_array) {
-
-            foreach ($this->service_array as $one) {
-
-                if (!in_array($one, $arr)) {
-                    $model             = new EventService();
-                    $model->event_id   = $this->id;
-                    $model->service_id = $one;
-                    $model->save();
-                }
-
-                if (isset($arr[$one])) {
-                    unset($arr[$one]);
-                }
-
-            }
-            EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
-        }
-        EventService::deleteAll(['service_id' => $arr, 'event_id' => $this->id]);
-
-    }
-
     /**
      * Getting records for manager
      *
+     * @param null $userId
      * @return ActiveQuery
      */
     public static function findEvents($userId = null): ActiveQuery
@@ -281,7 +280,7 @@ class Event extends ActiveRecord
             $dependency
         );*/
 
-        $query = Event::find()->with(['master', 'client', 'services'])
+        $query = self::find()->with(['master', 'client', 'services'])
             ->where('event_time_start >= DATE(NOW())');
 
         if (!empty($userId)) {
@@ -406,6 +405,7 @@ class Event extends ActiveRecord
      * @param array $ids - array of master identifiers
      *
      * @return array
+     * @throws InvalidConfigException
      */
     public function getTotalEventsMaster(array $ids): array
     {
@@ -635,6 +635,7 @@ class Event extends ActiveRecord
      *
      * @param $params - date range
      * @return ActiveDataProvider
+     * @throws InvalidConfigException
      */
     public static function getHistoryData($params): ActiveDataProvider
     {
@@ -735,4 +736,10 @@ class Event extends ActiveRecord
         }
         return false;
     }
+
+    public function findAllEvents(): array
+    {
+        return self::find()->with(['master.profile', 'client', 'services'])->asArray()->all();
+    }
+
 }

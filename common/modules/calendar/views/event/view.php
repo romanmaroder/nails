@@ -73,7 +73,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
                 ['update', 'id' => $model->id],
                 [
                     'id'      => 'edit-link',
-                    'onClick' => "$('#view').find('.modal-body').load($(this).attr('href')); return false;",
+                    'onClick' => "$('#modal').find('.modal-body').load($(this).attr('href')); return false;",
                     'class'   => 'btn btn-primary btn-sm'
                 ]
             ) ?>

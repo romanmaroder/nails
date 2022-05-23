@@ -1,18 +1,14 @@
 <?php
 
-//use common\models\Client;
-//use common\models\Master;
-use common\models\Event;
-use common\models\Service;
+
 use common\models\ServiceUser;
 use common\models\User;
 use kartik\datetime\DateTimePicker;
 use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-//use yii\widgets\ActiveForm;/*/
 use yii\bootstrap4\ActiveForm;
-use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Event */
@@ -33,7 +29,6 @@ use yii\web\JsExpression;
             'validateOnBlur'         => false
         ]
     ); ?>
-
     <?= $form->field($model, 'event_time_start')->widget(
         DateTimePicker::class,
         [
@@ -59,7 +54,6 @@ use yii\web\JsExpression;
             'size'     => 'xs'
         ]
     ) ?>
-
     <?= $form->field($model, 'event_time_end')->widget(
         DateTimePicker::class,
         [
@@ -85,7 +79,6 @@ use yii\web\JsExpression;
 
         ]
     ) ?>
-
     <?= $form->field($model, 'client_id')->widget(
         Select2::class,
         [
@@ -98,7 +91,6 @@ use yii\web\JsExpression;
             ],
         ]
     ) ?>
-
     <?= $form->field($model, 'master_id')->widget(
         Select2::class,
         [
@@ -148,6 +140,7 @@ use yii\web\JsExpression;
             'options'       => [
                 'id'           => 'serviceUser',
                 'placeholder'  => 'Выберите услугу ...',
+                'value'        => $model->id ? ArrayHelper::getColumn($model->service_array, 'id') : '' ,
                 'multiple'     => true,
                 'autocomplete' => 'off',
             ],
@@ -157,10 +150,8 @@ use yii\web\JsExpression;
             ],
         ]
     ) ?>
-
     <?
     /*= $form->field($model, 'description')->textarea(['rows' => 3]) */ ?>
-
     <?= $form->field($model, 'notice')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'checkEvent', ['enableAjaxValidation' => true])->label(false)
         ->hiddenInput() ?>
