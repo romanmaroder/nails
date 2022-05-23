@@ -6,7 +6,6 @@ use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use Yii\db\ActiveQuery;
@@ -44,7 +43,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public $roles;
     public $password;
-    public  $color;
+    public $color;
 
 
     /**
@@ -103,18 +102,18 @@ class User extends ActiveRecord implements IdentityInterface
                 'whenClient' => "function(attribute,value){
                 
                     if(value){
-                        $('#user-color').css({'display':'block'});
+                        $('#user-color').removeClass('d-none');
                         $('label[for=user-color]').removeClass('d-none');
                         return true;
                     }
                         $('label[for=user-color]').addClass('d-none');
-                        $('#user-color').css({'display':'none'});
+                        $('#user-color').addClass('d-none');
                          //return  true;
+                        
                 }"
             ]
         ];
     }
-
 
     public function attributeLabels(): array
     {
@@ -133,6 +132,7 @@ class User extends ActiveRecord implements IdentityInterface
             'created_at'  => 'Создан'
         ];
     }
+
 
     public function __construct()
     {
@@ -155,10 +155,7 @@ class User extends ActiveRecord implements IdentityInterface
                     Yii::$app->authManager->assign($role, $this->getId());
                 }
             }
-        } /*else {
-            $role = Yii::$app->authManager->getRole('user');
-            Yii::$app->authManager->assign($role, $this->getId()); //TODO проверить чтоб ничего не сломалось
-        }*/
+        }
     }
 
     /**
@@ -174,7 +171,6 @@ class User extends ActiveRecord implements IdentityInterface
         return ArrayHelper::getColumn($roles, $column_name, true);
     }
 
-
     /**
      * Get user role from RBAC
      *
@@ -184,7 +180,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return array_values(Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId()))[0];
     }
-
 
     /**
      * {@inheritdoc}
@@ -231,7 +226,6 @@ class User extends ActiveRecord implements IdentityInterface
             ->one();
     }
 
-
     /**
      * Finds user by phone
      *
@@ -252,7 +246,6 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return false;
     }
-
 
     /**
      * Finds user by password reset token
@@ -396,7 +389,6 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-
     /**
      * @return array
      */
@@ -416,7 +408,6 @@ class User extends ActiveRecord implements IdentityInterface
             self::ROLE_AUTHOR  => 'Автор',
         ];
     }
-
 
     /**
      * Getting user statuses
@@ -453,7 +444,6 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
-
     /**
      * Getting a list of clients with the user role
      *
@@ -466,7 +456,6 @@ class User extends ActiveRecord implements IdentityInterface
         $clients = User::find()->where(['!=', 'id', 1])->orderBy(['username' => SORT_ASC])->asArray()->all();
         return ArrayHelper::map($clients, 'id', 'username');
     }
-
 
     /**
      * * Getting a list of masters with the master role
@@ -482,7 +471,6 @@ class User extends ActiveRecord implements IdentityInterface
         $master    = User::find()->where(['id' => $masterIds])->asArray()->all();
         return ArrayHelper::map($master, 'id', 'username');
     }
-
 
     /**
      * Getting user data
@@ -517,7 +505,6 @@ class User extends ActiveRecord implements IdentityInterface
         );
     }
 
-
     /**
      * @param $id
      * Count master certificate from table[[Certificate]]
@@ -528,7 +515,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return Certificate::find()->where(['user_id' => $id])->count();
     }
-
 
     public function getCountWorkMaster($id)
     {
@@ -586,7 +572,6 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Certificate::class, ['user_id' => 'id']);
     }
 
-
     /**
      * Relationship with [[Profile]] table
      *
@@ -607,19 +592,17 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(ServiceUser::class, ['user_id' => 'id']);
     }
 
-
     /**
      * Return client list dataProvider
      * @return ActiveDataProvider
-     * @throws \Throwable
      * @throws InvalidConfigException
      */
     public static function getDataProvider(): ActiveDataProvider
     {
         if (Yii::$app->user->can('admin')) {
-            $query = User::find();
+            $query = self::find();
         } else {
-            $query = User::find()->where(['!=', 'id', '1']);
+            $query = self::find()->where(['!=', 'id', '1']);
         }
         $dataProvider = new ActiveDataProvider(
             [

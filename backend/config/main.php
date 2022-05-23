@@ -13,9 +13,6 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap'           => ['log'],
     'modules'             => [
-        'employees' => [
-            'class' => 'backend\modules\employees\Module',
-        ],
         'telegram'  => [
             'class' => 'backend\modules\telegram\Module',
         ],
@@ -74,10 +71,11 @@ return [
                 'expenseslist/new'             => '/expenseslist/create',
                 'expenseslist/update/<id:\d+>' => '/expenseslist/update',
                 'expenseslist/<id:\d+>'        => '/expenseslist/view',
-                'master'                       => 'employees/master/index',
                 'client'                       => 'client/client/index',
+                'client/master'                => 'client/client/master',
                 'client/new'                   => '/client/client/create',
                 'client/update/<id:\d+>'       => '/client/client/update',
+                'client/<id:\d+>'              => '/client/client/view',
                 'client/delete/<id:\d+>'       => '/client/client/delete',
                 'category'                     => 'category/index',
                 'category/new'                 => 'category/create',

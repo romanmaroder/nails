@@ -21,7 +21,7 @@ use frontend\controllers\SiteController;
                 echo $model->username; ?></h3>
             <h5 class="widget-user-desc text-right">
                 <?php
-                echo implode(' ', $model->getRoles('description')); ?>
+                echo /*$model->getRole()->description*/  implode(' ', $model->getRoles('description')); ?>
             </h5>
 
         </div>
