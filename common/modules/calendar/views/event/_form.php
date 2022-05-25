@@ -37,7 +37,7 @@ use yii\bootstrap4\ActiveForm;
                 'type'        => 'text',
                 'readonly'    => true,
                 'class'       => 'text-muted small',
-                'style'       => 'border:none;background:none'
+                'style'       => 'border:none;background:none',
             ],
             'type'          => DateTimePicker::TYPE_BUTTON,
             'layout'        => '{picker} {remove} {input}',
@@ -51,7 +51,6 @@ use yii\bootstrap4\ActiveForm;
             ],
 
             'language' => 'ru',
-            'size'     => 'xs'
         ]
     ) ?>
     <?= $form->field($model, 'event_time_end')->widget(
@@ -75,7 +74,7 @@ use yii\bootstrap4\ActiveForm;
 //                'startDate'      => date('Y-m-d'),
             ],
             'language'      => 'ru',
-            'size'          => 'xs'
+            'size'          => 'sm'
 
         ]
     ) ?>
@@ -85,6 +84,7 @@ use yii\bootstrap4\ActiveForm;
             'name'          => 'client',
             'language'      => 'ru',
             'data'          => User::getClientList(),
+            'size'          => Select2::SMALL,
             'options'       => ['placeholder' => 'Выберите клиента ...'],
             'pluginOptions' => [
                 'allowClear' => true,
@@ -97,6 +97,7 @@ use yii\bootstrap4\ActiveForm;
             'name'          => 'master',
             'language'      => 'ru',
             'data'          => User::getMasterList(),
+            'size'          => Select2::SMALL,
             'options'       => ['placeholder' => 'Выберите мастера ...'],
             'pluginOptions' => [
                 'allowClear' => true
@@ -137,10 +138,11 @@ use yii\bootstrap4\ActiveForm;
             'language'      => 'ru',
             'data'          => ServiceUser::getUserServices($model->master->id),
             'theme'         => Select2::THEME_MATERIAL,
+            'size'          => Select2::SMALL,
             'options'       => [
                 'id'           => 'serviceUser',
                 'placeholder'  => 'Выберите услугу ...',
-                'value'        => $model->id ? ArrayHelper::getColumn($model->service_array, 'id') : '' ,
+                'value'        => $model->id ? ArrayHelper::getColumn($model->service_array, 'id') : '',
                 'multiple'     => true,
                 'autocomplete' => 'off',
             ],

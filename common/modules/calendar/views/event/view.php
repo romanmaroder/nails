@@ -90,7 +90,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
 
             if ($model->client->phone) {
                 Html::removeCssClass($options, 'd-none');
-                Html::addCssClass($options, 'd-in;ine-block');
+                Html::addCssClass($options, 'd-inline-block');
             }
             echo Html::tag('a', '<i class="far fa-envelope"></i>', $options);
             ?>
@@ -105,7 +105,7 @@ PluginAsset::register($this)->add(['sweetalert2']);
 
             if ($model->client->phone) {
                 Html::removeCssClass($options, 'd-none');
-                Html::addCssClass($options, 'd-in;ine-block');
+                Html::addCssClass($options, 'd-inline-block');
             }
             echo Html::tag('a', '<i class="fas fa-map-marker-alt"></i>', $options);
             ?>

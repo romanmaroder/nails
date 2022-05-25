@@ -13,10 +13,10 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap'           => ['log'],
     'modules'             => [
-        'telegram'  => [
+        'telegram' => [
             'class' => 'backend\modules\telegram\Module',
         ],
-        'viber'     => [
+        'viber'    => [
             'class' => 'backend\modules\viber\Module',
         ],
 

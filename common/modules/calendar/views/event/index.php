@@ -75,6 +75,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     $right    = 'month,basicDay,basicWeek,listWeek';
                     $editable = false;
                 }
+                $initialView   = '';
+                $nowIndicator  = false;
+                $window_resize = '';
                 if (Yii::$app->user->can('admin')) {
                     $right         = 'month,basicDay,basicWeek,listWeek,agendaDay,agendaWeek';
                     $initialView   = 'basicDay';
@@ -107,7 +110,6 @@ $this->params['breadcrumbs'][] = $this->title;
 									$('#modal').modal('show').find('.modal-body').html(data);
 								},
 								error:function(data){
-									//$('#modal-error').modal('show').find('.modal-body').html(data.responseText);
 									var Toast = Swal.mixin({
 															  toast: true,
 															  position: 'top-end',
@@ -200,6 +202,7 @@ $this->params['breadcrumbs'][] = $this->title;
              localStorage.getItem('fcDefaultView') !== null ? localStorage.getItem('fcDefaultView') : 'basicDay'
             "
                         ),
+
                         'header'        => [
                             'left'   => 'prev,next,today',
                             'center' => 'title',
@@ -286,7 +289,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }"
                             ),
                             'dayRender'           => new JsExpression(
-                                "function(cell,date){} "
+                                "function(cell,date){
+                                } "
                             ),
                             'eventRender'         => new JsExpression(
                                 "function (event, element, view, popover){

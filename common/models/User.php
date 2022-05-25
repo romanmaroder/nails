@@ -61,17 +61,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::class,
-           /* [
-                'class' => AttributeBehavior::class,
-                'attributes' => [
-                        ActiveRecord::EVENT_AFTER_FIND => 'roles',
-                ],
-                'value' => function ($event) {
 
-                    $roles = Yii::$app->authManager->getRolesByUser($this->getId());
-                    return ArrayHelper::getColumn($roles, 'name', true);
-                    },
-            ],*/
         ];
     }
 
