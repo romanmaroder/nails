@@ -14,7 +14,7 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
-
+    public $verifyCode;
 
     /**
      * {@inheritdoc}
@@ -43,7 +43,7 @@ class SignupForm extends Model
                 'targetClass' => '\common\models\User',
                 'message'     => 'Этот адрес электронной почты уже занят.'
             ],
-
+            ['verifyCode', 'captcha'],
             ['password', 'required'],
 
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
@@ -55,7 +55,8 @@ class SignupForm extends Model
     {
         return [
             'username' => 'Имя',
-            'password' => 'Пароль'
+            'password' => 'Пароль',
+            'verifyCode'=>'Подтвердить код'
         ];
     }
 
@@ -71,7 +72,7 @@ class SignupForm extends Model
             return null;
         }
 
-        $user    = new User();
+        $user = new User();
 
         $user->username = $this->username;
         $user->email    = $this->email;
@@ -81,7 +82,7 @@ class SignupForm extends Model
 
         //Добавляем роль по умолчанию для каждого зарегестрированного
         if ($user->save()) {
-           // $auth             = Yii::$app->authManager;//TODO убрать роль по умолчанию
+            // $auth             = Yii::$app->authManager;//TODO убрать роль по умолчанию
             //$role             = $auth->getRole('user');
             //$auth->assign($role, $user->id);
             return $user && $this->sendEmail($user);
@@ -92,7 +93,7 @@ class SignupForm extends Model
     /**
      * Sends confirmation email to user
      *
-     * @param  User  $user  user model to with email should be send
+     * @param User $user user model to with email should be send
      *
      * @return bool whether the email was sent
      */
@@ -106,7 +107,7 @@ class SignupForm extends Model
             )
             ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
             ->setTo($this->email)
-            ->setSubject('Регистрация аккаунта на '.Yii::$app->name)
+            ->setSubject('Регистрация аккаунта на ' . Yii::$app->name)
             ->send();
     }
 }
