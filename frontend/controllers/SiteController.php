@@ -85,7 +85,7 @@ class SiteController extends Controller
                 'class' => 'hr\captcha\CaptchaAction',
                 'operators' => ['+','-','*'],
                 'maxValue' => 10,
-                'fontSize' => 18,
+                'fontSize' => 16,
             ],
         ];
     }

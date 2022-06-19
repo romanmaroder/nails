@@ -75,7 +75,7 @@ class Service extends ActiveRecord
      */
     public static function getServiceList(): array
     {
-        $services = self::find()->asArray()->all();
+        $services = self::find()->asArray()->orderBy(['name'=>SORT_ASC])->all();
 
         return ArrayHelper::map($services,'id','name');
     }

@@ -37,17 +37,17 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'verifyCode')->widget(
                 Captcha::class,
                 [
-
+                    'imageOptions' => ['alt' => 'captcha_'.rand(0,5)],
                     //'captchaAction' => 'site/captcha', // uncomment and change if your not in the default controller or a module
-                    'template' => '<div class="row"><div class="col-lg-2 my-auto">{image}</div><div class="col-lg-10">{input}</div></div>',
+                    'template'     => '<div class="row"><div class="col-lg-2 my-auto">{image}</div><div class="col-lg-10">{input}</div></div>',
                 ]
             )
-                ->hint('Подсказка: нажмите на уравнение, чтобы обновить' )
+                ->hint('Подсказка: нажмите на уравнение, чтобы обновить')
                 ->label(
                     'Подтвердить код',
                     [
-                       // 'class' => 'd-none',
-                        'for'   => 'signupform-verifycode'
+                        // 'class' => 'd-none',
+                        'for' => 'signupform-verifycode'
                     ]
                 )
             ?>

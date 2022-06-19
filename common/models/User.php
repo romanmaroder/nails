@@ -164,9 +164,8 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Get user role from RBAC
      *
-     * @return Role
      */
-    public static function getRole(): Role
+    public static function getRole()
     {
         return array_values(Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId()))[0];
     }
