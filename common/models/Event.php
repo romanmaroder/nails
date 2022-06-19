@@ -528,7 +528,9 @@ class Event extends ActiveRecord
         $total = 0;
 
         foreach ($dataProvider as $model) {
+
             foreach ($model->master->rates as $master) {
+
                 foreach ($model->services as $service) {
                     if ($master->service_id == $service->id && $master->rate < 100) {
                         $total += $service->cost * ($master->rate / 100);

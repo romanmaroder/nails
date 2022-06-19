@@ -57,7 +57,7 @@ class PostController extends Controller
                         },
                     ],
                     [
-                        'allow'        => false,
+                        'allow'        => true,
                         'roles'        => ['@'],
                         'denyCallback' => function ($rule, $action) {
                             Yii::$app->user->logout();

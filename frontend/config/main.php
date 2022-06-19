@@ -57,6 +57,8 @@ return [
                 'post/<category:[\w_-]+>/<slug:>' => '/blog/post/post',
                 'todo'                            => '/todo/todo/index',
                 'logout'                          => '/site/logout',
+                'site/captcha/<refresh:\d+>'      => 'site/captcha',
+                'site/captcha/<v:\w+>'            => 'site/captcha',
                 '<action:\w+ >'                   => 'site/<action>',
                 [
                     'pattern' => '<action:about|portfolio|contact|login|signup>',
