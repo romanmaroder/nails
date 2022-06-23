@@ -74,12 +74,13 @@ class User extends ActiveRecord implements IdentityInterface
             ['roles', 'safe'],
             ['color', 'safe'],
             ['username', 'required'],
+            ['email', 'unique'],
+            [['username', 'email'], 'trim'],
             ['avatar', 'safe'],
             ['description', 'safe'],
             ['birthday', 'safe'],
             ['phone', 'safe'],
             ['address', 'safe'],
-            ['email', 'unique'],
             ['password', 'safe'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
@@ -442,7 +443,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         // $clientIds = Yii::$app->authManager->getUserIdsByRole('user');
         //$clients   = User::find()->where(['id' => $clientIds])->orderBy(['username' => SORT_ASC])->asArray()->all();
-        $clients = User::find()->where(['!=', 'id', 1])->orderBy(['username' => SORT_ASC])->asArray()->all();
+        $clients = User::find()->where(['!=', 'id', 1])->andWhere(['status' => 10])->orderBy(['username' => SORT_ASC])
+            ->asArray()->all();
         return ArrayHelper::map($clients, 'id', 'username');
     }
 
@@ -486,7 +488,7 @@ class User extends ActiveRecord implements IdentityInterface
         return User::getDb()->cache(
             function () {
                 $master = Yii::$app->authManager->getUserIdsByRole('master');
-                $all = User::find()->select('id')->count();
+                $all    = User::find()->select('id')->count();
 
                 return $all - count($master);
             },

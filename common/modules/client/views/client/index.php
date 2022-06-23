@@ -106,14 +106,14 @@ $this->params['breadcrumbs'][] = $this->title;
 														</div>';
                                                 },
                                             ],
-                                            'description:ntext',
-                                            [
+                                            /*'description:ntext',*/
+                                            /*[
                                                 'attribute' => 'birthday',
                                                 'format'    => ['date', 'php:d-m-Y'],
                                                 'value'     => function ($model) {
                                                     return $model->birthday ?: null;
                                                 }
-                                            ],
+                                            ],*/
                                             [
                                                 'attribute' => 'phone',
                                                 'format'    => 'raw',
@@ -124,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     ) : 'номер не указан';
                                                 }
                                             ],
-                                            'address',
+                                            /*'address',*/
                                             [
                                                 'class'          => 'yii\grid\ActionColumn',
                                                 'template' => '{view}'
@@ -202,7 +202,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     );
                                                 },
                                             ],*/
-                                            [
+                                           /* [
                                                 'attribute' => 'avatar',
                                                 'format'    => 'raw',
                                                 'value'     => function ($model) {
@@ -214,15 +214,15 @@ $this->params['breadcrumbs'][] = $this->title;
 															 title = "'.$model->username.'">
 														</div>';
                                                 },
-                                            ],
-                                            'description:ntext',
-                                            [
+                                            ],*/
+                                            /*'description:ntext',*/
+                                           /* [
                                                 'attribute' => 'birthday',
                                                 'format'    => ['date', 'php:d-m-Y'],
                                                 'value'     => function ($model) {
                                                     return $model->birthday ?: null;
                                                 }
-                                            ],
+                                            ],*/
                                             [
                                                 'attribute' => 'phone',
                                                 'format'    => 'raw',
@@ -233,7 +233,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     ) : 'номер не указан';
                                                 }
                                             ],
-                                            'address',
+                                           /* 'address',*/
                                             [
                                                 'class'          => 'yii\grid\ActionColumn',
                                                 'visibleButtons' => [
