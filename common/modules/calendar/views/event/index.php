@@ -303,7 +303,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         element.addClass('fc-basic_day');
                                         element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
                                         if( event.nonstandard.notice){
-                                            element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
+                                            element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><u><i>' + event.nonstandard.notice + '</i></u></span>');
                                         }
                                     }
                                      if (view.name == 'month' ) { 
@@ -351,13 +351,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                      if ( view.name == 'listWeek' ) { 
                                         element.find('.fc-list-item-marker ').append(' (' + event.nonstandard.master_name + ') '); 
                                      }
-                                      if (view.name == 'agendaWeek' || view.name == 'agendaDay') {
+                                      if (view.name == 'agendaWeek') {
                                       
                                           element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
                                             if( event.nonstandard.notice){
-                                                element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><i>' + event.nonstandard.notice + '</i></span>');
+                                                element.find('.fc-description').after('<span class=\"fc-notice pb-2\"><u><i>' + event.nonstandard.notice + '</i></u></span>');
                                             }
                                       }
+                                      if ( view.name == 'agendaDay') {
+                                      
+                                          element.find('.fc-title').addClass('font-weight-bold pb-2').after('<span class=\"fc-description pb-2\"><i>' + event.nonstandard.description + '</i></span>');
+                                            if( event.nonstandard.notice){
+                                                element.find('.fc-description').after('</br><span class=\"fc-notice pb-2\"><u><i>' + event.nonstandard.notice + '</i></u></span>');
+                                            }
+                                      }
+                                      
                   				}"
                             ),
                             'eventAfterAllRender' => new JsExpression(

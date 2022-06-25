@@ -43,7 +43,7 @@ class ClientController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['create','update','view','delete','master'],
+                        'actions' => ['create', 'update', 'view', 'delete', 'master'],
                         'roles'   => ['admin', 'manager']
 
                     ],
@@ -76,11 +76,23 @@ class ClientController extends Controller
      * Все записи кроме 1 (Администратора)
      *
      * @return string
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionIndex(): string
     {
         $dataProvider = User::getDataProvider();
 
+        $inactive = User::inactiveUser();
+
+        if (!empty($inactive) && Yii::$app->user->can('admin')) {
+
+            $message = '';
+            foreach ($inactive as $user) {
+
+                $message .= "{$user['username']}</br>";
+            }
+            Yii::$app->session->setFlash('danger', "{$message}");
+        }
 
         return $this->render(
             'index',

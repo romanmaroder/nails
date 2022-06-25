@@ -449,6 +449,15 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * List of inactive users
+     * @return array
+     */
+    public static function inactiveUser(): array
+    {
+        return self::find()->where(['status'=>9])->asArray()->all();
+    }
+
+    /**
      * * Getting a list of masters with the master role
      *
      * @return array

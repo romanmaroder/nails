@@ -81,6 +81,7 @@ return [
                 'post/new'                                                => 'blog/post/create',
                 'todo'                                                    => 'todo/todo/index',
                 'account'                                                 => 'profile/account/index',
+                'account/<id:\d+>'                                        => 'profile/account/view',
                 '<module>/<controller>/<action:(update|delete)>/<id:\d+>' => '<module>/<controller>/<action>',
                 '<controller>/<action:(update|delete)>/<id:\d+>'          => '<controller>/<action>',
                 '<action:\w+ >'                                           => 'site/<action>',

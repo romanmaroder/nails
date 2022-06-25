@@ -35,6 +35,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php echo Yii::$app->session->getFlash('info'); ?>
                                 </div>
                             <?php endif;?>
+                            <?php if( Yii::$app->session->hasFlash('danger') ): ?>
+                                <div class="alert alert-danger alert-dismissible mt-3" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <?= Yii::$app->session->getFlash('danger'); ?>
+                                    <small><i><?= Yii::$app->params['error']['inactive-user'];?></i></small>
+                                </div>
+                            <?php endif;?>
 
                             <?php
                             if (Yii::$app->id ==='app-frontend') : ?>
