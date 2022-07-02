@@ -12,6 +12,7 @@ use yii\helpers\Html;
  * @property int $id
  * @property string|null $user_id
  * @property string|null $education
+ * @property string|null $color
  * @property string|null $notes
  * @property int|null $skill
  * @property int|null $photo_id

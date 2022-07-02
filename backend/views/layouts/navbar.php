@@ -66,7 +66,7 @@ use yii\widgets\Menu;
                         'data-placement' => 'tooltip',
                         'title'          => 'Мастера'
                     ],
-                    'url'     => ['client/client/master']
+                    'url'     => ['/client/client/master']
                 ],
                 [
                     'label'   => '<i class="fas fa-percent"></i>',

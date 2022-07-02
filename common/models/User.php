@@ -20,6 +20,7 @@ use yii\web\IdentityInterface;
  * @property int $id
  * @property string $username
  * @property string $email
+ * @property string $color
  * @property int $status
  * @property string $avatar
  * @property-read \yii\db\ActiveQuery $userPhoto
