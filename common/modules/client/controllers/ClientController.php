@@ -2,9 +2,11 @@
 
 namespace common\modules\client\controllers;
 
+use backend\models\SignupClientForm;
 use Yii;
 use common\models\User;
 use common\models\Profile;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
@@ -18,12 +20,6 @@ use yii\web\Response;
  */
 class ClientController extends Controller
 {
-    /**
-     * При создании клиента через админ-панель
-     * Пароль и почта пользователя по-умолчанию
-     */
-    protected const DEFAULT_PASSWORD = '11111111';
-    protected const DEFAULT_EMAIL    = '@user.com';
 
     /**
      * {@inheritdoc}
@@ -85,10 +81,8 @@ class ClientController extends Controller
         $inactive = User::inactiveUser();
 
         if (!empty($inactive) && Yii::$app->user->can('admin')) {
-
             $message = '';
             foreach ($inactive as $user) {
-
                 $message .= "{$user['username']}</br>";
             }
             Yii::$app->session->setFlash('danger', "{$message}");
@@ -124,18 +118,18 @@ class ClientController extends Controller
      * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      *
-     * @return string|\yii\web\Response
-     * @throws \yii\base\Exception
+     * @return string|Response
+     * @throws Exception
      */
     public function actionCreate()
     {
-        $model   = new User();
+        $model   = new SignupClientForm();
         $profile = new Profile();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->email = 'user' . rand(1, 5000) . self::DEFAULT_EMAIL;
 
-            $model->setPassword(self::DEFAULT_PASSWORD);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->generateEmail();
+            $model->setPassword($model->defaultPassword());
             $model->generateAuthKey();
             $model->generateEmailVerificationToken();
 
@@ -168,7 +162,7 @@ class ClientController extends Controller
      *
      * @param int $id
      *
-     * @return string|\yii\web\Response
+     * @return string|Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate(int $id)
@@ -211,7 +205,7 @@ class ClientController extends Controller
      *
      * @param int $id
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws \yii\web\NotFoundHttpException
      */
     public function actionDelete(int $id): Response

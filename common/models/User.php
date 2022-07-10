@@ -21,6 +21,9 @@ use yii\web\IdentityInterface;
  * @property string $username
  * @property string $email
  * @property string $color
+ * @property string $address
+ * @property string $phone
+ * @property string $birthday
  * @property int $status
  * @property string $avatar
  * @property-read \yii\db\ActiveQuery $userPhoto
@@ -492,6 +495,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Number of clients
      *
      * @return bool|int|string|null
+     * @throws Exception
      */
     public static function getUserTotalCount()
     {
