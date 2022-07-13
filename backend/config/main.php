@@ -30,7 +30,15 @@ return [
         'user'         => [
             'identityClass'   => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie'  => ['name' => '_identity-backend', 'httpOnly' => true],
+            'identityCookie'  => [
+                'name'          => '_identity-backend',
+                'httpOnly'      => true,
+            ],
+            'on afterLogin' => function (\yii\web\UserEvent $event) {
+                $user = $event->identity;
+                Yii::$app->session->setFlash('info', 'Привет, ' . $user->username .'!');
+
+            }
 
         ],
         'session'      => [

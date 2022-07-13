@@ -26,6 +26,8 @@ use yii\web\IdentityInterface;
  * @property string $birthday
  * @property int $status
  * @property string $avatar
+ * @property string $role
+ * @property string $roles
  * @property-read \yii\db\ActiveQuery $userPhoto
  * @property-read string[] $rolesDropdown
  * @property-read \yii\db\ActiveQuery $certificate
@@ -43,7 +45,6 @@ class User extends ActiveRecord implements IdentityInterface
     public const ROLE_AUTHOR  = 'author';
 
     public const DEFAULT_IMAGE = '/img/avatar.jpg';
-
 
     public $roles;
     public $password;
@@ -131,7 +132,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function __construct()
     {
-        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'saveRoles']);
+        #$this->on(self::EVENT_AFTER_UPDATE, [$this, 'saveRoles']);
         parent::__construct();
     }
 
@@ -142,15 +143,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function saveRoles()
     {
-        Yii::$app->authManager->revokeAll($this->getId());
+            Yii::$app->authManager->revokeAll($this->getId());
 
-        if (is_array($this->roles)) {
-            foreach ($this->roles as $roleName) {
-                if ($role = Yii::$app->authManager->getRole($roleName)) {
-                    Yii::$app->authManager->assign($role, $this->getId());
+            if (is_array($this->roles)) {
+                foreach ($this->roles as $roleName) {
+                    if ($role = Yii::$app->authManager->getRole($roleName)) {
+                        Yii::$app->authManager->assign($role, $this->getId());
+                    }
                 }
             }
-        }
     }
 
     /**
@@ -169,10 +170,12 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Get user role from RBAC
      *
+     * * @return Role
      */
-    public static function getRole()
+    public static function getRole(): Role
     {
         return array_values(Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId()))[0];
+        #return current( \Yii::$app->authManager->getRolesByUser( $this->id ) );
     }
 
     /**
@@ -458,7 +461,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function inactiveUser(): array
     {
-        return self::find()->where(['status'=>9])->asArray()->all();
+        return self::find()->where(['status' => 9])->asArray()->all();
     }
 
     /**

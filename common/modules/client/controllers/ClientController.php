@@ -9,6 +9,7 @@ use common\models\Profile;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -187,6 +188,7 @@ class ClientController extends Controller
                 $profile->delete();
             }
 
+            $model->saveRoles();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

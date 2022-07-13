@@ -59,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (Yii::$app->authManager->getAssignment('master',$user->id)) : ?>
                         <p class="text-muted text-center">
                             <?php echo User::getRole()->description ?>
+                            <?php /*echo Yii::$app->user->identity->role->description */?>
                         </p>
                     <?php endif; ?>
                         <?php
