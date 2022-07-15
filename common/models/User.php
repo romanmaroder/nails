@@ -204,7 +204,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername(string $username): ?User
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return self::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -218,7 +218,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByUserPhone(string $phone): ?User
     {
         /*return User::findOne($phone);*/
-        return static::find()
+        return self::find()
             ->where(['phone' => $phone])
             ->one();
     }

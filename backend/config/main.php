@@ -34,11 +34,11 @@ return [
                 'name'          => '_identity-backend',
                 'httpOnly'      => true,
             ],
-            'on afterLogin' => function (\yii\web\UserEvent $event) {
+            /*'on afterLogin' => function (\yii\web\UserEvent $event) {
                 $user = $event->identity;
-                Yii::$app->session->setFlash('info', 'Привет, ' . $user->username .'!');
+                Yii::$app->session->setFlash('info', Yii::$app->smsSender->checkTimeOfDay() . $user->username .'!');
 
-            }
+            }*/
 
         ],
         'session'      => [

@@ -4,6 +4,7 @@
 namespace backend\modules\telegram\controllers;
 
 
+use backend\modules\notification\AppMessenger;
 use backend\modules\telegram\api\TelegramBot;
 use backend\modules\telegram\models\Telegram;
 use common\models\Event;
@@ -56,6 +57,7 @@ class TelegramController extends Controller
     public function actionWebhook()
     {
         $result = $this->telegramBot()->getWebhookUpdates();
+        $messenger = new AppMessenger();
         #file_put_contents(__DIR__ . '/logs.txt', print_r($result, 1), FILE_APPEND);
 
         $text          = $result['message']['text'];
@@ -129,7 +131,7 @@ class TelegramController extends Controller
                 ]
             );
         } elseif (isset($result['message']['contact']['phone_number']) && $old_id->chat_id !== $chat_id) {
-            $user_by_phone = $this->findUser($result['message']['contact']['phone_number']);
+            $user_by_phone = $messenger->findUser($result['message']['contact']['phone_number']);
 
             if ($user_by_phone->id) {
                 Telegram::start($chat_id, $name, $username, $user_by_phone->id, $old_id);
@@ -230,8 +232,8 @@ class TelegramController extends Controller
                     $info[1]
                 ) === 1) {
                 $nameInfo  = $info[0];
-                $phoneInfo = $this->convertPhone($info[1]);
-                $user      = $this->findUserByNameAndPhone($nameInfo, $phoneInfo);
+                $phoneInfo = $messenger->convertPhone($info[1]);
+                $user      = $messenger->findUserByNameAndPhone($nameInfo, $phoneInfo);
 
 
                 if ($old_id->chat_id !== $chat_id) {
@@ -341,49 +343,5 @@ class TelegramController extends Controller
         ];
     }
 
-    /**
-     * Searching for a user by phone number
-     *
-     * @param string $phone
-     *
-     * @return User
-     */
-    public function findUser(string $phone): ?User
-    {
-        return User::findByUserPhone($this->convertPhone($phone));
-    }
-
-    /**
-     * Search for a user by name and phone number
-     *
-     * @param string $name
-     * @param string $phone
-     *
-     * @return User|false
-     */
-    public function findUserByNameAndPhone(string $name, string $phone)
-    {
-        return User::findByUserNameAndPhone($name, $phone);
-    }
-
-    /**
-     * Reducing a phone number to the form +380(xx)xxx-xx-xx
-     *
-     * @param string $phone
-     *
-     * @return string
-     */
-    public function convertPhone(string $phone): string
-    {
-        $cleaned = preg_replace('/[^\W*[:digit:]]/', '', $phone);
-
-        if (strlen($phone) <= 13) {
-            preg_match('/\W*(\d{2})(\d{3})(\d{3})(\d{2})(\d{2})/', $cleaned, $matches);
-
-            return "+{$matches[1]}({$matches[2]}){$matches[3]}-{$matches[4]}-{$matches[5]}";
-        } else {
-            return $cleaned;
-        }
-    }
 
 }

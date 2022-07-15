@@ -10,6 +10,7 @@ use Yii;
 
 class AppMessenger implements MessengerInterface
 {
+use CommonAdditionalMethods;
 
     protected MessengerInterface $messenger;
     protected string             $text;
@@ -29,5 +30,8 @@ class AppMessenger implements MessengerInterface
     public function send($params)
     {
         return $this->messenger->send($params);
+
     }
+
+
 }

@@ -2,9 +2,9 @@
 
 namespace backend\modules\viber\controllers;
 
+use backend\modules\notification\AppMessenger;
 use backend\modules\viber\models\Viber;
 use common\models\Event;
-use common\models\User;
 use Exception;
 use Viber\Api\Keyboard;
 use Viber\Api\Keyboard\Button;
@@ -75,7 +75,7 @@ class ViberController extends Controller
 
         try {
             $bot = new ViberBot(['token' => Yii::$app->params['viber']['viberToken']]);
-
+            $messenger = new AppMessenger();
 
             $bot->onConversation(
                 function ($event) use ($bot, $botSender) {
@@ -192,12 +192,12 @@ class ViberController extends Controller
                 )
                 // Verifying a user's phone number
                 ->onContact(
-                    function ($event) use ($bot, $botSender) {
+                    function ($event) use ($bot, $botSender,$messenger) {
                         $clientPhone = $event->getMessage()->getPhoneNumber();
                         $receiverId = strval($event->getSender()->getId());
                         $receiverName = $event->getSender()->getName();
 
-                        $user_by_phone = $this->findUser(strval($clientPhone));
+                        $user_by_phone = $messenger->findUser(strval($clientPhone));
 
                         if ($user_by_phone->id) {
 
@@ -260,7 +260,7 @@ class ViberController extends Controller
                 // Regular Expression Input Validation
                 ->onText(
                     '|^([а-яА-я}]+\s{1}\+?380\d{9}$)|musi',
-                    function ($event) use ($bot, $botSender) {
+                    function ($event) use ($bot, $botSender,$messenger) {
                         $receiverId = $event->getSender()->getId();
                         $receiverName = $event->getSender()->getName();
 
@@ -269,8 +269,8 @@ class ViberController extends Controller
                         if (preg_match(Yii::$app->params['namePattern'], $info[0]) === 1
                             && preg_match(Yii::$app->params['phonePattern'], $info[1]) === 1) {
                             $nameInfo = $info[0];
-                            $phoneInfo = $this->convertPhone($info[1]);
-                            $user = $this->findUserByNameAndPhone($nameInfo, $phoneInfo);
+                            $phoneInfo = $messenger->convertPhone($info[1]);
+                            $user = $messenger->findUserByNameAndPhone($nameInfo, $phoneInfo);
 
 
                             if (isset($user['id'])) {
@@ -471,50 +471,7 @@ class ViberController extends Controller
         }
     }
 
-    /**
-     * Searching for a user by phone number
-     *
-     * @param string $phone
-     *
-     * @return User
-     */
-    private function findUser(string $phone): ?User
-    {
-        return User::findByUserPhone($this->convertPhone($phone));
-    }
 
-    /**
-     * Search for a user by name and phone number
-     *
-     * @param string $name
-     * @param string $phone
-     *
-     * @return User|false
-     */
-    private function findUserByNameAndPhone(string $name, string $phone)
-    {
-        return User::findByUserNameAndPhone($name, $phone);
-    }
-
-    /**
-     * Reducing a phone number to the form +380(xx)xxx-xx-xx
-     *
-     * @param string $phone
-     *
-     * @return string
-     */
-    private function convertPhone(string $phone): string
-    {
-        $cleaned = preg_replace('/[^\W*[:digit:]]/', '', $phone);
-
-        if (strlen($phone) <= 13) {
-            preg_match('/\W*(\d{2})(\d{3})(\d{3})(\d{2})(\d{2})/', $cleaned, $matches);
-
-            return "+{$matches[1]}({$matches[2]}){$matches[3]}-{$matches[4]}-{$matches[5]}";
-        } else {
-            return $cleaned;
-        }
-    }
 
 
 }

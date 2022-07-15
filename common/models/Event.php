@@ -147,8 +147,8 @@ class Event extends ActiveRecord
 
     public function __construct($config = [])
     {
-        #$this->on(self::EVENT_AFTER_INSERT, [$this, 'notifyUser']);
-        #$this->on(self::EVENT_AFTER_UPDATE, [$this, 'notifyUser']);
+        $this->on(self::EVENT_AFTER_INSERT, [$this, 'notifyUser']);
+        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'notifyUser']);
         parent::__construct($config);
     }
 
