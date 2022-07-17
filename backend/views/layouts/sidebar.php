@@ -36,10 +36,8 @@ use yii\helpers\Url;
                 <?php
                 echo Html::img(
                     $user->getPicture(), [
-                    'class' => 'img-circle
-                                                elevation-2',
-                    'alt'   => 'User
-                                                Image'
+                    'class' => 'img-circle elevation-2',
+                    'alt'   => 'User Image'
                 ]
                 ); ?>
             </div>

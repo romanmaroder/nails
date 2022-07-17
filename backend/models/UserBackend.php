@@ -4,7 +4,7 @@ namespace backend\models;
 
 use common\models\User;
 
-class SignupClientForm extends User
+class UserBackend extends User
 {
     /**
      * При создании клиента через админ-панель

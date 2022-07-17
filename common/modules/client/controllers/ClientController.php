@@ -2,14 +2,12 @@
 
 namespace common\modules\client\controllers;
 
-use backend\models\SignupClientForm;
+use backend\models\UserBackend;
 use Yii;
-use common\models\User;
 use common\models\Profile;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
-use yii\db\BaseActiveRecord;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -77,9 +75,9 @@ class ClientController extends Controller
      */
     public function actionIndex(): string
     {
-        $dataProvider = User::getDataProvider();
+        $dataProvider = UserBackend::getDataProvider();
 
-        $inactive = User::inactiveUser();
+        $inactive = UserBackend::inactiveUser();
 
         if (!empty($inactive) && Yii::$app->user->can('admin')) {
             $message = '';
@@ -124,7 +122,7 @@ class ClientController extends Controller
      */
     public function actionCreate()
     {
-        $model   = new SignupClientForm();
+        $model   = new UserBackend();
         $profile = new Profile();
 
 
@@ -184,10 +182,9 @@ class ClientController extends Controller
                 $profile->save();
             }
             if ($model->roles === '' && $model->profile->color) {
-                $profile = Profile::find()->where(['user_id' => $model->profile->user_id])->one();
+                $profile = Profile::getUserProfileInfo($model->profile->user_id);
                 $profile->delete();
             }
-
             $model->saveRoles();
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -212,8 +209,7 @@ class ClientController extends Controller
      */
     public function actionDelete(int $id): Response
     {
-        Yii::$app->authManager->revokeAll($id);
-
+        $this->on($this::EVENT_AFTER_ACTION,[$this->findModel($id),'saveRoles']);
         $this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
@@ -226,7 +222,7 @@ class ClientController extends Controller
             ->leftJoin('auth_assignment', '`auth_assignment`.`user_id` = `user`.`id`')
             ->andWhere(['auth_assignment.item_name'=>['master','manager']]);*/
 
-        $query = User::find()->where(['id' => $masterIds])->with(['profile']);
+        $query = UserBackend::find()->where(['id' => $masterIds])->with(['profile']);
 
         $dataProvider = new ActiveDataProvider(
             [
@@ -252,7 +248,7 @@ class ClientController extends Controller
      */
     protected function findModel(int $id)
     {
-        if (($model = User::find()->with('profile')->where(['id' => $id])->one()) !== null) {
+        if (($model = UserBackend::find()->with('profile')->where(['id' => $id])->one()) !== null) {
             return $model;
         }
 

@@ -70,7 +70,8 @@ class TelegramController extends Controller
         $user_event_id = Telegram::getUserId($result['callback_query']['message']['chat']['id']);
 
         if ($text == "/start") {
-            if ($old_id->chat_id !== $chat_id) {
+
+            if ($old_id->chat_id === $chat_id) {
                 $this->telegramBot()->sendMessage(
                     [
                         'chat_id'      => $chat_id,

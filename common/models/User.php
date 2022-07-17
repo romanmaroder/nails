@@ -66,7 +66,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::class,
-
         ];
     }
 
@@ -200,7 +199,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @param string $username
      *
-     * @return static|null
+     * @return User
      */
     public static function findByUsername(string $username): ?User
     {
@@ -212,7 +211,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @param string $phone
      *
-     * @return User
+     * @return User|null
      */
 
     public static function findByUserPhone(string $phone): ?User

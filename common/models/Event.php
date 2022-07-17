@@ -149,6 +149,7 @@ class Event extends ActiveRecord
     {
         $this->on(self::EVENT_AFTER_INSERT, [$this, 'notifyUser']);
         $this->on(self::EVENT_AFTER_UPDATE, [$this, 'notifyUser']);
+
         parent::__construct($config);
     }
 
@@ -507,6 +508,10 @@ class Event extends ActiveRecord
      */
     public static function getTotal(object $dataProvider): string
     {
+        /*echo '<pre>';
+        var_dump($dataProvider);
+        echo '</pre>';
+        die();*/
         $total = 0;
         foreach ($dataProvider->models as $model) {
             foreach ($model->service_array as $cost) {
