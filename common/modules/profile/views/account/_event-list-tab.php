@@ -67,19 +67,13 @@ use yii\helpers\Html;
                         $service_name = '';
                         foreach ($model['services'] as $services) {
                             $service_name .= $services['name'] . " </br>";
-                            // echo '<pre>';
-                            //var_dump($model);
-                            //var_dump($services->name);
+
                         }
 
                         return $service_name ? $service_name : $model['description'];
                     },
                 ],
-                /*[
-                    'attribute' => 'description',
-                    'contentOptions' => ['style' => 'white-space: nowrap;'],
-                ],*/
-                //'notice',
+                
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'template' => "{view}\n\n\n{sms}\n\n\n{location}",

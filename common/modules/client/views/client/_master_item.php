@@ -19,61 +19,53 @@ use yii\helpers\Html;
             <div class="row">
                 <div class="col-7">
                     <h2 class="lead"><b> <?= $model->username; ?></b></h2>
-                    <?= $model->getRoles('description') ?
-                        '<p class="font-weight-light">(' . implode(
+                    <?=$model->getRoles('description') ?
+                        '<p class="font-weight-light">('.implode(
                             ', ',
                             $model->getRoles('description')
-                        ) . ')</p>' : '' ?>
+                        ).')</p>' : '' ?>
 
                     <ul class="ml-4 mb-0 fa-ul text-muted">
 
-                        <?php
-                        if ($model->address): ?>
+                        <?php if ($model->address):?>
                             <li class="small mb-3">
                                 <span class="fa-li">
                                     <i class="fas fa-lg fa-building"></i>
                                 </span>
-                                <?= $model->address; ?>
+                                <?=$model->address  ;?>
                             </li>
-                        <?php
-                        endif; ?>
+                        <?php endif;?>
 
-                        <?php
-                        if ($model->phone): ?>
+                        <?php if ($model->phone):?>
                             <li class="small mb-3">
                                 <span class="fa-li">
                                     <i class="fas fa-lg fa-phone"></i>
                                 </span>
-                                <?= Html::a(
+                                <?=Html::a(
                                     $model->phone,
-                                    'tel:' . $model->phone
-                                ); ?>
+                                    'tel:'.$model->phone
+                                ) ;?>
                             </li>
-                        <?php
-                        endif; ?>
+                        <?php endif;?>
 
-                        <?php
-                        if ($model->birthday): ?>
+                        <?php if ($model->birthday):?>
                             <li class="small mb-3">
                                 <span class="fa-li">
                                     <i class="fas fa-birthday-cake"></i>
                                 </span>
-                                <?= Yii::$app->formatter->asDate(
+                                <?=Yii::$app->formatter->asDate(
                                     $model->birthday,
                                     'php:d-m-Y'
-                                ); ?>
+                                ) ;?>
                             </li>
-                        <?php
-                        endif; ?>
+                        <?php endif;?>
 
-                        <?php
-                        if ($model->profile->color): ?>
+                        <?php if ($model->profile->color):?>
                             <li class="small mb-3">
                                 <span class="fa-li">
                                     <i class="fas fa-paint-brush"></i>
                                 </span>
-                                <?php
-                                $option = [
+                                <?php  $option = [
                                     'style' => [
                                         'width'            => '20px',
                                         'height'           => '20px',
@@ -81,25 +73,22 @@ use yii\helpers\Html;
                                         'background-color' => $model->profile->color
                                     ]
                                 ];
-                                echo Html::tag('div', '', $option);; ?>
+                                echo Html::tag('div', '', $option); ;?>
                             </li>
-                        <?php
-                        endif; ?>
+                        <?php endif;?>
 
                     </ul>
                 </div>
                 <div class="col-5 text-center">
-                    <img src="<?= $model->getPicture(); ?>" alt="<?= $model->username ?>"
+                    <img src="<?= $model->getPicture();?>" alt="<?=$model->username?>"
                          class="img-circle img-fluid">
                 </div>
             </div>
         </div>
         <div class="card-footer">
             <div class="text-right">
-                <?= Html::a(
-                    '<i class="fas fa-user"></i> Подробнее...',
-                    ['view', 'id' => $model->id], ['class' => 'btn btn-sm btn-primary']
-                ) ?>
+                <?= Html::a('<i class="fas fa-user"></i> Подробнее...',
+                    ['view', 'id' =>$model->id], ['class' => 'btn btn-sm btn-primary']) ?>
             </div>
         </div>
     </div>

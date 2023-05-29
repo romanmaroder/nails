@@ -1,7 +1,5 @@
 <?php
 
-use yii\web\UrlNormalizer;
-
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -15,6 +13,7 @@ return [
     'bootstrap'           => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'name'                => 'NAILS',
+//    'language'            => 'ru',
     'components'          => [
         'request'      => [
             'csrfParam' => '_csrf-frontend',
@@ -42,9 +41,9 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager'   => [
+            'enableStrictParsing' => false,
             'enablePrettyUrl'     => true,
             'showScriptName'      => false,
-            'enableStrictParsing' => false,
             'rules'               => [
                 ''                                => 'site/index',
                 'event'                           => 'calendar/event/index',
@@ -67,8 +66,6 @@ return [
                 '<action:\w+ >'                   => 'site/<action>',
                 '<module>/<controller>/<action:(update|delete)>/<id:\d+>' => '<module>/<controller>/<action>',
             ],
-        ],
-        'assetManager' => [
         ],
     ],
     'params'              => $params,

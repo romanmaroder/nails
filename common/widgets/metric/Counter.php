@@ -14,7 +14,7 @@ class Counter extends Widget
         //Подключаем свой файл Asset
         MetricAsset::register($this->view);
         $this->view->registerMetaTag(['name' => 'yandex-verification', 'content' => '137c90eb652e5c9b']);
-        //return $this->render('_counters');
+        return $this->render('_counters');
     }
 
 }

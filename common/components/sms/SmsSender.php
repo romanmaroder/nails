@@ -119,5 +119,4 @@ class SmsSender extends Component implements SmsSenderInterface
 
         return $greeting . Yii::$app->params['sms-location']['address'];
     }
-
 }

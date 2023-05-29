@@ -42,7 +42,6 @@ PluginAsset::register($this)->add(['sweetalert2']);
                     'format'=>'raw',
                     'visible' => $model->description ?? '',
                 ],
-                //'serviceString',
                 [
                     'attribute' => 'service_array',
                     'format'=>'raw',
@@ -61,6 +60,18 @@ PluginAsset::register($this)->add(['sweetalert2']);
                     'attribute' => 'event_time_start',
                     'label'     => 'Время',
                     'format'    => ['date', 'php:H:i'],
+                ],
+                [
+                    'attribute' => 'created_at',
+                    'label'     => 'Создан',
+                    'format'    => ['date', 'php:d-m-Y H:i'],
+                    'visible' => $model->created_at != $model->updated_at,
+                ],
+                [
+                    'attribute' => 'updated_at',
+                    'label'     => 'Обновлен',
+                    'format'    => ['date', 'php:d-m-Y H:i'],
+                    'visible' => $model->created_at != $model->updated_at,
                 ]
             ],
         ]

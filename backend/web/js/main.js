@@ -15,6 +15,7 @@ $( document ).ready(function() {
     }else{
 
     }
+
 // Block button when submitting a form
     $(document).on('pjax:send', function() {
         $(".spinner-border").removeClass('d-none');
@@ -25,6 +26,5 @@ $( document ).ready(function() {
         $(".spinner-border").addClass('d-none');
         $('button[type=submit]').attr('disabled', false).removeClass('disabled');
     });
-
 
 });

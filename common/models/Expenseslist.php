@@ -55,7 +55,6 @@ class Expenseslist extends \yii\db\ActiveRecord
             [['expenses_id', 'price', 'created_at', 'updated_at'], 'integer'],
             [['expenses_id'], 'exist', 'skipOnError' => true, 'targetClass' => Expenses::class, 'targetAttribute' => ['expenses_id' => 'id']],
         ];
-
     }
 
     /**
@@ -77,9 +76,33 @@ class Expenseslist extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getExpenses(): \yii\db\ActiveQuery
+    public function getExpenses()
     {
         return $this->hasOne(Expenses::class, ['id' => 'expenses_id']);
+    }
+
+
+    /**
+     * The total amount of expenses
+     * @param  $dataProvider
+     * @return string
+     * @throws \yii\base\InvalidArgumentException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getTotalExpenses($dataProvider): string
+    {
+        $total = 0;
+
+
+        foreach ($dataProvider as $model) {
+
+
+           $total += $model->price;
+
+
+        }
+
+        return $total;
     }
 
 

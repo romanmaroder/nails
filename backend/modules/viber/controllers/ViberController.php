@@ -24,7 +24,6 @@ use yii\web\Controller;
 class ViberController extends Controller
 {
 
-
     public function beforeAction($action)//Обязательно нужно отключить Csr валидацию, так не будет работать
     {
         $this->enableCsrfValidation = ($action->id !== "setup");
@@ -58,7 +57,7 @@ class ViberController extends Controller
 
         try {
             $client = new Client(['token' => Yii::$app->params['viber']['viberToken']]);
-            $result = $client->setWebhook( Yii::$app->params['viber']['viberWebhook']);
+            $result = $client->setWebhook(Yii::$app->params['viber']['viberWebhook']);
         } catch (Exception $e) {
             echo "Error: " . $e->getMessage() . "\n";
         }
@@ -470,8 +469,6 @@ class ViberController extends Controller
             echo "Error: " . $e->getMessage() . "\n";
         }
     }
-
-
 
 
 }

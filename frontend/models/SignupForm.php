@@ -16,6 +16,7 @@ class SignupForm extends Model
     public $password;
     public $verifyCode;
 
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +57,7 @@ class SignupForm extends Model
         return [
             'username' => 'Имя',
             'password' => 'Пароль',
-            'verifyCode'=>'Подтвердить код'
+             'verifyCode'=>'Подтвердить код'
         ];
     }
 
@@ -64,7 +65,6 @@ class SignupForm extends Model
      * Signs user up.
      *
      * @return bool whether the creating new account was successful and email was sent
-     * @throws \yii\base\Exception
      */
     public function signup()
     {
@@ -72,7 +72,7 @@ class SignupForm extends Model
             return null;
         }
 
-        $user = new User();
+        $user    = new User();
 
         $user->username = $this->username;
         $user->email    = $this->email;
@@ -82,9 +82,10 @@ class SignupForm extends Model
 
         //Добавляем роль по умолчанию для каждого зарегестрированного
         if ($user->save()) {
-            // $auth             = Yii::$app->authManager;//TODO убрать роль по умолчанию
+            //$auth             = Yii::$app->authManager;
             //$role             = $auth->getRole('user');
             //$auth->assign($role, $user->id);
+
             return $user && $this->sendEmail($user);
         }
         return null;
@@ -93,7 +94,7 @@ class SignupForm extends Model
     /**
      * Sends confirmation email to user
      *
-     * @param User $user user model to with email should be send
+     * @param  User  $user  user model to with email should be send
      *
      * @return bool whether the email was sent
      */
@@ -107,7 +108,7 @@ class SignupForm extends Model
             )
             ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
             ->setTo($this->email)
-            ->setSubject('Регистрация аккаунта на ' . Yii::$app->name)
+            ->setSubject('Регистрация аккаунта на '.Yii::$app->name)
             ->send();
     }
 }

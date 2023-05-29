@@ -2,8 +2,8 @@
 
 namespace common\models;
 
+use Yii;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "event_service".
@@ -15,7 +15,7 @@ use yii\db\ActiveRecord;
  * @property Service $service
  * @property int $id [int(11)]
  */
-class EventService extends ActiveRecord
+class EventService extends \yii\db\ActiveRecord
 {
     public int $amount;
 
@@ -68,7 +68,7 @@ class EventService extends ActiveRecord
     /**
      * Gets query for [[Event]].
      *
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getEvent(): ActiveQuery
     {
@@ -78,7 +78,7 @@ class EventService extends ActiveRecord
     /**
      * Gets query for [[Service]].
      *
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getService(): ActiveQuery
     {

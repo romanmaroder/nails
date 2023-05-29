@@ -24,7 +24,7 @@ use yii\widgets\Pjax;
 /* @var $chartExpensesData EventController */
 
 
-$this->title                   = 'Статистика';
+$this->title = 'Статистика';
 $this->params['breadcrumbs'][] = $this->title;
 PluginAsset::register($this)->add(['datatables', 'datatables-bs4', 'datatables-responsive', 'datatables-buttons']);
 
@@ -34,7 +34,7 @@ Pjax::begin(
     [
         'enablePushState' => false,
         // 'enableReplaceState' => true,
-        'timeout' => '10000',
+        'timeout'         => '10000',
     ]
 ) ?>
     <div class="container-fluid">
@@ -141,7 +141,7 @@ $(function (){
     }
     getTabs();
     
-    $(document).on('pjax:send', function() {
+	 $(document).on('pjax:send', function() {
         $(".spinner-border").removeClass('d-none');
     });
     

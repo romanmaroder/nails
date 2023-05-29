@@ -9,8 +9,6 @@
 use frontend\controllers\SiteController;
 use yii\widgets\ListView;
 
-
-
 ?>
 <div class="row mt-4">
 
@@ -29,6 +27,7 @@ use yii\widgets\ListView;
                 'tag' => 'div',
                 'class' => 'col-12 col-lg-6 mb-3 text-info text-center'
             ],
+
         ]
     );
     ?>

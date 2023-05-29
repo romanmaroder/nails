@@ -82,7 +82,7 @@ Pjax::begin(); ?>
                     <?= $form->field($model, 'phone')->widget(
                         MaskedInput::class,
                         [
-                            'mask'          => '+38(099)999-99-99',
+                            'mask'          => '+7(999)999-99-99',
                             'options'       => [
                                 'class'       => 'form-control',
                                 'id'          => 'phone',

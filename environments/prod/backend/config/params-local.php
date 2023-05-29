@@ -3,9 +3,9 @@
 return [
     'bsVersion' => '4.x',
     'adminEmail' => 'roma12041985@yandex.ru',
-    'telegramToken'=>'',
+    'telegramToken'=>'1903642753:AAFmzbm0X8khTV-AQmO5HzASFC0I4kX_6mY',
     'phonePattern'=>'/\+?([0-9]{2})(\W[0-9]{3}\W)([0-9]{3})-([0-9]{2})-([0-9]{2})/',
-    /*'hail812/yii2-adminlte3' => [
+    'hail812/yii2-adminlte3' => [
         'pluginMap' => [
             'datatables' => [
                 'js' => 'datatables/jquery.dataTables.min.js'
@@ -49,5 +49,5 @@ return [
                 'js' => 'filterizr/jquery.filterizr.min.js'
             ]
         ]
-    ]*/
+    ]
 ];

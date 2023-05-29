@@ -42,7 +42,7 @@ class AddPhotoForm extends Model
             ],
             [['master_work', 'portfolio', 'client_check'], 'integer'],
             [['client','created_at', 'updated_at'], 'safe'],
-            [
+             [
                 ['client_check'],
                 'required',
                 'when'       => function ($model) {

@@ -7,8 +7,6 @@
 use backend\assets\AppAsset;
 
 use yii\helpers\Html;
-use yii\helpers\Url;
-
 AppAsset::register($this);
 
 $assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
@@ -24,7 +22,6 @@ $countEventTotal = \common\models\Event::countEventTotal(Yii::$app->authManager-
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
-
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>

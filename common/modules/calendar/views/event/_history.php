@@ -71,7 +71,7 @@ use yii\helpers\Html;
                 ]
             ) ?>
             <?= Html::submitButton(
-                '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Сохранить ',
+                '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Сохранить',
                 [
                     'class' => 'btn btn-sm btn-primary',
                     'name'  => 'history',

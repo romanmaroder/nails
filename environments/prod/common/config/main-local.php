@@ -52,8 +52,8 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
-        'smsSender' => [
-            'class' => 'common\components\sms\SmsSender'
+        'smsSender'=>[
+            'class'=>'common\components\sms\SmsSender'
         ],
         'storage' => [
             'class' => 'common\components\Storage'

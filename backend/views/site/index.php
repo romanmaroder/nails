@@ -14,13 +14,7 @@ $this->params['breadcrumbs'] = [['label' => $this->title]];
 
 
 <div class="container-fluid">
-    <?php /*if (Yii::$app->session->hasFlash('info')):*/?><!--
-    <div class="row">
-        <div class="col-12">
-            <?php /*echo Yii::$app->session->getFlash('info'); */?>
-        </div>
-    </div>
-       --><?php /*endif;*/?>
+
 	<div class="row">
         <?php
         foreach ($count as $item): ?>

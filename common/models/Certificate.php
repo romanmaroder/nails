@@ -32,13 +32,7 @@ class Certificate extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'integer'],
             [['certificate'], 'string', 'max' => 255],
-            [
-                ['user_id'],
-                'exist',
-                'skipOnError' => true,
-                'targetClass' => User::class,
-                'targetAttribute' => ['user_id' => 'id']
-            ],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -82,7 +76,7 @@ class Certificate extends \yii\db\ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    public function getCertificates($id): ActiveDataProvider
+    public  function getCertificates($id): ActiveDataProvider
     {
         return new ActiveDataProvider(
             [

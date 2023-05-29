@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\Certificate;
 use common\models\Photo;
+use common\models\Post;
 use common\models\PostSearch;
 use common\models\Profile;
 use common\models\User;
@@ -35,32 +36,32 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup', 'view'],
+                'only'  => ['logout', 'signup','view'],
                 'rules' => [
                     [
-                        'actions' => ['signup',],
-                        'allow' => true,
-                        'roles' => ['?'],
+                        'actions' => ['signup'],
+                        'allow'   => true,
+                        'roles'   => ['?'],
                     ],
                     [
                         'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'allow'   => true,
+                        'roles'   => ['@'],
                     ],
                     [
                         'actions' => ['view'],
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'allow'   => true,
+                        'roles'   => ['@'],
                     ],
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    Yii::$app->session->setFlash('info', 'Авторизуйтесь чтобы узнать больше');
+                    Yii::$app->session->setFlash('info','Авторизуйтесь чтобы узнать больше');
                     return $this->redirect(['site/login']);
                     # throw new \Exception('У вас нет доступа к этой странице');
                 }
             ],
-            'verbs' => [
-                'class' => VerbFilter::class,
+            'verbs'  => [
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -74,11 +75,11 @@ class SiteController extends Controller
     public function actions(): array
     {
         return [
-            'error' => [
+            'error'   => [
                 'class' => 'yii\web\ErrorAction',
             ],
             /*'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
+                'class'           => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],*/
             'captcha' => [
@@ -94,26 +95,25 @@ class SiteController extends Controller
      * Displays homepage.
      *
      * @return mixed
-     * @throws InvalidArgumentException
      */
     public function actionIndex()
     {
         $this->setMeta(
-            'Nails - блог об уходе за ноготочками, дизайны, советы, статьи. ',
+            'Nails - красота и уход за вашими ногтями',
             'Маникюр, коррекция, дизайн, лак-гель, гель, кутикула, обрезной маникюр, топ, база, пилочки для ногтей, баф, фрезер, фреза, ноготь, лампа, вытяжка, масло, лечебный лак, восстанавливающий лак',
-            'Блог о ногтевом сервисе. Полезные статьи об уходе за ногтями, подборе инструментов и материалов. Советы мастеров
-                        ногтевого сервиса. Примеры дизайнерских работ.'
+            'Блог о ногтевом сервисе, примеры дизайна ногтей. Оказание услуг в сфере ногтевого сервиса'
         );
         $searchModel  = new PostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render(
-            'index',
-            [
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel,
-            ]
-        );
+//        $posts = new Post();
+//        $postsList=  $posts->getAllPostList();
+
+        return $this->render('index',[
+            //'postsList'=>$postsList,
+            'dataProvider'=>$dataProvider,
+            'searchModel'  => $searchModel,
+        ]);
     }
 
     /**
@@ -123,11 +123,13 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+
         $this->setMeta(
             'Nails - блог об уходе за ноготочками, дизайны, советы, статьи. ',
             'Авторизация, регистрация, вход',
             'Войдите на сайт, чтобы увидеть дополнительные функции в своём личном кабинете'
         );
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -163,13 +165,10 @@ class SiteController extends Controller
      * Displays contact page.
      *
      * @return mixed
-     * @throws InvalidArgumentException
      */
     public function actionContact()
     {
-
         $model = new ContactForm();
-
         $this->setMeta(
             'Nails - блог об уходе за ноготочками, дизайны, советы, статьи. ',
             'Контакты, адрес, телефон',
@@ -222,11 +221,13 @@ class SiteController extends Controller
             'Мастер маникюра, мастер педикюра, бровист, сертификаты повывшения квалификации',
             'Краткая информация о наших мастерах.Узнайте немного больше о мастерах и их достижениях, перейдя в их профиль.'
         );
+
+
         $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
         $dataProvider = new ActiveDataProvider(
             [
-                'query' => User::find()->with('certificate')->where(['id' => $masterIds]),
+                'query' =>  User::find()->with('certificate')->where(['id' => $masterIds]),
                 'pagination' => [
                     'pageSize' => 10,
                 ],
@@ -235,41 +236,41 @@ class SiteController extends Controller
 
         $path = Photo::getBackgroundCard();
 
-        return $this->render('about', ['path' => $path, 'dataProvider' => $dataProvider]);
+        return $this->render('about', ['path' => $path,'dataProvider'=>$dataProvider]);
     }
 
 
     /**
      * Wizard Information Page
      *
-     * @param $id - master id
+     * @param $id  - master id
      *
      * @return string
      */
     public function actionView($id): string
     {
-        $photo     = new Photo();
-        $portfolio = $photo->getPortfolio($id);
-        $images    = [];
+        $photo = new Photo();
+        $portfolio= $photo->getPortfolio($id);
+        $images=[];
         foreach ($portfolio as $img) {
-            $images[] = '<img class="w-100 " src="' . Yii::$app->storage->getFile($img['image']) . '"/>';
+            $images[] =  '<img class="w-100 " src="'.Yii::$app->storage->getFile($img['image']).'"/>';
         }
 
-        $certificates = Certificate::find()->where(['user_id' => $id])->asArray()->all();
+        $certificates = Certificate::find()->where(['user_id'=>$id])->asArray()->all();
 
-        $certificat = [];
+        $certificat=[];
         foreach ($certificates as $item) {
-            $certificat[] = '<img class="w-100 " src="' . Yii::$app->storage->getFile($item['certificate']) . '"/>';
+            $certificat[] =  '<img class="w-100 " src="'.Yii::$app->storage->getFile($item['certificate']).'"/>';
         }
 
-        $master = Profile::find()->with('user')->where(['user_id' => $id])->one();
+        $master    = Profile::find()->with('user')->where(['user_id' => $id])->one();
 
         return $this->render(
             'view',
             [
-                'master' => $master,
+                'master'    => $master,
                 'images' => $images,
-                'certificat' => $certificat
+                'certificat'=>$certificat
             ]
         );
     }
@@ -288,7 +289,6 @@ class SiteController extends Controller
             'Авторизация, регистрация, вход',
             'Пройдите регистрацию для доступа в личный кабинет'
         );
-
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             Yii::$app->session->setFlash(
                 'success',
@@ -320,7 +320,6 @@ class SiteController extends Controller
             'Забыли пароль? Сбросьте его с помощью данной формы'
         );
 
-
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
@@ -345,7 +344,7 @@ class SiteController extends Controller
     /**
      * Resets password.
      *
-     * @param string $token
+     * @param  string  $token
      *
      * @return mixed
      * @throws BadRequestHttpException
@@ -375,7 +374,7 @@ class SiteController extends Controller
     /**
      * Verify email address
      *
-     * @param string $token
+     * @param  string  $token
      *
      * @return yii\web\Response
      * @throws BadRequestHttpException
@@ -431,16 +430,14 @@ class SiteController extends Controller
     /**
      * Sets the meta tags for keywords, descriptions and title
      *
-     * @param null $title
-     * @param null $keywords
-     * @param null $description
+     * @param  null  $title
+     * @param  null  $keywords
+     * @param  null  $description
      */
     protected function setMeta($title = null, $keywords = null, $description = null)
     {
-        $this->view->title = mb_substr($title, 0, 60);
+        $this->view->title = $title;
         $this->view->registerMetaTag(['name' => 'keywords', 'content' => strip_tags("$keywords")]);
-        $this->view->registerMetaTag(
-            ['name' => 'description', 'content' => strip_tags(mb_substr($description, 0, 160))]
-        );
+        $this->view->registerMetaTag(['name' => 'description', 'content' => strip_tags("$description")]);
     }
 }

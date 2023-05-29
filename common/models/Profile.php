@@ -12,7 +12,6 @@ use yii\helpers\Html;
  * @property int $id
  * @property string|null $user_id
  * @property string|null $education
- * @property string|null $color
  * @property string|null $notes
  * @property int|null $skill
  * @property int|null $photo_id
@@ -65,7 +64,8 @@ class Profile extends ActiveRecord
 
     public static function getUserProfileInfo($userId)
     {
-       return Profile::find()
+        return Profile::find()
+            #->select(['education','notes','skill'])
             ->where(['user_id' => $userId])
             ->one();
     }

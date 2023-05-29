@@ -19,6 +19,8 @@ $this->title                   = 'Клиенты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
@@ -42,9 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <small><i><?= Yii::$app->params['error']['inactive-user'];?></i></small>
                                 </div>
                             <?php endif;?>
-
                             <?php
-                            if (Yii::$app->id ==='app-frontend') : ?>
+                            if (Yii::$app->id =='app-frontend') : ?>
                                 <?= GridView::widget(
                                     [
                                         'dataProvider' => $dataProvider,
@@ -57,8 +58,17 @@ $this->params['breadcrumbs'][] = $this->title;
 //            ['class' => 'yii\grid\SerialColumn'],
 
                                             'username',
-
-                                            [
+ [
+                                                'attribute' => 'phone',
+                                                'format'    => 'raw',
+                                                'value'     => function ($phone) {
+                                                    return $phone->phone ? Html::a(
+                                                        $phone->phone,
+                                                        'tel:'.$phone->phone
+                                                    ) : 'номер не указан';
+                                                }
+                                            ],
+                                           /* [
                                                 'attribute' => 'gallery',
                                                 'label'     => 'Дизайн',
                                                 'format'    => 'raw',
@@ -71,14 +81,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         ]
                                                     );
                                                 }
-                                            ],
-                                            [
+                                            ],*/
+                                           /* [
                                                 'attribute' => 'status',
                                                 'format'    => 'raw',
                                                 'value'     => function ($model) {
                                                     return $model->getStatusUser($model->status);
                                                 },
-                                            ],
+                                            ],*/
                                            /* [
                                                 'attribute' => 'color',
                                                 'format'    => 'raw',
@@ -100,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     );
                                                 },
                                             ],*/
-                                            [
+                                            /*[
                                                 'attribute' => 'avatar',
                                                 'format'    => 'raw',
                                                 'value'     => function ($model) {
@@ -112,8 +122,8 @@ $this->params['breadcrumbs'][] = $this->title;
 															 title = "'.$model->username.'">
 														</div>';
                                                 },
-                                            ],
-                                            /*'description:ntext',*/
+                                            ],*/
+                                            'description:ntext',
                                             /*[
                                                 'attribute' => 'birthday',
                                                 'format'    => ['date', 'php:d-m-Y'],
@@ -121,17 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     return $model->birthday ?: null;
                                                 }
                                             ],*/
-                                            [
-                                                'attribute' => 'phone',
-                                                'format'    => 'raw',
-                                                'value'     => function ($phone) {
-                                                    return $phone->phone ? Html::a(
-                                                        $phone->phone,
-                                                        'tel:'.$phone->phone
-                                                    ) : 'номер не указан';
-                                                }
-                                            ],
-                                            /*'address',*/
+                                           /* 'address',*/
                                             [
                                                 'class'          => 'yii\grid\ActionColumn',
                                                 'template' => '{view}'
@@ -153,6 +153,16 @@ $this->params['breadcrumbs'][] = $this->title;
 //            ['class' => 'yii\grid\SerialColumn'],
 
                                             'username',
+                                            [
+                                                'attribute' => 'phone',
+                                                'format'    => 'raw',
+                                                'value'     => function ($phone) {
+                                                    return $phone->phone ? Html::a(
+                                                        $phone->phone,
+                                                        'tel:'.$phone->phone
+                                                    ) : 'номер не указан';
+                                                }
+                                            ],
                                            /* [
                                                 'attribute' => 'roles',
 //                                            'format'    => 'raw',
@@ -167,7 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 }
                                             ],*/
 //                                        'email:email',
-                                            [
+                                            /*[
                                                 'attribute' => 'gallery',
                                                 'label'     => 'Дизайн',
                                                 'format'    => 'raw',
@@ -180,7 +190,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         ]
                                                     );
                                                 }
-                                            ],
+                                            ],*/
                                             [
                                                 'attribute' => 'status',
                                                 'format'    => 'raw',
@@ -209,7 +219,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     );
                                                 },
                                             ],*/
-                                           /* [
+                                            /*[
                                                 'attribute' => 'avatar',
                                                 'format'    => 'raw',
                                                 'value'     => function ($model) {
@@ -222,7 +232,7 @@ $this->params['breadcrumbs'][] = $this->title;
 														</div>';
                                                 },
                                             ],*/
-                                            /*'description:ntext',*/
+                                            'description:ntext',
                                            /* [
                                                 'attribute' => 'birthday',
                                                 'format'    => ['date', 'php:d-m-Y'],
@@ -230,17 +240,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     return $model->birthday ?: null;
                                                 }
                                             ],*/
-                                            [
-                                                'attribute' => 'phone',
-                                                'format'    => 'raw',
-                                                'value'     => function ($phone) {
-                                                    return $phone->phone ? Html::a(
-                                                        $phone->phone,
-                                                        'tel:'.$phone->phone
-                                                    ) : 'номер не указан';
-                                                }
-                                            ],
-                                           /* 'address',*/
+                                            /*'address',*/
                                             [
                                                 'class'          => 'yii\grid\ActionColumn',
                                                 'visibleButtons' => [
@@ -286,13 +286,6 @@ if (Yii::$app->id == 'app-backend') {
       "info": false,
       "bStateSave": true,
       "dom": "<'row'<'col-sm-12 col-md-4 order-3 order-md-1 text-left'B><'col-sm-12 col-md-4 order-md-3 text-md-right d-flex d-md-block'l><'col-sm-12 order-md-2 col-md-4 d-flex d-md-block'f>>tp",
-      /*"fnStateSave": function (oSettings, oData) {
-        localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
-      },
-      "fnStateLoad": function () {
-        var data = localStorage.getItem('DataTables_' + window.location.pathname);
-        return JSON.parse(data);
-      },*/
       "buttons": [
         {
 				"text": "Добавить клиента",
@@ -331,6 +324,7 @@ JS;
 } else {
     $js = <<< JS
  $(function () {
+     
    $("#client").DataTable({ 
       "responsive": true,
       "autoWidth": false,
@@ -356,7 +350,7 @@ JS;
                 }
          }
     
-    });
+    }).buttons().container().appendTo('#client_wrapper .col-md-6:eq(0)');
  
   });
 JS;

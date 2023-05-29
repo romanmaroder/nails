@@ -21,39 +21,39 @@ return [
         'error'            => 'Произошла ошибка',
         'access-is-denied' => 'У Вас нет доступа',
         'master-error'     => 'Выберите мастера!',
-        'inactive-user'    => 'Неактивный пользователь!'
+        'inactive-user'=>'Неактивный пользователь!'
     ],
     'sms-location' => [
-        'address'    => ' Наш адрес: ул.Раздольная д.11, подъезд 4, кв.142, этаж 9. ',
+        'address'    => '. Наш адрес: ул.Раздольная д.11, подъезд 4, кв.142, этаж 9. ',
         'entry'      => ' у Вас запись. Вы будете?',
-        'entry-next' => ' У Вас следующая запись ',
+        'entry-next' => ' У Вас следующая запись '
     ],
 
-    'avatarPicture'          => [
+    'avatarPicture'      => [
         'maxWidth'  => 300,
         'maxHeight' => 300
     ],
-    'photoPicture'           => [
+    'photoPicture'       => [
         'maxWidth'  => 450,
         'maxHeight' => 450
     ],
-    'certificatePicture'     => [
+    'certificatePicture' => [
         'maxWidth'  => 450,
         'maxHeight' => 450
     ],
-    'postPicture'            => [
+    'postPicture'        => [
         'maxWidth'  => 1024,
         'maxHeight' => 'auto'
     ],
-    'postPreview'            => [
+    'postPreview'        => [
         'maxWidth'  => 1024,
         'maxHeight' => 1024
     ],
     'hail812/yii2-adminlte3' => [
         'pluginMap' => [
-            'chart'                         => [
-                'css' => 'chart.js/Chart.css',
-                'js'  => 'chart.js/Chart.js'
+            'chart'=>[
+                'css'=>'chart.js/Chart.css',
+                'js'=>'chart.js/Chart.js'
             ],
             'datatables'                    => [
                 'js' => 'datatables/jquery.dataTables.min.js'
@@ -99,6 +99,7 @@ return [
             'filterizr'                     => [
                 'js' => 'filterizr/jquery.filterizr.min.js'
             ],
+
             /*'summernote'=>[
                 'css'=>'summernote/summernote-bs4.min.css',
                 'js'=>[

@@ -22,7 +22,7 @@ class DeleteCacheBehavior extends Behavior {
         $action = Yii::$app->controller->action->id; //название текущего действия
         if(array_search($action, $this->actions)=== false) return;
 
-        foreach ($this->cache_key as $id){
+        Foreach ($this->cache_key as $id){
             Yii::$app->cache->delete($id);
         }
     }

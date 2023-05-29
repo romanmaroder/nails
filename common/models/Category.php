@@ -3,7 +3,6 @@
 namespace common\models;
 
 use Yii;
-use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -12,9 +11,8 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property string|null $category_name
  */
-class Category extends ActiveRecord
+class Category extends \yii\db\ActiveRecord
 {
-
     public function behaviors()
     {
         return [
@@ -100,7 +98,7 @@ class Category extends ActiveRecord
                 'reusable'=>true
             ]
         );
-            $categoriesIds =Post::find()->select('category_id')->where(['status'=>1])->asArray()->distinct();
+        $categoriesIds =Post::find()->select('category_id')->where(['status'=>1])->asArray()->distinct();
 
         $categories = Category::getDb()->cache(function () use($categoriesIds){
             return Category::find()->where(['id' => $categoriesIds])->asArray()->all();

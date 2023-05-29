@@ -16,11 +16,10 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/yii.confirm.overrides.js',
-        'js/tooltip.js',
         'js/main.js'
+
     ];
     public $depends = [
         'common\assets\AdminLteAsset',
-        'common\assets\FontAwesomeAsset',
     ];
 }

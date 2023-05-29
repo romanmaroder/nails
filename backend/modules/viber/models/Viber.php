@@ -4,7 +4,6 @@ namespace backend\modules\viber\models;
 
 use common\models\User;
 use Yii;
-use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "viber".
@@ -40,8 +39,8 @@ class Viber extends \yii\db\ActiveRecord
             [
                 ['user_id'],
                 'exist',
-                'skipOnError'     => true,
-                'targetClass'     => User::class,
+                'skipOnError' => true,
+                'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']
             ],
         ];
@@ -53,22 +52,22 @@ class Viber extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'                => 'ID',
-            'user_id'           => 'User ID',
-            'name'              => 'Name',
-            'viber_user_id'     => 'Viber User ID',
+            'id' => 'ID',
+            'user_id' => 'User ID',
+            'name' => 'Name',
+            'viber_user_id' => 'Viber User ID',
             'primary_device_os' => 'Primary Device Os',
-            'api_version'       => 'Api Version',
-            'device_type'       => 'Device Type',
+            'api_version' => 'Api Version',
+            'device_type' => 'Device Type',
         ];
     }
 
     /**
      * Gets query for [[User]].
      *
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
-    public function getUser(): ActiveQuery
+    public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
@@ -87,12 +86,12 @@ class Viber extends \yii\db\ActiveRecord
         if ($viber_user_id == self::getOldId($viber_user_id)) {
             return false;
         } else {
-            $model->viber_user_id     = $viber_user_id;
-            $model->name              = $name;
-            $model->user_id           = $users_id;
+            $model->viber_user_id = $viber_user_id;
+            $model->name = $name;
+            $model->user_id = $users_id;
             $model->primary_device_os = $primary_device_os;
-            $model->api_version       = $api_version;
-            $model->device_type       = $device_type;
+            $model->api_version = $api_version;
+            $model->device_type = $device_type;
             $model->save();
         }
         return true;
@@ -100,7 +99,7 @@ class Viber extends \yii\db\ActiveRecord
 
     public static function getOldId($viber_user_id)
     {
-        $oldId = Viber::find()->where(['viber_user_id' => $viber_user_id])->one();
+        $oldId =  Viber::find()->where(['viber_user_id' => $viber_user_id ])->one();
         return $oldId->viber_user_id;
     }
 
@@ -115,4 +114,5 @@ class Viber extends \yii\db\ActiveRecord
 
         return $id['viber_user_id'];
     }
+
 }

@@ -14,15 +14,13 @@ use yii\data\ActiveDataProvider;
  */
 class PostSearch extends Post
 {
-    public $author;
-    public $category;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'user_id','author', 'category_id','category', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'user_id', 'category_id', 'created_at', 'updated_at'], 'integer'],
             [['title', 'subtitle', 'description'], 'safe'],
         ];
     }
@@ -39,7 +37,7 @@ class PostSearch extends Post
     /**
      * Creates data provider instance with search query applied
      *
-     * @param  array  $params
+     * @param array $params
      *
      * @return ActiveDataProvider
      */
@@ -51,7 +49,6 @@ class PostSearch extends Post
             $query = Post::find()->where(['status' => 1]);
         }
 
-
 //        if (Yii::$app->id ==='app-frontend' && Yii::$app->controller->route == 'blog/post/index') {
 //
 //            $query = Post::find()->where(['user_id'=>Yii::$app->user->identity->getId()]);
@@ -60,14 +57,9 @@ class PostSearch extends Post
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider(
-            [
-                'query' => $query,
-                'pagination' => [
-                    'pageSize' => 10,
-                ],
-            ]
-        );
+        $dataProvider = new ActiveDataProvider([
+                                                   'query' => $query,
+                                               ]);
 
         $this->load($params);
 
@@ -78,15 +70,13 @@ class PostSearch extends Post
         }
 
         // grid filtering conditions
-        $query->andFilterWhere(
-            [
-                'id'          => $this->id,
-                'user_id'     => $this->user_id,
-                'category_id' => $this->category_id,
-                'created_at'  => $this->created_at,
-                'updated_at'  => $this->updated_at,
-            ]
-        );
+        $query->andFilterWhere([
+                                   'id' => $this->id,
+                                   'user_id' => $this->user_id,
+                                   'category_id' => $this->category_id,
+                                   'created_at' => $this->created_at,
+                                   'updated_at' => $this->updated_at,
+                               ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'subtitle', $this->subtitle])
@@ -95,8 +85,7 @@ class PostSearch extends Post
         return $dataProvider;
     }
 
-    public function formName(): string
-    {
+    public function formName() {
         return '';
     }
 }

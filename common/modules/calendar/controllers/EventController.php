@@ -2,16 +2,20 @@
 
 namespace common\modules\calendar\controllers;
 
-
+use backend\modules\telegram\api\TelegramBot;
+use backend\modules\telegram\models\Telegram;
+use backend\modules\viber\api\ViberBot;
+use backend\modules\viber\models\Viber;
 use common\components\behaviors\DeleteCacheBehavior;
 use common\models\EventSearch;
 use common\models\Expenseslist;
 use common\models\ExpenseslistSearch;
 use common\models\ServiceUser;
 use common\modules\calendar\FullCalendar;
+use Viber\Api\Sender;
 use Yii;
 use common\models\Event;
-use yii\base\InvalidConfigException;
+use yii\caching\DbDependency;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -64,12 +68,13 @@ class EventController extends Controller
      * Lists all Event models.
      *
      * @return mixed
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionIndex()
     {
         /*$cache = Yii::$app->cache;
         $key   = 'events_list';  // Формируем ключ
-        # Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
+        // Данный метод возвращает данные либо из кэша, либо из откуда-либо и записывает их в кэш по ключу на 1 час
         $eventDependency = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM event']);
         $userDependency  = new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM user']);
         $dependency      = Yii::createObject(
@@ -85,12 +90,29 @@ class EventController extends Controller
         $events          = $cache->getOrSet(
             $key,
             function () {
-                return Event::find()->with(['master.profile', 'client', 'services'])->asArray()->all();
+                return Event::find()->with(['master', 'client', 'services'])->all();
             },
             3600,
             $dependency
-        );*/
+        );
 
+        foreach ($events as $item) {
+            $event                  = new \yii2fullcalendar\models\Event();
+            $event->id              = $item->id;
+            $event->title           = $item->client->username;
+            $event->nonstandard     = [
+                'description' => Event::getServiceName($item->services) ? Event::getServiceName(
+                    $item->services
+                ) : $item->description,
+                'notice'      => $item->notice,
+                'master_name' => $item->master->username,
+            ];
+            $event->backgroundColor = $item->master->color;
+            $event->start           = $item->event_time_start;
+            $event->end             = $item->event_time_end;
+
+            $events[] = $event;
+        }*/
         $model    = new Event();
         $calendar = new FullCalendar($model);
         $events   = $calendar->events();
@@ -112,7 +134,6 @@ class EventController extends Controller
      */
     public function actionView(int $id)
     {
-
         return $this->renderAjax(
             'view',
             [
@@ -143,10 +164,11 @@ class EventController extends Controller
             } else {
                 $model->save(false);
 
-                Yii::$app->session->setFlash('msg', "Запись {$model->client->username} сохранена.");
+                Yii::$app->session->setFlash('msg', "Запись " . $model->client->username . " сохранена");
                 return $this->redirect('/admin/calendar/event/index');
             }
         }
+
 
         return $this->renderAjax(
             'create',
@@ -187,6 +209,7 @@ class EventController extends Controller
         );
     }
 
+
     /**
      * Updating the record date by changing the event size
      * @param $id - user identifier
@@ -195,18 +218,45 @@ class EventController extends Controller
      * @return string|Response
      * @throws NotFoundHttpException
      */
-    public function actionUpdateDropResize($id, $start, $end)
+    public function actionUpdateResize($id, $start, $end)
     {
-        $model = $this->findModel($id);
+        $model                   = $this->findModel($id);
+        $model->event_time_start = $start;
+        $model->event_time_end   = $end;
+        $model->save(false);
 
+        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
+            return $this->redirect(['index']);
+        }
+
+        return $this->render(
+            'update',
+            [
+                'model' => $model,
+            ]
+        );
+    }
+
+    /**
+     * Updating the record date by dragging and dropping an event
+     * @param $id - user identifier
+     * @param $start - start time
+     * @param $end - end time
+     * @return string|Response
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateDrop($id, $start, $end)
+    {
+        $model                   = $this->findModel($id);
         $model->event_time_start = $start;
         $model->event_time_end   = $end;
 
-        $model->update(false);
+        $model->save(false);
 
-        if ($model->load(Yii::$app->request->post()) && $model->update(false)) {
-            $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
+            return $this->redirect(['index']);
         }
+
         return $this->render(
             'update',
             [
@@ -239,7 +289,6 @@ class EventController extends Controller
      *
      * @param int $id
      *
-     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel(int $id)
@@ -253,12 +302,13 @@ class EventController extends Controller
 
     /**
      * Displaying user statistics
-     * @throws InvalidConfigException
+     * @throws \yii\base\InvalidConfigException
      */
     public function actionStatistic()
     {
         $searchModel      = new EventSearch();
         $dataProvider     = $searchModel->search(Yii::$app->request->queryParams);
+
         $totalEvent       = Event::getTotal($dataProvider);
         $totalSalary      = Event::getSalary($dataProvider->models);
         $chartEventLabels = Event::getlabelsCharts($dataProvider);
@@ -311,7 +361,6 @@ class EventController extends Controller
      * Returns an array of dates
      *
      * @return ActiveDataProvider
-     * @throws InvalidConfigException
      */
     private function getHistory(): ActiveDataProvider
     {
@@ -337,13 +386,14 @@ class EventController extends Controller
      *
      * @param ?int $id - User ID
      * @return array|false|string
+     * @throws NotFoundHttpException
      */
     public function actionUserService(?int $id)
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if ($id === null) {
-                return Yii::$app->params['error']['master-error'];
+            if (!$id) {
+                throw new NotFoundHttpException('Не найдено услуг для данного пользователя!');
             } else {
                 return ServiceUser::getUserServices($id);
             }

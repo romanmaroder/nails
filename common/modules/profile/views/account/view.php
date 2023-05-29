@@ -81,18 +81,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 				</div>
 				<!-- /.card-body -->
-				<!--<div class="card-footer">-->
-					<!--<p>-->
-                        <?/*= Html::a(
+				<!--<div class="card-footer">
+					<p>
+                        <?
+                /*= Html::a(
                                             'Редактировать',
-                                            ['/calendar/event/update', 'id' => $model->id],
+                                            ['/event/update', 'id' => $model->id],
                                             [
                                                 'id'      => 'edit-link',
-                                                'onClick' => "$('#modal').find('.modal-body').load($(this).attr('href')); return false;",
+                                                'onClick' => "$('#view').find('.modal-body').load($(this).attr('href')); return false;",
                                                 'class'   => 'btn btn-primary btn-sm'
                                             ]
-                                        )  */?><!--
-                        --><?/*= Html::a(
+                                        ) */ ?>
+                        <?
+                /*= Html::a(
                                             'Удалить',
                                             ['delete', 'id' => $model->id],
                                             [
@@ -102,9 +104,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     'method'  => 'post',
                                                 ],
                                             ]
-                                        )  */?>
-					<!--</p>-->
-				<!--</div>-->
+                                        ) */ ?>
+					</p>
+				</div>-->
 			</div>
 		</div>
 

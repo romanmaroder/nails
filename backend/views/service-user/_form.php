@@ -21,68 +21,65 @@ use yii\widgets\Pjax;
 <?php endif; ?>
 
 <?php Pjax::begin(); ?>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <div class="service-user-form">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="service-user-form">
 
-                <?php $form = ActiveForm::begin(
-                    [
-                        'options' => [
-                            'data-pjax' => 1,
-                        ],
-                    ]
-                ); ?>
+                    <?php $form = ActiveForm::begin(
+                        [
+                            'options' => [
+                                'data-pjax' => 1,
+                            ],
+                        ]
+                    ); ?>
 
-                <?= $form->field($model, 'service_id')->widget(
-                    Select2::class,
-                    [
-                        'name'          => 'service_array',
-                        'language'      => 'ru',
-                        'data'          => Service::getServiceList(),
-                        'theme'         => Select2::THEME_MATERIAL,
-                        'options'       => [
-                            'placeholder'  => 'Выберите услугу ...',
-                            'multiple'     => false,
-                            'autocomplete' => 'off',
-                        ],
-                        'pluginOptions' => [
-                            'tags'       => true,
-                            'allowClear' => true,
-                        ],
-                    ]
-                ) ?>
-
-                <?= $form->field($model, 'user_id')->widget(
-                    Select2::class,
-                    [
-                        'name'          => 'master',
-                        'language'      => 'ru',
-                        'data'          => User::getMasterList(),
-                        'options'       => ['placeholder' => 'Выберите мастера ...'],
-                        'pluginOptions' => [
-                            'allowClear' => true,
-                        ],
-                    ]
-                ) ?>
-
-                <?= $form->field($model, 'rate')->textInput() ?>
-
-                <? /*= $form->field($model, 'created_at')->textInput() */ ?>
-
-                <? /*= $form->field($model, 'updated_at')->textInput() */ ?>
-
-                <div class="form-group">
-                    <?= Html::submitButton(
-                        '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Сохранить',
-                        ['class' => 'btn btn-sm btn-success']
+                    <?= $form->field($model, 'service_id')->widget(
+                        Select2::class,
+                        [
+                            'name'          => 'service_array',
+                            'language'      => 'ru',
+                            'data'          => Service::getServiceList(),
+                            'theme'         => Select2::THEME_MATERIAL,
+                            'options'       => [
+                                'placeholder'  => 'Выберите услугу ...',
+                                'multiple'     => false,
+                                'autocomplete' => 'off',
+                            ],
+                            'pluginOptions' => [
+                                'tags'       => true,
+                                'allowClear' => true,
+                            ],
+                        ]
                     ) ?>
+
+                    <?= $form->field($model, 'user_id')->widget(
+                        Select2::class,
+                        [
+                            'name'          => 'master',
+                            'language'      => 'ru',
+                            'data'          => User::getMasterList(),
+                            'options'       => ['placeholder' => 'Выберите мастера ...'],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ]
+                    ) ?>
+
+                    <?= $form->field($model, 'rate')->textInput() ?>
+
+                    <? /*= $form->field($model, 'created_at')->textInput() */ ?>
+
+                    <? /*= $form->field($model, 'updated_at')->textInput() */ ?>
+
+                    <div class="form-group">
+                        <?= Html::submitButton('<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Сохранить', ['class' => 'btn btn-sm btn-success']) ?>
+                    </div>
+
+                    <?php ActiveForm::end(); ?>
+
                 </div>
-
-                <?php ActiveForm::end(); ?>
-
             </div>
         </div>
     </div>
-</div>
 <?php Pjax::end(); ?>

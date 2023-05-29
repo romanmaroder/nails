@@ -38,16 +38,16 @@ class PostImage extends ActiveRecord
             [
                 ['image'],
                 'file',
-                'extensions'               => 'png, jpg',
+                'extensions' => ['png', 'jpg'],
                 'checkExtensionByMimeType' => true,
-                'maxSize'                  => $this->getMaxFileSize(),
+                'maxSize' => $this->getMaxFileSize(),
 
             ],
             [
                 ['post_id'],
                 'exist',
-                'skipOnError'     => true,
-                'targetClass'     => Post::class,
+                'skipOnError' => true,
+                'targetClass' => Post::class,
                 'targetAttribute' => ['post_id' => 'id']
             ],
         ];
@@ -59,15 +59,15 @@ class PostImage extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'      => 'ID',
+            'id' => 'ID',
             'post_id' => 'Post ID',
-            'image'   => 'Post Image',
+            'image' => 'Post Image',
         ];
     }
 
 
     /**
-     * @param  array  $config
+     * @param array $config
      */
     public function __construct(array $config = [])
     {
@@ -116,21 +116,23 @@ class PostImage extends ActiveRecord
         return false;
     }
 
-/**
- * Removing a pictureture from the directory
- *
-*/
+    /**
+     * Removing a pictureture from the directory
+     *
+     */
     public function delete(): bool
     {
-        $image = str_replace(Yii::$app->request->getHostInfo() . Yii::getAlias(Yii::$app->params['storageUri']), '',
-                                 $this->picture);
+        $image = str_replace(
+            Yii::$app->request->getHostInfo() . Yii::getAlias(Yii::$app->params['storageUri']),
+            '',
+            $this->picture
+        );
 
-        if ( Yii::$app->storage->deleteFile($image)) {
-
-            PostImage::deleteAll(['image'=>$image]);
+        if (Yii::$app->storage->deleteFile($image)) {
+            PostImage::deleteAll(['image' => $image]);
             return true;
         }
-       return false;
+        return false;
     }
 
     /**
@@ -158,8 +160,8 @@ class PostImage extends ActiveRecord
      * List of all ids
      * @return array
      */
-    public  function getPostImageIds(): array
+    public function getPostImageIds(): array
     {
-        return PostImage::find()->where(['post_id'=>null])->all();
+        return PostImage::find()->where(['post_id' => null])->all();
     }
 }

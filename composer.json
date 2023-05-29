@@ -24,7 +24,6 @@
     "yiisoft/yii2-bootstrap4": "^2.0.10",
     "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
     "philippfrenzel/yii2fullcalendar": "3.9.0",
-    "bower-asset/font-awesome": "^5.15.3",
     "kartik-v/yii2-widget-datetimepicker": "*",
     "kartik-v/yii2-field-range": "*",
     "kartik-v/yii2-widget-datepicker": "dev-master",

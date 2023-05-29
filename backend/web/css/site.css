@@ -4,9 +4,7 @@ html,
 body {
     height: 100%;
 }
-hr{
-    margin: 0.5em 0;
-}
+
 body.blank {
     display: flex;
     padding: 40px 0;
@@ -314,6 +312,9 @@ a.desc:after {
     display: none;
 }
 
+/*#user-color,#user-rate {
+    display: none;
+}*/
 
 .note-editable {
     font-family: 'Roboto', sans-serif;
@@ -406,8 +407,5 @@ a.desc:after {
     color:#000000;
 }
 .dark-mode .daterangepicker {
-    color:#000000;
-}
-.dark-mode .swal2-popup .swal2-content, .dark-mode .swal2-popup .swal2-title{
-    color:#000000;
+    color:#000;
 }

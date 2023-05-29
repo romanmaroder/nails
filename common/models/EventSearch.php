@@ -2,17 +2,12 @@
 
 namespace common\models;
 
+use common\models\Event;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
  * EventSearch represents the model behind the search form of `app\models\Event`.
- * @property int $client_id [int(11)]
- * @property int $master_id [int(11)]
- * @property string $event_time_start [datetime]
- * @property string $event_time_end [datetime]
- * @property int $created_at [int(11)]
- * @property int $updated_at [int(11)]
  */
 class EventSearch extends Event
 {
@@ -38,7 +33,9 @@ class EventSearch extends Event
                     'notice',
                     'event_time_start',
                     'event_time_end',
-                    'created_at'
+                    'created_at',
+                    'date_from',
+                    'date_to'
                 ],
                 'safe'
             ],
@@ -64,7 +61,8 @@ class EventSearch extends Event
     public function search($params)
     {
         $query = Event::find();
-        $query->joinWith(['client', 'master.profile','services'],true,'INNER JOIN');
+        #$query->joinWith(['master', 'client'],true,'INNER JOIN');
+        $query->joinWith(['master.profile','client', 'services'],true,'INNER JOIN');
         $query->andWhere(' YEAR(event_time_start) = YEAR(NOW())');
         $query->orderBy(['event_time_start' => SORT_ASC]);
 
@@ -72,12 +70,12 @@ class EventSearch extends Event
 
         $dataProvider = new ActiveDataProvider(
             [
-                'query'      => $query,
+                'query' => $query,
                 'pagination' => false,
-                'sort'       => [
+                'sort' => [
                     'attributes' => [
                         'event_time_start' => [
-                            'asc'  => ['event_time_start' => SORT_ASC],
+                            'asc' => ['event_time_start' => SORT_ASC],
                             'desc' => ['event_time_start' => SORT_DESC],
                         ],
                     ]
@@ -97,7 +95,7 @@ class EventSearch extends Event
         // grid filtering conditions
         $query->andFilterWhere(
             [
-                'id'        => $this->id,
+                'id' => $this->id,
                 'master_id' => $this->master_id,
             ]
         );

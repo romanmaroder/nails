@@ -22,8 +22,6 @@ class m210512_180508_create_event_table extends Migration
                 'notice'           => $this->string(),
                 'event_time_start' => $this->dateTime(),
                 'event_time_end'   => $this->dateTime(),
-                'created_at'=>$this->integer(),
-                'updated_at'=>$this->integer(),
             ]
         );
 

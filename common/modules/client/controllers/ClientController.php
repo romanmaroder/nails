@@ -6,6 +6,7 @@ use backend\models\UserBackend;
 use Yii;
 use common\models\Profile;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\filters\AccessControl;
@@ -26,10 +27,10 @@ class ClientController extends Controller
     public function behaviors(): array
     {
         return [
-            'verbs'  => [
-                'class'   => VerbFilter::class,
+            'verbs' => [
+                'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST', 'GET'],
+                    'delete' => ['POST','GET'],
                 ],
             ],
             'access' => [
@@ -38,7 +39,7 @@ class ClientController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['create', 'update', 'view', 'delete', 'master'],
+                        'actions' => ['create','update','view','delete','master'],
                         'roles'   => ['admin', 'manager']
 
                     ],
@@ -66,12 +67,13 @@ class ClientController extends Controller
         ];
     }
 
+
     /**
      * Lists all User models.
      * Все записи кроме 1 (Администратора)
      *
      * @return string
-     * @throws \yii\base\InvalidConfigException
+     *  @throws InvalidConfigException
      */
     public function actionIndex(): string
     {
@@ -80,12 +82,15 @@ class ClientController extends Controller
         $inactive = UserBackend::inactiveUser();
 
         if (!empty($inactive) && Yii::$app->user->can('admin')) {
+
             $message = '';
             foreach ($inactive as $user) {
+
                 $message .= "{$user['username']}</br>";
             }
             Yii::$app->session->setFlash('danger', "{$message}");
         }
+
 
         return $this->render(
             'index',
@@ -125,7 +130,6 @@ class ClientController extends Controller
         $model   = new UserBackend();
         $profile = new Profile();
 
-
         if ($model->load(Yii::$app->request->post())) {
             $model->generateEmail();
             $model->setPassword($model->defaultPassword());
@@ -133,14 +137,15 @@ class ClientController extends Controller
             $model->generateEmailVerificationToken();
 
             if ($model->save()) {
-                if ($model->roles) {
+
+                if ($model->roles){
                     $profile->user_id = $model->id;
-                    $profile->color   = $model->color;
+                    $profile->color = $model->color;
                     $profile->save();
                 }
                 $model->saveRoles();
 
-                Yii::$app->session->setFlash('info', 'Клиент <b>' . $model->username . '</b> сохранен. ');
+                Yii::$app->session->setFlash('info', 'Клиент <b>'.$model->username . '</b> сохранен. ');
 
                 return $this->redirect('client/index');
             }
@@ -167,7 +172,6 @@ class ClientController extends Controller
     public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
-
         #$profile= Profile::find()->where(['user_id'=>$id])->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -185,6 +189,7 @@ class ClientController extends Controller
                 $profile = Profile::getUserProfileInfo($model->profile->user_id);
                 $profile->delete();
             }
+
             $model->saveRoles();
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -210,6 +215,7 @@ class ClientController extends Controller
     public function actionDelete(int $id): Response
     {
         $this->on($this::EVENT_AFTER_ACTION,[$this->findModel($id),'saveRoles']);
+
         $this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
@@ -244,11 +250,12 @@ class ClientController extends Controller
      * @param int $id
      *
      * @return array|ActiveRecord|null
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws NotFoundHttpException
      */
     protected function findModel(int $id)
     {
-        if (($model = UserBackend::find()->with('profile')->where(['id' => $id])->one()) !== null) {
+
+        if ( ( $model = UserBackend::find()->with('profile')->where(['id'=>$id])->one() ) !== null) {
             return $model;
         }
 

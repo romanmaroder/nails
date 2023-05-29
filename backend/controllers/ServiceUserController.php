@@ -94,8 +94,7 @@ class ServiceUserController extends Controller
     {
         $model = new ServiceUser();
 
-
-        if ($model->load(Yii::$app->request->post())  ) {
+        if ($model->load(Yii::$app->request->post())) {
 
             $user = ServiceUser::find()->where(['user_id'=>$model->user_id,'service_id'=>$model->service_id])
                 ->one();
@@ -108,6 +107,8 @@ class ServiceUserController extends Controller
             }
 
             $model->save();
+
+
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

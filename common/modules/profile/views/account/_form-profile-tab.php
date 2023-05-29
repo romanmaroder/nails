@@ -1,6 +1,6 @@
 <?php
 
-/* @var $user User */
+/* @var $user AccountController */
 
 /* @var $profile AccountController */
 

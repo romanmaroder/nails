@@ -1,20 +1,21 @@
 <?php
 
-
+//use common\models\Client;
+//use common\models\Master;
+use common\models\Event;
+use common\models\Service;
 use common\models\ServiceUser;
 use common\models\User;
 use kartik\datetime\DateTimePicker;
 use kartik\select2\Select2;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
+//use yii\widgets\ActiveForm;/*/
 use yii\bootstrap4\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Event */
 /* @var $form yii\bootstrap4\ActiveForm */
-
-
 ?>
 
 <div class="event-form">
@@ -29,6 +30,7 @@ use yii\bootstrap4\ActiveForm;
             'validateOnBlur'         => false
         ]
     ); ?>
+
     <?= $form->field($model, 'event_time_start')->widget(
         DateTimePicker::class,
         [
@@ -37,7 +39,7 @@ use yii\bootstrap4\ActiveForm;
                 'type'        => 'text',
                 'readonly'    => true,
                 'class'       => 'text-muted small',
-                'style'       => 'border:none;background:none',
+                'style'       => 'border:none;background:none'
             ],
             'type'          => DateTimePicker::TYPE_BUTTON,
             'layout'        => '{picker} {remove} {input}',
@@ -51,8 +53,10 @@ use yii\bootstrap4\ActiveForm;
             ],
 
             'language' => 'ru',
+            'size'     => 'xs'
         ]
     ) ?>
+
     <?= $form->field($model, 'event_time_end')->widget(
         DateTimePicker::class,
         [
@@ -74,30 +78,30 @@ use yii\bootstrap4\ActiveForm;
 //                'startDate'      => date('Y-m-d'),
             ],
             'language'      => 'ru',
-            'size'          => 'sm'
+            'size'          => 'xs'
 
         ]
     ) ?>
+
     <?= $form->field($model, 'client_id')->widget(
         Select2::class,
         [
             'name'          => 'client',
             'language'      => 'ru',
             'data'          => User::getClientList(),
-            'size'          => Select2::SMALL,
             'options'       => ['placeholder' => 'Выберите клиента ...'],
             'pluginOptions' => [
                 'allowClear' => true,
             ],
         ]
     ) ?>
+
     <?= $form->field($model, 'master_id')->widget(
         Select2::class,
         [
             'name'          => 'master',
             'language'      => 'ru',
             'data'          => User::getMasterList(),
-            'size'          => Select2::SMALL,
             'options'       => ['placeholder' => 'Выберите мастера ...'],
             'pluginOptions' => [
                 'allowClear' => true
@@ -122,8 +126,7 @@ use yii\bootstrap4\ActiveForm;
                                         });
                           Toast.fire({
                             icon: "error",
-                            //title: data.responseJSON.message
-                            title: data.responseText
+                            title: data.responseJSON.message
                           });
                     }
                 });
@@ -131,6 +134,7 @@ use yii\bootstrap4\ActiveForm;
             ],
         ]
     ); ?>
+
     <?= $form->field($model, 'service_array')->widget(
         Select2::class,
         [
@@ -138,11 +142,9 @@ use yii\bootstrap4\ActiveForm;
             'language'      => 'ru',
             'data'          => ServiceUser::getUserServices($model->master->id),
             'theme'         => Select2::THEME_MATERIAL,
-            'size'          => Select2::SMALL,
             'options'       => [
                 'id'           => 'serviceUser',
                 'placeholder'  => 'Выберите услугу ...',
-                'value'        => $model->id ? ArrayHelper::getColumn($model->service_array, 'id') : '',
                 'multiple'     => true,
                 'autocomplete' => 'off',
             ],
@@ -154,6 +156,7 @@ use yii\bootstrap4\ActiveForm;
     ) ?>
     <?
     /*= $form->field($model, 'description')->textarea(['rows' => 3]) */ ?>
+
     <?= $form->field($model, 'notice')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'checkEvent', ['enableAjaxValidation' => true])->label(false)
         ->hiddenInput() ?>

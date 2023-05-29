@@ -2,9 +2,7 @@
 
 namespace common\models;
 
-use Exception;
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
@@ -46,6 +44,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public const DEFAULT_IMAGE = '/img/avatar.jpg';
 
+
     public $roles;
     public $password;
     public $color;
@@ -77,6 +76,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['roles', 'safe'],
             ['color', 'safe'],
+            // [['rate'], 'number','min'=>0,'max'=>100,'message'=>'{attribute} не может быть меньше 0 и  больше 100'],
             ['username', 'required'],
             ['email', 'unique'],
             [['username', 'email'], 'trim'],
@@ -104,11 +104,11 @@ class User extends ActiveRecord implements IdentityInterface
                         $('label[for=user-color]').addClass('d-none');
                         $('#user-color').addClass('d-none');
                          //return  true;
-                        
                 }"
             ]
         ];
     }
+
 
     public function attributeLabels(): array
     {
@@ -122,12 +122,12 @@ class User extends ActiveRecord implements IdentityInterface
             'birthday'    => 'День рождения',
             'phone'       => 'Телефон',
             'address'     => 'Адрес',
+            'rate'        => 'Ставка',
             'color'       => 'Цвет',
             'password'    => 'Пароль',
             'created_at'  => 'Создан'
         ];
     }
-
 
     public function __construct()
     {
@@ -138,7 +138,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Revoke old roles and assign new if any
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function saveRoles()
     {
@@ -151,6 +151,8 @@ class User extends ActiveRecord implements IdentityInterface
                     }
                 }
             }
+
+
     }
 
     /**
@@ -160,7 +162,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return array
      */
-    public function getRoles($column_name = null): array
+    public function getRoles($column_name): array
     {
         $roles = Yii::$app->authManager->getRolesByUser($this->getId());
         return ArrayHelper::getColumn($roles, $column_name, true);
@@ -169,13 +171,13 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Get user role from RBAC
      *
-     * * @return Role
+     * @return Role
      */
     public static function getRole(): Role
     {
         return array_values(Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId()))[0];
-        #return current( \Yii::$app->authManager->getRolesByUser( $this->id ) );
     }
+
 
     /**
      * {@inheritdoc}
@@ -187,7 +189,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException
+     * @throws \yii\base\NotSupportedException
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -199,7 +201,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @param string $username
      *
-     * @return User
+     * @return static|null
      */
     public static function findByUsername(string $username): ?User
     {
@@ -211,7 +213,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @param string $phone
      *
-     * @return User|null
+     * @return User
      */
 
     public static function findByUserPhone(string $phone): ?User
@@ -221,6 +223,7 @@ class User extends ActiveRecord implements IdentityInterface
             ->where(['phone' => $phone])
             ->one();
     }
+
 
     /**
      * Finds user by phone
@@ -242,6 +245,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return false;
     }
+
 
     /**
      * Finds user by password reset token
@@ -385,6 +389,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
+
     /**
      * @return array
      */
@@ -404,6 +409,7 @@ class User extends ActiveRecord implements IdentityInterface
             self::ROLE_AUTHOR  => 'Автор',
         ];
     }
+
 
     /**
      * Getting user statuses
@@ -439,6 +445,7 @@ class User extends ActiveRecord implements IdentityInterface
                 return 'запрещен';
         }
     }
+
 
     /**
      * Getting a list of clients with the user role
@@ -497,7 +504,6 @@ class User extends ActiveRecord implements IdentityInterface
      * Number of clients
      *
      * @return bool|int|string|null
-     * @throws Exception
      */
     public static function getUserTotalCount()
     {
@@ -512,6 +518,7 @@ class User extends ActiveRecord implements IdentityInterface
         );
     }
 
+
     /**
      * @param $id
      * Count master certificate from table[[Certificate]]
@@ -522,6 +529,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return Certificate::find()->where(['user_id' => $id])->count();
     }
+
 
     public function getCountWorkMaster($id)
     {
@@ -579,6 +587,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Certificate::class, ['user_id' => 'id']);
     }
 
+
     /**
      * Relationship with [[Profile]] table
      *
@@ -594,6 +603,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return \yii\db\ActiveQuery
      */
+
     public function getRates(): ActiveQuery
     {
         return $this->hasMany(ServiceUser::class, ['user_id' => 'id']);
@@ -601,15 +611,16 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Return client list dataProvider
-     * @return ActiveDataProvider
-     * @throws InvalidConfigException
+     * @return \yii\data\ActiveDataProvider
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
      */
     public static function getDataProvider(): ActiveDataProvider
     {
         if (Yii::$app->user->can('admin')) {
-            $query = self::find();
+            $query = User::find();
         } else {
-            $query = self::find()->where(['!=', 'id', '1']);
+            $query = User::find()->where(['!=', 'id', '1']);
         }
         $dataProvider = new ActiveDataProvider(
             [
@@ -617,7 +628,7 @@ class User extends ActiveRecord implements IdentityInterface
                 'pagination' => false,
             ]
         );
-        $dependency   = Yii::createObject(
+        $dependency   = \Yii::createObject(
             [
                 'class'    => 'yii\caching\DbDependency',
                 'sql'      => 'SELECT MAX(updated_at) FROM user',

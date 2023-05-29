@@ -3,7 +3,6 @@
 
 namespace common\components;
 
-use phpDocumentor\Reflection\Types\Mixed_;
 use Yii;
 use yii\base\Component;
 use yii\web\UploadedFile;
@@ -62,7 +61,7 @@ class Storage extends Component implements StorageInterface
     /**
      * @param  string  $filename
      *
-     * @return string|null
+     * @return string
      */
     public function getFile(string $filename): string
     {
@@ -117,8 +116,9 @@ class Storage extends Component implements StorageInterface
 
     /**
      * @param string $filename
+     * @return bool
      */
-    public function checkFileExist(string $filename) {
+    public function checkFileExist(string $filename):bool {
 
         $file = $this->getStoragePath().$filename;
 

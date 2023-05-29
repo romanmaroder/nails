@@ -34,8 +34,8 @@ class AccountController extends Controller
     public function behaviors(): array
     {
         return [
-            'verbs'  => [
-                'class'   => VerbFilter::class,
+            'verbs' => [
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -45,9 +45,9 @@ class AccountController extends Controller
                 //'only' => ['login', 'logout', 'index'],
                 'rules' => [
                     [
-                        'allow'   => true,
+                        'allow' => true,
                         'actions' => ['login'],
-                        'roles'   => ['?'],
+                        'roles' => ['?'],
                     ],
                     [
                         'allow' => true,
@@ -70,7 +70,6 @@ class AccountController extends Controller
 
         $user = User::findIdentity($userId);
 
-
         $profile = Profile::getUserProfileInfo($userId);
 
         $setting = new Setting();
@@ -91,21 +90,15 @@ class AccountController extends Controller
         if (!isset($user)) {
             throw new NotFoundHttpException("Пользователь не найден.");
         }
-        if (Yii::$app->authManager->getAssignment('master', $userId)) {
-            if (!isset($profile)) {
-                throw new NotFoundHttpException("Данные о пользователе не найдены.");
-            }
-        }
-
-        if ($profile) {
-            if ($profile->load(Yii::$app->request->post())) {
+        if($profile){
+            if( $profile->load(Yii::$app->request->post()) ){
                 $isValid = $profile->validate();
                 if ($isValid) {
                     $profile->save(false);
                 }
             }
         }
-        if ($user->load(Yii::$app->request->post())) {
+        if ( $user->load(Yii::$app->request->post())   ) {
             if ($user->password) {
                 $user->setPassword($user->password);
             }
@@ -115,6 +108,7 @@ class AccountController extends Controller
                 return $this->redirect(['index']);
             }
         }
+        
 
 
         if ($setting->load(Yii::$app->request->post())) {
@@ -151,6 +145,7 @@ class AccountController extends Controller
         }
 
 
+
         $masterIds = Yii::$app->authManager->getUserIdsByRole('master');
 
         // Ids юзеров с ролью 'master'
@@ -162,15 +157,15 @@ class AccountController extends Controller
         return $this->render(
             'index',
             [
-                'dataProvider'     => $dataProvider,
-                'user'             => $user,
-                'profile'          => $profile,
-                'setting'          => $setting,
-                'modelAvatar'      => $modelAvatar,
-                'model'            => $model,
+                'dataProvider' => $dataProvider,
+                'user' => $user,
+                'profile' => $profile,
+                'setting' => $setting,
+                'modelAvatar' => $modelAvatar,
+                'model' => $model,
                 'modelCertificate' => $modelCertificate,
-                'certificateList'  => $certificateList,
-                'modelPhoto'       => $modelPhoto,
+                'certificateList' => $certificateList,
+                'modelPhoto' => $modelPhoto,
 
             ]
         );
@@ -182,18 +177,18 @@ class AccountController extends Controller
     public function actionUploadAvatar(): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $userId                     = Yii::$app->user->getId();
+        $userId = Yii::$app->user->getId();
 
         $user = User::findIdentity($userId);
 
-        $model         = new AvatarForm($user);
+        $model = new AvatarForm($user);
         $model->avatar = UploadedFile::getInstance($model, 'avatar');
 
         if ($model->save()) {
             return [
-                'success'    => true,
+                'success' => true,
                 'pictureUri' => Yii::$app->storage->getFile($user->avatar),
-                'message'    => 'Аватар загружен'
+                'message' => 'Аватар загружен'
             ];
         }
         return ['success' => false, 'errors' => $model->getErrors()];
@@ -218,8 +213,8 @@ class AccountController extends Controller
 
         if ($currentUser->deletePicture()) {
             return [
-                'success'    => true,
-                'message'    => 'Аватар удален',
+                'success' => true,
+                'message' => 'Аватар удален',
                 'pictureUri' => User::DEFAULT_IMAGE,
             ];
         } else {
@@ -324,6 +319,8 @@ class AccountController extends Controller
 
         throw new NotFoundHttpException('Запрашиваемая страница не существует.');
     }
+
+
 
 
 }

@@ -7,7 +7,10 @@ use Yii;
 use Intervention\Image\ImageManager;
 
 
-
+/**
+ *
+ * @property-read int $maxFileSize
+ */
 class AddPost extends Post
 {
 

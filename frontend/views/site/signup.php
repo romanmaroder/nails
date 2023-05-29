@@ -11,7 +11,7 @@ use yii\helpers\Html;
 use yii\bootstrap4\ActiveForm;
 use yii\captcha\Captcha;
 
-$this->title                   = 'Регистрация';
+$this->title = 'Регистрация';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-signup" id="wrap-background">
@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'imageOptions' => ['alt' => 'captcha_'.rand(0,5)],
                     //'captchaAction' => 'site/captcha', // uncomment and change if your not in the default controller or a module
-                    'template'     => '<div class="row"><div class="col-lg-2 my-auto">{image}</div><div class="col-lg-10">{input}</div></div>',
+                    'template' => '<div class="row"><div class="col-lg-2 my-auto">{image}</div><div class="col-lg-10">{input}</div></div>',
                 ]
             )
                 ->hint('Подсказка: нажмите на уравнение, чтобы обновить')
@@ -51,13 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 )
             ?>
-
-            <div class='form-group text-center mt-lg-5'>
+            <div class="form-group text-center mt-lg-5">
                 <?= Html::submitButton(
                     'Зарегистрироваться', [
-                                            'class' => 'btn btn-primary',
-                                            'name'  => 'signup-button'
-                                        ]
+                    'class' => 'btn btn-primary',
+                    'name'  => 'signup-button'
+                ]
                 ) ?>
             </div>
 

@@ -15,9 +15,11 @@ use yii\widgets\Pjax;
 ?>
 
 <?php
-Pjax::begin([
-    'enablePushState' => false,
-]); ?>
+Pjax::begin(
+    [
+        'enablePushState' => false,
+    ]
+); ?>
 
     <div class="site-index">
         <div class="body-content">
@@ -27,39 +29,44 @@ Pjax::begin([
                     echo $this->render('@common/modules/blog/views/post/_search', ['model' => $searchModel]);
                     ?>
                 </div>
-                <div class="col-xl-8" >
+                <div class="col-xl-8" id="pjax-container">
                     <div class="row ">
                         <?=
-                        ListView::widget([
-                            'dataProvider' => $dataProvider,
-                            'options' => [
-                                'tag' => false,
-                            ],
-                            'layout' => "{pager}\n{items}\n{summary}",
-                            'itemOptions' => ['tag' => null],
-                            'itemView' => function ($model, $key, $index) {
+                        ListView::widget(
+                            [
+                                'dataProvider' => $dataProvider,
+                                'options' => [
+                                    'tag' => false,
+                                    #'class' => 'col-12 col-lg-6 mb-3 list-wrapper',
+                                    #'#id' => 'list-wrapper',
+                                ],
+                                'layout' => "{pager}\n{items}\n{summary}",
+                                'itemOptions' => ['tag' => null],
+                                'itemView' => function ($model, $key, $index) {
+                                    return $this->render(
+                                        '_post_item',
+                                        [
+                                            'model' => $model,
+                                            'index' => $index,
+                                            'key' => $key
+                                        ]
+                                    );
 
-                                return $this->render('_post_item',
-                                    [
-                                        'model' => $model,
-                                        'index' => $index,
-                                        'key' => $key
-                                    ]);
-
-                                // or just do some echo
-                                // return $model->title . ' posted by ' . $model->author;
-                            },
-                            'emptyText' => 'Увы, но статей пока нет.',
-                            'emptyTextOptions' => [
-                                'tag' => 'div',
-                                'class' => 'col-12 col-lg-6 mb-3 text-info text-center'
-                            ],
-                            'summary' => 'Показаны записи {count} из {totalCount}',
-                            'summaryOptions' => [
-                                'tag' => 'div',
-                                'class' => 'col-12 text-secondary'
+                                    // or just do some echo
+                                    // return $model->title . ' posted by ' . $model->author;
+                                },
+                                'emptyText' => 'Увы, но статей пока нет.',
+                                'emptyTextOptions' => [
+                                    'tag' => 'div',
+                                    'class' => 'col-12 col-lg-6 mb-3 text-info text-center'
+                                ],
+                                'summary' => 'Показаны записи {count} из {totalCount}',
+                                'summaryOptions' => [
+                                    'tag' => 'div',
+                                    'class' => 'col-12 text-secondary'
+                                ]
                             ]
-                        ]);
+                        );
                         ?>
                     </div>
                 </div>
@@ -68,11 +75,13 @@ Pjax::begin([
                     echo NewsList::widget(['showLimit' => 3]); ?>
                 </div>
             </div>
+
         </div>
     </div>
 <?php
 Pjax::end(); ?>
-<?php echo ButtonUp::widget() ;?>
+<?php
+echo ButtonUp::widget(); ?>
 <?php
 
 $js = <<< JS
@@ -86,4 +95,4 @@ $js = <<< JS
  })
 
 JS;
-$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null);?>
+$this->registerJs($js, $position = yii\web\View::POS_READY, $key = null); ?>

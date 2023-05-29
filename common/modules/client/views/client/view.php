@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\web\YiiAsset;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
@@ -9,9 +8,9 @@ use yii\web\YiiAsset;
 $this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => 'клиенты', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-YiiAsset::register($this);
+\yii\web\YiiAsset::register($this);
 
-#$assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+$assetDir = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 ?>
 
 <div class="container-fluid">

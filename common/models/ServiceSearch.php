@@ -44,10 +44,12 @@ class ServiceSearch extends Service
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => false
-        ]);
+        $dataProvider = new ActiveDataProvider(
+            [
+                'query' => $query,
+                'pagination' => false
+            ]
+        );
 
         $this->load($params);
 
@@ -58,12 +60,14 @@ class ServiceSearch extends Service
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'cost' => $this->cost,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
+        $query->andFilterWhere(
+            [
+                'id' => $this->id,
+                'cost' => $this->cost,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+            ]
+        );
 
         $query->andFilterWhere(['like', 'name', $this->name]);
 

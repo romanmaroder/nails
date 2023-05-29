@@ -68,7 +68,7 @@ $this->beginBody() ?>
     }
 
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
+        #$menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
     } else {
         $menuItems[] = ['label' => 'Портфолио', 'url' => ['/site/portfolio']];

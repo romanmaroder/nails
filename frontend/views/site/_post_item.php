@@ -17,7 +17,7 @@ if ($index % 2 !== 0) {
     $class = '';
 } ?>
 
-    <div class="col-12 col-lg-6 mb-3" id="pjax-container">
+    <div class="col-12 col-lg-6 mb-3">
         <div class="blog-card mx-auto <?php echo $class; ?>"
              id="<?php
              echo $model->id; ?>">
